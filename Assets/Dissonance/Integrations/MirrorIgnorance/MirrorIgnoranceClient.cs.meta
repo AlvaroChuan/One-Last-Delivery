@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: f5af5a0eda5e81643a69d07cb6ac2e39
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 143290
+  packageName: Dissonance For Mirror Networking
+  packageVersion: 9.0.9
+  assetPath: Assets/Dissonance/Integrations/MirrorIgnorance/MirrorIgnoranceClient.cs
+  uploadId: 907212
