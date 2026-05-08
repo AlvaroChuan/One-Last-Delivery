@@ -24,7 +24,15 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _InnerBrushTexture:
+        m_Texture: {fileID: 2800000, guid: 7b806a2f79219f240a926857726b5808, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _PencilTexture:
+        m_Texture: {fileID: 2800000, guid: 7b806a2f79219f240a926857726b5808, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_1ea4c8b54a804d9180eb633a6b008abd_Texture_1_Texture2D:
         m_Texture: {fileID: 2800000, guid: 7b806a2f79219f240a926857726b5808, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -42,15 +50,24 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AlphaClip: 0.26
+    - _FPS: 1.25
+    - _InnerErosionStrength: 2.37
+    - _InnerErosionTiling: 14.93
     - _NoiseOffset: 0.5
     - _NormalNoise: 91
     - _NormalStrength: 0.015
     - _PaintIntensity: 0.28
     - _PencilThreshold1: 0.18
     - _PencilThreshold2: 0.33
-    - _PencilThreshold3: 0.1
+    - _PencilThreshold3: 0.39
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _SpecularEdgeSmooth: 0
+    - _SpecularOpacity: 2.26
+    - _SpecularReductor: 0.906
+    - _SpecularStrength: 0.73
+    - _Threshold: 0.00002
     - _ThresholdA: -0.45
     - _ThresholdB: -0.03
     - _ThresholdC: 0.36
@@ -62,6 +79,7 @@ Material:
     - _ColorC: {r: 1, g: 0.6901961, b: 0.75786155, a: 0}
     - _PaintColor: {r: 0.654088, g: 0.030853126, b: 0.40684396, a: 0}
     - _ShadowColor: {r: 0.70440245, g: 0.42751464, b: 0.4855717, a: 0}
+    - _SpecularColor: {r: 0.9685534, g: 0.70357174, b: 0.70357174, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &8711691407941455838
