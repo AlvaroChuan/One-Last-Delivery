@@ -73,3 +73,7 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Licensed packages that not all members have licenses for
+/[Aa]ssets/[Ll]icensed[Pp]ackages
+/[Aa]ssets/[Ll]icensed[Pp]ackages.meta
