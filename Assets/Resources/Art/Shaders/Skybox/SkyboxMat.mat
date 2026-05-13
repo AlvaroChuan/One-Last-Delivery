@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SkyboxMat
+  m_Shader: {fileID: -6465566751694194690, guid: 55981eab9d2619744a5c2e595012381f, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MoonTex:
+        m_Texture: {fileID: 2800000, guid: c84b02dd1ab828046a53d93356012364, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_944a0933822449b6b79fcb09c546eec5_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 2d7e177561d681d46ac45eb5d7a1f6d2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _MoonMaskSize: 1.19
+    - _MoonPower: 1
+    - _MoonSize: 1.19
+    - _MoonSteps: 6
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _StarsDensity: 20
+    - _StarsIntensity: 2
+    - _SunSize: 1.21
+    m_Colors:
+    - _HorizonColor: {r: 0.20571224, g: 0.2011392, b: 0.3773585, a: 0}
+    - _MoonColor: {r: 0.70373756, g: 2.8792377, b: 3.9533496, a: 0}
+    - _MoonOffset: {r: -0.1, g: 0.07, b: 0.06, a: 0}
+    - _MoonTiling: {r: 3, g: 3, b: 0, a: 0}
+    - _SkyColor: {r: 0.18729973, g: 0.4395402, b: 0.6509434, a: 0}
+    - _StarsTiling: {r: 10, g: 3, b: 0, a: 0}
+    - _SunColor: {r: 4.8671436, g: 4.0243216, b: 0.84945434, a: 0}
+    - _TexOffset: {r: 0.5, g: 0.5, b: 0, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!114 &7339490221900750695
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 10
