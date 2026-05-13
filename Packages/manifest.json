@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.mirror.steamworks.net": "https://github.com/Chykary/FizzySteamworks.git?path=/com.mirror.steamworks.net",
+    "com.adrenak.univoice": "4.12.0",
     "com.rlabrecque.steamworks.net": "https://github.com/rlabrecque/Steamworks.NET.git?path=/com.rlabrecque.steamworks.net",
     "com.unity.ai.navigation": "2.0.9",
     "com.unity.collab-proxy": "2.9.3",
@@ -45,21 +45,19 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.adrenak.univoice": "4.12.0"
+    "com.unity.modules.xr": "1.0.0"
   },
-
   "scopedRegistries": [
     {
-        "name": "npmjs",
-        "url": "https://registry.npmjs.org",
-        "scopes": [
-            "com.npmjs",
-            "com.adrenak.univoice",
-            "com.adrenak.brw",
-            "com.adrenak.unimic",
-            "com.adrenak.concentus-unity"
-        ]
+      "name": "npmjs",
+      "url": "https://registry.npmjs.org",
+      "scopes": [
+        "com.npmjs",
+        "com.adrenak.univoice",
+        "com.adrenak.brw",
+        "com.adrenak.unimic",
+        "com.adrenak.concentus-unity"
+      ]
     }
-]
+  ]
 }
