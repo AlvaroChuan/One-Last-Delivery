@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Steamworks;
+using TMPro;
 
 public class LobbyListItem : MonoBehaviour
 {
-    public Text lobbyNameText;
+    public TextMeshProUGUI lobbyNameText;
     public CSteamID lobbyID;
     public string actualPassword;
 
@@ -12,7 +13,7 @@ public class LobbyListItem : MonoBehaviour
     {
         lobbyID = id;
         actualPassword = password;
-        
+
         bool hasPassword = !string.IsNullOrEmpty(password);
         lobbyNameText.text = name + (hasPassword ? " [🔒]" : "");
     }

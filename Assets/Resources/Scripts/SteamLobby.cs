@@ -4,6 +4,8 @@ using Steamworks;
 
 public class SteamLobby : MonoBehaviour
 {
+    private const string GameIDKey = "OneLastDeliveryID_145"; // Cambia este valor por uno único
+
     public GameObject lobbyListItemPrefab;
     public Transform lobbyListContent;
     protected Callback<LobbyCreated_t> lobbyCreated;
@@ -13,6 +15,8 @@ public class SteamLobby : MonoBehaviour
 
     private const string HOST_ADDRESS_KEY = "HostAddress";
     private NetworkManager _networkManager;
+
+    private CSteamID currentLobbyID;
 
     private void Start()
     {
@@ -37,15 +41,17 @@ public class SteamLobby : MonoBehaviour
         if (callback.m_eResult != EResult.k_EResultOK) return;
 
         _networkManager.StartHost();
+        currentLobbyID = (CSteamID)callback.m_ulSteamIDLobby;
 
-        CSteamID lobbyID = (CSteamID)callback.m_ulSteamIDLobby;
-        SteamMatchmaking.SetLobbyData(lobbyID, HOST_ADDRESS_KEY, SteamUser.GetSteamID().ToString());
-        SteamMatchmaking.SetLobbyData(lobbyID, "name", PlayerPrefs.GetString("LobbyName"));
-        
+        SteamMatchmaking.SetLobbyData(currentLobbyID, "GameID", GameIDKey);
+
+        SteamMatchmaking.SetLobbyData(currentLobbyID, HOST_ADDRESS_KEY, SteamUser.GetSteamID().ToString());
+        SteamMatchmaking.SetLobbyData(currentLobbyID, "name", PlayerPrefs.GetString("LobbyName"));
+
         string pwd = PlayerPrefs.GetString("LobbyPassword");
         if (!string.IsNullOrEmpty(pwd))
         {
-            SteamMatchmaking.SetLobbyData(lobbyID, "password", pwd);
+            SteamMatchmaking.SetLobbyData(currentLobbyID, "password", pwd);
         }
     }
 
@@ -61,6 +67,8 @@ public class SteamLobby : MonoBehaviour
 
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
+        currentLobbyID = (CSteamID)callback.m_ulSteamIDLobby;
+
         if (NetworkServer.active) return;
 
         string hostAddress = SteamMatchmaking.GetLobbyData((CSteamID)callback.m_ulSteamIDLobby, HOST_ADDRESS_KEY);
@@ -70,6 +78,8 @@ public class SteamLobby : MonoBehaviour
 
     public void FetchLobbies()
     {
+        SteamMatchmaking.AddRequestLobbyListStringFilter("GameID", GameIDKey, ELobbyComparison.k_ELobbyComparisonEqual);
+
         SteamMatchmaking.AddRequestLobbyListDistanceFilter(ELobbyDistanceFilter.k_ELobbyDistanceFilterWorldwide);
         SteamMatchmaking.RequestLobbyList();
     }
@@ -97,6 +107,8 @@ public class SteamLobby : MonoBehaviour
 
     public void InviteFriends()
     {
-        SteamFriends.ActivateGameOverlay("LobbyInvite");
+        //SteamFriends.ActivateGameOverlay("LobbyInvite");
+        SteamFriends.ActivateGameOverlayInviteDialog(currentLobbyID);
+
     }
 }
