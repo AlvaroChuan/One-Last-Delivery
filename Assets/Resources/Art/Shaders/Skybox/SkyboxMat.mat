@@ -64,14 +64,14 @@ Material:
     - _CloudHeight: 1
     - _CloudsIntensity: 0.05
     - _CloudsNoise: 400
-    - _CloudsPosterize: 6.87
-    - _HDRIBlend: 0.38
-    - _HDRIExposure: 1.0736439
+    - _CloudsPosterize: 8
+    - _HDRIBlend: 0.51842356
+    - _HDRIExposure: 1.8588759
     - _HDRIRotation: 1.12
-    - _HeightOffset: 0.85
-    - _MoonMaskSize: 1.3
+    - _HeightOffset: 0.4591608
+    - _MoonMaskSize: 1.27
     - _MoonPower: 1
-    - _MoonSize: 1.19
+    - _MoonSize: 1.21
     - _MoonSteps: 6
     - _QueueControl: 0
     - _QueueOffset: 0
@@ -79,20 +79,20 @@ Material:
     - _SkyRotation: 0.54
     - _StarsDensity: 20
     - _StarsFalloff: 100
-    - _StarsIntensity: 0
+    - _StarsIntensity: 1.016908
     - _StarsSpeed: 0.15
     - _SunSize: 1.22
     - _WindSpeed: 4.91
     m_Colors:
-    - _CloudsColor: {r: 0.596, g: 0.596, b: 0.596, a: 1}
-    - _HorizonColor: {r: 0.5948198, g: 0.5767709, b: 0.72599673, a: 1}
-    - _MoonColor: {r: 0.39048594, g: 0.4919456, b: 0.7075472, a: 0}
+    - _CloudsColor: {r: 0.48546222, g: 0.5095883, b: 0.53773546, a: 1}
+    - _HorizonColor: {r: 0.8545529, g: 0.59090346, b: 0.48411936, a: 1}
+    - _MoonColor: {r: 0.80383015, g: 0.8909117, b: 1.0717735, a: 0}
     - _MoonOffset: {r: -0.1, g: 0.07, b: 0.06, a: 0}
     - _MoonTiling: {r: 3, g: 3, b: 0, a: 0}
-    - _SkyColor: {r: 0.31134912, g: 0.40026906, b: 0.6548702, a: 1}
+    - _SkyColor: {r: 0.35993338, g: 0.47084773, b: 0.636561, a: 1}
     - _SkyRotation: {r: 0, g: 0, b: 0, a: 0}
     - _StarsTiling: {r: 10, g: 3, b: 0, a: 0}
-    - _SunColor: {r: 3.2111173, g: 1.4488218, b: 0.5716124, a: 0}
+    - _SunColor: {r: 2.9960783, g: 1.4626755, b: 0.53333324, a: 0}
     - _TexOffset: {r: 0.5, g: 0.5, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

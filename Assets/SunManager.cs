@@ -31,6 +31,9 @@ public class SunManager : MonoBehaviour
     [SerializeField] private Color _cloudsColorDay = new Color(0.596f, 0.596f, 0.596f);
     [SerializeField] private Color _cloudsColorNight = new Color(0.380f, 0.427f, 0.482f);
 
+    [SerializeField] private string _cloudsPosterizePropertyName = "_CloudsPosterize";
+    [SerializeField] private float _cloudsPosterizeNight = 8f;
+
     [Header("Height Offset Settings")]
     [SerializeField] private string _heightOffsetPropertyName = "_HeightOffset";
     [SerializeField] private float _heightOffsetLow = 0.4f;
@@ -39,7 +42,7 @@ public class SunManager : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float _dawnStartTime = 0.08f;
     [SerializeField, Range(0f, 1f)] private float _dawnEndTime = 0.20f;
 
-    [Header("Day Exposure Randomizer")]
+    [Header("Day Randomizers")]
     [SerializeField] private float _dayExposureDefault = 1.5f;
     [SerializeField] private float _dayExposureMin = 1.0f;
     [SerializeField] private float _dayExposureMax = 1.5f;
@@ -55,13 +58,11 @@ public class SunManager : MonoBehaviour
     private float _cycleDurationSeconds;
     private float _currentStarsIntensity = 0f;
     private float _environmentTransitionProgress = 0f;
-
     private float _dynamicDayExposure;
     private float _exposureTimer = 0f;
     private bool _isWaitingExposure = true;
     private float _exposureStartValue;
     private float _exposureTargetValue;
-
     private bool _isFirstMorning = true;
 
     private void Start()
@@ -77,7 +78,7 @@ public class SunManager : MonoBehaviour
         UpdateSunRotation();
         UpdateSkyboxColors();
         UpdateStarsIntensity();
-        UpdateDaytimeExposure();
+        UpdateDaytimeRandomizers();
         UpdateEnvironmentTransitions();
         UpdateHeightOffset();
         UpdateDirectionalLightColor();
@@ -109,8 +110,15 @@ public class SunManager : MonoBehaviour
     private void UpdateSunRotation()
     {
         float sunAngle = (_currentTimeOfDay * 360f) - 30f;
-        transform.localRotation = Quaternion.Euler(sunAngle, 170f, 0f);
-        Shader.SetGlobalVector("_SunDirection", transform.forward);
+        float lightAngle = sunAngle;
+        if (IsNight())
+        {
+            lightAngle -= 180f;
+        }
+
+        transform.localRotation = Quaternion.Euler(lightAngle, 170f, 0f);
+        Vector3 realSunDirection = Quaternion.Euler(sunAngle, 170f, 0f) * Vector3.forward;
+        Shader.SetGlobalVector("_SunDirection", realSunDirection);
     }
     private void UpdateSkyboxColors()
     {
@@ -134,7 +142,7 @@ public class SunManager : MonoBehaviour
             _skyboxMaterial.SetFloat(_starsIntensityPropertyName, _currentStarsIntensity);
         }
     }
-    private void UpdateDaytimeExposure()
+    private void UpdateDaytimeRandomizers()
     {
         if (_environmentTransitionProgress == 1f)
         {
@@ -145,7 +153,6 @@ public class SunManager : MonoBehaviour
         else if (_environmentTransitionProgress == 0f)
         {
             _exposureTimer += Time.deltaTime;
-
             if (_isWaitingExposure)
             {
                 if (_exposureTimer >= _exposureWaitDuration)
@@ -159,8 +166,8 @@ public class SunManager : MonoBehaviour
             else
             {
                 float t = _exposureTimer / _exposureChangeDuration;
-                _dynamicDayExposure = Mathf.Lerp(_exposureStartValue, _exposureTargetValue, t);
-
+                float smoothT = Mathf.SmoothStep(0f, 1f, t);
+                _dynamicDayExposure = Mathf.Lerp(_exposureStartValue, _exposureTargetValue, smoothT);
                 if (t >= 1f)
                 {
                     _isWaitingExposure = true;
@@ -173,6 +180,7 @@ public class SunManager : MonoBehaviour
     {
         bool isNight = IsNight();
         float fadeStep = Time.deltaTime / _environmentTransitionDurationSeconds;
+
         if (isNight)
         {
             _environmentTransitionProgress = Mathf.Clamp01(_environmentTransitionProgress + fadeStep);
@@ -184,10 +192,10 @@ public class SunManager : MonoBehaviour
 
         if (_skyboxMaterial != null)
         {
-            float currentBlend = Mathf.Lerp(_hdriBlendDay, _hdriBlendNight, _environmentTransitionProgress);
-            float currentExposure = Mathf.Lerp(_dynamicDayExposure, _hdriExposureNight, _environmentTransitionProgress);
-            Color currentClouds = Color.Lerp(_cloudsColorDay, _cloudsColorNight, _environmentTransitionProgress);
-
+            float smoothProgress = Mathf.SmoothStep(0f, 1f, _environmentTransitionProgress);
+            float currentBlend = Mathf.Lerp(_hdriBlendDay, _hdriBlendNight, smoothProgress);
+            float currentExposure = Mathf.Lerp(_dynamicDayExposure, _hdriExposureNight, smoothProgress);
+            Color currentClouds = Color.Lerp(_cloudsColorDay, _cloudsColorNight, smoothProgress);
             _skyboxMaterial.SetFloat(_hdriBlendPropertyName, currentBlend);
             _skyboxMaterial.SetFloat(_hdriExposurePropertyName, currentExposure);
             _skyboxMaterial.SetColor(_cloudsColorPropertyName, currentClouds);
@@ -201,12 +209,14 @@ public class SunManager : MonoBehaviour
             if (_currentTimeOfDay >= _heightDropStartTime && _currentTimeOfDay < _dawnStartTime)
             {
                 float t = (_currentTimeOfDay - _heightDropStartTime) / (_dawnStartTime - _heightDropStartTime);
-                currentHeight = Mathf.Lerp(_heightOffsetHigh, _heightOffsetLow, t);
+                float smoothT = Mathf.SmoothStep(0f, 1f, t);
+                currentHeight = Mathf.Lerp(_heightOffsetHigh, _heightOffsetLow, smoothT);
             }
             else if (_currentTimeOfDay >= _dawnStartTime && _currentTimeOfDay <= _dawnEndTime)
             {
                 float t = (_currentTimeOfDay - _dawnStartTime) / (_dawnEndTime - _dawnStartTime);
-                currentHeight = Mathf.Lerp(_heightOffsetLow, _heightOffsetHigh, t);
+                float smoothT = Mathf.SmoothStep(0f, 1f, t);
+                currentHeight = Mathf.Lerp(_heightOffsetLow, _heightOffsetHigh, smoothT);
             }
             _skyboxMaterial.SetFloat(_heightOffsetPropertyName, currentHeight);
         }

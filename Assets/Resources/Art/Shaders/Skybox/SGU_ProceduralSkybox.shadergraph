@@ -2474,7 +2474,7 @@
     "m_ObjectId": "028b14fc39654b5eb9f1980919553838",
     "m_Title": "Sun Direction",
     "m_Position": {
-        "x": -3598.999755859375,
+        "x": -3599.0,
         "y": -835.0
     }
 }
@@ -3554,7 +3554,7 @@
     "m_ObjectId": "17183c0d8592467e88d5bf02cecd6600",
     "m_Title": "View to 2D Tex",
     "m_Position": {
-        "x": -2953.999755859375,
+        "x": -2954.0,
         "y": -1386.0
     }
 }
@@ -5100,6 +5100,9 @@
             "m_Id": "ba5ae95e476b4d8aa465c0aafcff2da8"
         },
         {
+            "m_Id": "38df782af84043b99bff8cdf9b1b24f0"
+        },
+        {
             "m_Id": "cccc6507ea994e0193db13969f6c2cb3"
         },
         {
@@ -5161,9 +5164,6 @@
         },
         {
             "m_Id": "6280ed68e708485fb77b5966a92ba2cc"
-        },
-        {
-            "m_Id": "38df782af84043b99bff8cdf9b1b24f0"
         }
     ]
 }
@@ -6364,7 +6364,7 @@
     "m_Title": "Moon Direction",
     "m_Position": {
         "x": -3671.0,
-        "y": -2051.999755859375
+        "y": -2052.0
     }
 }
 
@@ -6691,7 +6691,7 @@
     "m_ObjectId": "581491b0125a4ac28a1bc08125c67560",
     "m_Title": "Skybox Color Gradient",
     "m_Position": {
-        "x": -2313.999755859375,
+        "x": -2314.0,
         "y": 381.0
     }
 }
@@ -7758,8 +7758,8 @@
     "m_ObjectId": "6b208a96aa304cd5aca757cf31e79d03",
     "m_Title": "Moon Mask  Shape",
     "m_Position": {
-        "x": -3720.999755859375,
-        "y": -2850.999755859375
+        "x": -3721.0,
+        "y": -2851.0
     }
 }
 
@@ -8205,7 +8205,7 @@
     "m_ObjectId": "7774fb00ccc346cfb38f045a5ab41c43",
     "m_Title": "HDRI Clouds",
     "m_Position": {
-        "x": -608.9999389648438,
+        "x": -609.0,
         "y": 692.0
     }
 }
@@ -9982,7 +9982,7 @@
     "m_Title": "Voronoi Stars",
     "m_Position": {
         "x": -118.0,
-        "y": 2382.999755859375
+        "y": 2383.0
     }
 }
 
@@ -10088,8 +10088,8 @@
     "m_ObjectId": "91c5fc75a1b44c64987c08ecd100f648",
     "m_Title": "HDRI Painterly Noise",
     "m_Position": {
-        "x": -209.9998779296875,
-        "y": 1255.9998779296875
+        "x": -210.0,
+        "y": 1256.0
     }
 }
 
@@ -12499,7 +12499,7 @@
     "m_ObjectId": "c24d64821f574cad9c8509b638e4aaeb",
     "m_Title": "UV Tester",
     "m_Position": {
-        "x": -131.9998779296875,
+        "x": -132.0,
         "y": -1699.0
     }
 }
@@ -12750,8 +12750,8 @@
     "m_ObjectId": "c71a03da8bbe4442ac8fde8ea24ff55d",
     "m_Title": "Stars Animation",
     "m_Position": {
-        "x": -633.9999389648438,
-        "y": 3071.999755859375
+        "x": -634.0,
+        "y": 3072.0
     }
 }
 
@@ -13223,7 +13223,7 @@
     "m_Title": "Stars-HDRI fuse",
     "m_Position": {
         "x": 1813.0,
-        "y": 1556.0001220703125
+        "y": 1556.0
     }
 }
 
