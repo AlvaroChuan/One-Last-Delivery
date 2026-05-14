@@ -24,8 +24,20 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _CloudsTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HDRICube:
+        m_Texture: {fileID: 8900000, guid: beb622929cce1ac4b82e1552d1b704e1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MoonTex:
         m_Texture: {fileID: 2800000, guid: c84b02dd1ab828046a53d93356012364, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleCubemap_9bb28dff93b44057bd82d0457e44a347_Cube_1_Cubemap:
+        m_Texture: {fileID: 8900000, guid: beb622929cce1ac4b82e1552d1b704e1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_944a0933822449b6b79fcb09c546eec5_Texture_1_Texture2D:
@@ -46,21 +58,38 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Blend: 0.35
+    - _CloudEdge: 0.34
+    - _CloudFalloff: 0.84
+    - _CloudHeight: 1
+    - _CloudsIntensity: 0.07
+    - _CloudsNoise: 700
+    - _CloudsPosterize: 8
+    - _HDRIBlend: 0.3
+    - _HDRIExposure: 1.5
+    - _HDRIRotation: 1
+    - _HeightOffset: 0.468
     - _MoonMaskSize: 1.3
     - _MoonPower: 1
     - _MoonSize: 1.19
     - _MoonSteps: 6
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _SkyExposure: 2.78
+    - _SkyRotation: 0.54
     - _StarsDensity: 20
+    - _StarsFalloff: 100
     - _StarsIntensity: 2
-    - _SunSize: 1.21
+    - _SunSize: 1.22
+    - _WindSpeed: 4.91
     m_Colors:
-    - _HorizonColor: {r: 0.20571224, g: 0.2011392, b: 0.3773585, a: 0}
-    - _MoonColor: {r: 0.8083821, g: 2.328042, b: 4.5412054, a: 0}
+    - _CloudsColor: {r: 0.5943396, g: 0.5943396, b: 0.5943396, a: 0}
+    - _HorizonColor: {r: 0.011764705, g: 0.029809192, b: 0.11372549, a: 0}
+    - _MoonColor: {r: 0.45757478, g: 0.45757478, b: 0.45757478, a: 0}
     - _MoonOffset: {r: -0.1, g: 0.07, b: 0.06, a: 0}
     - _MoonTiling: {r: 3, g: 3, b: 0, a: 0}
-    - _SkyColor: {r: 0.18729973, g: 0.4395402, b: 0.6509434, a: 0}
+    - _SkyColor: {r: 0, g: 0.06770259, b: 0.14150941, a: 0}
+    - _SkyRotation: {r: 0, g: 0, b: 0, a: 0}
     - _StarsTiling: {r: 10, g: 3, b: 0, a: 0}
     - _SunColor: {r: 3.2111173, g: 1.4488218, b: 0.5716124, a: 0}
     - _TexOffset: {r: 0.5, g: 0.5, b: 0, a: 0}
