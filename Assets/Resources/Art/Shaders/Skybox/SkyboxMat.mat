@@ -24,6 +24,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BrushTex:
+        m_Texture: {fileID: 2800000, guid: 7b806a2f79219f240a926857726b5808, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _CloudsTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -59,16 +63,18 @@ Material:
     m_Ints: []
     m_Floats:
     - _Blend: 0.35
+    - _BrushIntensity: 0.015
+    - _BrushTreshold: 0.35
     - _CloudEdge: 0.34
     - _CloudFalloff: 0.84
     - _CloudHeight: 1
     - _CloudsIntensity: 0.05
     - _CloudsNoise: 400
     - _CloudsPosterize: 8
-    - _HDRIBlend: 0.51842356
-    - _HDRIExposure: 1.8588759
+    - _HDRIBlend: 0.38
+    - _HDRIExposure: 1.3642291
     - _HDRIRotation: 1.12
-    - _HeightOffset: 0.4591608
+    - _HeightOffset: 0.85
     - _MoonMaskSize: 1.27
     - _MoonPower: 1
     - _MoonSize: 1.21
@@ -79,17 +85,18 @@ Material:
     - _SkyRotation: 0.54
     - _StarsDensity: 20
     - _StarsFalloff: 100
-    - _StarsIntensity: 1.016908
+    - _StarsIntensity: 0
     - _StarsSpeed: 0.15
     - _SunSize: 1.22
     - _WindSpeed: 4.91
     m_Colors:
-    - _CloudsColor: {r: 0.48546222, g: 0.5095883, b: 0.53773546, a: 1}
-    - _HorizonColor: {r: 0.8545529, g: 0.59090346, b: 0.48411936, a: 1}
+    - _BrushTiling: {r: 0.37, g: 2, b: 0, a: 0}
+    - _CloudsColor: {r: 0.596, g: 0.596, b: 0.596, a: 1}
+    - _HorizonColor: {r: 0.6769043, g: 0.5050465, b: 0.5737816, a: 1}
     - _MoonColor: {r: 0.80383015, g: 0.8909117, b: 1.0717735, a: 0}
     - _MoonOffset: {r: -0.1, g: 0.07, b: 0.06, a: 0}
     - _MoonTiling: {r: 3, g: 3, b: 0, a: 0}
-    - _SkyColor: {r: 0.35993338, g: 0.47084773, b: 0.636561, a: 1}
+    - _SkyColor: {r: 0.3989697, g: 0.42815477, b: 0.658579, a: 1}
     - _SkyRotation: {r: 0, g: 0, b: 0, a: 0}
     - _StarsTiling: {r: 10, g: 3, b: 0, a: 0}
     - _SunColor: {r: 2.9960783, g: 1.4626755, b: 0.53333324, a: 0}
