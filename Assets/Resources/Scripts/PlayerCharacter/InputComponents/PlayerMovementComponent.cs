@@ -1,0 +1,81 @@
+using Mirror;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+[RequireComponent(typeof(Rigidbody))]
+public class PlayerMovementComponent : InputComponent
+{
+    [SyncVar, SerializeField] private float _maxMoveSpeed = 5f;
+    [SyncVar, SerializeField] private float _acceleration = 10f;
+    [SyncVar, SerializeField] private float _deceleration = 15f;
+    [SerializeField] private InputActionReference _movementInput;
+    private Rigidbody _rigidbody;
+    private Vector3 _movementDirection;
+    private bool _canMove = true;
+
+    void Awake()
+    {
+        _rigidbody = GetComponent<Rigidbody>();
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        if (!isLocalPlayer)
+        {
+            _rigidbody.isKinematic = true;
+            return;
+        }
+    }
+
+    protected override void BindInputs()
+    {
+        _movementInput.action.Enable();
+        _movementInput.action.performed += OnMovementInput;
+        _movementInput.action.canceled += OnMovementInput;
+    }
+    protected override void UnbindInputs()
+    {
+        _movementInput.action.Disable();
+        _movementInput.action.performed -= OnMovementInput;
+        _movementInput.action.canceled -= OnMovementInput;
+    }
+
+    void OnMovementInput(InputAction.CallbackContext context)
+    {
+        // Extra safeguard: Double check network authority before processing input
+        if (!isLocalPlayer) return;
+
+        Vector2 inputVector = context.ReadValue<Vector2>();
+        _movementDirection = new Vector3(inputVector.x, 0f, inputVector.y);
+    }
+
+    public void SetMovementDirection(Vector3 direction)
+    {
+        if (!isLocalPlayer) return; // Only allow local player to set movement direction
+
+        _movementDirection = direction.normalized;
+    }
+
+    void FixedUpdate()
+    {
+        if(_rigidbody == null || !_canMove || !isLocalPlayer)
+            return;
+
+        HandleMovement();
+    }
+    private void HandleMovement()
+    {
+        Vector3 currentVelocity = _rigidbody.linearVelocity;
+        Vector3 targetFoward = transform.forward * _movementDirection.z;
+        Vector3 targetRight = transform.right * _movementDirection.x;
+        Vector3 targetVelocity = (targetFoward + targetRight) * _maxMoveSpeed;
+
+        float accelerationToUse = Vector3.Dot(currentVelocity, targetVelocity) <= 0f ? _deceleration : _acceleration;
+
+        Vector3 newVelocity = Vector3.MoveTowards(currentVelocity, targetVelocity, accelerationToUse * Time.fixedDeltaTime);
+        newVelocity.y = currentVelocity.y; // Preserve vertical velocity (gravity/falling)
+
+        _rigidbody.linearVelocity = newVelocity;
+    }
+}
