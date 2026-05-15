@@ -598,6 +598,9 @@
         },
         {
             "m_Id": "c71a03da8bbe4442ac8fde8ea24ff55d"
+        },
+        {
+            "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
         }
     ],
     "m_StickyNoteDatas": [],
@@ -2982,7 +2985,7 @@
     "m_Title": "Sun Direction",
     "m_Position": {
         "x": -3599.000244140625,
-        "y": -835.0000610351563
+        "y": -835.0
     }
 }
 
@@ -3105,7 +3108,7 @@
     "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
     "m_ObjectId": "05447463f31e4dfb9e066fbb06625726",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Property",
     "m_DrawState": {
@@ -3221,7 +3224,7 @@
     "m_Type": "UnityEditor.ShaderGraph.SplitNode",
     "m_ObjectId": "0763f053286a4c8883dc2f50e1857847",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Split",
     "m_DrawState": {
@@ -4262,8 +4265,8 @@
     "m_ObjectId": "17183c0d8592467e88d5bf02cecd6600",
     "m_Title": "View to 2D Tex",
     "m_Position": {
-        "x": -3162.000244140625,
-        "y": -1384.0001220703125
+        "x": -3162.0,
+        "y": -1383.9998779296875
     }
 }
 
@@ -4468,7 +4471,7 @@
     "m_Type": "UnityEditor.ShaderGraph.LerpNode",
     "m_ObjectId": "1c1141bc94394298bc8a1e20a3a2fb90",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Lerp",
     "m_DrawState": {
@@ -4698,7 +4701,7 @@
     "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
     "m_ObjectId": "20060841ec214e0a8c9366903629dea5",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Property",
     "m_DrawState": {
@@ -5294,7 +5297,7 @@
     "m_Type": "UnityEditor.ShaderGraph.SampleTexture2DNode",
     "m_ObjectId": "2901890a8be74b0f951ddc3a4e5828b3",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Sample Texture 2D",
     "m_DrawState": {
@@ -5916,7 +5919,7 @@
     "m_Type": "UnityEditor.ShaderGraph.TilingAndOffsetNode",
     "m_ObjectId": "3360df8baeb64380a94da1a6ac893265",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Tiling And Offset",
     "m_DrawState": {
@@ -6316,7 +6319,7 @@
     "m_Type": "UnityEditor.ShaderGraph.SubtractNode",
     "m_ObjectId": "392143a1700c4dfd878093027fae993d",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Subtract",
     "m_DrawState": {
@@ -6568,7 +6571,7 @@
     "m_Type": "UnityEditor.ShaderGraph.AddNode",
     "m_ObjectId": "3a6820eb2df649dbabce7ee5879c5c90",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Add",
     "m_DrawState": {
@@ -7122,7 +7125,7 @@
     "m_Type": "UnityEditor.ShaderGraph.SaturateNode",
     "m_ObjectId": "46f74757df6c4e8c870e90880547214d",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Saturate",
     "m_DrawState": {
@@ -7866,7 +7869,7 @@
     "m_ObjectId": "5231012fb2ef4f9a97936849455cc06c",
     "m_Title": "Moon Direction",
     "m_Position": {
-        "x": -3671.000244140625,
+        "x": -3671.0,
         "y": -2052.000244140625
     }
 }
@@ -8279,7 +8282,7 @@
     "m_Title": "Skybox Color Gradient",
     "m_Position": {
         "x": -1570.0,
-        "y": 381.0
+        "y": 381.0001220703125
     }
 }
 
@@ -8513,7 +8516,7 @@
     "m_Type": "UnityEditor.ShaderGraph.MultiplyNode",
     "m_ObjectId": "5bd1c38ecf654727a403e17bec3073e0",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Multiply",
     "m_DrawState": {
@@ -9445,7 +9448,7 @@
     "m_Type": "UnityEditor.ShaderGraph.MultiplyNode",
     "m_ObjectId": "697ee41507c74e19bf23145d1e37f100",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Multiply",
     "m_DrawState": {
@@ -9579,7 +9582,7 @@
     "m_ObjectId": "6b208a96aa304cd5aca757cf31e79d03",
     "m_Title": "Moon Mask  Shape",
     "m_Position": {
-        "x": -3721.000244140625,
+        "x": -3721.0,
         "y": -2851.000244140625
     }
 }
@@ -9590,8 +9593,8 @@
     "m_ObjectId": "6b3b787b659d4f258448e133d9127bbc",
     "m_Title": "HDRI - Procedural Blend",
     "m_Position": {
-        "x": 3133.000244140625,
-        "y": 163.00003051757813
+        "x": 3133.0,
+        "y": 163.00006103515626
     }
 }
 
@@ -9891,7 +9894,7 @@
     "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
     "m_ObjectId": "72cf3c08cfdb4795b789c99dbcdf546a",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Property",
     "m_DrawState": {
@@ -10028,7 +10031,7 @@
     "m_Type": "UnityEditor.ShaderGraph.AbsoluteNode",
     "m_ObjectId": "73eae6f3ab4040b7af4fb386abeb2ae3",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Absolute",
     "m_DrawState": {
@@ -10131,7 +10134,7 @@
     "m_Type": "UnityEditor.ShaderGraph.TilingAndOffsetNode",
     "m_ObjectId": "76445680aabd4f42b5b088f3443edb21",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Tiling And Offset",
     "m_DrawState": {
@@ -10235,8 +10238,8 @@
     "m_ObjectId": "7774fb00ccc346cfb38f045a5ab41c43",
     "m_Title": "HDRI Clouds",
     "m_Position": {
-        "x": -608.999755859375,
-        "y": 692.0
+        "x": -609.0001220703125,
+        "y": 692.0001220703125
     }
 }
 
@@ -10863,7 +10866,7 @@
     "m_Type": "UnityEditor.ShaderGraph.UVNode",
     "m_ObjectId": "7cefef78a1004cd1941377de7ba8176e",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "UV",
     "m_DrawState": {
@@ -12174,7 +12177,7 @@
     "m_Title": "Voronoi Stars",
     "m_Position": {
         "x": -118.0,
-        "y": 2383.000244140625
+        "y": 2383.0
     }
 }
 
@@ -14449,7 +14452,7 @@
     "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
     "m_ObjectId": "b47b057b63ff4c939398ebbb62b3b448",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Property",
     "m_DrawState": {
@@ -14760,6 +14763,17 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.GroupData",
+    "m_ObjectId": "b8cb3468f31946ef9bffcd36590e1e9c",
+    "m_Title": "Brush Texture",
+    "m_Position": {
+        "x": -2585.000244140625,
+        "y": 1064.0001220703125
+    }
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.DynamicVectorMaterialSlot",
     "m_ObjectId": "b8fb7183b4d043af886ddba18792eac1",
     "m_Id": 0,
@@ -14956,7 +14970,7 @@
     "m_Type": "UnityEditor.ShaderGraph.SampleTexture2DNode",
     "m_ObjectId": "bfc8a979430e4e9b98ff12925aab7333",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Sample Texture 2D",
     "m_DrawState": {
@@ -15222,8 +15236,8 @@
     "m_ObjectId": "c24d64821f574cad9c8509b638e4aaeb",
     "m_Title": "UV Tester",
     "m_Position": {
-        "x": -132.0,
-        "y": -1699.000244140625
+        "x": -132.00001525878907,
+        "y": -1699.0001220703125
     }
 }
 
@@ -15516,7 +15530,7 @@
     "m_Title": "Stars Animation",
     "m_Position": {
         "x": -663.0,
-        "y": 2914.000244140625
+        "y": 2913.999755859375
     }
 }
 
@@ -15698,7 +15712,7 @@
     "m_Type": "UnityEditor.ShaderGraph.StepNode",
     "m_ObjectId": "cb409890fceb4ece8e20c7b00f227ad7",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Step",
     "m_DrawState": {
@@ -15909,7 +15923,7 @@
     "m_Title": "Skybox World UV fix",
     "m_Position": {
         "x": -4464.00048828125,
-        "y": 100.00003814697266
+        "y": 100.0
     }
 }
 
@@ -16041,8 +16055,8 @@
     "m_ObjectId": "d240cbaad50a41b1877560e790dfa016",
     "m_Title": "Stars-HDRI fuse",
     "m_Position": {
-        "x": 1812.9998779296875,
-        "y": 1556.0001220703125
+        "x": 1813.0,
+        "y": 1556.0
     }
 }
 
@@ -18818,7 +18832,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector2Node",
     "m_ObjectId": "faa17079d39944458511a06b3d083e0d",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Vector 2",
     "m_DrawState": {
@@ -19178,7 +19192,7 @@
     "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
     "m_ObjectId": "fe6f9da6f5a5446f9bb2383d86ff0b5d",
     "m_Group": {
-        "m_Id": ""
+        "m_Id": "b8cb3468f31946ef9bffcd36590e1e9c"
     },
     "m_Name": "Property",
     "m_DrawState": {
