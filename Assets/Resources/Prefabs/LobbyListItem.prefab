@@ -134,10 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 367e99864116f23498a52dc6201f3c7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbyNameText: {fileID: 4907993108723112026}
-  lobbyID:
-    m_SteamID: 0
-  actualPassword: 
+  _lobbyNameText: {fileID: 4907993108723112026}
 --- !u!1 &2914880367735972520
 GameObject:
   m_ObjectHideFlags: 0

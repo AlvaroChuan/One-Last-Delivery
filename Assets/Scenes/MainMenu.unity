@@ -1469,8 +1469,10 @@ MonoBehaviour:
   - {fileID: 1128206526}
   - {fileID: 1350321122}
   - {fileID: 457080591}
+  _joinLobbyButton: {fileID: 1701620950}
   _lobbyNameInput: {fileID: 345135829}
   _lobbyPasswordInput: {fileID: 63145391}
+  _joinLobbyPasswordInput: {fileID: 758228529}
 --- !u!1 &147366766
 GameObject:
   m_ObjectHideFlags: 0
@@ -4014,7 +4016,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &914070325
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4993,7 +4995,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1350321123
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6063,19 +6065,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1701620953}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 125002649}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: ShowPanel
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 1128206526}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1701620953
 MonoBehaviour:
   m_ObjectHideFlags: 0
