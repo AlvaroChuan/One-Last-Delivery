@@ -2,21 +2,20 @@ using UnityEngine;
 using Mirror;
 using Steamworks;
 
-public class SteamLobby : MonoBehaviour
+public class SteamLobbyManager : MonoBehaviour
 {
-    private const string GameIDKey = "OneLastDeliveryID_145"; // Cambia este valor por uno único
-
-    public GameObject lobbyListItemPrefab;
-    public Transform lobbyListContent;
+    [SerializeField] private GameObject _lobbyListItemPrefab;
+    [SerializeField] private Transform _lobbyListContent;
+    [SerializeField] private UIManager _uiManager;
     protected Callback<LobbyCreated_t> lobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
     protected Callback<LobbyEnter_t> lobbyEntered;
     protected Callback<LobbyMatchList_t> lobbyList;
 
+    private const string GAME_ID_KEY = "OneLastDeliveryID_145";
     private const string HOST_ADDRESS_KEY = "HostAddress";
     private NetworkManager _networkManager;
-
-    private CSteamID currentLobbyID;
+    private CSteamID _currentLobbyID;
 
     private void Start()
     {
@@ -31,8 +30,8 @@ public class SteamLobby : MonoBehaviour
 
     public void HostLobby(string lobbyName, string password)
     {
-        PlayerPrefs.SetString("LobbyName", lobbyName);
-        PlayerPrefs.SetString("LobbyPassword", password);
+        PlayerPrefs.SetString("lobbyName", lobbyName);
+        PlayerPrefs.SetString("lobbyPassword", password);
         SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, _networkManager.maxConnections);
     }
 
@@ -41,18 +40,14 @@ public class SteamLobby : MonoBehaviour
         if (callback.m_eResult != EResult.k_EResultOK) return;
 
         _networkManager.StartHost();
-        currentLobbyID = (CSteamID)callback.m_ulSteamIDLobby;
+        _currentLobbyID = (CSteamID)callback.m_ulSteamIDLobby;
 
-        SteamMatchmaking.SetLobbyData(currentLobbyID, "GameID", GameIDKey);
+        SteamMatchmaking.SetLobbyData(_currentLobbyID, "gameID", GAME_ID_KEY);
+        SteamMatchmaking.SetLobbyData(_currentLobbyID, HOST_ADDRESS_KEY, SteamUser.GetSteamID().ToString());
+        SteamMatchmaking.SetLobbyData(_currentLobbyID, "name", PlayerPrefs.GetString("lobbyName"));
 
-        SteamMatchmaking.SetLobbyData(currentLobbyID, HOST_ADDRESS_KEY, SteamUser.GetSteamID().ToString());
-        SteamMatchmaking.SetLobbyData(currentLobbyID, "name", PlayerPrefs.GetString("LobbyName"));
-
-        string pwd = PlayerPrefs.GetString("LobbyPassword");
-        if (!string.IsNullOrEmpty(pwd))
-        {
-            SteamMatchmaking.SetLobbyData(currentLobbyID, "password", pwd);
-        }
+        string password = PlayerPrefs.GetString("lobbyPassword");
+        if (!string.IsNullOrEmpty(password))  SteamMatchmaking.SetLobbyData(_currentLobbyID, "password", password);
     }
 
     public void JoinLobby(CSteamID lobbyID)
@@ -67,28 +62,28 @@ public class SteamLobby : MonoBehaviour
 
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
-        currentLobbyID = (CSteamID)callback.m_ulSteamIDLobby;
+        _currentLobbyID = (CSteamID)callback.m_ulSteamIDLobby;
 
         if (NetworkServer.active) return;
 
         string hostAddress = SteamMatchmaking.GetLobbyData((CSteamID)callback.m_ulSteamIDLobby, HOST_ADDRESS_KEY);
         _networkManager.networkAddress = hostAddress;
         _networkManager.StartClient();
+        _uiManager.OnJoinedLobby();
     }
 
     public void FetchLobbies()
     {
-        SteamMatchmaking.AddRequestLobbyListStringFilter("GameID", GameIDKey, ELobbyComparison.k_ELobbyComparisonEqual);
-
+        SteamMatchmaking.AddRequestLobbyListStringFilter("GameID", GAME_ID_KEY, ELobbyComparison.k_ELobbyComparisonEqual);
         SteamMatchmaking.AddRequestLobbyListDistanceFilter(ELobbyDistanceFilter.k_ELobbyDistanceFilterWorldwide);
         SteamMatchmaking.RequestLobbyList();
     }
 
     private void OnLobbyList(LobbyMatchList_t callback)
     {
-        for (int i = lobbyListContent.childCount - 1; i >= 0; i--)
+        for (int i = _lobbyListContent.childCount - 1; i >= 0; i--)
         {
-            Destroy(lobbyListContent.GetChild(i).gameObject);
+            Destroy(_lobbyListContent.GetChild(i).gameObject);
         }
 
         for (int i = 0; i < callback.m_nLobbiesMatching; i++)
@@ -97,18 +92,14 @@ public class SteamLobby : MonoBehaviour
             string lobbyName = SteamMatchmaking.GetLobbyData(lobbyID, "name");
             string lobbyPassword = SteamMatchmaking.GetLobbyData(lobbyID, "password");
 
-            GameObject itemGo = Instantiate(lobbyListItemPrefab, lobbyListContent);
-            LobbyListItem itemScript = itemGo.GetComponent<LobbyListItem>();
-            itemScript.Initialize(lobbyID, lobbyName, lobbyPassword);
-
-            itemGo.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => itemScript.OnJoinClicked());
+            GameObject item = Instantiate(_lobbyListItemPrefab, _lobbyListContent);
+            LobbyListItem itemScript = item.GetComponent<LobbyListItem>();
+            itemScript.Initialize(lobbyID, this, _uiManager, lobbyName, lobbyPassword);
         }
     }
 
     public void InviteFriends()
     {
-        //SteamFriends.ActivateGameOverlay("LobbyInvite");
-        SteamFriends.ActivateGameOverlayInviteDialog(currentLobbyID);
-
+        SteamFriends.ActivateGameOverlayInviteDialog(_currentLobbyID);
     }
 }

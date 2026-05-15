@@ -5,22 +5,35 @@ using TMPro;
 
 public class LobbyListItem : MonoBehaviour
 {
-    public TextMeshProUGUI lobbyNameText;
-    public CSteamID lobbyID;
-    public string actualPassword;
+    [SerializeField] private TextMeshProUGUI _lobbyNameText;
+    private CSteamID _lobbyID;
+    private string _actualPassword;
+    private SteamLobbyManager _steamLobbyManager;
+    private UIManager _uiManager;
 
-    public void Initialize(CSteamID id, string name, string password)
+    public void Initialize(CSteamID id, SteamLobbyManager steamLobbyManager, UIManager uiManager, string name, string password)
     {
-        lobbyID = id;
-        actualPassword = password;
-
+        _lobbyID = id;
+        _actualPassword = password;
+        _steamLobbyManager = steamLobbyManager;
+        _uiManager = uiManager;
         bool hasPassword = !string.IsNullOrEmpty(password);
-        lobbyNameText.text = name + (hasPassword ? " [🔒]" : "");
+        _lobbyNameText.text = name + (hasPassword ? " [🔒]" : "");
+        GetComponent<Button>().onClick.AddListener(OnJoinClicked);
     }
 
     public void OnJoinClicked()
     {
-        // Nota: Si hasPassword es true, aquí deberías abrir un panel para introducir la contraseña y compararla con 'actualPassword'.
-        FindFirstObjectByType<SteamLobby>().JoinLobby(lobbyID);
+        if(string.IsNullOrEmpty(_actualPassword)) _steamLobbyManager.JoinLobby(_lobbyID);
+        else 
+        {
+            _uiManager.ShowPanel(_uiManager.GetPanelByName("JoinPassword"));
+            _uiManager.SetJoinLobbyPasswordCallbacks(this);
+        }
+    }
+
+    public void OnJoinWithPassword(string enteredPassword)
+    {
+        if (enteredPassword == _actualPassword) _steamLobbyManager.JoinLobby(_lobbyID);
     }
 }

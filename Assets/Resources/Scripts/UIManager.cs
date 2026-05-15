@@ -1,45 +1,60 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using System.Linq;
+using Steamworks;
+using Edgegap;
 
 public class UIManager : MonoBehaviour
 {
-    public SteamLobby steamLobby;
+    public SteamLobbyManager steamLobby;
 
-    [Header("Paneles")]
-    public GameObject mainMenuPanel;
-    public GameObject lobbyListPanel;
-    public GameObject createLobbyPanel;
-    public GameObject inLobbyPanel;
+    [Header("Panels")]
+    [SerializeField] private GameObject[] _panels;
+
+    [Header("Buttons")]
+    [SerializeField] private GameObject _joinLobbyButton;
 
     [Header("Inputs")]
-    public TMP_InputField lobbyNameInput;
-    public TMP_InputField lobbyPasswordInput;
+    [SerializeField] private TMP_InputField _lobbyNameInput;
+    [SerializeField] private TMP_InputField _lobbyPasswordInput;
+    [SerializeField] private TMP_InputField _joinLobbyPasswordInput;
 
-    public void ShowPanel(GameObject panel)
+
+    public void ShowPanel(GameObject panelToShow)
     {
-        mainMenuPanel.SetActive(false);
-        lobbyListPanel.SetActive(false);
-        createLobbyPanel.SetActive(false);
-        inLobbyPanel.SetActive(false);
-        
-        panel.SetActive(true);
+        foreach (GameObject panel in _panels) panel.SetActive(panel == panelToShow);
     }
 
     public void OnClickRefreshLobbies()
     {
         steamLobby.FetchLobbies();
-        ShowPanel(lobbyListPanel);
+        ShowPanel(GetPanelByName("LobbyList"));
     }
 
     public void OnClickHostLobby()
     {
-        steamLobby.HostLobby(lobbyNameInput.text, lobbyPasswordInput.text);
-        ShowPanel(inLobbyPanel);
+        steamLobby.HostLobby(_lobbyNameInput.text, _lobbyPasswordInput.text);
+        ShowPanel(GetPanelByName("Lobby"));
     }
 
     public void OnClickInviteFriends()
     {
         steamLobby.InviteFriends();
+    }
+
+    public void OnJoinedLobby()
+    {
+        ShowPanel(GetPanelByName("Lobby"));
+    }
+
+    public GameObject GetPanelByName(string name)
+    {
+        return _panels.FirstOrDefault(p => p.name == name);
+    }
+
+    public void SetJoinLobbyPasswordCallbacks(LobbyListItem lobbyListItem)
+    {
+        _joinLobbyButton.GetComponent<UnityEngine.UI.Button>().onClick.RemoveAllListeners();
+        _joinLobbyButton.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => { lobbyListItem.OnJoinWithPassword(_joinLobbyPasswordInput.text);});
     }
 }
