@@ -3,15 +3,31 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(PlayerStaminaComponent))]
 public class PlayerMovementComponent : InputComponent
 {
-    [SyncVar, SerializeField] private float _maxMoveSpeed = 5f;
-    [SyncVar, SerializeField] private float _acceleration = 10f;
-    [SyncVar, SerializeField] private float _deceleration = 15f;
+    [SerializeField] private float _maxMoveSpeed = 5f;
+    [SerializeField] private float _acceleration = 10f;
+    [SerializeField] private float _deceleration = 15f;
     [SerializeField] private InputActionReference _movementInput;
+
+    public float MaxMoveSpeed {
+        get => _maxMoveSpeed;
+        set => _maxMoveSpeed = value;
+    }
+    public float Acceleration {
+        get => _acceleration;
+        set => _acceleration = value;
+    }
+    public float Deceleration {
+        get => _deceleration;
+        set => _deceleration = value;
+    }
+    public bool IsMoving => _isMoving;
     private Rigidbody _rigidbody;
     private Vector3 _movementDirection;
     private bool _canMove = true;
+    private bool _isMoving = false;
 
     void Awake()
     {
@@ -48,6 +64,8 @@ public class PlayerMovementComponent : InputComponent
 
         Vector2 inputVector = context.ReadValue<Vector2>();
         _movementDirection = new Vector3(inputVector.x, 0f, inputVector.y);
+
+        _isMoving = _movementDirection != Vector3.zero;
     }
 
     public void SetMovementDirection(Vector3 direction)

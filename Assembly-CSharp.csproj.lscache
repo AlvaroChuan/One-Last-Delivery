@@ -52,16 +52,20 @@ TemporaryDependencyNodeTargetIdentifier=netstandard2.1
 [sourceFiles]
 Assets/Resources/Scripts/
  CustomNetworkManager.cs
- HealthComponent.cs
  LobbyListItem.cs
  PlayerCharacter/
+  GroundedChecker.cs
   InputComponent.cs
   InputComponents/
+   PlayerJumpComponent.cs
    PlayerLookComponent.cs
    PlayerMovementComponent.cs
+   PlayerSprintComponent.cs
    SpectatorMovementComponent.cs
-  PlayerController.cs
+  PlayerComponent.cs
+  PlayerDeathComponent.cs
   PlayerHealthComponent.cs
+  PlayerStaminaComponent.cs
  SteamLobby.cs
  SteamManager.cs
  UIManager.cs

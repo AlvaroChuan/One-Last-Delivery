@@ -1,21 +1,14 @@
 using UnityEngine;
 using Mirror;
+using Mirror.Examples.Basic;
 
-public abstract class InputComponent : NetworkBehaviour
+public abstract class InputComponent : PlayerComponent
 {
     bool _inputsBound = false;
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();
         BindInputsInternal();
-    }
-
-    protected virtual void Start()
-    {
-        if (!isLocalPlayer)
-        {
-            enabled = false; // Disable this component for non-local players
-        }
     }
 
     protected virtual void OnEnable()

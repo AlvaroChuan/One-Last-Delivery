@@ -10,7 +10,20 @@ public class PlayerLookComponent : InputComponent
     [SerializeField] private Transform _cameraVerticalPivot;
     [SerializeField] private InputActionReference _lookInput;
 
-     protected override void BindInputs()
+    protected override void Start()
+    {
+        base.Start();
+        if (!isLocalPlayer)
+        {
+            Camera playerCamera = GetComponentInChildren<Camera>();
+            if (playerCamera != null)
+            {
+                playerCamera.enabled = false;
+            }
+        }
+    }
+
+    protected override void BindInputs()
     {
         _lookInput.action.Enable();
         _lookInput.action.performed += OnLookInput;
