@@ -19,8 +19,6 @@ public class PlayerStaminaComponent : PlayerComponent
     {
         if (!isLocalPlayer) return;
 
-        Debug.Log($"Current Stamina: {Mathf.RoundToInt(_currentStamina)}, Regen Disabled: {_staminaregenDisableCounter}");
-
         if (_staminaregenDisableCounter > 0) return;
 
         if (_currentStamina < _maxStamina)
