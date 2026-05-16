@@ -303,7 +303,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _sprintSpeedMultiplier: 1.5
+  _sprintSpeedMultiplier: 3
   _sprintStaminaRequirement: 20
   _sprintStaminaCostPerSecond: 10
   _staminaLockoutAfterSprint: 1
@@ -431,7 +431,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _groundCheckPoint: {fileID: 0}
   _groundCheckRadius: 0.5
   _groundCheckDistance: 0.6
   _maxGroundAngle: 45
