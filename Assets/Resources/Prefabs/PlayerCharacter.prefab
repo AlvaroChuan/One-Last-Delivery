@@ -139,6 +139,7 @@ GameObject:
   - component: {fileID: 2171320601092882896}
   - component: {fileID: 8358508418812949759}
   - component: {fileID: -3730698815220783982}
+  - component: {fileID: 1102343553806290523}
   - component: {fileID: 7416369358453493259}
   - component: {fileID: 5617894696755801156}
   - component: {fileID: 2281851746822864845}
@@ -327,6 +328,24 @@ MonoBehaviour:
   _jumpStaminaCost: 10
   _staminaLockoutDuration: 1
   _jumpInput: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+--- !u!114 &1102343553806290523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6383342393515265997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4c5fa168c618154aac03bf9ce8931d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _inventorySize: 4
+  _scrollInput: {fileID: 2411907206095950430, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _selectInput: {fileID: -7012204015104566737, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &7416369358453493259
 MonoBehaviour:
   m_ObjectHideFlags: 0

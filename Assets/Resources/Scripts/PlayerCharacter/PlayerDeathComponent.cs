@@ -1,6 +1,4 @@
-using Mirror;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerMovementComponent))]
 [RequireComponent(typeof(SpectatorMovementComponent))]

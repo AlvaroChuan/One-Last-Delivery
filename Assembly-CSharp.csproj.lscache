@@ -52,11 +52,15 @@ TemporaryDependencyNodeTargetIdentifier=netstandard2.1
 [sourceFiles]
 Assets/Resources/Scripts/
  CustomNetworkManager.cs
+ InteractableObjects/IInteractable.cs
+ InventoryItems/IInventoryItem.cs
  LobbyListItem.cs
  PlayerCharacter/
   GroundedChecker.cs
   InputComponent.cs
   InputComponents/
+   InteractComponent.cs
+   InventoryComponent.cs
    PlayerJumpComponent.cs
    PlayerLookComponent.cs
    PlayerMovementComponent.cs
@@ -409,7 +413,6 @@ Temp/bin/Debug/
  Mirror.Transports.dll
  SimpleWebTransport.dll
  Telepathy.dll
- Unity.Mirror.CodeGen.dll
 
 [analyzerReferences]
 C:/Program Files/Unity/Hub/Editor/6000.0.60f1/Editor/Data/Tools/Unity.SourceGenerators/

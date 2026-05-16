@@ -401,9 +401,7 @@ Library/PackageCache/
 Library/ScriptAssemblies/
  UnityEditor.UI.dll
  UnityEngine.UI.dll
-Temp/bin/Debug/
- Mirror.CompilerSymbols.dll
- Mirror.dll
+Temp/bin/Debug/Mirror.dll
 
 [analyzerReferences]
 C:/Program Files/Unity/Hub/Editor/6000.0.60f1/Editor/Data/Tools/Unity.SourceGenerators/

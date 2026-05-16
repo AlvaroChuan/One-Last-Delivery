@@ -1,6 +1,4 @@
 using UnityEngine;
-using Mirror;
-using Mirror.Examples.Basic;
 
 public abstract class InputComponent : PlayerComponent
 {

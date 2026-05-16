@@ -355,7 +355,6 @@ Library/ScriptAssemblies/
  UnityEngine.TestRunner.dll
  UnityEngine.UI.dll
 Temp/bin/Debug/
- Mirror.CompilerSymbols.dll
  Mirror.Components.dll
  Mirror.dll
  Unity.Mirror.CodeGen.dll

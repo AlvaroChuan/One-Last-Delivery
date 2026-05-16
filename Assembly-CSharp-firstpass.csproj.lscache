@@ -398,7 +398,6 @@ Temp/bin/Debug/
  Mirror.Transports.dll
  SimpleWebTransport.dll
  Telepathy.dll
- Unity.Mirror.CodeGen.dll
 
 [analyzerReferences]
 C:/Program Files/Unity/Hub/Editor/6000.0.60f1/Editor/Data/Tools/Unity.SourceGenerators/

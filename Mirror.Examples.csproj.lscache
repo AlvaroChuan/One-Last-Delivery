@@ -539,13 +539,9 @@ Library/ScriptAssemblies/
  UnityEditor.UI.dll
  UnityEngine.UI.dll
 Temp/bin/Debug/
- kcp2k.dll
- Mirror.CompilerSymbols.dll
  Mirror.Components.dll
  Mirror.dll
  Mirror.Transports.dll
- SimpleWebTransport.dll
- Telepathy.dll
 
 [analyzerReferences]
 C:/Program Files/Unity/Hub/Editor/6000.0.60f1/Editor/Data/Tools/Unity.SourceGenerators/

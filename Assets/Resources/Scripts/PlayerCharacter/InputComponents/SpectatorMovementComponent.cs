@@ -1,4 +1,3 @@
-using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,9 +5,9 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Collider))]
 public class SpectatorMovementComponent : InputComponent
 {
-    [SyncVar, SerializeField] private float _maxMoveSpeed = 5f;
-    [SyncVar, SerializeField] private float _acceleration = 10f;
-    [SyncVar, SerializeField] private float _deceleration = 15f;
+    [SerializeField] private float _maxMoveSpeed = 5f;
+    [SerializeField] private float _acceleration = 10f;
+    [SerializeField] private float _deceleration = 15f;
     [SerializeField] private InputActionReference _movementInput;
     [SerializeField] private InputActionReference _ascendInput;
     [SerializeField] private InputActionReference _descendInput;

@@ -372,7 +372,6 @@ Library/ScriptAssemblies/
  UnityEngine.UI.dll
 Temp/bin/Debug/
  kcp2k.dll
- Mirror.CompilerSymbols.dll
  Mirror.dll
  SimpleWebTransport.dll
  Telepathy.dll

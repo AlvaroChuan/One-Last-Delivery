@@ -1,5 +1,4 @@
 using Mirror;
-using Mirror.Examples.Basic;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerDeathComponent))]
