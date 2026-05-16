@@ -31,6 +31,11 @@ public class UIManager : MonoBehaviour
         ShowPanel(GetPanelByName("LobbyList"));
     }
 
+    public void OnClickQuit()
+    {
+        Application.Quit();
+    }
+
     public void OnClickHostLobby()
     {
         steamLobby.HostLobby(_lobbyNameInput.text, _lobbyPasswordInput.text);
