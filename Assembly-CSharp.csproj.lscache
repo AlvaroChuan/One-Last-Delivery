@@ -52,6 +52,7 @@ TemporaryDependencyNodeTargetIdentifier=netstandard2.1
 [sourceFiles]
 Assets/Resources/Scripts/
  LobbyListItem.cs
+ LobbyPlayerItem.cs
  SteamLobbyManager.cs
  SteamManager.cs
  UIManager.cs
