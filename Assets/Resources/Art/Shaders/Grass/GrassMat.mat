@@ -88,7 +88,7 @@ Material:
     - _GrassTopColor: {r: 0.5457013, g: 0.7647059, b: 0.5019608, a: 0}
     - _NearColor: {r: 0, g: 0, b: 0, a: 0}
     - _NearFarRange: {r: 2, g: 6, b: 0, a: 0}
-    - _ShadowColor: {r: 0.7169812, g: 0.7169812, b: 0.7169812, a: 0}
+    - _ShadowColor: {r: 0.2735849, g: 0.2735849, b: 0.2735849, a: 0}
     - _WindContrast: {r: 0.09, g: 1, b: 0, a: 0}
     - _WindDirection: {r: 1, g: 0, b: 1, a: 0}
     - _WindSize: {r: 2.11, g: 1, b: 0, a: 0}
