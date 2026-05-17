@@ -17,7 +17,7 @@ public class PlayerLookComponent : InputComponent
             Camera playerCamera = GetComponentInChildren<Camera>();
             if (playerCamera != null)
             {
-                playerCamera.enabled = false;
+                playerCamera.gameObject.SetActive(false); // Disable camera for non-local players
             }
         }
         else
