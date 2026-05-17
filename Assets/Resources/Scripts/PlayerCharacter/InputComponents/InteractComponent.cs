@@ -1,3 +1,4 @@
+using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -41,7 +42,7 @@ public class InteractComponent : InputComponent
             Interactable interactable = hitInfo.collider.GetComponent<Interactable>();
             if (interactable != null)
             {
-                interactable.Interact(gameObject);
+                interactable.CmdInteract(GetComponent<NetworkIdentity>());
             }
         }
     }

@@ -81,7 +81,6 @@ public class SpectatorMovementComponent : InputComponent
 
     void OnMovementInput(InputAction.CallbackContext context)
     {
-        Debug.Log("Received movement input: " + context.ReadValue<Vector2>());
         Vector2 inputVector = context.ReadValue<Vector2>();
         _movementDirection = new Vector3(inputVector.x, 0f, inputVector.y);
     }

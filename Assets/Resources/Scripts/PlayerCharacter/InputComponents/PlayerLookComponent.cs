@@ -20,6 +20,11 @@ public class PlayerLookComponent : InputComponent
                 playerCamera.enabled = false;
             }
         }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     protected override void BindInputs()

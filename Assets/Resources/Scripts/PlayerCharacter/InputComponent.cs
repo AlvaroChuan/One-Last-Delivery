@@ -11,7 +11,6 @@ public abstract class InputComponent : PlayerComponent
 
     protected virtual void OnEnable()
     {
-        Debug.Log("Component " + GetType().Name + " enabled. isLocalPlayer: " + isLocalPlayer);
         if (isLocalPlayer && !_inputsBound)
         {
             BindInputsInternal();
@@ -19,7 +18,6 @@ public abstract class InputComponent : PlayerComponent
     }
     protected virtual void OnDisable()
     {
-        Debug.Log("Component " + GetType().Name + " disabled. isLocalPlayer: " + isLocalPlayer);
         if (_inputsBound)
         {
             UnbindInputsInternal();

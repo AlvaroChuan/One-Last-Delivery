@@ -1,23 +1,36 @@
+using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class InventoryComponent : InputComponent
 {
+    [System.Serializable]
+    struct ItemEntry
+    {
+        public InventoryItemIDEnum itemID;
+        public InventoryItem item;
+    }
     [SerializeField] private int _inventorySize = 4;
     [SerializeField] private InputActionReference _scrollInput;
     [SerializeField] private InputActionReference _selectInput;
-    [SerializeField] private InputActionReference _useInput;
     [SerializeField] private InputActionReference _dropInput;
+    [SerializeField] private InputActionReference _throwInput;
+    [SerializeField] private float _throwForce = 10f;
+    [SerializeField] private ItemEntry[] _itemEntryArray;
+    private InventoryItemData[] _inventory;
+    private int _selectedInventoryIndex = 0; // Local copy of the selected index for instant responsiveness
 
-    // Client-Authoritative: A standard local array.
-    // The local client updates this instantly without waiting for the server.
-    private InventoryItem[] _inventory;
-    private int _selectedIndex = 0;
+    private Camera _playerCamera;
 
     void Awake()
     {
-        _inventory = new InventoryItem[_inventorySize];
+        _playerCamera = GetComponentInChildren<Camera>();
+        _inventory = new InventoryItemData[_inventorySize];
+        for(int i = 0; i < _inventorySize; i++)
+        {
+            _inventory[i] = new InventoryItemData { itemID = (int)InventoryItemIDEnum.None };
+        }
     }
 
     protected override void BindInputs()
@@ -30,11 +43,11 @@ public class InventoryComponent : InputComponent
         _selectInput.action.Enable();
         _selectInput.action.performed += OnSelectInput;
 
-        _useInput.action.Enable();
-        _useInput.action.performed += OnUseInput;
-
         _dropInput.action.Enable();
         _dropInput.action.performed += OnDropInput;
+
+        _throwInput.action.Enable();
+        _throwInput.action.performed += OnThrowInput;
     }
 
     protected override void UnbindInputs()
@@ -47,124 +60,216 @@ public class InventoryComponent : InputComponent
         _selectInput.action.Disable();
         _selectInput.action.performed -= OnSelectInput;
 
-        _useInput.action.Disable();
-        _useInput.action.performed -= OnUseInput;
-
         _dropInput.action.Disable();
         _dropInput.action.performed -= OnDropInput;
+
+        _throwInput.action.Disable();
+        _throwInput.action.performed -= OnThrowInput;
     }
 
     private void OnScrollInput(InputAction.CallbackContext context)
     {
         float scrollValue = context.ReadValue<float>();
-        if (scrollValue > 0)
+        if (scrollValue > 0f)
         {
-            _selectedIndex = (_selectedIndex + 1) % (_inventorySize + 1) - 1;
+            _selectedInventoryIndex++;
         }
-        else if (scrollValue < 0)
+        else if (scrollValue < 0f)
         {
-            _selectedIndex = (_selectedIndex - 1 + _inventorySize + 1) % (_inventorySize + 1) - 1;
+            _selectedInventoryIndex--;
         }
-    }
 
+        if (_selectedInventoryIndex >= _inventorySize)
+        {
+            _selectedInventoryIndex = -1;
+        }
+        else if (_selectedInventoryIndex < -1)
+        {
+            _selectedInventoryIndex = _inventorySize - 1;
+        }
+
+        Debug.Log("Selected inventory index: " + _selectedInventoryIndex);
+        SetInventorySelection(_selectedInventoryIndex);
+    }
     private void OnSelectInput(InputAction.CallbackContext context)
     {
         float selectValue = context.ReadValue<float>();
         int index = Mathf.FloorToInt(selectValue) - 1;
-        if (index == _selectedIndex)
+        if (index == _selectedInventoryIndex)
         {
-            _selectedIndex = -1;
+            _selectedInventoryIndex = -1;
         }
         else if (index >= 0 && index < _inventorySize)
         {
-            _selectedIndex = index;
+            _selectedInventoryIndex = index;
         }
+        SetInventorySelection(_selectedInventoryIndex);
     }
 
-    private void OnUseInput(InputAction.CallbackContext context)
+    void SetInventorySelection(int index)
     {
-        InventoryItem heldItem = GetHeldItem();
-        if (heldItem != null)
+        _selectedInventoryIndex = index;
+        InventoryItemIDEnum itemID = InventoryItemIDEnum.None;
+        if (index >= 0 && index < _inventorySize)
         {
-            // Client runs use functionality instantly
-            heldItem.Use(gameObject);
+            itemID = _inventory[index].itemID;
+        }
+        UpdateVisualMesh(itemID);
+        CmdUpdateVisualMesh(itemID);
+    }
+
+    [Command]
+    void CmdUpdateVisualMesh(InventoryItemIDEnum itemID)
+    {
+        RpcUpdateVisualMesh(itemID);
+    }
+
+    [ClientRpc]
+    void RpcUpdateVisualMesh(InventoryItemIDEnum newItemID)
+    {
+        if (isLocalPlayer) return; // Local player already updated their visuals in SetInventorySelection, so only update for remote clients
+
+        UpdateVisualMesh(newItemID);
+    }
+
+    void UpdateVisualMesh(InventoryItemIDEnum itemID)
+    {
+        foreach (var entry in _itemEntryArray)
+        {
+            if (entry.itemID == itemID)
+            {
+                entry.item.gameObject.SetActive(true);
+            }
+            else
+            {
+                entry.item.gameObject.SetActive(false);
+            }
         }
     }
 
     private void OnDropInput(InputAction.CallbackContext context)
     {
-        InventoryItem heldItem = GetHeldItem();
+        DropItem(_selectedInventoryIndex);
+    }
+
+    private void OnThrowInput(InputAction.CallbackContext context)
+    {
+        DropItem(_selectedInventoryIndex, _playerCamera.transform.forward * _throwForce);
+    }
+
+    void DropItem(int slotIndex, Vector3 throwForce = default)
+    {
+        InventoryItem heldItem = GetItem(slotIndex);
         if (heldItem != null)
         {
-            Interactable interactablePrefab = heldItem.GetInteractablePrefab();
-            GameObject prefabGameObject = (interactablePrefab as MonoBehaviour)?.gameObject;
-
-            if (prefabGameObject != null)
+            DroppedItem droppedItem = heldItem.GetDroppedItemPrefab();
+            if (droppedItem != null)
             {
-                // Get the NetworkIdentity of the prefab to pass over the network
-                NetworkIdentity networkIdentity = prefabGameObject.GetComponent<NetworkIdentity>();
+                // Spawn the dropped item on the server
+                CmdSpawnDroppedItem(_inventory[slotIndex], transform.position + transform.forward, throwForce);
 
-                if (networkIdentity != null)
+                // Clear the inventory slot locally for instant feedback
+                _inventory[slotIndex] = new InventoryItemData { itemID = InventoryItemIDEnum.None };
+                if (_selectedInventoryIndex == slotIndex)
                 {
-                    // 1. Tell the server to spawn the physical object using the prefab asset reference
-                    CmdSpawnDroppedItem(networkIdentity, transform.position + transform.forward);
-
-                    // 2. Client immediately clears their slot locally without waiting
-                    RemoveAtIndex(_selectedIndex);
+                    SetInventorySelection(slotIndex); // This will also update visuals and sync the change to other clients
                 }
-                else
-                {
-                    Debug.LogError("The dropped item prefab must have a NetworkIdentity component attached!");
-                }
-            }
-            else
-            {
-                Debug.LogError("The Interactable prefab returned by GetInteractablePrefab() must be a GameObject with a NetworkIdentity!");
             }
         }
     }
 
     // Mirror allows passing NetworkIdentity references of Registered Spawnable Prefabs inside Commands!
     [Command]
-    private void CmdSpawnDroppedItem(NetworkIdentity prefabIdentity, Vector3 dropPosition)
+    private void CmdSpawnDroppedItem(InventoryItemData itemData, Vector3 dropPosition, Vector3 throwForce)
     {
-        if (prefabIdentity == null) return;
+        GameObject droppedItemPrefab = null;
+        foreach (var entry in _itemEntryArray)
+        {
+            if (entry.itemID == itemData.itemID)
+            {
+                droppedItemPrefab = entry.item.GetDroppedItemPrefab().gameObject;
+                break;
+            }
+        }
 
         // Instantiate and spawn the object authoritatively on the server
-        GameObject droppedObject = Instantiate(prefabIdentity.gameObject, dropPosition, Quaternion.identity);
+        GameObject droppedObject = Instantiate(droppedItemPrefab, dropPosition, Quaternion.identity);
+        droppedObject.GetComponent<DroppedItem>().SetInventoryItemData(itemData);
+        droppedObject.GetComponent<Rigidbody>().AddForce(throwForce, ForceMode.VelocityChange);
         NetworkServer.Spawn(droppedObject);
     }
 
-    public void AddItem(InventoryItem item)
+    [ClientRpc]
+    public void RpcAddItem(InventoryItemData itemData)
     {
-        for (int i = 0; i < _inventorySize; i++)
+        if (!isLocalPlayer) return;
+
+        Debug.Log($"Adding item {itemData.itemID} to inventory");
+
+        int affectedSlot = -1;
+        if (affectedSlot == -1)
         {
-            if (_inventory[i] == null)
+            for (int i = 0; i < _inventorySize; i++)
             {
-                _inventory[i] = item;
-                return;
+                if (_inventory[i].itemID == (int)InventoryItemIDEnum.None)
+                {
+                    affectedSlot = i;
+                    break;
+                }
             }
+        }
+        if (affectedSlot == -1 && _selectedInventoryIndex >= 0 && _selectedInventoryIndex < _inventorySize)
+        {
+            affectedSlot = _selectedInventoryIndex;
+        }
+        if (affectedSlot == -1)
+        {
+            affectedSlot = 0; // If inventory is full, overwrite the first slot (could be changed to a different behavior like dropping the currently held item or refusing the new item)
+        }
+
+        DropItem(affectedSlot); // Drop currently held item if there is one, to free up the slot for the new item
+
+        _inventory[affectedSlot] = itemData;
+
+        if (_selectedInventoryIndex == affectedSlot)
+        {
+            SetInventorySelection(affectedSlot); // This will also update visuals and sync the change to other clients
         }
     }
 
-    public void RemoveAtIndex(int index)
+    private InventoryItem GetItem(int slotIndex)
     {
-        if (index >= 0 && index < _inventorySize)
+        if(slotIndex >= 0 && slotIndex < _inventorySize)
         {
-            _inventory[index] = null;
-            if (_selectedIndex == index)
+            InventoryItemData itemData = _inventory[slotIndex];
+            foreach (var entry in _itemEntryArray)
             {
-                _selectedIndex = -1;
+                if (entry.itemID == itemData.itemID)
+                {
+                    return entry.item;
+                }
             }
         }
+        return null;
     }
 
     public InventoryItem GetHeldItem()
     {
-        if (_selectedIndex >= 0 && _selectedIndex < _inventorySize)
+        return GetItem(_selectedInventoryIndex);
+    }
+    public InventoryItemData GetHeldItemData()
+    {
+        if (_selectedInventoryIndex >= 0 && _selectedInventoryIndex < _inventorySize)
         {
-            return _inventory[_selectedIndex];
+            return _inventory[_selectedInventoryIndex];
         }
-        return null;
+        return new InventoryItemData { itemID = InventoryItemIDEnum.None };
+    }
+    public void UpdateHeldItemData(InventoryItemData newData)
+    {
+        if (_selectedInventoryIndex >= 0 && _selectedInventoryIndex < _inventorySize)
+        {
+            _inventory[_selectedInventoryIndex] = newData;
+        }
     }
 }
