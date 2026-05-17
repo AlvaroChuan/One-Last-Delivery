@@ -5,11 +5,17 @@ public class PackageInteractionComponent : Interactable
 {
     [SerializeField] private string _carriedLayer;
     [SerializeField] private string _droppedLayer;
+    [SerializeField] private Vector3 _offsetFromPlayer = new Vector3(0f, -.35f, 1f);
     Rigidbody _rigidbody;
+
+    Collider _packageCollider;
+    Collider _playerCollider;
+
     bool _isCarried = false;
     void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _packageCollider = GetComponent<Collider>();
     }
 
     void Start()
@@ -48,8 +54,14 @@ public class PackageInteractionComponent : Interactable
         gameObject.layer = LayerMask.NameToLayer(_carriedLayer);
 
         transform.SetParent(playerIdentity.transform);
-        transform.localPosition = new Vector3(0f, 0f, 1f);
+        transform.localPosition = _offsetFromPlayer;
         transform.localRotation = Quaternion.identity;
+
+        _playerCollider = playerIdentity.GetComponent<Collider>();
+        if (_playerCollider != null)
+        {
+            Physics.IgnoreCollision(_packageCollider, _playerCollider, true);
+        }
     }
 
     [Command(requiresAuthority = false)]
@@ -71,6 +83,14 @@ public class PackageInteractionComponent : Interactable
     {
         gameObject.layer = LayerMask.NameToLayer(_droppedLayer);
         transform.SetParent(null);
+
+        if (_playerCollider != null)
+        {
+            Physics.IgnoreCollision(_packageCollider, _playerCollider, false);
+        }
+
+        _playerCollider = null;
+
         Debug.Log("Restoring physics layer and detaching from player");
     }
 }

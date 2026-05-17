@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4988068699929746194}
   - component: {fileID: 7743481207660080699}
+  - component: {fileID: 2924977971945211490}
   - component: {fileID: 6735916694950570071}
   - component: {fileID: 3608739865664877126}
   - component: {fileID: 7381590034358754430}
@@ -54,6 +55,24 @@ MonoBehaviour:
   syncInterval: 0
   _carriedLayer: Default
   _droppedLayer: Interactables
+--- !u!114 &2924977971945211490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1369721123284713815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d777e117b8e005848b4b9b4d78d459b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _maxHealth: 100
+  _minImpulseForDamage: 1
+  _damagePerUnitImpulse: 10
 --- !u!114 &6735916694950570071
 MonoBehaviour:
   m_ObjectHideFlags: 0
