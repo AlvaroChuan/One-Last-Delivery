@@ -2,7 +2,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InteractComponent : InputComponent
+public class PlayerInteractComponent : InputComponent
 {
     [SerializeField] private InputActionReference _interactInput;
     [SerializeField] private float _interactionRange = 3f;

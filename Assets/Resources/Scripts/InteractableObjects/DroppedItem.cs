@@ -13,7 +13,7 @@ public class DroppedItem : Interactable
 
         Debug.Log($"Player {interactor.name} interacted with dropped item {gameObject.name} containing {GetInventoryItemData().itemID}");
 
-        InventoryComponent inventory = interactor.GetComponent<InventoryComponent>();
+        PlayerInventoryComponent inventory = interactor.GetComponent<PlayerInventoryComponent>();
         if (inventory != null)
         {
             // Add the item to the player's inventory

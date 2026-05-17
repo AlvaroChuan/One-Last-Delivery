@@ -5,13 +5,13 @@ using UnityEngine.InputSystem;
 public class PlayerItemUseComponent : InputComponent
 {
     [SerializeField] private InputActionReference _useInput;
-    private InventoryComponent _inventoryComponent;
+    private PlayerInventoryComponent _inventoryComponent;
     InventoryItemData? _usingItemDataNullable;
     InventoryItem _usingItem;
 
     void Awake()
     {
-        _inventoryComponent = GetComponent<InventoryComponent>();
+        _inventoryComponent = GetComponent<PlayerInventoryComponent>();
     }
 
     protected override void BindInputs()

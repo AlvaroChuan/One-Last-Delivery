@@ -3,7 +3,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InventoryComponent : InputComponent
+public class PlayerInventoryComponent : InputComponent
 {
     [System.Serializable]
     struct ItemEntry
@@ -231,10 +231,7 @@ public class InventoryComponent : InputComponent
 
         _inventory[affectedSlot] = itemData;
 
-        if (_selectedInventoryIndex == affectedSlot)
-        {
-            SetInventorySelection(affectedSlot); // This will also update visuals and sync the change to other clients
-        }
+        SetInventorySelection(affectedSlot); // This will also update visuals and sync the change to other clients
     }
 
     private InventoryItem GetItem(int slotIndex)

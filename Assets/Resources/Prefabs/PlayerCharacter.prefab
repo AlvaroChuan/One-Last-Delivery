@@ -758,7 +758,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _sensitivity: 10
+  _sensitivity: 30
   _maxVerticalAngle: 80
   _cameraHorizontalPivot: {fileID: 2059693814285598323}
   _cameraVerticalPivot: {fileID: 1076989813188178597}
@@ -869,8 +869,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _useInput: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  _selectInput: {fileID: -7787616924331609892, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  _scrollInput: {fileID: -3864917992433299696, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &7676228899557061715
 MonoBehaviour:
   m_ObjectHideFlags: 0
