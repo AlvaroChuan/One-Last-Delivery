@@ -20,7 +20,7 @@ Material:
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
-  m_LockedProperties: 
+  m_LockedProperties: _NoiseMultiplier
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -29,7 +29,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _GrassTex:
-        m_Texture: {fileID: 2800000, guid: e52968beee558214a88835e0f1c33e93, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9f621323c2b527a49ab684f5d4a5d173, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_5fe54ceaf4f94e1fb03235150a1bec1a_Texture_1_Texture2D:
@@ -59,12 +59,15 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0.45
-    - _BrushIntensity: 0.3
+    - _BrushIntensity: 1
     - _GrassNoise: 3.49
-    - _HeightOffset: 1.25
-    - _LightColorIntensity: 0.05
+    - _HeightOffset: 0
+    - _LightColorIntensity: 0.08
     - _NearFarIntensity: 0.2
+    - _NoiseFalloff: 1
     - _NoiseIntensity: 0.36
+    - _NoiseMultiplier: 0.05
+    - _NoiseScale: 100
     - _PosterizeSteps: 6
     - _QueueControl: 0
     - _QueueOffset: 0
@@ -72,7 +75,7 @@ Material:
     - _TerrainBotomIntensity: 1
     - _TerrainIntensity: 1.5
     - _TerrainSize: 100
-    - _TerrainTopIntensity: 0.8
+    - _TerrainTopIntensity: 2
     - _WindHeight: 0.2
     - _WindIntensity: 0.04
     - _WindSize: 1
@@ -81,14 +84,14 @@ Material:
     - _WindWaveSpeed: 11.91
     m_Colors:
     - _BrushColor: {r: 0.8254558, g: 0, b: 0.9245283, a: 0}
-    - _BrushTiling: {r: 22.91, g: 0.38, b: 0, a: 0}
-    - _FarColor: {r: 0.46226418, g: 0.46226418, b: 0.46226418, a: 0}
-    - _GrassBotomColor: {r: 0.34999108, g: 0.5188679, b: 0.34999108, a: 0}
+    - _BrushTiling: {r: 1, g: 1, b: 0, a: 0}
+    - _FarColor: {r: 0.5, g: 0.5, b: 0.5, a: 0}
+    - _GrassBotomColor: {r: 0, g: 0, b: 0, a: 0}
     - _GrassColor: {r: 0.4629317, g: 0.95283014, b: 0.46785325, a: 0}
     - _GrassTopColor: {r: 0.5457013, g: 0.7647059, b: 0.5019608, a: 0}
     - _NearColor: {r: 0, g: 0, b: 0, a: 0}
     - _NearFarRange: {r: 2, g: 6, b: 0, a: 0}
-    - _ShadowColor: {r: 0.2735849, g: 0.2735849, b: 0.2735849, a: 0}
+    - _ShadowColor: {r: 0.6509434, g: 0.6509434, b: 0.6509434, a: 0}
     - _WindContrast: {r: 0.09, g: 1, b: 0, a: 0}
     - _WindDirection: {r: 1, g: 0, b: 1, a: 0}
     - _WindSize: {r: 2.11, g: 1, b: 0, a: 0}
