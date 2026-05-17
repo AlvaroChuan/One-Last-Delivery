@@ -8,5 +8,10 @@ public abstract class Interactable : NetworkBehaviour
     {
         Interact(interactorIdentity.gameObject);
     }
+
+    /// <summary>
+    /// This method is called on the server when a player interacts with this object. The interactor parameter is the GameObject that is interacting with this object.
+    /// </summary>
+    /// <param name="interactor"></param>
     public abstract void Interact(GameObject interactor);
 }

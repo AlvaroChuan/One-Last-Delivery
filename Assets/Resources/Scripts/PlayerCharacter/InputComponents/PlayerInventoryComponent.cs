@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
@@ -19,9 +20,11 @@ public class PlayerInventoryComponent : InputComponent
     [SerializeField] private float _throwForce = 10f;
     [SerializeField] private ItemEntry[] _itemEntryArray;
     private InventoryItemData[] _inventory;
-    private int _selectedInventoryIndex = 0; // Local copy of the selected index for instant responsiveness
+    private int _selectedInventoryIndex = -1; // Local copy of the selected index for instant responsiveness
 
     private Camera _playerCamera;
+
+    private PackageInteractionComponent _carriedPackage; // Reference to the currently carried package, if any
 
     void Awake()
     {
@@ -88,6 +91,12 @@ public class PlayerInventoryComponent : InputComponent
             _selectedInventoryIndex = _inventorySize - 1;
         }
 
+        if (_carriedPackage != null)
+        {
+            _carriedPackage.CmdDropFromPlayer(Vector3.zero);
+            _carriedPackage = null;
+        }
+
         Debug.Log("Selected inventory index: " + _selectedInventoryIndex);
         SetInventorySelection(_selectedInventoryIndex);
     }
@@ -102,6 +111,11 @@ public class PlayerInventoryComponent : InputComponent
         else if (index >= 0 && index < _inventorySize)
         {
             _selectedInventoryIndex = index;
+        }
+        if (_carriedPackage != null)
+        {
+            _carriedPackage.CmdDropFromPlayer(Vector3.zero);
+            _carriedPackage = null;
         }
         SetInventorySelection(_selectedInventoryIndex);
     }
@@ -175,6 +189,12 @@ public class PlayerInventoryComponent : InputComponent
                     SetInventorySelection(slotIndex); // This will also update visuals and sync the change to other clients
                 }
             }
+        }
+
+        if (_carriedPackage != null)
+        {
+            _carriedPackage.CmdDropFromPlayer(throwForce);
+            _carriedPackage = null;
         }
     }
 
@@ -268,5 +288,17 @@ public class PlayerInventoryComponent : InputComponent
         {
             _inventory[_selectedInventoryIndex] = newData;
         }
+    }
+
+    public void SetSlotSelection(int index)
+    {
+        if (!isLocalPlayer) return;
+
+        SetInventorySelection(index);
+    }
+
+    internal void SetCarryingPackage(PackageInteractionComponent package)
+    {
+        _carriedPackage = package;
     }
 }
