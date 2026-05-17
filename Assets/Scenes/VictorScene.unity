@@ -1202,7 +1202,7 @@ Terrain:
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 10000
   m_DetailObjectDistance: 19
-  m_DetailObjectDensity: 0.6
+  m_DetailObjectDensity: 0.4
   m_HeightmapPixelError: 80.7
   m_SplatMapDistance: 1000
   m_HeightmapMinimumLODSimplification: 0
@@ -1242,6 +1242,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &2654926968596197191
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5366820975264366592, guid: 827db4f7fcb415f4ab7205902c8c28c1, type: 3}
+      propertyPath: m_Name
+      value: GrassPref2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967689452399332373, guid: 827db4f7fcb415f4ab7205902c8c28c1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 56.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967689452399332373, guid: 827db4f7fcb415f4ab7205902c8c28c1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967689452399332373, guid: 827db4f7fcb415f4ab7205902c8c28c1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 82.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967689452399332373, guid: 827db4f7fcb415f4ab7205902c8c28c1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967689452399332373, guid: 827db4f7fcb415f4ab7205902c8c28c1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.00000015695824
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967689452399332373, guid: 827db4f7fcb415f4ab7205902c8c28c1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967689452399332373, guid: 827db4f7fcb415f4ab7205902c8c28c1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967689452399332373, guid: 827db4f7fcb415f4ab7205902c8c28c1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967689452399332373, guid: 827db4f7fcb415f4ab7205902c8c28c1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967689452399332373, guid: 827db4f7fcb415f4ab7205902c8c28c1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 827db4f7fcb415f4ab7205902c8c28c1, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1255,3 +1312,4 @@ SceneRoots:
   - {fileID: 1949146707}
   - {fileID: 136345471}
   - {fileID: 555234071}
+  - {fileID: 2654926968596197191}
