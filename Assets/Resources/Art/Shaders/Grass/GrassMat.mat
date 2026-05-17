@@ -24,6 +24,22 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BrushTex:
+        m_Texture: {fileID: 2800000, guid: 7b806a2f79219f240a926857726b5808, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_5fe54ceaf4f94e1fb03235150a1bec1a_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 7b806a2f79219f240a926857726b5808, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TerrainRT:
+        m_Texture: {fileID: 8400000, guid: 0a03336c46fd01b4eb6a26dee3085af5, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WindTex:
+        m_Texture: {fileID: 2800000, guid: 4e766c4de3cf82245bee27d713a6b029, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -38,13 +54,39 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _HeightOffset: 0.22
+    - _BrushIntensity: 0.3
+    - _GrassNoise: 3.49
+    - _HeightOffset: 1.24
+    - _LightColorIntensity: 0.09
+    - _NearFarIntensity: 0.2
+    - _NoiseIntensity: 0.36
+    - _PosterizeSteps: 6.69
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _TerrainBotIntensity: 0.8
+    - _TerrainBotomIntensity: 1
+    - _TerrainIntensity: 1.5
+    - _TerrainSize: 100
+    - _TerrainTopIntensity: 0.8
+    - _WindHeight: 0.2
+    - _WindIntensity: 0.04
+    - _WindSize: 1
+    - _WindSpeed: 30
+    - _WindStrength: 1
+    - _WindWaveSpeed: 6.59
     m_Colors:
-    - _GrassBotomColor: {r: 0.33454967, g: 0.3962264, b: 0.33504307, a: 0}
+    - _BrushColor: {r: 0.8254558, g: 0, b: 0.9245283, a: 0}
+    - _BrushTiling: {r: 0.42, g: 0.38, b: 0, a: 0}
+    - _FarColor: {r: 0.46226418, g: 0.46226418, b: 0.46226418, a: 0}
+    - _GrassBotomColor: {r: 0.34999108, g: 0.5188679, b: 0.34999108, a: 0}
     - _GrassColor: {r: 0.4629317, g: 0.95283014, b: 0.46785325, a: 0}
-    - _GrassTopColor: {r: 0.46274513, g: 0.95294124, b: 0.4666667, a: 0}
+    - _GrassTopColor: {r: 0.5457013, g: 0.7647059, b: 0.5019608, a: 0}
+    - _NearColor: {r: 0, g: 0, b: 0, a: 0}
+    - _NearFarRange: {r: 2, g: 6, b: 0, a: 0}
+    - _ShadowColor: {r: 0.7169812, g: 0.7169812, b: 0.7169812, a: 0}
+    - _WindContrast: {r: 0.09, g: 1, b: 0, a: 0}
+    - _WindDirection: {r: 1, g: 0, b: 1, a: 0}
+    - _WindSize: {r: 2.11, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &8844698332896047477
