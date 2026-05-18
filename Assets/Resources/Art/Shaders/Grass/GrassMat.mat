@@ -28,8 +28,20 @@ Material:
         m_Texture: {fileID: 2800000, guid: 7b806a2f79219f240a926857726b5808, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _GrassSplatmap:
+        m_Texture: {fileID: -3726019995773424990, guid: ff79b818d8090d348988764403db108b, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GrassTerrainTexture:
+        m_Texture: {fileID: 2800000, guid: 7bd486cf36b61954d9012c6704ab80a4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _GrassTex:
         m_Texture: {fileID: 2800000, guid: 9f621323c2b527a49ab684f5d4a5d173, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2DLOD_71483c3fbcb8461ebbf1054690351f37_Texture_1_Texture2D:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_5fe54ceaf4f94e1fb03235150a1bec1a_Texture_1_Texture2D:
@@ -60,9 +72,14 @@ Material:
     m_Floats:
     - _AlphaClip: 0.45
     - _BrushIntensity: 1
+    - _GrassLightFactor: 0.92
     - _GrassNoise: 3.49
-    - _HeightOffset: 0
-    - _LightColorIntensity: 0.08
+    - _HeightOffset: 0.3
+    - _HeightmapIntensity: 0.31
+    - _HeightmapPower: 100
+    - _LightColorIntensity: 0
+    - _MaxGrass: 0.1
+    - _MinGrass: 0.05
     - _NearFarIntensity: 0.2
     - _NoiseFalloff: 1
     - _NoiseIntensity: 0.36
@@ -71,6 +88,7 @@ Material:
     - _PosterizeSteps: 6
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _StepGrass: 2.5
     - _TerrainBotIntensity: 0.63
     - _TerrainBotomIntensity: 1
     - _TerrainIntensity: 1.5
@@ -87,7 +105,7 @@ Material:
     - _BrushTiling: {r: 1, g: 1, b: 0, a: 0}
     - _FarColor: {r: 0.5, g: 0.5, b: 0.5, a: 0}
     - _GrassBotomColor: {r: 0, g: 0, b: 0, a: 0}
-    - _GrassColor: {r: 0.4629317, g: 0.95283014, b: 0.46785325, a: 0}
+    - _GrassColor: {r: 0.120564826, g: 0.3018868, b: 0.19672006, a: 0}
     - _GrassTopColor: {r: 0.5457013, g: 0.7647059, b: 0.5019608, a: 0}
     - _NearColor: {r: 0, g: 0, b: 0, a: 0}
     - _NearFarRange: {r: 2, g: 6, b: 0, a: 0}
