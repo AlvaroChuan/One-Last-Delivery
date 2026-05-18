@@ -352,7 +352,6 @@ Library/PackageCache/
   Editor/VisualScripting.Core/EditorAssetResources/Unity.VisualScripting.TextureAssets.dll
   Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll
 Temp/bin/Debug/
- Mirror.CompilerSymbols.dll
  Mirror.Components.dll
  Mirror.dll
  Unity.Mirror.CodeGen.dll

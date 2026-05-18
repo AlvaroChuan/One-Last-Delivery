@@ -379,7 +379,6 @@ Temp/bin/Debug/
  Unity.InputSystem.ForUI.dll
  Unity.Mathematics.dll
  Unity.Mathematics.Editor.dll
- Unity.Mirror.CodeGen.dll
  Unity.Multiplayer.Center.Common.dll
  Unity.Multiplayer.Center.Editor.dll
  Unity.PlasticSCM.Editor.dll
@@ -401,7 +400,6 @@ Temp/bin/Debug/
  Unity.Rider.Editor.dll
  Unity.Searcher.Editor.dll
  Unity.ShaderGraph.Editor.dll
- Unity.ShaderGraph.Utilities.dll
  Unity.TextMeshPro.dll
  Unity.TextMeshPro.Editor.dll
  Unity.Timeline.dll

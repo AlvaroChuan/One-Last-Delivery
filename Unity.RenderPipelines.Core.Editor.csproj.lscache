@@ -550,7 +550,6 @@ Library/PackageCache/
 Temp/bin/Debug/
  Unity.Burst.dll
  Unity.Collections.dll
- Unity.InputSystem.dll
  Unity.Mathematics.dll
  Unity.Rendering.LightTransport.Runtime.dll
  Unity.RenderPipelines.Core.Runtime.dll

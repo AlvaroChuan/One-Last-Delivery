@@ -349,13 +349,7 @@ C:/Program Files/Unity/Hub/Editor/6000.0.60f1/Editor/Data/UnityReferenceAssembli
  System.Xml.dll
  System.Xml.Linq.dll
 Library/PackageCache/com.unity.ext.nunit@031a54704bff/net40/unity-custom/nunit.framework.dll
-Temp/bin/Debug/
- Mirror.CompilerSymbols.dll
- Mirror.dll
- UnityEditor.TestRunner.dll
- UnityEditor.UI.dll
- UnityEngine.TestRunner.dll
- UnityEngine.UI.dll
+Temp/bin/Debug/Mirror.dll
 
 [analyzerReferences]
 C:/Program Files/Unity/Hub/Editor/6000.0.60f1/Editor/Data/Tools/Unity.SourceGenerators/

@@ -383,14 +383,9 @@ Temp/bin/Debug/
  Adrenak.BRW.dll
  Adrenak.UniMic.Runtime.dll
  Concentus-Unity.Runtime.dll
- Mirror.CompilerSymbols.dll
  Mirror.dll
- Unity.Burst.dll
  Unity.Collections.dll
- Unity.Mathematics.dll
- UnityEditor.TestRunner.dll
  UnityEditor.UI.dll
- UnityEngine.TestRunner.dll
  UnityEngine.UI.dll
 
 [analyzerReferences]

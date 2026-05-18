@@ -372,13 +372,10 @@ Library/PackageCache/
   Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll
 Temp/bin/Debug/
  kcp2k.dll
- Mirror.CompilerSymbols.dll
  Mirror.dll
  SimpleWebTransport.dll
  Telepathy.dll
- UnityEditor.TestRunner.dll
  UnityEditor.UI.dll
- UnityEngine.TestRunner.dll
  UnityEngine.UI.dll
 
 [analyzerReferences]

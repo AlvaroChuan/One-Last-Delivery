@@ -355,9 +355,7 @@ C:/Program Files/Unity/Hub/Editor/6000.0.60f1/Editor/Data/NetStandard/
 Temp/bin/Debug/
  SingularityGroup.HotReload.Runtime.Public.dll
  Unity.InputSystem.dll
- UnityEditor.TestRunner.dll
  UnityEditor.UI.dll
- UnityEngine.TestRunner.dll
  UnityEngine.UI.dll
 
 [analyzerReferences]
