@@ -3425,7 +3425,7 @@
     "m_ObjectId": "18129761bead40c9aa10f4f1fbce3023",
     "m_Title": "Wind Sway",
     "m_Position": {
-        "x": -1717.0001220703125,
+        "x": -1717.0,
         "y": -1263.0
     }
 }
@@ -3624,7 +3624,7 @@
     "m_ObjectId": "1d5fe41dd8b446fa9308715ffacdc1b5",
     "m_Title": "Height Belnd",
     "m_Position": {
-        "x": -2862.000244140625,
+        "x": -2862.0,
         "y": -411.0
     }
 }
@@ -10930,7 +10930,7 @@
     "m_ObjectId": "9b35c5b00145458ca63c115944c223d0",
     "m_Title": "Paint Voronoi Noise",
     "m_Position": {
-        "x": -814.9999389648438,
+        "x": -815.0,
         "y": 1580.0
     }
 }
