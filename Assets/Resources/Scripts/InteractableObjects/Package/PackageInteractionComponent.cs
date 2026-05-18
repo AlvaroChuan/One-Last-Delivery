@@ -8,6 +8,8 @@ public class PackageInteractionComponent : Interactable
     [SerializeField] private Vector3 _offsetFromPlayer = new Vector3(0f, -.35f, 1f);
     Rigidbody _rigidbody;
 
+    NetworkTransformReliable _networkTransform;
+
     Collider _packageCollider;
     Collider _playerCollider;
 
@@ -16,18 +18,11 @@ public class PackageInteractionComponent : Interactable
     {
         _rigidbody = GetComponent<Rigidbody>();
         _packageCollider = GetComponent<Collider>();
+        _networkTransform = GetComponent<NetworkTransformReliable>();
     }
 
     void Start()
     {
-        if (isServer)
-        {
-            _rigidbody.isKinematic = false;
-        }
-        else
-        {
-            _rigidbody.isKinematic = true;
-        }
         gameObject.layer = LayerMask.NameToLayer(_droppedLayer);
     }
 
@@ -53,6 +48,9 @@ public class PackageInteractionComponent : Interactable
 
         gameObject.layer = LayerMask.NameToLayer(_carriedLayer);
 
+        _networkTransform.clientSnapshots.Clear();
+        _networkTransform.serverSnapshots.Clear();
+
         transform.SetParent(playerIdentity.transform);
         transform.localPosition = _offsetFromPlayer;
         transform.localRotation = Quaternion.identity;
@@ -68,7 +66,6 @@ public class PackageInteractionComponent : Interactable
     public void CmdDropFromPlayer(Vector3 throwForce)
     {
         netIdentity.RemoveClientAuthority();
-
         _isCarried = false;
         gameObject.layer = LayerMask.NameToLayer(_droppedLayer);
 
@@ -82,6 +79,8 @@ public class PackageInteractionComponent : Interactable
     public void RpcDropFromPlayer()
     {
         gameObject.layer = LayerMask.NameToLayer(_droppedLayer);
+        _networkTransform.clientSnapshots.Clear();
+        _networkTransform.serverSnapshots.Clear();
         transform.SetParent(null);
 
         if (_playerCollider != null)
