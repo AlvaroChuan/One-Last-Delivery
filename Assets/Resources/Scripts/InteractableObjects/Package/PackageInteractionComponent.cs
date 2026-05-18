@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class PackageInteractionComponent : Interactable
 {
-    [SerializeField] private string _carriedLayer;
-    [SerializeField] private string _droppedLayer;
-    [SerializeField] private Vector3 _offsetFromPlayer = new Vector3(0f, -.35f, 1f);
+    [SerializeField] private string _carriedLayer = "Default";
+    [SerializeField] private string _droppedLayer = "Interactables";
+    [SerializeField] private Vector3 _offsetFromPlayer = new Vector3(0f, -.25f, 1f);
     Rigidbody _rigidbody;
 
     NetworkTransformReliable _networkTransform;

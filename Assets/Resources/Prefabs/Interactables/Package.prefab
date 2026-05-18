@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4988068699929746194}
-  - component: {fileID: 7743481207660080699}
+  - component: {fileID: -826962114139510505}
   - component: {fileID: 2924977971945211490}
   - component: {fileID: 6735916694950570071}
   - component: {fileID: 3608739865664877126}
@@ -38,7 +38,7 @@ Transform:
   - {fileID: 2568387882704334989}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7743481207660080699
+--- !u!114 &-826962114139510505
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -55,6 +55,7 @@ MonoBehaviour:
   syncInterval: 0
   _carriedLayer: Default
   _droppedLayer: Interactables
+  _offsetFromPlayer: {x: 0, y: -0.25, z: 1}
 --- !u!114 &2924977971945211490
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,8 +72,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _maxHealth: 100
-  _minImpulseForDamage: 1
-  _damagePerUnitImpulse: 10
+  _minForceForDamage: 5
+  _damagePerUnitForce: 1
 --- !u!114 &6735916694950570071
 MonoBehaviour:
   m_ObjectHideFlags: 0

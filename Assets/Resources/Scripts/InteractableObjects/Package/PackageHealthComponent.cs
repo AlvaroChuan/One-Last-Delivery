@@ -5,8 +5,8 @@ using UnityEngine;
 public class PackageHealthComponent : NetworkBehaviour
 {
     [SerializeField] private float _maxHealth = 100f;
-    [SerializeField] private float _minImpulseForDamage = 1f;
-    [SerializeField] private float _damagePerUnitImpulse = 10f;
+    [SerializeField] private float _minForceForDamage = 5f;
+    [SerializeField] private float _damagePerUnitForce = 1f;
     private float _currentHealth;
     private Rigidbody _rigidbody;
 
@@ -28,13 +28,22 @@ public class PackageHealthComponent : NetworkBehaviour
     {
         if(!isServer || _rigidbody.isKinematic) return;
 
-        Debug.Log($"Package collided with {collision.gameObject.name} at impulse {collision.impulse.magnitude}.");
+        float otherMass = (collision.rigidbody != null) ? collision.rigidbody.mass : _rigidbody.mass;
 
-        float impulse = collision.impulse.magnitude;
+        float myMass = _rigidbody.mass;
 
-        if (impulse < _minImpulseForDamage) return;
+        float effectiveMass = (otherMass * myMass) / (otherMass + myMass);
 
-        float damage = (impulse - _minImpulseForDamage) * _damagePerUnitImpulse;
+        float relativeVelocity = collision.relativeVelocity.magnitude;
+
+        float force = 0.5f * effectiveMass * relativeVelocity * relativeVelocity;
+
+        Debug.Log($"Package collided with {collision.gameObject.name} at force {force}.");
+
+        if (force < _minForceForDamage) return;
+
+        float damage = (force - _minForceForDamage) * _damagePerUnitForce;
+
         TakeDamage(damage);
     }
 
