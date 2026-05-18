@@ -77,4 +77,9 @@ public class PackageHealthComponent : NetworkBehaviour
         Debug.Log("Package destroyed.");
         // Here you can add code to play destruction effects on clients
     }
+
+    public float GetCurrentHealth()
+    {
+        return _currentHealth;
+    }
 }
