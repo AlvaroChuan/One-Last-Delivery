@@ -28,6 +28,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 7b806a2f79219f240a926857726b5808, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _GrassInteractionRT:
+        m_Texture: {fileID: 8400000, guid: 172fb6214295c7c4e83bb672f269dc7b, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _GrassSplatmap:
         m_Texture: {fileID: -3726019995773424990, guid: ff79b818d8090d348988764403db108b, type: 2}
         m_Scale: {x: 1, y: 1}
@@ -76,30 +80,38 @@ Material:
     m_Floats:
     - _AlphaClip: 0.45
     - _BrushIntensity: 1
+    - _Float: 0.18
     - _GrassLightFactor: 0.92
     - _GrassNoise: 3.49
-    - _HeightOffset: 0.28
-    - _HeightmapIntensity: 1.01
+    - _HeightOffset: 0.4
+    - _HeightmapIntensity: 0.28
     - _HeightmapPower: 3
+    - _InteractionHeight: -0.3
     - _LightColorIntensity: 0
     - _MainNoiseMultiplier: 0.07
     - _MainNoiseScale: 100
-    - _MaxGrass: 1.5
+    - _MaxGrass: 0.12
     - _MinGrass: 0.05
     - _NearFarIntensity: 0.2
     - _NoiseFalloff: 1
     - _NoiseIntensity: 0.36
     - _NoiseMultiplier: 0.05
     - _NoiseScale: 100
+    - _PlayerInteractionDistance: 0.47
+    - _PlayerInteractionStrength: -20
+    - _PlayerShadowIntensity: 3
     - _PosterizeSteps: 6
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _RotationDegrees: 27
+    - _RotationStrength: 1
     - _StepGrass: 2.5
     - _TerrainBotIntensity: 0.63
     - _TerrainBotomIntensity: 1
     - _TerrainIntensity: 1.5
     - _TerrainSize: 100
     - _TerrainTopIntensity: 1.5
+    - _Test: 0
     - _WindHeight: -0.2
     - _WindIntensity: 0.04
     - _WindSize: 1
@@ -113,10 +125,11 @@ Material:
     - _BrushTiling: {r: 1, g: 1, b: 0, a: 0}
     - _FarColor: {r: 0, g: 0, b: 0, a: 0}
     - _GrassBotomColor: {r: 0, g: 0, b: 0, a: 0}
-    - _GrassColor: {r: 0.2068861, g: 0.45400003, b: 0.4367595, a: 0}
+    - _GrassColor: {r: 0.07716268, g: 0.3207547, b: 0.25147197, a: 0}
     - _GrassTopColor: {r: 0.5457013, g: 0.7647059, b: 0.5019608, a: 0}
     - _NearColor: {r: 0.41625056, g: 0.7075472, b: 0.39716092, a: 0}
     - _NearFarRange: {r: 2, g: 6, b: 0, a: 0}
+    - _Player: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 0}
     - _WindContrast: {r: 0.3, g: 0.6, b: 0, a: 0}
     - _WindDirection: {r: 1, g: 0, b: 1, a: 0}
