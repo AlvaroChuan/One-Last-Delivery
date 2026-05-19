@@ -80,11 +80,16 @@ Material:
     m_Floats:
     - _AlphaClip: 0.45
     - _BrushIntensity: 1
-    - _Float: 0.18
+    - _Float: 0.1
+    - _GrassInteractionStrength: 0.1
     - _GrassLightFactor: 0.92
     - _GrassNoise: 3.49
+    - _GrassPatchFalloff: 1.72
+    - _GrassPatchIntensity: 0.85
+    - _GrassPatchStep: 0.15
+    - _GrassPatchsNoise: 100
     - _HeightOffset: 0.4
-    - _HeightmapIntensity: 0.28
+    - _HeightmapIntensity: 0.25
     - _HeightmapPower: 3
     - _InteractionHeight: -0.3
     - _LightColorIntensity: 0
@@ -92,7 +97,7 @@ Material:
     - _MainNoiseScale: 100
     - _MaxGrass: 0.12
     - _MinGrass: 0.05
-    - _NearFarIntensity: 0.2
+    - _NearFarIntensity: 0.1
     - _NoiseFalloff: 1
     - _NoiseIntensity: 0.36
     - _NoiseMultiplier: 0.05
@@ -127,8 +132,8 @@ Material:
     - _GrassBotomColor: {r: 0, g: 0, b: 0, a: 0}
     - _GrassColor: {r: 0.07716268, g: 0.3207547, b: 0.25147197, a: 0}
     - _GrassTopColor: {r: 0.5457013, g: 0.7647059, b: 0.5019608, a: 0}
-    - _NearColor: {r: 0.41625056, g: 0.7075472, b: 0.39716092, a: 0}
-    - _NearFarRange: {r: 2, g: 6, b: 0, a: 0}
+    - _NearColor: {r: 0.36442873, g: 0.5754717, b: 0.3501691, a: 0}
+    - _NearFarRange: {r: 6, g: 1.79, b: 0, a: 0}
     - _Player: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 0}
     - _WindContrast: {r: 0.3, g: 0.6, b: 0, a: 0}
