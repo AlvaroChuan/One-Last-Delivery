@@ -11,11 +11,16 @@ public class SteamLobbyManager : MonoBehaviour
     protected Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
     protected Callback<LobbyEnter_t> lobbyEntered;
     protected Callback<LobbyMatchList_t> lobbyList;
+    protected Callback<LobbyChatUpdate_t> lobbyChatUpdate;
 
     private const string GAME_ID_KEY = "OneLastDeliveryID_145";
     private const string HOST_ADDRESS_KEY = "HostAddress";
     private NetworkManager _networkManager;
     private CSteamID _currentLobbyID;
+
+    [Header("Players List UI")]
+    [SerializeField] private GameObject _playerListItemPrefab;
+    [SerializeField] private Transform _playerListContent;
 
     private void Start()
     {
@@ -26,6 +31,47 @@ public class SteamLobbyManager : MonoBehaviour
         gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnGameLobbyJoinRequested);
         lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
         lobbyList = Callback<LobbyMatchList_t>.Create(OnLobbyList);
+        lobbyChatUpdate = Callback<LobbyChatUpdate_t>.Create(OnLobbyChatUpdate);
+    }
+
+    private void OnDestroy()
+    {
+        StopNetworkConnections();
+        ShutdownSteam();
+    }
+
+    private void StopNetworkConnections()
+    {
+        try
+        {
+            if (NetworkServer.active && NetworkClient.isConnected)
+            {
+                NetworkManager.singleton.StopHost();
+            }
+            else if (NetworkClient.isConnected)
+            {
+                NetworkManager.singleton.StopClient();
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error trying to shutdown Mirror: {e.Message}");
+        }
+    }
+
+    private void ShutdownSteam()
+    {
+        if (SteamManager.Initialized)
+        {
+            try
+            {
+                SteamAPI.Shutdown();
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Error trying to shutdown Steamworks: {e.Message}");
+            }
+        }
     }
 
     public void HostLobby(string lobbyName, string password)
@@ -48,7 +94,38 @@ public class SteamLobbyManager : MonoBehaviour
 
         string password = PlayerPrefs.GetString("lobbyPassword");
         if (!string.IsNullOrEmpty(password))  SteamMatchmaking.SetLobbyData(_currentLobbyID, "password", password);
+
+        UpdatePlayerList();
     }
+
+    private void UpdatePlayerList()
+    {
+        foreach (Transform child in _playerListContent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        int numPlayers = SteamMatchmaking.GetNumLobbyMembers(_currentLobbyID);
+
+        for (int i = 0; i < numPlayers; i++)
+        {
+            CSteamID playerSteamID = SteamMatchmaking.GetLobbyMemberByIndex(_currentLobbyID, i);
+
+            GameObject item = Instantiate(_playerListItemPrefab, _playerListContent);
+            LobbyPlayerItem playerItemScript = item.GetComponent<LobbyPlayerItem>();
+
+            if (playerItemScript != null)
+            {
+                playerItemScript.SetupPlayer(playerSteamID);
+            }
+        }
+    }
+
+    private void OnLobbyChatUpdate(LobbyChatUpdate_t callback)
+    {
+        UpdatePlayerList();
+    }
+
 
     public void JoinLobby(CSteamID lobbyID)
     {

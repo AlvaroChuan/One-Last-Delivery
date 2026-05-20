@@ -431,7 +431,6 @@ Library/PackageCache/com.unity.ext.nunit@031a54704bff/net40/unity-custom/nunit.f
 Temp/bin/Debug/
  SingularityGroup.HotReload.Runtime.dll
  SingularityGroup.HotReload.Runtime.Public.dll
- Unity.InputSystem.dll
  UnityEditor.TestRunner.dll
  UnityEditor.UI.dll
  UnityEngine.TestRunner.dll

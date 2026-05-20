@@ -344,18 +344,9 @@ Library/PackageCache/
   Editor/VisualScripting.Core/EditorAssetResources/Unity.VisualScripting.TextureAssets.dll
   Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll
 Temp/bin/Debug/
- Adrenak.BRW.dll
  Adrenak.UniMic.Runtime.dll
  Adrenak.UniVoice.Runtime.dll
- Concentus-Unity.Runtime.dll
- Mirror.CompilerSymbols.dll
- Mirror.dll
- Unity.Burst.dll
- Unity.Collections.dll
- Unity.Mathematics.dll
- UnityEditor.TestRunner.dll
  UnityEditor.UI.dll
- UnityEngine.TestRunner.dll
  UnityEngine.UI.dll
 
 [analyzerReferences]
