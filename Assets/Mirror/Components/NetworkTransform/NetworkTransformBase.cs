@@ -468,7 +468,8 @@ namespace Mirror
 
             if (syncDirection == SyncDirection.ClientToServer)
             {
-                ResetState();
+                if (!isClient)
+                    ResetState();
                 RpcResetState();
             }
         }

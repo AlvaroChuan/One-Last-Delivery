@@ -21,7 +21,7 @@ ProjectAssetsFile=<PATH>Temp/obj/Telepathy/project.assets.json
 RootNamespace=
 RunAnalyzers=
 RunAnalyzersDuringLiveAnalysis=
-SolutionPath=<PATH>One Last Delivery.sln
+SolutionPath=<PATH>One-Last-Delivery.sln
 TargetFrameworkIdentifier=.NETStandard
 TargetPath=<PATH>Temp/bin/Debug/Telepathy.dll
 TargetRefPath=
@@ -66,13 +66,12 @@ Assets/Mirror/Transports/Telepathy/Telepathy/
 Temp/obj/Telepathy/.NETStandard,Version=v2.1.AssemblyAttributes.cs
 
 [metadataReferences]
+Assets/Mirror/Plugins/Mono.Cecil/
+ Mono.CecilX.dll
+ Mono.CecilX.Mdb.dll
+ Mono.CecilX.Pdb.dll
+ Mono.CecilX.Rocks.dll
 Assets/
- LicensedPackages/HotReload/Editor/SingularityGroup.HotReload.EditorDependencies.dll
- Mirror/Plugins/Mono.Cecil/
-  Mono.CecilX.dll
-  Mono.CecilX.Mdb.dll
-  Mono.CecilX.Pdb.dll
-  Mono.CecilX.Rocks.dll
  Mirror/Transports/Encryption/Plugins/BouncyCastle/Mirror.BouncyCastle.Cryptography.dll
  Plugins/Demigiant/DOTween/
   DOTween.dll
@@ -323,9 +322,7 @@ C:/Program Files/Unity/Hub/Editor/6000.0.60f1/Editor/Data/NetStandard/compat/2.1
 C:/Program Files/Unity/Hub/Editor/6000.0.60f1/Editor/Data/NetStandard/
  Extensions/2.0.0/System.Runtime.InteropServices.WindowsRuntime.dll
  ref/2.1.0/netstandard.dll
-C:/Program Files/Unity/Hub/Editor/6000.0.60f1/Editor/Data/PlaybackEngines/
- WebGLSupport/UnityEditor.WebGL.Extensions.dll
- WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+C:/Program Files/Unity/Hub/Editor/6000.0.60f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
 Library/PackageCache/com.unity.collab-proxy@ab839cc7d2ad/Lib/Editor/
  log4netPlastic.dll
  Unity.Plastic.Antlr3.Runtime.dll
@@ -346,10 +343,8 @@ Library/PackageCache/
  com.unity.visualscripting@6279e2b7c485/
   Editor/VisualScripting.Core/EditorAssetResources/Unity.VisualScripting.TextureAssets.dll
   Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll
-Temp/bin/Debug/
- UnityEditor.TestRunner.dll
+Library/ScriptAssemblies/
  UnityEditor.UI.dll
- UnityEngine.TestRunner.dll
  UnityEngine.UI.dll
 
 [analyzerReferences]
@@ -357,7 +352,7 @@ C:/Program Files/Unity/Hub/Editor/6000.0.60f1/Editor/Data/Tools/Unity.SourceGene
  Unity.Properties.SourceGenerator.dll
  Unity.SourceGenerators.dll
  Unity.UIToolkit.SourceGenerator.dll
-C:/Users/alvar/.vscode/extensions/visualstudiotoolsforunity.vstuc-1.2.2/Analyzers/Microsoft.Unity.Analyzers.dll
+C:/Users/dpere/.vscode/extensions/visualstudiotoolsforunity.vstuc-1.2.2/Analyzers/Microsoft.Unity.Analyzers.dll
 
 [analyzerConfigFiles]
 .editorconfig
