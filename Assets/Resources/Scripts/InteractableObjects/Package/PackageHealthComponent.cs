@@ -38,8 +38,6 @@ public class PackageHealthComponent : NetworkBehaviour
 
         float force = 0.5f * effectiveMass * relativeVelocity * relativeVelocity;
 
-        Debug.Log($"Package collided with {collision.gameObject.name} at force {force}.");
-
         if (force < _minForceForDamage) return;
 
         float damage = (force - _minForceForDamage) * _damagePerUnitForce;
@@ -50,7 +48,6 @@ public class PackageHealthComponent : NetworkBehaviour
     [Server]
     public void TakeDamage(float damage)
     {
-        Debug.Log($"Package took {damage} damage. Going from {_currentHealth} to {_currentHealth - damage} health.");
         _currentHealth -= damage;
         if (_currentHealth <= 0f)
         {

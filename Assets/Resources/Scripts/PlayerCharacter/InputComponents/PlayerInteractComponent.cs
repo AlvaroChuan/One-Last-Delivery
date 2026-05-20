@@ -43,6 +43,7 @@ public class PlayerInteractComponent : InputComponent
             if (interactable != null)
             {
                 interactable.CmdInteract(GetComponent<NetworkIdentity>());
+                interactable.LocalInteract(gameObject);
             }
         }
     }

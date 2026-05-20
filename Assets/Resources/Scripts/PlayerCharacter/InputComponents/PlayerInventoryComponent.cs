@@ -93,7 +93,7 @@ public class PlayerInventoryComponent : InputComponent
 
         if (_carriedPackage != null)
         {
-            _carriedPackage.CmdDropFromPlayer(Vector3.zero);
+            _carriedPackage.DropFromPlayer(Vector3.zero);
             _carriedPackage = null;
         }
 
@@ -114,7 +114,7 @@ public class PlayerInventoryComponent : InputComponent
         }
         if (_carriedPackage != null)
         {
-            _carriedPackage.CmdDropFromPlayer(Vector3.zero);
+            _carriedPackage.DropFromPlayer(Vector3.zero);
             _carriedPackage = null;
         }
         SetInventorySelection(_selectedInventoryIndex);
@@ -193,7 +193,7 @@ public class PlayerInventoryComponent : InputComponent
 
         if (_carriedPackage != null)
         {
-            _carriedPackage.CmdDropFromPlayer(throwForce);
+            _carriedPackage.DropFromPlayer(throwForce);
             _carriedPackage = null;
         }
     }

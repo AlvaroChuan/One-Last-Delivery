@@ -8,16 +8,18 @@ public class PlayerLookComponent : InputComponent
     [SerializeField] private Transform _cameraHorizontalPivot;
     [SerializeField] private Transform _cameraVerticalPivot;
     [SerializeField] private InputActionReference _lookInput;
+    Camera _playerCamera;
+    public Camera PlayerCamera => _playerCamera;
 
     protected override void Start()
     {
         base.Start();
+        _playerCamera = GetComponentInChildren<Camera>();
         if (!isLocalPlayer)
         {
-            Camera playerCamera = GetComponentInChildren<Camera>();
-            if (playerCamera != null)
+            if (_playerCamera != null)
             {
-                playerCamera.gameObject.SetActive(false); // Disable camera for non-local players
+                _playerCamera.gameObject.SetActive(false); // Disable camera for non-local players
             }
         }
         else

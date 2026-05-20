@@ -1,24 +1,26 @@
 using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class PackageInteractionComponent : Interactable
 {
     [SerializeField] private string _carriedLayer = "Default";
     [SerializeField] private string _droppedLayer = "Interactables";
-    [SerializeField] private Vector3 _offsetFromPlayer = new Vector3(0f, -.25f, 1f);
+    PackageCarryComponent _carryComponent;
     Rigidbody _rigidbody;
+    bool _isGrabbedByHost = false;
+    Vector3 _throwForce = new Vector3(0f, 0f, 0f);
+    bool _interacted = false;
 
-    NetworkTransformReliable _networkTransform;
-
-    Collider _packageCollider;
-    Collider _playerCollider;
-
-    bool _isCarried = false;
     void Awake()
     {
+        _carryComponent = GetComponent<PackageCarryComponent>();
         _rigidbody = GetComponent<Rigidbody>();
-        _packageCollider = GetComponent<Collider>();
-        _networkTransform = GetComponent<NetworkTransformReliable>();
+    }
+
+    public override void OnStartServer()
+    {
+        netIdentity.AssignClientAuthority(NetworkServer.localConnection);
     }
 
     void Start()
@@ -28,68 +30,75 @@ public class PackageInteractionComponent : Interactable
 
     public override void Interact(GameObject interactor)
     {
-        if (_isCarried) return;
-
         NetworkIdentity interactorIdentity = interactor.GetComponent<NetworkIdentity>();
 
-        netIdentity.AssignClientAuthority(interactorIdentity.connectionToClient);
-        _isCarried = true;
-        _rigidbody.isKinematic = true;
         gameObject.layer = LayerMask.NameToLayer(_carriedLayer);
-        RpcAttachToPlayer(interactorIdentity);
+
+        _isGrabbedByHost = interactorIdentity.isLocalPlayer;
+
+        netIdentity.RemoveClientAuthority();
+        netIdentity.AssignClientAuthority(interactorIdentity.connectionToClient);
     }
 
-    [ClientRpc]
-    public void RpcAttachToPlayer(NetworkIdentity playerIdentity)
+    public override void LocalInteraction(GameObject interactor)
     {
+        _interacted = true;
+    }
+
+    public override void OnStartAuthority()
+    {
+        base.OnStartAuthority();
+
+        if(!_interacted)
+        {
+            return; // Prevent grabbing logic from running on clients that gain authority without interacting (e.g. when the object is spawned and authority is assigned to the host)
+        }
+
+        _interacted = false; // Reset interaction flag for future interactions
+
+        _rigidbody.isKinematic = false;
+
+        if (isServer)
+        {
+            _rigidbody.AddForce(_throwForce, ForceMode.VelocityChange);
+            _throwForce = Vector3.zero; // Reset throw force after applying it on the server
+            if(!_isGrabbedByHost)
+            {
+                return; // Skip grabbing logic on the initial authority assignment when the object is spawned
+            }
+        }
+
+        Grab();
+    }
+
+    void Grab()
+    {
+
+        NetworkIdentity playerIdentity = NetworkClient.connection.identity;
+
         PlayerInventoryComponent inventory = playerIdentity.gameObject.GetComponent<PlayerInventoryComponent>();
         inventory.SetSlotSelection(-1);
         inventory.SetCarryingPackage(this);
 
-        gameObject.layer = LayerMask.NameToLayer(_carriedLayer);
+        _carryComponent.StartCarrying(playerIdentity.gameObject);
+    }
 
-        _networkTransform.clientSnapshots.Clear();
-        _networkTransform.serverSnapshots.Clear();
+    public void DropFromPlayer(Vector3 throwForce)
+    {
+        if (!isOwned) return;
 
-        transform.SetParent(playerIdentity.transform);
-        transform.localPosition = _offsetFromPlayer;
-        transform.localRotation = Quaternion.identity;
+        _carryComponent.StopCarrying();
 
-        _playerCollider = playerIdentity.GetComponent<Collider>();
-        if (_playerCollider != null)
-        {
-            Physics.IgnoreCollision(_packageCollider, _playerCollider, true);
-        }
+        CmdDrop(throwForce);
     }
 
     [Command(requiresAuthority = false)]
-    public void CmdDropFromPlayer(Vector3 throwForce)
+    void CmdDrop(Vector3 throwForce)
     {
+        _isGrabbedByHost = false;
+        gameObject.layer = LayerMask.NameToLayer(_droppedLayer);
+        _throwForce = throwForce;
         netIdentity.RemoveClientAuthority();
-        _isCarried = false;
-        gameObject.layer = LayerMask.NameToLayer(_droppedLayer);
-
-        _rigidbody.isKinematic = false;
-        _rigidbody.AddForce(throwForce, ForceMode.VelocityChange);
-
-        RpcDropFromPlayer();
-    }
-
-    [ClientRpc]
-    public void RpcDropFromPlayer()
-    {
-        gameObject.layer = LayerMask.NameToLayer(_droppedLayer);
-        _networkTransform.clientSnapshots.Clear();
-        _networkTransform.serverSnapshots.Clear();
-        transform.SetParent(null);
-
-        if (_playerCollider != null)
-        {
-            Physics.IgnoreCollision(_packageCollider, _playerCollider, false);
-        }
-
-        _playerCollider = null;
-
-        Debug.Log("Restoring physics layer and detaching from player");
+        netIdentity.AssignClientAuthority(NetworkServer.localConnection);
     }
 }
