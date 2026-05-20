@@ -1,0 +1,158 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: GrassMat
+  m_Shader: {fileID: -6465566751694194690, guid: 0d76b11c95f396f4ca8bf0987ea88f9d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: _NoiseMultiplier
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BrushTex:
+        m_Texture: {fileID: 2800000, guid: 7b806a2f79219f240a926857726b5808, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GrassInteractionRT:
+        m_Texture: {fileID: 8400000, guid: 172fb6214295c7c4e83bb672f269dc7b, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GrassSplatmap:
+        m_Texture: {fileID: -3726019995773424990, guid: ff79b818d8090d348988764403db108b, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GrassTerrainTexture:
+        m_Texture: {fileID: 2800000, guid: 7bd486cf36b61954d9012c6704ab80a4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GrassTex:
+        m_Texture: {fileID: 2800000, guid: 9f621323c2b527a49ab684f5d4a5d173, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2DLOD_71483c3fbcb8461ebbf1054690351f37_Texture_1_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_5fe54ceaf4f94e1fb03235150a1bec1a_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 7b806a2f79219f240a926857726b5808, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TerrainRT:
+        m_Texture: {fileID: 8400000, guid: 0a03336c46fd01b4eb6a26dee3085af5, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WindTex:
+        m_Texture: {fileID: 2800000, guid: 4e766c4de3cf82245bee27d713a6b029, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WindWaveTex:
+        m_Texture: {fileID: 2800000, guid: 4e766c4de3cf82245bee27d713a6b029, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlphaClip: 0.45
+    - _BrushIntensity: 1
+    - _Float: 0.1
+    - _GrassInteractionStrength: 0.1
+    - _GrassLightFactor: 0.92
+    - _GrassNoise: 3.49
+    - _GrassPatchFalloff: 1.72
+    - _GrassPatchIntensity: 0.85
+    - _GrassPatchStep: 0.15
+    - _GrassPatchsNoise: 100
+    - _HeightOffset: 0.4
+    - _HeightmapIntensity: 0.25
+    - _HeightmapPower: 3
+    - _InteractionHeight: -0.3
+    - _LightColorIntensity: 0
+    - _MainNoiseMultiplier: 0.07
+    - _MainNoiseScale: 100
+    - _MaxGrass: 0.12
+    - _MinGrass: 0.05
+    - _NearFarIntensity: 0.1
+    - _NoiseFalloff: 1
+    - _NoiseIntensity: 0.36
+    - _NoiseMultiplier: 0.05
+    - _NoiseScale: 100
+    - _PlayerInteractionDistance: 0.47
+    - _PlayerInteractionStrength: -20
+    - _PlayerShadowIntensity: 3
+    - _PosterizeSteps: 6
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _RotationDegrees: 27
+    - _RotationStrength: 1
+    - _StepGrass: 2.5
+    - _TerrainBotIntensity: 0.63
+    - _TerrainBotomIntensity: 1
+    - _TerrainIntensity: 1.5
+    - _TerrainSize: 100
+    - _TerrainTopIntensity: 1.5
+    - _Test: 0
+    - _WindHeight: -0.2
+    - _WindIntensity: 0.04
+    - _WindSize: 1
+    - _WindSpeed: 35
+    - _WindStrength: 1.25
+    - _WindWaveColorIntensity: 0.12
+    - _WindWaveHeight: -0.2
+    - _WindWaveSpeed: 0.62
+    m_Colors:
+    - _BrushColor: {r: 0.8254558, g: 0, b: 0.9245283, a: 0}
+    - _BrushTiling: {r: 1, g: 1, b: 0, a: 0}
+    - _FarColor: {r: 0, g: 0, b: 0, a: 0}
+    - _GrassBotomColor: {r: 0, g: 0, b: 0, a: 0}
+    - _GrassColor: {r: 0.07716268, g: 0.3207547, b: 0.25147197, a: 0}
+    - _GrassTopColor: {r: 0.5457013, g: 0.7647059, b: 0.5019608, a: 0}
+    - _NearColor: {r: 0.36442873, g: 0.5754717, b: 0.3501691, a: 0}
+    - _NearFarRange: {r: 6, g: 1.79, b: 0, a: 0}
+    - _Player: {r: 0, g: 0, b: 0, a: 0}
+    - _ShadowColor: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 0}
+    - _WindContrast: {r: 0.3, g: 0.6, b: 0, a: 0}
+    - _WindDirection: {r: 1, g: 0, b: 1, a: 0}
+    - _WindSize: {r: 100, g: 100, b: 0, a: 0}
+    - _WindWaveContrast: {r: 0.22, g: 1, b: 0, a: 0}
+    - _WindWaveSize: {r: 100, g: 100, b: 0, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!114 &8844698332896047477
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 10
