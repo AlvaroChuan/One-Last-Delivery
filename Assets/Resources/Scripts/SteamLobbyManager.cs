@@ -1,12 +1,14 @@
 using UnityEngine;
 using Mirror;
 using Steamworks;
+using Adrenak.UniVoice.Samples;
 
 public class SteamLobbyManager : MonoBehaviour
 {
     [SerializeField] private GameObject _lobbyListItemPrefab;
     [SerializeField] private Transform _lobbyListContent;
     [SerializeField] private UIManager _uiManager;
+    [SerializeField] private LobbyVoiceChat _lobbyVoiceChat;
     protected Callback<LobbyCreated_t> lobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
     protected Callback<LobbyEnter_t> lobbyEntered;
@@ -32,6 +34,7 @@ public class SteamLobbyManager : MonoBehaviour
         lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
         lobbyList = Callback<LobbyMatchList_t>.Create(OnLobbyList);
         lobbyChatUpdate = Callback<LobbyChatUpdate_t>.Create(OnLobbyChatUpdate);
+        if(_lobbyVoiceChat == null) _lobbyVoiceChat = _networkManager.GetComponent<LobbyVoiceChat>();
     }
 
     private void OnDestroy()
@@ -70,6 +73,10 @@ public class SteamLobbyManager : MonoBehaviour
         if (callback.m_eResult != EResult.k_EResultOK) return;
 
         _networkManager.StartHost();
+
+        if (_lobbyVoiceChat != null)
+            _lobbyVoiceChat.StartVoiceChat();
+
         _currentLobbyID = (CSteamID)callback.m_ulSteamIDLobby;
 
         SteamMatchmaking.SetLobbyData(_currentLobbyID, "gameID", GAME_ID_KEY);
@@ -118,6 +125,9 @@ public class SteamLobbyManager : MonoBehaviour
 
     public void ExitLobby()
     {
+        if (_lobbyVoiceChat != null)
+            _lobbyVoiceChat.StopVoiceChat();
+
         if (NetworkServer.active && NetworkClient.isConnected)
         {
             LeaveAndCloseLobby();
@@ -166,9 +176,14 @@ public class SteamLobbyManager : MonoBehaviour
 
         if (NetworkServer.active) return;
 
+
         string hostAddress = SteamMatchmaking.GetLobbyData((CSteamID)callback.m_ulSteamIDLobby, HOST_ADDRESS_KEY);
         _networkManager.networkAddress = hostAddress;
         _networkManager.StartClient();
+
+        if (_lobbyVoiceChat != null)
+            _lobbyVoiceChat.StartVoiceChat();
+
         _uiManager.OnJoinedLobby();
     }
 
