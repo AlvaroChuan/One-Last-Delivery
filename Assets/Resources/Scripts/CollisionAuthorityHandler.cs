@@ -122,6 +122,7 @@ public class CollisionAuthorityHandler : NetworkBehaviour
 
     public override void OnStopAuthority()
     {
+        if (!NetworkClient.active) return;
         base.OnStopAuthority();
         _collider.isTrigger = true; // Prevent physics collisions for clients without authority
         CmdRestoreVelocity(_rigidbody.linearVelocity, _rigidbody.angularVelocity); // Restore velocity on all clients to prevent rubberbanding
