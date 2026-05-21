@@ -52,6 +52,11 @@ public class UIManager : MonoBehaviour
         ShowPanel(GetPanelByName("Lobby"));
     }
 
+    public void OnLobbyExit()
+    {
+        ShowPanel(GetPanelByName("LobbyList"));
+    }
+
     public GameObject GetPanelByName(string name)
     {
         return _panels.FirstOrDefault(p => p.name == name);

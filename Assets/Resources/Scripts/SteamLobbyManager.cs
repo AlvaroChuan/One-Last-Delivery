@@ -37,7 +37,6 @@ public class SteamLobbyManager : MonoBehaviour
     private void OnDestroy()
     {
         StopNetworkConnections();
-        ShutdownSteam();
     }
 
     private void StopNetworkConnections()
@@ -56,21 +55,6 @@ public class SteamLobbyManager : MonoBehaviour
         catch (System.Exception e)
         {
             Debug.LogError($"Error trying to shutdown Mirror: {e.Message}");
-        }
-    }
-
-    private void ShutdownSteam()
-    {
-        if (SteamManager.Initialized)
-        {
-            try
-            {
-                SteamAPI.Shutdown();
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"Error trying to shutdown Steamworks: {e.Message}");
-            }
         }
     }
 
@@ -130,6 +114,45 @@ public class SteamLobbyManager : MonoBehaviour
     public void JoinLobby(CSteamID lobbyID)
     {
         SteamMatchmaking.JoinLobby(lobbyID);
+    }
+
+    public void ExitLobby()
+    {
+        if (NetworkServer.active && NetworkClient.isConnected)
+        {
+            LeaveAndCloseLobby();
+            _networkManager.StopHost();
+        }
+        else if (NetworkClient.isConnected)
+        {
+            LeaveLobbyOnly();
+            _networkManager.StopClient();
+        }
+        _uiManager.OnLobbyExit();
+    }
+
+    public void LeaveAndCloseLobby()
+    {
+        if (_currentLobbyID != CSteamID.Nil)
+        {
+            SteamMatchmaking.SetLobbyData(_currentLobbyID, "gameID", "CLOSED");
+            SteamMatchmaking.SetLobbyData(_currentLobbyID, "name", "Lobby Cerrada");
+
+            SteamMatchmaking.SetLobbyJoinable(_currentLobbyID, false);
+            SteamMatchmaking.SetLobbyType(_currentLobbyID, ELobbyType.k_ELobbyTypePrivate);
+
+            SteamMatchmaking.LeaveLobby(_currentLobbyID);
+            _currentLobbyID = CSteamID.Nil;
+        }
+    }
+
+    public void LeaveLobbyOnly()
+    {
+        if (_currentLobbyID != CSteamID.Nil)
+        {
+            SteamMatchmaking.LeaveLobby(_currentLobbyID);
+            _currentLobbyID = CSteamID.Nil;
+        }
     }
 
     private void OnGameLobbyJoinRequested(GameLobbyJoinRequested_t callback)
