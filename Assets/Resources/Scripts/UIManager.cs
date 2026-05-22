@@ -46,6 +46,14 @@ public class UIManager : MonoBehaviour
     {
         steamLobby.InviteFriends();
     }
+    public void OnClickAudio()
+    {
+        ShowPanel(GetPanelByName("AudioSettings"));
+    }
+    public void OnAudioExit()
+    {
+        ShowPanel(GetPanelByName("Lobby"));
+    }
 
     public void OnJoinedLobby()
     {

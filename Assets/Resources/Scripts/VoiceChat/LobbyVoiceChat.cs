@@ -1,7 +1,9 @@
+using System;
 using System.Linq;
 
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 using Adrenak.UniMic;
 using Adrenak.UniVoice;
@@ -14,16 +16,18 @@ namespace Adrenak.UniVoice.Samples
 {
     /// <summary>
     /// Manages UniVoice voice chat for a Mirror lobby.
-    /// 
+    ///
     /// Responsibilities:
     /// - Creates the UniVoice audio server and client session.
-    /// - Captures microphone audio using UniMic.
+    /// - Captures local microphone audio using UniMic.
     /// - Plays remote player audio using StreamedAudioSourceOutput.
-    /// - Applies optional filters such as VAD, Concentus and RNNoise.
+    /// - Applies optional input/output filters such as VAD, Concentus and RNNoise.
     /// - Allows microphone mute/unmute with a configurable key.
-    /// - Allows microphone device selection through a Unity UI Dropdown.
-    /// 
-    /// This script is intended to be started manually from your lobby/network flow
+    /// - Allows microphone device selection through a TMP dropdown.
+    /// - Allows microphone volume control through a UI slider.
+    /// - Supports push to talk using a configurable key.
+    ///
+    /// This script is intended to be started manually from your Steam/Mirror lobby flow
     /// by calling StartVoiceChat(), and stopped with StopVoiceChat().
     /// </summary>
     public class LobbyVoiceChat : MonoBehaviour
@@ -72,17 +76,42 @@ namespace Adrenak.UniVoice.Samples
 
         [Header("Mute")]
         [Tooltip("Key used to toggle microphone mute/unmute.")]
-        [SerializeField] private KeyCode _toggleMuteKey = KeyCode.V;
+        [SerializeField] private KeyCode _toggleMuteKey = KeyCode.M;
 
         [Tooltip("Whether the microphone should start muted when voice chat starts.")]
         [SerializeField] private bool _startMuted = false;
 
+        [Header("Push To Talk")]
+        [Tooltip("Whether push to talk starts enabled.")]
+        [SerializeField] private bool _pushToTalkEnabled = false;
+
+        [Tooltip("Key that must be held while push to talk is enabled.")]
+        [SerializeField] private KeyCode _pushToTalkKey = KeyCode.V;
+
         [Header("Microphone Selection")]
-        [Tooltip("Optional dropdown used to select the microphone device.")]
-        [SerializeField] private Dropdown _microphoneDropdown;
+        [Tooltip("Optional TMP dropdown used to select the microphone device.")]
+        [SerializeField] private TMP_Dropdown _microphoneDropdown;
 
         [Tooltip("Default microphone device index used when voice chat starts.")]
         [SerializeField] private int _defaultMicrophoneIndex = 0;
+
+        [Header("Microphone Volume")]
+        [Tooltip("Slider used to control microphone input volume. 1 = 100%.")]
+        [SerializeField] private Slider _microphoneVolumeSlider;
+
+        [Tooltip("Optional TMP text used to show microphone volume percentage.")]
+        [SerializeField] private TMP_Text _microphoneVolumeText;
+
+        [Tooltip("Microphone input volume. 0 = 0%, 1 = 100%, 2 = 200%.")]
+        [Range(0f, 2f)]
+        [SerializeField] private float _microphoneVolume = 1f;
+
+        [Header("Push To Talk UI")]
+        [SerializeField] private Button _pushToTalkOnButton;
+        [SerializeField] private Button _pushToTalkOffButton;
+
+        [SerializeField] private Color _activeButtonColor = Color.green;
+        [SerializeField] private Color _inactiveButtonColor = Color.white;
 
         #endregion
 
@@ -93,11 +122,21 @@ namespace Adrenak.UniVoice.Samples
         /// </summary>
         public bool IsMuted { get; private set; }
 
+        /// <summary>
+        /// Whether push to talk is currently enabled.
+        /// </summary>
+        public bool IsPushToTalkEnabled => _pushToTalkEnabled;
+
+        /// <summary>
+        /// Current microphone input volume.
+        /// </summary>
+        public float MicrophoneVolume => _microphoneVolume;
+
         #endregion
 
         #region Private Fields
 
-        private MuteInputFilter _muteInputFilter;
+        private VoiceInputControlFilter _voiceInputControlFilter;
 
         private int _currentMicrophoneIndex = -1;
         private IAudioInput _currentInput;
@@ -107,7 +146,7 @@ namespace Adrenak.UniVoice.Samples
         #region Unity Events
 
         /// <summary>
-        /// Checks for the configured mute toggle key while voice chat is running.
+        /// Handles mute input and updates push to talk state while voice chat is running.
         /// </summary>
         private void Update()
         {
@@ -117,6 +156,8 @@ namespace Adrenak.UniVoice.Samples
             {
                 ToggleMicrophoneMute();
             }
+
+            UpdatePushToTalkHeldState();
         }
 
         #endregion
@@ -125,7 +166,7 @@ namespace Adrenak.UniVoice.Samples
 
         /// <summary>
         /// Starts UniVoice voice chat.
-        /// 
+        ///
         /// Call this after Mirror has started as host or after the client has connected.
         /// </summary>
         public void StartVoiceChat()
@@ -138,15 +179,19 @@ namespace Adrenak.UniVoice.Samples
 
             HasSetUp = Setup();
 
+            SetupAudioSettingsUI();
+
             if (HasSetUp)
             {
                 SetMicrophoneMuted(_startMuted);
+                SetMicrophoneVolume(_microphoneVolume);
+                SetPushToTalk(_pushToTalkEnabled);
             }
         }
 
         /// <summary>
         /// Stops UniVoice voice chat and clears local references.
-        /// 
+        ///
         /// Call this when leaving the lobby or stopping Mirror.
         /// </summary>
         public void StopVoiceChat()
@@ -160,11 +205,16 @@ namespace Adrenak.UniVoice.Samples
                 _microphoneDropdown.onValueChanged.RemoveListener(OnMicrophoneDropdownChanged);
             }
 
+            if (_microphoneVolumeSlider != null)
+            {
+                _microphoneVolumeSlider.onValueChanged.RemoveListener(SetMicrophoneVolume);
+            }
+
             ClientSession = null;
             AudioServer = null;
 
             _currentInput = null;
-            _muteInputFilter = null;
+            _voiceInputControlFilter = null;
 
             IsMuted = false;
             HasSetUp = false;
@@ -182,21 +232,19 @@ namespace Adrenak.UniVoice.Samples
 
         /// <summary>
         /// Sets whether the local microphone should be muted.
-        /// 
+        ///
         /// This does not swap the UniVoice input. Instead, it uses a filter that outputs silence
         /// while muted, which is safer than replacing ClientSession.Input at runtime.
         /// </summary>
         /// <param name="muted">True to mute the microphone, false to unmute it.</param>
         public void SetMicrophoneMuted(bool muted)
         {
-            if (_muteInputFilter == null)
-            {
-                Debug.unityLogger.Log(LogType.Warning, TAG, "Cannot mute/unmute because MuteInputFilter is null.");
-                return;
-            }
-
             IsMuted = muted;
-            _muteInputFilter.IsMuted = muted;
+
+            if (_voiceInputControlFilter != null)
+            {
+                _voiceInputControlFilter.IsMuted = muted;
+            }
 
             Debug.unityLogger.Log(
                 LogType.Log,
@@ -206,8 +254,92 @@ namespace Adrenak.UniVoice.Samples
         }
 
         /// <summary>
+        /// Enables push to talk.
+        /// Can be assigned directly to the ON button in the Unity Inspector.
+        /// </summary>
+        public void EnablePushToTalk()
+        {
+            SetPushToTalk(true);
+        }
+
+        /// <summary>
+        /// Disables push to talk.
+        /// Can be assigned directly to the OFF button in the Unity Inspector.
+        /// </summary>
+        public void DisablePushToTalk()
+        {
+            SetPushToTalk(false);
+        }
+
+        /// <summary>
+        /// Sets whether push to talk is enabled.
+        /// When enabled, local voice is only sent while the push to talk key is held.
+        /// </summary>
+        /// <param name="enabled">True to enable push to talk, false to disable it.</param>
+        public void SetPushToTalk(bool enabled)
+        {
+            _pushToTalkEnabled = enabled;
+
+            if (_voiceInputControlFilter != null)
+            {
+                _voiceInputControlFilter.PushToTalkEnabled = _pushToTalkEnabled;
+                _voiceInputControlFilter.IsPushToTalkHeld = Input.GetKey(_pushToTalkKey);
+            }
+            UpdatePushToTalkButtons();
+
+            Debug.unityLogger.Log(
+                LogType.Log,
+                TAG,
+                enabled ? "Push To Talk enabled" : "Push To Talk disabled"
+            );
+        }
+
+        /// <summary>
+        /// Updates the Push To Talk ON/OFF button colors based on the current state.
+        /// </summary>
+        private void UpdatePushToTalkButtons()
+        {
+            SetButtonColor(_pushToTalkOnButton, _pushToTalkEnabled ? _activeButtonColor : _inactiveButtonColor);
+            SetButtonColor(_pushToTalkOffButton, !_pushToTalkEnabled ? _activeButtonColor : _inactiveButtonColor);
+        }
+
+        /// <summary>
+        /// Sets the normal color of a Unity UI button.
+        /// </summary>
+        /// <param name="button">Button to update.</param>
+        /// <param name="color">Color to apply.</param>
+        private void SetButtonColor(Button button, Color color)
+        {
+            if (button == null)
+                return;
+
+            ColorBlock colors = button.colors;
+            colors.normalColor = color;
+            colors.selectedColor = color;
+            colors.highlightedColor = color;
+            button.colors = colors;
+        }
+
+        /// <summary>
+        /// Sets the local microphone input volume.
+        /// Expected range is 0 to 2, where 1 means 100%.
+        /// </summary>
+        /// <param name="volume">Microphone volume multiplier.</param>
+        public void SetMicrophoneVolume(float volume)
+        {
+            _microphoneVolume = Mathf.Clamp(volume, 0f, 2f);
+
+            if (_voiceInputControlFilter != null)
+            {
+                _voiceInputControlFilter.MicrophoneVolume = _microphoneVolume;
+            }
+
+            UpdateMicrophoneVolumeText();
+        }
+
+        /// <summary>
         /// Changes the active microphone device.
-        /// 
+        ///
         /// This stops the currently recording microphone, starts the selected one,
         /// creates a new UniMicInput and assigns it to the current ClientSession.
         /// </summary>
@@ -355,9 +487,16 @@ namespace Adrenak.UniVoice.Samples
 
             Debug.unityLogger.Log(LogType.Log, TAG, "Created voice session");
 
-            _muteInputFilter = new MuteInputFilter();
-            ClientSession.InputFilters.Add(_muteInputFilter);
-            Debug.unityLogger.Log(LogType.Log, TAG, "Registered MuteInputFilter as an input filter");
+            _voiceInputControlFilter = new VoiceInputControlFilter
+            {
+                IsMuted = _startMuted,
+                PushToTalkEnabled = _pushToTalkEnabled,
+                IsPushToTalkHeld = false,
+                MicrophoneVolume = _microphoneVolume
+            };
+
+            ClientSession.InputFilters.Add(_voiceInputControlFilter);
+            Debug.unityLogger.Log(LogType.Log, TAG, "Registered VoiceInputControlFilter as an input filter");
 
 #if UNIVOICE_FILTER_RNNOISE4UNITY
             if (_useRNNoise4UnityIfAvailable)
@@ -391,6 +530,40 @@ namespace Adrenak.UniVoice.Samples
 
         #endregion
 
+        #region Audio Settings UI
+
+        /// <summary>
+        /// Initializes audio settings UI callbacks such as microphone volume slider.
+        /// </summary>
+        private void SetupAudioSettingsUI()
+        {
+            if (_microphoneVolumeSlider != null)
+            {
+                _microphoneVolumeSlider.minValue = 0f;
+                _microphoneVolumeSlider.maxValue = 2f;
+                _microphoneVolumeSlider.value = _microphoneVolume;
+
+                _microphoneVolumeSlider.onValueChanged.RemoveListener(SetMicrophoneVolume);
+                _microphoneVolumeSlider.onValueChanged.AddListener(SetMicrophoneVolume);
+            }
+
+            UpdateMicrophoneVolumeText();
+        }
+
+        /// <summary>
+        /// Updates the microphone volume percentage text if one is assigned.
+        /// </summary>
+        private void UpdateMicrophoneVolumeText()
+        {
+            if (_microphoneVolumeText == null)
+                return;
+
+            int percentage = Mathf.RoundToInt(_microphoneVolume * 100f);
+            _microphoneVolumeText.text = percentage + "%";
+        }
+
+        #endregion
+
         #region Microphone Selection
 
         /// <summary>
@@ -412,9 +585,9 @@ namespace Adrenak.UniVoice.Samples
             }
 
             _microphoneDropdown.options = Mic.AvailableDevices
-                .Select(device => new Dropdown.OptionData
+                .Select(device => new TMP_Dropdown.OptionData
                 {
-                    text = $"{device.Name} [{device.MaxFrequency}, {device.MinFrequency}]"
+                    text = $"{device.Name}"
                 })
                 .ToList();
 
@@ -510,42 +683,144 @@ namespace Adrenak.UniVoice.Samples
 
         #endregion
 
+        #region Push To Talk
+
+        /// <summary>
+        /// Updates the internal push to talk held state using Unity input.
+        /// The filter reads this cached state instead of reading Input directly.
+        /// </summary>
+        private void UpdatePushToTalkHeldState()
+        {
+            if (_voiceInputControlFilter == null)
+                return;
+
+            _voiceInputControlFilter.IsPushToTalkHeld = Input.GetKey(_pushToTalkKey);
+        }
+
+        #endregion
+
         #region Internal Filters
 
         /// <summary>
-        /// Input filter that outputs silence while muted.
-        /// 
+        /// Input filter that controls outgoing microphone audio.
+        ///
+        /// It can:
+        /// - Output silence while muted.
+        /// - Output silence when push to talk is enabled but the key is not held.
+        /// - Apply microphone volume gain to outgoing samples.
+        ///
         /// This avoids replacing ClientSession.Input at runtime for mute/unmute,
         /// which can break input subscriptions in some UniVoice versions.
         /// </summary>
-        private class MuteInputFilter : IAudioFilter
+        private class VoiceInputControlFilter : IAudioFilter
         {
             /// <summary>
-            /// Whether this filter should replace outgoing samples with silence.
+            /// Whether outgoing audio should be silenced.
             /// </summary>
             public bool IsMuted { get; set; }
 
             /// <summary>
-            /// Runs the mute filter over an outgoing audio frame.
+            /// Whether push to talk is enabled.
+            /// </summary>
+            public bool PushToTalkEnabled { get; set; }
+
+            /// <summary>
+            /// Whether the push to talk key is currently being held.
+            /// </summary>
+            public bool IsPushToTalkHeld { get; set; }
+
+            /// <summary>
+            /// Microphone volume multiplier.
+            /// 0 = silence, 1 = original volume, 2 = double volume.
+            /// </summary>
+            public float MicrophoneVolume { get; set; } = 1f;
+
+            /// <summary>
+            /// Runs the input control filter over an outgoing audio frame.
             /// </summary>
             /// <param name="frame">Original outgoing audio frame.</param>
-            /// <returns>The original frame when unmuted, or a silent frame when muted.</returns>
+            /// <returns>Modified outgoing audio frame.</returns>
             public AudioFrame Run(AudioFrame frame)
             {
-                if (!IsMuted)
+                if (ShouldSilence())
+                    return CreateSilentFrame(frame);
+
+                if (Mathf.Approximately(MicrophoneVolume, 1f))
                     return frame;
 
+                return ApplyVolume(frame);
+            }
+
+            /// <summary>
+            /// Checks whether the current frame should be replaced with silence.
+            /// </summary>
+            /// <returns>True if audio should be silenced.</returns>
+            private bool ShouldSilence()
+            {
+                if (IsMuted)
+                    return true;
+
+                if (PushToTalkEnabled && !IsPushToTalkHeld)
+                    return true;
+
+                return false;
+            }
+
+            /// <summary>
+            /// Creates a silent audio frame while preserving original metadata.
+            /// </summary>
+            /// <param name="frame">Original audio frame.</param>
+            /// <returns>Silent audio frame.</returns>
+            private AudioFrame CreateSilentFrame(AudioFrame frame)
+            {
                 if (frame.samples == null || frame.samples.Length == 0)
                     return frame;
-
-                byte[] mutedSamples = new byte[frame.samples.Length];
 
                 return new AudioFrame
                 {
                     timestamp = frame.timestamp,
                     frequency = frame.frequency,
                     channelCount = frame.channelCount,
-                    samples = mutedSamples
+                    samples = new byte[frame.samples.Length]
+                };
+            }
+
+            /// <summary>
+            /// Applies volume gain to the audio frame samples.
+            ///
+            /// UniMic provides samples as bytes that represent float samples.
+            /// If the byte array cannot be interpreted as float samples, the original frame is returned.
+            /// </summary>
+            /// <param name="frame">Original audio frame.</param>
+            /// <returns>Audio frame with adjusted sample volume.</returns>
+            private AudioFrame ApplyVolume(AudioFrame frame)
+            {
+                if (frame.samples == null || frame.samples.Length == 0)
+                    return frame;
+
+                if (frame.samples.Length % sizeof(float) != 0)
+                    return frame;
+
+                byte[] newSamples = new byte[frame.samples.Length];
+                float[] floatSamples = new float[frame.samples.Length / sizeof(float)];
+
+                Buffer.BlockCopy(frame.samples, 0, floatSamples, 0, frame.samples.Length);
+
+                float volume = Mathf.Clamp(MicrophoneVolume, 0f, 2f);
+
+                for (int i = 0; i < floatSamples.Length; i++)
+                {
+                    floatSamples[i] = Mathf.Clamp(floatSamples[i] * volume, -1f, 1f);
+                }
+
+                Buffer.BlockCopy(floatSamples, 0, newSamples, 0, newSamples.Length);
+
+                return new AudioFrame
+                {
+                    timestamp = frame.timestamp,
+                    frequency = frame.frequency,
+                    channelCount = frame.channelCount,
+                    samples = newSamples
                 };
             }
         }
