@@ -13,7 +13,13 @@ public class PlayerManager : NetworkBehaviour
 
         string steamName = SteamFriends.GetPersonaName();
 
-        playerName = steamName;
+        CmdSetPlayerName(steamName);
+    }
+
+    [Command(requiresAuthority = false)]
+    private void CmdSetPlayerName(string newName)
+    {
+        playerName = newName;
     }
 
     #region TEXT_CHAT
