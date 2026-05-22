@@ -1,0 +1,118 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SkyboxMat
+  m_Shader: {fileID: -6465566751694194690, guid: 55981eab9d2619744a5c2e595012381f, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BrushTex:
+        m_Texture: {fileID: 2800000, guid: 7b806a2f79219f240a926857726b5808, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CloudsTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HDRICube:
+        m_Texture: {fileID: 8900000, guid: beb622929cce1ac4b82e1552d1b704e1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MoonTex:
+        m_Texture: {fileID: 2800000, guid: c84b02dd1ab828046a53d93356012364, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleCubemap_9bb28dff93b44057bd82d0457e44a347_Cube_1_Cubemap:
+        m_Texture: {fileID: 8900000, guid: beb622929cce1ac4b82e1552d1b704e1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_944a0933822449b6b79fcb09c546eec5_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 2d7e177561d681d46ac45eb5d7a1f6d2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Blend: 0.35
+    - _BrushIntensity: 0.015
+    - _BrushTreshold: 0.35
+    - _CloudEdge: 0.34
+    - _CloudFalloff: 0.84
+    - _CloudHeight: 1
+    - _CloudsIntensity: 0.05
+    - _CloudsNoise: 400
+    - _CloudsPosterize: 8
+    - _HDRIBlend: 0.38
+    - _HDRIExposure: 1.3106709
+    - _HDRIRotation: 1.12
+    - _HeightOffset: 0.8428222
+    - _MoonMaskSize: 1.27
+    - _MoonPower: 1
+    - _MoonSize: 1.21
+    - _MoonSteps: 6
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _SkyExposure: 2.78
+    - _SkyRotation: 0.54
+    - _StarsDensity: 20
+    - _StarsFalloff: 100
+    - _StarsIntensity: 0
+    - _StarsSpeed: 0.15
+    - _SunSize: 1.22
+    - _WindSpeed: 4.91
+    m_Colors:
+    - _BrushTiling: {r: 0.37, g: 2, b: 0, a: 0}
+    - _CloudsColor: {r: 0.596, g: 0.596, b: 0.596, a: 1}
+    - _HorizonColor: {r: 0.74990577, g: 0.7215464, b: 0.5842271, a: 1}
+    - _MoonColor: {r: 0.80383015, g: 0.8909117, b: 1.0717735, a: 0}
+    - _MoonOffset: {r: -0.1, g: 0.07, b: 0.06, a: 0}
+    - _MoonTiling: {r: 3, g: 3, b: 0, a: 0}
+    - _SkyColor: {r: 0.32043797, g: 0.5304802, b: 0.8391026, a: 1}
+    - _SkyRotation: {r: 0, g: 0, b: 0, a: 0}
+    - _StarsTiling: {r: 10, g: 3, b: 0, a: 0}
+    - _SunColor: {r: 2.9960783, g: 1.4626755, b: 0.53333324, a: 0}
+    - _TexOffset: {r: 0.5, g: 0.5, b: 0, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!114 &7339490221900750695
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 10
