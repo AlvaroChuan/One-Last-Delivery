@@ -1,78 +1,216 @@
 using UnityEngine;
 using TMPro;
 using System.Linq;
+using UnityEngine.UI;
+using System;
 using Steamworks;
-using Edgegap;
+using DG.Tweening;
+using System.Collections;
 
 public class UIManager : MonoBehaviour
 {
-    public SteamLobbyManager steamLobby;
+    [Serializable]
+    private struct PaperSheet
+    {
+        public GameObject sheetObject;
+        public GameObject associatedPanel;
+    }
 
-    [Header("Panels")]
-    [SerializeField] private GameObject[] _panels;
+    [Header("Main Menu")]
+    [SerializeField] private GameObject _title;
+    [SerializeField] private Button _playButton;
+    [SerializeField] private Button _optionsButton;
+    [SerializeField] private Button _quitButton;
 
-    [Header("Buttons")]
-    [SerializeField] private GameObject _joinLobbyButton;
+    [Header("Clipboard Panels")]
+    [SerializeField] private GameObject _lobbyListPanel;
+    [SerializeField] private GameObject _createLobbyPanel;
+    [SerializeField] private GameObject _enterPasswordPanel;
+    [SerializeField] private GameObject _lobbyPanel;
+    [SerializeField] private GameObject _optionsPanel;
+
+    [Header("Panel Elements")]
+    [SerializeField] private GameObject _lobbyListItemPrefab;
+    [SerializeField] private Transform _lobbyListContent;
+    [SerializeField] private GameObject _playersListItemPrefab;
+    [SerializeField] private Transform _playersListContent;
+    [SerializeField] private Button _confirmPasswordButton;
+
+    [Header("3D Elements")]
+    [Tooltip("Paper sheets must be in the same order as the panels in the inspector")]
+    [SerializeField] private GameObject _clipboardModel;
+    [SerializeField] private PaperSheet[] _paperSheets;
 
     [Header("Inputs")]
     [SerializeField] private TMP_InputField _lobbyNameInput;
     [SerializeField] private TMP_InputField _lobbyPasswordInput;
     [SerializeField] private TMP_InputField _joinLobbyPasswordInput;
 
+    [Header("References")]
+    [SerializeField] private SteamLobbyManager _steamLobbyManager;
 
-    public void ShowPanel(GameObject panelToShow)
+    private int _currentPaperSheetIndex = 0;
+
+    public void Start()
     {
-        foreach (GameObject panel in _panels) panel.SetActive(panel == panelToShow);
+        ShowMainMenu();
     }
 
-    public void OnClickRefreshLobbies()
+    public void OnPlayButtonClicked()
     {
-        steamLobby.FetchLobbies();
-        ShowPanel(GetPanelByName("LobbyList"));
+        HideMainMenu();
+        ShowClipboard();
+        OnRefreshLobbiesButtonClicked();
     }
 
-    public void OnClickQuit()
+    public void OnOptionsButtonClicked()
+    {
+        HideMainMenu();
+        ShowClipboard();
+        ShowPanel(_optionsPanel);
+    }
+
+    public void OnQuitButtonClicked()
     {
         Application.Quit();
     }
 
-    public void OnClickHostLobby()
+    public void OnRefreshLobbiesButtonClicked()
     {
-        steamLobby.HostLobby(_lobbyNameInput.text, _lobbyPasswordInput.text);
-        ShowPanel(GetPanelByName("Lobby"));
+        _steamLobbyManager.FetchLobbies();
+        ShowPanel(_lobbyListPanel);
+    }
+
+    public void OnReturnToMainMenuButtonClicked()
+    {
+        HideClipboard();
+        ShowMainMenu();
+    }
+
+    public void OnCreateLobbyButtonClicked()
+    {
+        _steamLobbyManager.HostLobby(_lobbyNameInput.text, _lobbyPasswordInput.text);
+        ShowPanel(_lobbyPanel);
     }
 
     public void OnClickInviteFriends()
     {
-        steamLobby.InviteFriends();
+        _steamLobbyManager.InviteFriends();
     }
-    public void OnClickAudio()
+
+    public void ShowPanel(GameObject panelToShow)
     {
-        ShowPanel(GetPanelByName("AudioSettings"));
+        int objectivePanelIndex = Array.FindIndex(_paperSheets, ps => ps.associatedPanel == panelToShow);
+        StartCoroutine(PassPanelsAndSheets(objectivePanelIndex));
     }
-    public void OnAudioExit()
+
+    public void ClearLobbyList()
     {
-        ShowPanel(GetPanelByName("Lobby"));
+        for (int i = _lobbyListContent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(_lobbyListContent.GetChild(i).gameObject);
+        }
+    }
+
+    public void AddLobbyToList(CSteamID lobbyID, string lobbyName, string password)
+    {
+        GameObject item = Instantiate(_lobbyListItemPrefab, _lobbyListContent);
+        LobbyListItem itemScript = item.GetComponent<LobbyListItem>();
+        itemScript.Initialize(lobbyID, _steamLobbyManager, this, lobbyName, password);
+    }
+
+    public void ClearPlayerList()
+    {
+        for (int i = _playersListContent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(_playersListContent.GetChild(i).gameObject);
+        }
+    }
+
+    public void AddPlayerToList(CSteamID playerID) //TODO REVIEW THIS
+    {
+        GameObject item = Instantiate(_playersListItemPrefab, _playersListContent);
+        LobbyPlayerItem itemScript = item.GetComponent<LobbyPlayerItem>();
+        itemScript.SetupPlayer(playerID);
     }
 
     public void OnJoinedLobby()
     {
-        ShowPanel(GetPanelByName("Lobby"));
+        ShowPanel(_lobbyPanel);
     }
 
     public void OnLobbyExit()
     {
-        ShowPanel(GetPanelByName("LobbyList"));
+        ShowPanel(_lobbyListPanel);
     }
 
-    public GameObject GetPanelByName(string name)
+    public void OnClickAudio()
     {
-        return _panels.FirstOrDefault(p => p.name == name);
+        //ShowPanel(GetPanelByName("AudioSettings"));
+    }
+    public void OnAudioExit()
+    {
+        ShowPanel(_lobbyPanel);
     }
 
-    public void SetJoinLobbyPasswordCallbacks(LobbyListItem lobbyListItem)
+    public void OnPassWordRequired(LobbyListItem lobbyListItem)
     {
-        _joinLobbyButton.GetComponent<UnityEngine.UI.Button>().onClick.RemoveAllListeners();
-        _joinLobbyButton.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => { lobbyListItem.OnJoinWithPassword(_joinLobbyPasswordInput.text);});
+        ShowPanel(_enterPasswordPanel);
+        _confirmPasswordButton.onClick.RemoveAllListeners();
+        _confirmPasswordButton.onClick.AddListener(() => lobbyListItem.OnJoinWithPassword(_enterPasswordPanel.GetComponentInChildren<TMP_InputField>().text));
+    }
+
+    private void ShowMainMenu()
+    {
+        _title.transform.DOMoveX(-300, 0.5f).From();
+        _playButton.transform.DOMoveX(-300, 0.5f).From().SetDelay(0.1f);
+        _optionsButton.transform.DOMoveX(-300, 0.5f).From().SetDelay(0.2f);
+        _quitButton.transform.DOMoveX(-300, 0.5f).From().SetDelay(0.3f);
+    }
+
+    private void HideMainMenu()
+    {
+        _quitButton.transform.DOMoveX(-300, 0.5f);
+        _optionsButton.transform.DOMoveX(-300, 0.5f).SetDelay(0.1f);
+        _playButton.transform.DOMoveX(-300, 0.5f).SetDelay(0.2f);
+        _title.transform.DOMoveX(-300, 0.5f).SetDelay(0.3f);
+    }
+
+    private void ShowClipboard()
+    {
+        _clipboardModel.transform.DOMoveY(0, 0.5f);
+    }
+
+    private void HideClipboard()
+    {
+        _clipboardModel.transform.DOMoveY(-200, 0.5f);
+    }
+
+    private IEnumerator PassPanelsAndSheets(int objectivePanelIndex)
+    {
+        while (_currentPaperSheetIndex != objectivePanelIndex)
+        {
+            if(_currentPaperSheetIndex < objectivePanelIndex)
+            {
+                _paperSheets[_currentPaperSheetIndex].sheetObject.GetComponent<Animator>().SetTrigger("Pass");
+                yield return new WaitForSeconds(0.3f);
+                _paperSheets[_currentPaperSheetIndex].associatedPanel.SetActive(false);
+                _currentPaperSheetIndex = (_currentPaperSheetIndex + 1) % _paperSheets.Length;
+                _paperSheets[_currentPaperSheetIndex].associatedPanel.SetActive(true);
+                yield return new WaitForSeconds(0.1f);
+                
+            }
+            else
+            {
+                int tempIndex = _currentPaperSheetIndex;
+                _currentPaperSheetIndex = (_currentPaperSheetIndex - 1) % _paperSheets.Length;
+                _paperSheets[_currentPaperSheetIndex].sheetObject.GetComponent<Animator>().SetTrigger("Unpass");
+                yield return new WaitForSeconds(0.5f);
+                _paperSheets[tempIndex].associatedPanel.SetActive(false);
+                _paperSheets[_currentPaperSheetIndex].associatedPanel.SetActive(true);
+                yield return new WaitForSeconds(0.05f);
+            }
+            
+        }
     }
 }

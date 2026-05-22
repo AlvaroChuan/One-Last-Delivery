@@ -8,12 +8,17 @@ public class LobbyPlayerItem : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _playerNameText;
     [SerializeField] private Image _playerAvatarImage;
+    private CSteamID steamID;
 
     public void SetupPlayer(CSteamID steamID)
     {
         string playerName = SteamFriends.GetFriendPersonaName(steamID);
         _playerNameText.text = playerName;
+        this.steamID = steamID;
+    }
 
+    private void OnEnable()
+    {
         StartCoroutine(FetchAvatar(steamID));
     }
 

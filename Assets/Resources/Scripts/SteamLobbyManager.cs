@@ -20,10 +20,6 @@ public class SteamLobbyManager : MonoBehaviour
     private NetworkManager _networkManager;
     private CSteamID _currentLobbyID;
 
-    [Header("Players List UI")]
-    [SerializeField] private GameObject _playerListItemPrefab;
-    [SerializeField] private Transform _playerListContent;
-
     private void Start()
     {
         _networkManager = GetComponent<NetworkManager>();
@@ -91,24 +87,14 @@ public class SteamLobbyManager : MonoBehaviour
 
     private void UpdatePlayerList()
     {
-        foreach (Transform child in _playerListContent)
-        {
-            Destroy(child.gameObject);
-        }
+        _uiManager.ClearPlayerList();
 
         int numPlayers = SteamMatchmaking.GetNumLobbyMembers(_currentLobbyID);
 
         for (int i = 0; i < numPlayers; i++)
         {
             CSteamID playerSteamID = SteamMatchmaking.GetLobbyMemberByIndex(_currentLobbyID, i);
-
-            GameObject item = Instantiate(_playerListItemPrefab, _playerListContent);
-            LobbyPlayerItem playerItemScript = item.GetComponent<LobbyPlayerItem>();
-
-            if (playerItemScript != null)
-            {
-                playerItemScript.SetupPlayer(playerSteamID);
-            }
+            _uiManager.AddPlayerToList(playerSteamID);
         }
     }
 
@@ -185,6 +171,7 @@ public class SteamLobbyManager : MonoBehaviour
             _lobbyVoiceChat.StartVoiceChat();
 
         _uiManager.OnJoinedLobby();
+        UpdatePlayerList();
     }
 
     public void FetchLobbies()
@@ -196,10 +183,7 @@ public class SteamLobbyManager : MonoBehaviour
 
     private void OnLobbyList(LobbyMatchList_t callback)
     {
-        for (int i = _lobbyListContent.childCount - 1; i >= 0; i--)
-        {
-            Destroy(_lobbyListContent.GetChild(i).gameObject);
-        }
+        _uiManager.ClearLobbyList();
 
         for (int i = 0; i < callback.m_nLobbiesMatching; i++)
         {
@@ -207,9 +191,7 @@ public class SteamLobbyManager : MonoBehaviour
             string lobbyName = SteamMatchmaking.GetLobbyData(lobbyID, "name");
             string lobbyPassword = SteamMatchmaking.GetLobbyData(lobbyID, "password");
 
-            GameObject item = Instantiate(_lobbyListItemPrefab, _lobbyListContent);
-            LobbyListItem itemScript = item.GetComponent<LobbyListItem>();
-            itemScript.Initialize(lobbyID, this, _uiManager, lobbyName, lobbyPassword);
+            _uiManager.AddLobbyToList(lobbyID, lobbyName, lobbyPassword);
         }
     }
 
