@@ -15,7 +15,7 @@ public class LobbyListItem : MonoBehaviour
     private SteamLobbyManager _steamLobbyManager;
     private UIManager _uiManager;
 
-    public void Initialize(CSteamID id, SteamLobbyManager steamLobbyManager, UIManager uiManager, string name, string password, int currentPlayers, int maxPlayers, string hostName, string ping)
+    public void Initialize(CSteamID id, SteamLobbyManager steamLobbyManager, UIManager uiManager, string name, string password, int currentPlayers, int maxPlayers, string hostName, int ping)
     {
         _lobbyID = id;
         _actualPassword = password;
@@ -27,9 +27,9 @@ public class LobbyListItem : MonoBehaviour
 
         _playerCountText.text = $"{currentPlayers}/{maxPlayers}";
 
-        _hostNameText.text = hostName;
+        _hostNameText.text = $"Host: {hostName}";
         
-        _pingText.text = ping; 
+        _pingText.text = ping != -1 ? $"{ping} ms" : "N/A ms";
 
         bool isFull = currentPlayers >= maxPlayers;
 

@@ -112,7 +112,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void AddLobbyToList(CSteamID lobbyID, string lobbyName, string password, int currentPlayers, int maxPlayers, string hostName, string ping)
+    public void AddLobbyToList(CSteamID lobbyID, string lobbyName, string password, int currentPlayers, int maxPlayers, string hostName, int ping)
     {
         GameObject item = Instantiate(_lobbyListItemPrefab, _lobbyListContent);
         LobbyListItem itemScript = item.GetComponent<LobbyListItem>();

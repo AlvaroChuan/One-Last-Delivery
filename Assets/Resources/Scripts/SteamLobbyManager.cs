@@ -20,13 +20,14 @@ public class SteamLobbyManager : MonoBehaviour
     private const string HOST_ADDRESS_KEY = "HostAddress";
     private NetworkManager _networkManager;
     private CSteamID _currentLobbyID;
+    private Coroutine _autoRefreshCoroutine;
 
     private void Start()
     {
         _networkManager = GetComponent<NetworkManager>();
         if (!SteamManager.Initialized) return;
         SteamNetworkingUtils.InitRelayNetworkAccess();
-        SteamNetworkingUtils.CheckPingDataUpToDate(0);
+        SteamNetworkingUtils.CheckPingDataUpToDate(60f);
 
         lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
         gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnGameLobbyJoinRequested);
@@ -64,7 +65,7 @@ public class SteamLobbyManager : MonoBehaviour
     {
         PlayerPrefs.SetString("lobbyName", lobbyName);
         PlayerPrefs.SetString("lobbyPassword", password);
-        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, _networkManager.maxConnections);
+        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeInvisible, _networkManager.maxConnections);
     }
 
     private void OnLobbyCreated(LobbyCreated_t callback)
@@ -182,10 +183,34 @@ public class SteamLobbyManager : MonoBehaviour
 
     public void FetchLobbies()
     {
-        SteamNetworkingUtils.CheckPingDataUpToDate(0);
+        SteamNetworkingUtils.CheckPingDataUpToDate(60f);
         SteamMatchmaking.AddRequestLobbyListStringFilter("gameID", GAME_ID_KEY, ELobbyComparison.k_ELobbyComparisonEqual);
         SteamMatchmaking.AddRequestLobbyListDistanceFilter(ELobbyDistanceFilter.k_ELobbyDistanceFilterWorldwide);
         SteamMatchmaking.RequestLobbyList();
+
+        SteamNetworkPingLocation_t pingLocation;
+        float pingAge = SteamNetworkingUtils.GetLocalPingLocation(out pingLocation);
+        
+        if (pingAge < 0 && _autoRefreshCoroutine == null)
+        {
+            _autoRefreshCoroutine = StartCoroutine(AutoRefreshLobbiesWhenPingReady());
+        }
+    }
+
+    private IEnumerator AutoRefreshLobbiesWhenPingReady()
+    {
+        SteamNetworkPingLocation_t pingLocation;
+        float pingAge = SteamNetworkingUtils.GetLocalPingLocation(out pingLocation);
+
+        while (pingAge < 0)
+        {
+            yield return new WaitForSeconds(0.5f);
+            pingAge = SteamNetworkingUtils.GetLocalPingLocation(out pingLocation);
+        }
+
+        // Ping data is now ready, refresh the list automatically
+        FetchLobbies();
+        _autoRefreshCoroutine = null;
     }
 
     private void OnLobbyList(LobbyMatchList_t callback)
@@ -201,14 +226,12 @@ public class SteamLobbyManager : MonoBehaviour
             int maxPlayers = SteamMatchmaking.GetLobbyMemberLimit(lobbyID);
             string hostName = SteamMatchmaking.GetLobbyData(lobbyID, "hostName");
             string locationString = SteamMatchmaking.GetLobbyData(lobbyID, "pingLocation");
-            string ping = "N/A";
+            int ping = -1;
             if (!string.IsNullOrEmpty(locationString))
             {
-                Debug.Log($"Lobby {lobbyName} has ping location string: {locationString}");
                 SteamNetworkPingLocation_t hostLocation;
                 SteamNetworkingUtils.ParsePingLocationString(locationString, out hostLocation);
-                int pingValue = SteamNetworkingUtils.EstimatePingTimeFromLocalHost(ref hostLocation);
-                ping = pingValue != -1 ? $"{pingValue} ms" : "N/A";
+                ping= SteamNetworkingUtils.EstimatePingTimeFromLocalHost(ref hostLocation);
             }
             _uiManager.AddLobbyToList(lobbyID, lobbyName, lobbyPassword, currentPlayers, maxPlayers, hostName, ping);
         }
@@ -221,12 +244,12 @@ public class SteamLobbyManager : MonoBehaviour
 
     private IEnumerator SetPingLocationRoutine()
     {
+        SteamNetworkingUtils.CheckPingDataUpToDate(60f);
         SteamNetworkPingLocation_t pingLocation;
         float pingAge = SteamNetworkingUtils.GetLocalPingLocation(out pingLocation);
         
         while (pingAge < 0)
         {
-            SteamNetworkingUtils.CheckPingDataUpToDate(0);
             yield return new WaitForSeconds(0.5f);
             pingAge = SteamNetworkingUtils.GetLocalPingLocation(out pingLocation);
         }
@@ -235,6 +258,7 @@ public class SteamLobbyManager : MonoBehaviour
         if (_currentLobbyID != CSteamID.Nil)
         {
             SteamMatchmaking.SetLobbyData(_currentLobbyID, "pingLocation", locationString);
+            SteamMatchmaking.SetLobbyType(_currentLobbyID, ELobbyType.k_ELobbyTypePublic);
         }
     }
 }
