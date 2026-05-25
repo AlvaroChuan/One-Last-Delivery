@@ -703,9 +703,9 @@ MonoBehaviour:
   _pingText: {fileID: 1081443126216781283}
   _playerCountText: {fileID: 2150626495856009743}
   _statusIcons:
-  - {fileID: 4112880206902750609}
   - {fileID: 1346659833369503409}
   - {fileID: 7010006746233937694}
+  - {fileID: 4112880206902750609}
 --- !u!1 &4994212819367507033
 GameObject:
   m_ObjectHideFlags: 0

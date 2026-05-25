@@ -112,11 +112,11 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void AddLobbyToList(CSteamID lobbyID, string lobbyName, string password)
+    public void AddLobbyToList(CSteamID lobbyID, string lobbyName, string password, int currentPlayers, int maxPlayers, string hostName, string ping)
     {
         GameObject item = Instantiate(_lobbyListItemPrefab, _lobbyListContent);
         LobbyListItem itemScript = item.GetComponent<LobbyListItem>();
-        itemScript.Initialize(lobbyID, _steamLobbyManager, this, lobbyName, password);
+        itemScript.Initialize(lobbyID, _steamLobbyManager, this, lobbyName, password, currentPlayers, maxPlayers, hostName, ping);
     }
 
     public void ClearPlayerList()
@@ -162,28 +162,28 @@ public class UIManager : MonoBehaviour
 
     private void ShowMainMenu()
     {
-        _title.transform.DOMoveX(-300, 0.5f).From();
-        _playButton.transform.DOMoveX(-300, 0.5f).From().SetDelay(0.1f);
-        _optionsButton.transform.DOMoveX(-300, 0.5f).From().SetDelay(0.2f);
-        _quitButton.transform.DOMoveX(-300, 0.5f).From().SetDelay(0.3f);
+        _title.transform.DOMoveX(75, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.1f);
+        _playButton.transform.DOMoveX(75, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.1f);
+        _optionsButton.transform.DOMoveX(75, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.2f);
+        _quitButton.transform.DOMoveX(75, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.3f);
     }
 
     private void HideMainMenu()
     {
-        _quitButton.transform.DOMoveX(-300, 0.5f);
-        _optionsButton.transform.DOMoveX(-300, 0.5f).SetDelay(0.1f);
-        _playButton.transform.DOMoveX(-300, 0.5f).SetDelay(0.2f);
-        _title.transform.DOMoveX(-300, 0.5f).SetDelay(0.3f);
+        _quitButton.transform.DOMoveX(-500, 0.5f).SetEase(Ease.InOutCubic);
+        _optionsButton.transform.DOMoveX(-500, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.1f);
+        _playButton.transform.DOMoveX(-500, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.2f);
+        _title.transform.DOMoveX(-500, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.3f);
     }
 
     private void ShowClipboard()
     {
-        _clipboardModel.transform.DOMoveY(0, 0.5f);
+        _clipboardModel.transform.DOMoveY(0, 0.5f).SetEase(Ease.InOutCubic);
     }
 
     private void HideClipboard()
     {
-        _clipboardModel.transform.DOMoveY(-200, 0.5f);
+        _clipboardModel.transform.DOMoveY(-30, 0.5f).SetEase(Ease.InOutCubic);
     }
 
     private IEnumerator PassPanelsAndSheets(int objectivePanelIndex)

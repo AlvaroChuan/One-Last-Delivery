@@ -15,16 +15,29 @@ public class LobbyListItem : MonoBehaviour
     private SteamLobbyManager _steamLobbyManager;
     private UIManager _uiManager;
 
-    public void Initialize(CSteamID id, SteamLobbyManager steamLobbyManager, UIManager uiManager, string name, string password)
+    public void Initialize(CSteamID id, SteamLobbyManager steamLobbyManager, UIManager uiManager, string name, string password, int currentPlayers, int maxPlayers, string hostName, string ping)
     {
         _lobbyID = id;
         _actualPassword = password;
         _steamLobbyManager = steamLobbyManager;
         _uiManager = uiManager;
+        
         bool hasPassword = !string.IsNullOrEmpty(password);
-        _lobbyNameText.text = name + (hasPassword ? " [🔒]" : "");
+        _lobbyNameText.text = name;
+
+        _playerCountText.text = $"{currentPlayers}/{maxPlayers}";
+
+        _hostNameText.text = hostName;
+        
+        _pingText.text = ping; 
+
+        bool isFull = currentPlayers >= maxPlayers;
+
+        _statusIcons[0].gameObject.SetActive(!hasPassword && !isFull);
+        _statusIcons[1].gameObject.SetActive(hasPassword && !isFull);
+        _statusIcons[2].gameObject.SetActive(isFull);
+
         GetComponent<Button>().onClick.AddListener(OnJoinClicked);
-        //TODO set Hostname, ping, player count and status icons
     }
 
     public void OnJoinClicked()

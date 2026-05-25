@@ -24,6 +24,8 @@ public class SteamLobbyManager : MonoBehaviour
     {
         _networkManager = GetComponent<NetworkManager>();
         if (!SteamManager.Initialized) return;
+        SteamNetworkingUtils.InitRelayNetworkAccess();
+        SteamNetworkingUtils.CheckPingDataUpToDate(0);
 
         lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
         gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnGameLobbyJoinRequested);
@@ -78,6 +80,14 @@ public class SteamLobbyManager : MonoBehaviour
         SteamMatchmaking.SetLobbyData(_currentLobbyID, "gameID", GAME_ID_KEY);
         SteamMatchmaking.SetLobbyData(_currentLobbyID, HOST_ADDRESS_KEY, SteamUser.GetSteamID().ToString());
         SteamMatchmaking.SetLobbyData(_currentLobbyID, "name", PlayerPrefs.GetString("lobbyName"));
+        SteamMatchmaking.SetLobbyData(_currentLobbyID, "hostName", SteamFriends.GetPersonaName());
+        SteamNetworkPingLocation_t pingLocation;
+        float pingAge = SteamNetworkingUtils.GetLocalPingLocation(out pingLocation);
+        if (pingAge >= 0)
+        {
+            SteamNetworkingUtils.ConvertPingLocationToString(ref pingLocation, out string locationString, 256);
+            SteamMatchmaking.SetLobbyData(_currentLobbyID, "pingLocation", locationString);
+        }
 
         string password = PlayerPrefs.GetString("lobbyPassword");
         if (!string.IsNullOrEmpty(password))  SteamMatchmaking.SetLobbyData(_currentLobbyID, "password", password);
@@ -176,7 +186,8 @@ public class SteamLobbyManager : MonoBehaviour
 
     public void FetchLobbies()
     {
-        SteamMatchmaking.AddRequestLobbyListStringFilter("GameID", GAME_ID_KEY, ELobbyComparison.k_ELobbyComparisonEqual);
+        SteamNetworkingUtils.CheckPingDataUpToDate(0);
+        SteamMatchmaking.AddRequestLobbyListStringFilter("gameID", GAME_ID_KEY, ELobbyComparison.k_ELobbyComparisonEqual);
         SteamMatchmaking.AddRequestLobbyListDistanceFilter(ELobbyDistanceFilter.k_ELobbyDistanceFilterWorldwide);
         SteamMatchmaking.RequestLobbyList();
     }
@@ -190,8 +201,20 @@ public class SteamLobbyManager : MonoBehaviour
             CSteamID lobbyID = SteamMatchmaking.GetLobbyByIndex(i);
             string lobbyName = SteamMatchmaking.GetLobbyData(lobbyID, "name");
             string lobbyPassword = SteamMatchmaking.GetLobbyData(lobbyID, "password");
-
-            _uiManager.AddLobbyToList(lobbyID, lobbyName, lobbyPassword);
+            int currentPlayers = SteamMatchmaking.GetNumLobbyMembers(lobbyID);
+            int maxPlayers = SteamMatchmaking.GetLobbyMemberLimit(lobbyID);
+            string hostName = SteamMatchmaking.GetLobbyData(lobbyID, "hostName");
+            string locationString = SteamMatchmaking.GetLobbyData(lobbyID, "pingLocation");
+            string ping = "N/A";
+            if (!string.IsNullOrEmpty(locationString))
+            {
+                Debug.Log($"Lobby {lobbyName} has ping location string: {locationString}");
+                SteamNetworkPingLocation_t hostLocation;
+                SteamNetworkingUtils.ParsePingLocationString(locationString, out hostLocation);
+                int pingValue = SteamNetworkingUtils.EstimatePingTimeFromLocalHost(ref hostLocation);
+                ping = pingValue != -1 ? $"{pingValue} ms" : "N/A";
+            }
+            _uiManager.AddLobbyToList(lobbyID, lobbyName, lobbyPassword, currentPlayers, maxPlayers, hostName, ping);
         }
     }
 
