@@ -25,7 +25,7 @@ public class LobbyListItem : MonoBehaviour
         bool hasPassword = !string.IsNullOrEmpty(password);
         _lobbyNameText.text = name;
 
-        _playerCountText.text = $"{currentPlayers}/{maxPlayers}";
+        _playerCountText.text = $"Crew\n{currentPlayers}/{maxPlayers}";
 
         _hostNameText.text = $"Host: {hostName}";
         
