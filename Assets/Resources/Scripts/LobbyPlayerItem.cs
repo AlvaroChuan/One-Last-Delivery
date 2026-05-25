@@ -30,11 +30,14 @@ public class LobbyPlayerItem : MonoBehaviour
         string pingStr = SteamMatchmaking.GetLobbyMemberData(lobbyID, steamID, "ping");
         if (string.IsNullOrEmpty(pingStr) || pingStr == "N/A") _pingText.text = "N/A";
         else _pingText.text = pingStr + "ms";
+    }
 
+    public void OnEnable()
+    {
         if (!_isAvatarFetched)
         {
             _isAvatarFetched = true;
-            StartCoroutine(FetchAvatar(steamID));
+            StartCoroutine(FetchAvatar(_steamID));
         }
     }
 
