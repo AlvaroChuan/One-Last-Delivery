@@ -144,6 +144,46 @@ public class UIManager : MonoBehaviour
         itemScript.SetupPlayer(playerID, lobbyID);
     }
 
+    public void SyncPlayerList(CSteamID[] activePlayers, CSteamID lobbyID)
+    {
+        // Remove GameObjects for players who left
+        for (int i = _playersListContent.childCount - 1; i >= 0; i--)
+        {
+            var child = _playersListContent.GetChild(i);
+            var itemScript = child.GetComponent<LobbyPlayerItem>();
+            if (itemScript != null)
+            {
+                if (!activePlayers.Contains(itemScript.SteamID))
+                {
+                    Destroy(child.gameObject);
+                }
+            }
+            else Destroy(child.gameObject);
+        }
+
+        // Add or update players
+        foreach (CSteamID playerID in activePlayers)
+        {
+            bool found = false;
+            for (int i = 0; i < _playersListContent.childCount; i++)
+            {
+                var itemScript = _playersListContent.GetChild(i).GetComponent<LobbyPlayerItem>();
+                if (itemScript != null && itemScript.SteamID == playerID)
+                {
+                    // Existing player found, just update data instead of recreating
+                    itemScript.SetupPlayer(playerID, lobbyID); 
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                AddPlayerToList(playerID, lobbyID);
+            }
+        }
+    }
+
     public void OnJoinedLobby()
     {
         ShowPanel(_lobbyPanel);

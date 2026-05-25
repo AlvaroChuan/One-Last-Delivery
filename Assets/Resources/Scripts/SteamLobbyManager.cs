@@ -96,15 +96,17 @@ public class SteamLobbyManager : MonoBehaviour
 
     private void UpdatePlayerList()
     {
-        _uiManager.ClearPlayerList();
-
+        if (_currentLobbyID == CSteamID.Nil) return;
+        
         int numPlayers = SteamMatchmaking.GetNumLobbyMembers(_currentLobbyID);
-
+        CSteamID[] activePlayers = new CSteamID[numPlayers];
+        
         for (int i = 0; i < numPlayers; i++)
         {
-            CSteamID playerSteamID = SteamMatchmaking.GetLobbyMemberByIndex(_currentLobbyID, i);
-            _uiManager.AddPlayerToList(playerSteamID, _currentLobbyID);
+            activePlayers[i] = SteamMatchmaking.GetLobbyMemberByIndex(_currentLobbyID, i);
         }
+
+        _uiManager.SyncPlayerList(activePlayers, _currentLobbyID);
     }
 
     private void OnLobbyChatUpdate(LobbyChatUpdate_t callback)
