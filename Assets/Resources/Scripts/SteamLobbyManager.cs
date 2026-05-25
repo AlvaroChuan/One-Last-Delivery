@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using Mirror;
 using Steamworks;
@@ -81,13 +82,8 @@ public class SteamLobbyManager : MonoBehaviour
         SteamMatchmaking.SetLobbyData(_currentLobbyID, HOST_ADDRESS_KEY, SteamUser.GetSteamID().ToString());
         SteamMatchmaking.SetLobbyData(_currentLobbyID, "name", PlayerPrefs.GetString("lobbyName"));
         SteamMatchmaking.SetLobbyData(_currentLobbyID, "hostName", SteamFriends.GetPersonaName());
-        SteamNetworkPingLocation_t pingLocation;
-        float pingAge = SteamNetworkingUtils.GetLocalPingLocation(out pingLocation);
-        if (pingAge >= 0)
-        {
-            SteamNetworkingUtils.ConvertPingLocationToString(ref pingLocation, out string locationString, 256);
-            SteamMatchmaking.SetLobbyData(_currentLobbyID, "pingLocation", locationString);
-        }
+
+        StartCoroutine(SetPingLocationRoutine());
 
         string password = PlayerPrefs.GetString("lobbyPassword");
         if (!string.IsNullOrEmpty(password))  SteamMatchmaking.SetLobbyData(_currentLobbyID, "password", password);
@@ -221,5 +217,24 @@ public class SteamLobbyManager : MonoBehaviour
     public void InviteFriends()
     {
         SteamFriends.ActivateGameOverlayInviteDialog(_currentLobbyID);
+    }
+
+    private IEnumerator SetPingLocationRoutine()
+    {
+        SteamNetworkPingLocation_t pingLocation;
+        float pingAge = SteamNetworkingUtils.GetLocalPingLocation(out pingLocation);
+        
+        while (pingAge < 0)
+        {
+            SteamNetworkingUtils.CheckPingDataUpToDate(0);
+            yield return new WaitForSeconds(0.5f);
+            pingAge = SteamNetworkingUtils.GetLocalPingLocation(out pingLocation);
+        }
+
+        SteamNetworkingUtils.ConvertPingLocationToString(ref pingLocation, out string locationString, 256);
+        if (_currentLobbyID != CSteamID.Nil)
+        {
+            SteamMatchmaking.SetLobbyData(_currentLobbyID, "pingLocation", locationString);
+        }
     }
 }
