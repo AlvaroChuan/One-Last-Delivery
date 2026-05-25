@@ -15,6 +15,7 @@ public class SteamLobbyManager : MonoBehaviour
     protected Callback<LobbyEnter_t> lobbyEntered;
     protected Callback<LobbyMatchList_t> lobbyList;
     protected Callback<LobbyChatUpdate_t> lobbyChatUpdate;
+    protected Callback<LobbyDataUpdate_t> lobbyDataUpdate;
 
     private const string GAME_ID_KEY = "OneLastDeliveryID_145";
     private const string HOST_ADDRESS_KEY = "HostAddress";
@@ -34,6 +35,7 @@ public class SteamLobbyManager : MonoBehaviour
         lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
         lobbyList = Callback<LobbyMatchList_t>.Create(OnLobbyList);
         lobbyChatUpdate = Callback<LobbyChatUpdate_t>.Create(OnLobbyChatUpdate);
+        lobbyDataUpdate = Callback<LobbyDataUpdate_t>.Create(OnLobbyDataUpdate);
         if(_lobbyVoiceChat == null) _lobbyVoiceChat = _networkManager.GetComponent<LobbyVoiceChat>();
     }
 
@@ -101,13 +103,21 @@ public class SteamLobbyManager : MonoBehaviour
         for (int i = 0; i < numPlayers; i++)
         {
             CSteamID playerSteamID = SteamMatchmaking.GetLobbyMemberByIndex(_currentLobbyID, i);
-            _uiManager.AddPlayerToList(playerSteamID);
+            _uiManager.AddPlayerToList(playerSteamID, _currentLobbyID);
         }
     }
 
     private void OnLobbyChatUpdate(LobbyChatUpdate_t callback)
     {
         UpdatePlayerList();
+    }
+
+    private void OnLobbyDataUpdate(LobbyDataUpdate_t callback)
+    {
+        if (_currentLobbyID == (CSteamID)callback.m_ulSteamIDLobby)
+        {
+            UpdatePlayerList();
+        }
     }
 
 
@@ -118,8 +128,7 @@ public class SteamLobbyManager : MonoBehaviour
 
     public void ExitLobby()
     {
-        if (_lobbyVoiceChat != null)
-            _lobbyVoiceChat.StopVoiceChat();
+        if (_lobbyVoiceChat != null) _lobbyVoiceChat.StopVoiceChat();
 
         if (NetworkServer.active && NetworkClient.isConnected)
         {
@@ -167,8 +176,17 @@ public class SteamLobbyManager : MonoBehaviour
     {
         _currentLobbyID = (CSteamID)callback.m_ulSteamIDLobby;
 
-        if (NetworkServer.active) return;
+        // Reset the ready state initially when joining any lobby
+        SteamMatchmaking.SetLobbyMemberData(_currentLobbyID, "ready", "false");
 
+        if (NetworkServer.active) 
+        {
+            // If we are the host, our ping to ourselves is 0
+            SteamMatchmaking.SetLobbyMemberData(_currentLobbyID, "ping", "0");
+            _uiManager.OnJoinedLobby();
+            UpdatePlayerList();
+            return;
+        }
 
         string hostAddress = SteamMatchmaking.GetLobbyData((CSteamID)callback.m_ulSteamIDLobby, HOST_ADDRESS_KEY);
         _networkManager.networkAddress = hostAddress;
@@ -179,6 +197,34 @@ public class SteamLobbyManager : MonoBehaviour
 
         _uiManager.OnJoinedLobby();
         UpdatePlayerList();
+
+        StartCoroutine(CalculateAndSetMemberPing());
+    }
+
+    private IEnumerator CalculateAndSetMemberPing()
+    {
+        string hostLocationString = SteamMatchmaking.GetLobbyData(_currentLobbyID, "pingLocation");
+        
+        SteamNetworkingUtils.CheckPingDataUpToDate(60f);
+        SteamNetworkPingLocation_t hostLocation, myLocation;
+        float pingAge = SteamNetworkingUtils.GetLocalPingLocation(out myLocation);
+        
+        while (pingAge < 0)
+        {
+            yield return new WaitForSeconds(0.5f);
+            pingAge = SteamNetworkingUtils.GetLocalPingLocation(out myLocation);
+        }
+
+        if (!string.IsNullOrEmpty(hostLocationString))
+        {
+            SteamNetworkingUtils.ParsePingLocationString(hostLocationString, out hostLocation);
+            int pingValue = SteamNetworkingUtils.EstimatePingTimeFromLocalHost(ref hostLocation);
+            SteamMatchmaking.SetLobbyMemberData(_currentLobbyID, "ping", pingValue != -1 ? pingValue.ToString() : "N/A");
+        }
+        else
+        {
+            SteamMatchmaking.SetLobbyMemberData(_currentLobbyID, "ping", "N/A");
+        }
     }
 
     public void FetchLobbies()
@@ -240,6 +286,15 @@ public class SteamLobbyManager : MonoBehaviour
     public void InviteFriends()
     {
         SteamFriends.ActivateGameOverlayInviteDialog(_currentLobbyID);
+    }
+
+    public void ToggleReady()
+    {
+        if (_currentLobbyID == CSteamID.Nil) return;
+
+        string currentReady = SteamMatchmaking.GetLobbyMemberData(_currentLobbyID, SteamUser.GetSteamID(), "ready");
+        bool isReady = (currentReady == "true");
+        SteamMatchmaking.SetLobbyMemberData(_currentLobbyID, "ready", (!isReady).ToString().ToLower());
     }
 
     private IEnumerator SetPingLocationRoutine()

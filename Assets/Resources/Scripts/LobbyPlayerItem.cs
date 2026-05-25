@@ -8,18 +8,39 @@ public class LobbyPlayerItem : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _playerNameText;
     [SerializeField] private Image _playerAvatarImage;
-    private CSteamID steamID;
+    [SerializeField] private TextMeshProUGUI _pingText;
+    [SerializeField] private Button _muteButton;
+    [SerializeField] private Image[] _status;
+    private CSteamID _steamID;
+    private bool _ready = false;
 
-    public void SetupPlayer(CSteamID steamID)
+    public void SetupPlayer(CSteamID steamID, CSteamID lobbyID)
     {
         string playerName = SteamFriends.GetFriendPersonaName(steamID);
         _playerNameText.text = playerName;
-        this.steamID = steamID;
+        this._steamID = steamID;
+
+        string readyStr = SteamMatchmaking.GetLobbyMemberData(lobbyID, steamID, "ready");
+        _ready = readyStr == "true";
+        UpdateReadyStatus();
+
+        string pingStr = SteamMatchmaking.GetLobbyMemberData(lobbyID, steamID, "ping");
+        if (string.IsNullOrEmpty(pingStr) || pingStr == "N/A") _pingText.text = "N/A";
+        else _pingText.text = pingStr + "ms";
+    }
+
+    public void UpdateReadyStatus()
+    {
+        if (_status != null && _status.Length >= 2)
+        {
+            _status[0].gameObject.SetActive(!_ready);
+            _status[1].gameObject.SetActive(_ready);
+        }
     }
 
     private void OnEnable()
     {
-        StartCoroutine(FetchAvatar(steamID));
+        StartCoroutine(FetchAvatar(_steamID));
     }
 
     IEnumerator FetchAvatar(CSteamID steamID)

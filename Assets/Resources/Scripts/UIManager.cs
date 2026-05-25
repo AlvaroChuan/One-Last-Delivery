@@ -98,6 +98,16 @@ public class UIManager : MonoBehaviour
         _steamLobbyManager.InviteFriends();
     }
 
+    public void OnReadyButtonClicked()
+    {
+        _steamLobbyManager.ToggleReady();
+    }
+
+    public void OnLeaveLobbyButtonClicked()
+    {
+        _steamLobbyManager.ExitLobby();
+    }
+
     public void ShowPanel(GameObject panelToShow)
     {
         int objectivePanelIndex = Array.FindIndex(_paperSheets, ps => ps.associatedPanel == panelToShow);
@@ -127,11 +137,11 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void AddPlayerToList(CSteamID playerID) //TODO REVIEW THIS
+    public void AddPlayerToList(CSteamID playerID, CSteamID lobbyID) //TODO REVIEW THIS
     {
         GameObject item = Instantiate(_playersListItemPrefab, _playersListContent);
         LobbyPlayerItem itemScript = item.GetComponent<LobbyPlayerItem>();
-        itemScript.SetupPlayer(playerID);
+        itemScript.SetupPlayer(playerID, lobbyID);
     }
 
     public void OnJoinedLobby()
