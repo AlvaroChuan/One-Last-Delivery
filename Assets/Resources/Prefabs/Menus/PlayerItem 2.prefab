@@ -745,6 +745,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerNameText: {fileID: 1964649014297778906}
   _playerAvatarImage: {fileID: 5291666498028675128}
+  _pingText: {fileID: 5312397617419808115}
+  _muteButton: {fileID: 8393831360319304974}
+  _status:
+  - {fileID: 6717686024853309333}
+  - {fileID: 8565780934878557249}
 --- !u!1 &8280883940947250348
 GameObject:
   m_ObjectHideFlags: 0
