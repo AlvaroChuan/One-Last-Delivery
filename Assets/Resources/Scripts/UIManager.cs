@@ -174,7 +174,7 @@ public class UIManager : MonoBehaviour
             if (!found) AddPlayerToList(playerID, lobbyID);
         }
         
-        _lobbyPlayerCountText.text = $"Crew\n{activePlayers.Length}/{maxPlayers}";
+        _lobbyPlayerCountText.text = $"{activePlayers.Length}/{maxPlayers}";
     }
 
     public void OnJoinedLobby()
