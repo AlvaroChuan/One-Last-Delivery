@@ -35,6 +35,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject _playersListItemPrefab;
     [SerializeField] private Transform _playersListContent;
     [SerializeField] private Button _confirmPasswordButton;
+    [SerializeField] private TextMeshProUGUI _lobbyPlayerCountText;
 
     [Header("3D Elements")]
     [Tooltip("Paper sheets must be in the same order as the panels in the inspector")]
@@ -144,44 +145,36 @@ public class UIManager : MonoBehaviour
         itemScript.SetupPlayer(playerID, lobbyID);
     }
 
-    public void SyncPlayerList(CSteamID[] activePlayers, CSteamID lobbyID)
+    public void SyncLobbyData(CSteamID[] activePlayers, CSteamID lobbyID, int maxPlayers)
     {
-        // Remove GameObjects for players who left
         for (int i = _playersListContent.childCount - 1; i >= 0; i--)
         {
-            var child = _playersListContent.GetChild(i);
-            var itemScript = child.GetComponent<LobbyPlayerItem>();
+            Transform child = _playersListContent.GetChild(i);
+            LobbyPlayerItem itemScript = child.GetComponent<LobbyPlayerItem>();
             if (itemScript != null)
             {
-                if (!activePlayers.Contains(itemScript.SteamID))
-                {
-                    Destroy(child.gameObject);
-                }
+                if (!activePlayers.Contains(itemScript.SteamID)) Destroy(child.gameObject);
             }
             else Destroy(child.gameObject);
         }
 
-        // Add or update players
         foreach (CSteamID playerID in activePlayers)
         {
             bool found = false;
             for (int i = 0; i < _playersListContent.childCount; i++)
             {
-                var itemScript = _playersListContent.GetChild(i).GetComponent<LobbyPlayerItem>();
+                LobbyPlayerItem itemScript = _playersListContent.GetChild(i).GetComponent<LobbyPlayerItem>();
                 if (itemScript != null && itemScript.SteamID == playerID)
                 {
-                    // Existing player found, just update data instead of recreating
                     itemScript.SetupPlayer(playerID, lobbyID); 
                     found = true;
                     break;
                 }
             }
-
-            if (!found)
-            {
-                AddPlayerToList(playerID, lobbyID);
-            }
+            if (!found) AddPlayerToList(playerID, lobbyID);
         }
+        
+        _lobbyPlayerCountText.text = $"Crew\n{activePlayers.Length}/{maxPlayers}";
     }
 
     public void OnJoinedLobby()
