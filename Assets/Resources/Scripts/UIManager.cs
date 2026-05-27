@@ -208,7 +208,7 @@ public class UIManager : MonoBehaviour
                 LobbyPlayerItem itemScript = _playersListContent.GetChild(i).GetComponent<LobbyPlayerItem>();
                 if (itemScript != null && itemScript.SteamID == playerID)
                 {
-                    itemScript.SetupPlayer(playerID, lobbyID); 
+                    itemScript.SetupPlayer(playerID, lobbyID);
                     found = true;
                     break;
                 }
@@ -475,7 +475,7 @@ public class UIManager : MonoBehaviour
                 _currentPaperSheetIndex = (_currentPaperSheetIndex + 1) % _paperSheets.Length;
                 _paperSheets[_currentPaperSheetIndex].associatedPanel.SetActive(true);
                 yield return new WaitForSeconds(0.1f);
-                
+
             }
             else
             {
