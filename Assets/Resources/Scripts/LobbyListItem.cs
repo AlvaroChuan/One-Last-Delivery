@@ -29,7 +29,7 @@ public class LobbyListItem : MonoBehaviour
 
         _hostNameText.text = $"Host: {hostName}";
         
-        _pingText.text = ping != -1 ? $"{ping} ms" : "N/A ms";
+        _pingText.text = ping != -1 ? $"{ping}" : "N/A";
 
         bool isFull = currentPlayers >= maxPlayers;
 

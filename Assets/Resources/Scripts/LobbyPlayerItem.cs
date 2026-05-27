@@ -11,11 +11,13 @@ public class LobbyPlayerItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _pingText;
     [SerializeField] private Button _muteButton;
     [SerializeField] private Image[] _status;
+    [SerializeField] private Sprite[] _muteButtonSprites; // 0: Unmuted, 1: Muted
     private CSteamID _steamID;
     private bool _ready = false;
 
     public CSteamID SteamID => _steamID;
     private bool _isAvatarFetched = false;
+    private bool _isMuted = false;
 
     public void SetupPlayer(CSteamID steamID, CSteamID lobbyID)
     {
@@ -29,7 +31,7 @@ public class LobbyPlayerItem : MonoBehaviour
 
         string pingStr = SteamMatchmaking.GetLobbyMemberData(lobbyID, steamID, "ping");
         if (string.IsNullOrEmpty(pingStr) || pingStr == "N/A") _pingText.text = "N/A";
-        else _pingText.text = pingStr + "ms";
+        else _pingText.text = pingStr;
 
         if(gameObject.activeInHierarchy) StartCoroutine(FetchAvatar(steamID));
     }
@@ -49,6 +51,20 @@ public class LobbyPlayerItem : MonoBehaviour
         {
             _status[0].gameObject.SetActive(!_ready);
             _status[1].gameObject.SetActive(_ready);
+        }
+    }
+
+    public void MutePlayer()
+    {
+        _isMuted = !_isMuted;
+        _muteButton.image.sprite = _isMuted ? _muteButtonSprites[1] : _muteButtonSprites[0];
+        if (SteamFriends.GetFriendPersonaName(_steamID) == SteamFriends.GetPersonaName())
+        {
+            //TODO: Mute self
+        }
+        else
+        {
+            //TODO: Mute other player
         }
     }
 
