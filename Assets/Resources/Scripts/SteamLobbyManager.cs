@@ -23,6 +23,8 @@ public class SteamLobbyManager : MonoBehaviour
     private CSteamID _currentLobbyID;
     private Coroutine _autoRefreshCoroutine;
 
+    public PlayerManager playerManager;
+
     private void Start()
     {
         _networkManager = GetComponent<NetworkManager>();
@@ -89,7 +91,7 @@ public class SteamLobbyManager : MonoBehaviour
         StartCoroutine(SetPingLocationRoutine());
 
         string password = PlayerPrefs.GetString("lobbyPassword");
-        if (!string.IsNullOrEmpty(password))  SteamMatchmaking.SetLobbyData(_currentLobbyID, "password", password);
+        if (!string.IsNullOrEmpty(password)) SteamMatchmaking.SetLobbyData(_currentLobbyID, "password", password);
 
         UpdatePlayerList();
     }
@@ -100,7 +102,7 @@ public class SteamLobbyManager : MonoBehaviour
         int maxPlayers = SteamMatchmaking.GetLobbyMemberLimit(_currentLobbyID);
         int numPlayers = SteamMatchmaking.GetNumLobbyMembers(_currentLobbyID);
         CSteamID[] activePlayers = new CSteamID[numPlayers];
-        
+
         for (int i = 0; i < numPlayers; i++)
         {
             activePlayers[i] = SteamMatchmaking.GetLobbyMemberByIndex(_currentLobbyID, i);
@@ -134,14 +136,28 @@ public class SteamLobbyManager : MonoBehaviour
 
         if (NetworkServer.active && NetworkClient.isConnected)
         {
-            LeaveAndCloseLobby();
-            _networkManager.StopHost();
+            StartCoroutine(HostExitRoutine());
         }
         else if (NetworkClient.isConnected)
         {
             LeaveLobbyOnly();
             _networkManager.StopClient();
         }
+        _uiManager.OnLobbyExit();
+    }
+
+    private IEnumerator HostExitRoutine()
+    {
+        if (playerManager != null)
+        {
+            playerManager.CmdForceLobbyExit();
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        LeaveAndCloseLobby();
+        _networkManager.StopHost();
+
         _uiManager.OnLobbyExit();
     }
 
@@ -180,10 +196,10 @@ public class SteamLobbyManager : MonoBehaviour
 
         SteamMatchmaking.SetLobbyMemberData(_currentLobbyID, "ready", "false");
 
-        if (NetworkServer.active) 
+        if (NetworkServer.active)
         {
             SteamMatchmaking.SetLobbyMemberData(_currentLobbyID, "ping", "0");
-            _uiManager.OnJoinedLobby();
+            //_uiManager.OnJoinedLobby();
             UpdatePlayerList();
             return;
         }
@@ -205,7 +221,7 @@ public class SteamLobbyManager : MonoBehaviour
         SteamNetworkingUtils.CheckPingDataUpToDate(60f);
         SteamNetworkPingLocation_t hostLocation, myLocation;
         float pingAge = SteamNetworkingUtils.GetLocalPingLocation(out myLocation);
-        
+
         while (pingAge < 0)
         {
             yield return new WaitForSeconds(0.5f);
@@ -241,7 +257,7 @@ public class SteamLobbyManager : MonoBehaviour
 
         SteamNetworkPingLocation_t pingLocation;
         float pingAge = SteamNetworkingUtils.GetLocalPingLocation(out pingLocation);
-        
+
         if (pingAge < 0 && _autoRefreshCoroutine == null)
         {
             _autoRefreshCoroutine = StartCoroutine(AutoRefreshLobbiesWhenPingReady());
@@ -307,7 +323,7 @@ public class SteamLobbyManager : MonoBehaviour
         SteamNetworkingUtils.CheckPingDataUpToDate(60f);
         SteamNetworkPingLocation_t pingLocation;
         float pingAge = SteamNetworkingUtils.GetLocalPingLocation(out pingLocation);
-        
+
         while (pingAge < 0)
         {
             yield return new WaitForSeconds(0.5f);

@@ -6,12 +6,18 @@ using Steamworks;
 public class PlayerManager : NetworkBehaviour
 {
     public string playerName;
+    public UIManager _uiManager;
+    private bool _isHost = false;
 
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();
 
         string steamName = SteamFriends.GetPersonaName();
+
+        _uiManager = FindAnyObjectByType<UIManager>();
+        SteamLobbyManager lobbyManager = FindAnyObjectByType<SteamLobbyManager>();
+        lobbyManager.playerManager = this;
 
         CmdSetPlayerName(steamName);
     }
@@ -37,4 +43,18 @@ public class PlayerManager : NetworkBehaviour
             .ReceiveMessage(message);
     }
     #endregion
+
+    [Command(requiresAuthority = false)]
+    public void CmdForceLobbyExit()
+    {
+        _isHost = true;
+        RpcLeaveLobby();
+    }
+
+    [ClientRpc]
+    private void RpcLeaveLobby()
+    {
+        if (_isHost) return;
+        _uiManager.OnLobbyExit();
+    }
 }
