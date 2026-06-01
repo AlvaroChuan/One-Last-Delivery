@@ -1,19 +1,24 @@
 using System.Collections;
 using Mirror;
+using Unity.VisualScripting;
 using UnityEngine;
 
+[RequireComponent(typeof(NetRigidbodyController))]
 public class CollisionAuthorityHandler : NetworkBehaviour
 {
+    [SerializeField] int _priority = 0; // Objects with higher priority will keep authority in collisions with lower priority objects
     NetworkConnectionToClient _ownerConnection;
     Rigidbody _rigidbody;
-    bool _touching;
+    Collider _collider;
 
-    WaitForSeconds _touchCheckDelay = new WaitForSeconds(0.5f);
-    Coroutine _touchCheckCoroutine;
+    float _rubberbandDuration = 0.5f; // Duration to wait before rubberbanding back if authority isn't gained
+    float _timeBetweenRequests = 0.5f; // Minimum time between authority requests to prevent spamming
+    bool _canRequestAuthority = true;
 
     void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _collider = GetComponent<Collider>();
     }
 
     public override void OnStartClient()
@@ -22,66 +27,118 @@ public class CollisionAuthorityHandler : NetworkBehaviour
 
         if (isServer)
         {
-            netIdentity.AssignClientAuthority(NetworkServer.localConnection);
             _ownerConnection = NetworkServer.localConnection;
-            _rigidbody.isKinematic = false;
+            _collider.isTrigger = false; // Enable physics collisions for the server/host
+        }
+        else
+        {
+            _collider.isTrigger = true; // Prevent physics collisions on clients without authority
         }
     }
-
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider other)
     {
-        if (!isServer) return;
+        if(!_canRequestAuthority) return;
 
-        NetworkIdentity otherIdentity = collision.collider.GetComponentInParent<NetworkIdentity>();
-        Debug.Log("Collided with " + collision.collider.name);
-        Debug.Log("otherIdentity != null: " + (otherIdentity != null));
-        Debug.Log("otherIdentity.connectionToClient != _ownerConnection: " + (otherIdentity != null ? (otherIdentity.connectionToClient != _ownerConnection).ToString() : "N/A"));
-        Debug.Log("_touching: " + _touching);
-
-        if (otherIdentity != null && otherIdentity.connectionToClient != _ownerConnection && !_touching)
+        if(other.TryGetComponent(out CollisionAuthorityHandler otherHandler))
         {
-            if (_touchCheckCoroutine != null)
+            if (otherHandler._priority < _priority)
             {
-                StopCoroutine(_touchCheckCoroutine);
-                _touchCheckCoroutine = null;
+                Debug.Log("Collision detected with lower priority object. Keeping authority.");
+                return;
             }
-            _touching = true;
-            _ownerConnection = otherIdentity.connectionToClient;
-            CmdGrantAuthority(otherIdentity);
+        }
+
+        ClientPrediction(other);
+        if (isServer)
+        {
+            ServerCollisionHandshake(other.gameObject);
         }
     }
 
-    void OnCollisionExit(Collision collision)
+    void ClientPrediction(Collider other)
     {
-        if (!isServer) return;
-
-        NetworkIdentity otherIdentity = collision.collider.GetComponentInParent<NetworkIdentity>();
-        if (otherIdentity != null && otherIdentity.connectionToClient != null && otherIdentity.connectionToClient == _ownerConnection)
+        NetworkIdentity otherIdentity = other.GetComponent<NetworkIdentity>();
+        if (otherIdentity == null)
         {
-            _touchCheckCoroutine = StartCoroutine(TouchCheckCoroutine());
+            otherIdentity = other.GetComponentInParent<NetworkIdentity>();
         }
+
+        if (otherIdentity == null)
+        {
+            return;
+        }
+
+        if(otherIdentity.isOwned && !isOwned)
+        {
+            Debug.Log("Client-side collision detected with local player. Predicting authority change.");
+            _rigidbody.isKinematic = false;
+            _collider.isTrigger = false; // Enable physics collisions for prediction
+            StartCoroutine(Rubberband());
+            StartCoroutine(AuthorityRequestCooldown());
+        }
+    }
+
+    IEnumerator Rubberband()
+    {
+        yield return new WaitForSeconds(_rubberbandDuration); // Wait for a short duration to allow the collision to be processed
+        if (!isOwned)
+        {
+            _rigidbody.isKinematic = true;
+            _collider.isTrigger = true; // Disable physics collisions if we didn't gain authority
+        }
+    }
+
+    void ServerCollisionHandshake(GameObject collider)
+    {
+        NetworkIdentity otherIdentity = collider.GetComponent<NetworkIdentity>();
+        if (otherIdentity == null)
+        {
+            otherIdentity = collider.GetComponentInParent<NetworkIdentity>();
+        }
+
+        if (otherIdentity != null)
+        {
+            if (otherIdentity.connectionToClient != _ownerConnection)
+            {
+                _ownerConnection = otherIdentity.connectionToClient;
+                netIdentity.RemoveClientAuthority();
+                netIdentity.AssignClientAuthority(otherIdentity.connectionToClient);
+            }
+        }
+    }
+
+    IEnumerator AuthorityRequestCooldown()
+    {
+        _canRequestAuthority = false;
+        yield return new WaitForSeconds(_timeBetweenRequests);
+        _canRequestAuthority = true;
     }
 
     public override void OnStartAuthority()
     {
         base.OnStartAuthority();
-        GetComponent<NetworkTransformBase>().ResetState();
-        _rigidbody.isKinematic = false;
+        _collider.isTrigger = false; // Enable physics collisions for clients with authority
+    }
+
+    public override void OnStopAuthority()
+    {
+        if (!NetworkClient.active) return;
+        base.OnStopAuthority();
+        _collider.isTrigger = true; // Prevent physics collisions for clients without authority
+        CmdRestoreVelocity(_rigidbody.linearVelocity, _rigidbody.angularVelocity); // Restore velocity on all clients to prevent rubberbanding
     }
 
     [Command(requiresAuthority = false)]
-    void CmdGrantAuthority(NetworkIdentity identity)
+    public void CmdRestoreVelocity(Vector3 velocity, Vector3 angularVelocity)
     {
-        if(identity != null && identity.connectionToClient != null)
-        {
-            netIdentity.RemoveClientAuthority();
-            netIdentity.AssignClientAuthority(identity.connectionToClient);
-        }
+        RpcRestoreVelocity(velocity, angularVelocity);
     }
-
-    IEnumerator TouchCheckCoroutine()
+    [ClientRpc]
+    public void RpcRestoreVelocity(Vector3 velocity, Vector3 angularVelocity)
     {
-        yield return _touchCheckDelay;
-        _touching = false;
+        if (!isOwned) return;
+
+        _rigidbody.linearVelocity = velocity;
+        _rigidbody.angularVelocity = angularVelocity;
     }
 }
