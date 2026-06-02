@@ -16,6 +16,7 @@ public class TrafficEdge
     public float length;
     public ushort[] nextEdgeIDs;
     public EdgePoint[] points;
+    public int endNodeID;
 }
 
 [CreateAssetMenu(fileName = "TrafficGraph", menuName = "Traffic/Traffic Graph")]
