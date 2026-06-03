@@ -28,7 +28,8 @@ public class TrafficGraphBaker : MonoBehaviour
                     id = currentEdgeID,
                     length = spline.GetLength(),
                     points = new EdgePoint[_pointsPerEdge],
-                    nextEdgeIDs = new ushort[0] 
+                    nextEdgeIDs = new ushort[0],
+                    endNodeID = -1
                 };
 
                 for (int i = 0; i < _pointsPerEdge; i++)

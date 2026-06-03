@@ -1,14 +1,16 @@
 using Unity.Jobs;
 using Unity.Burst;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Mathematics;
 using System.Threading;
+using System.Linq;
 
 [BurstCompile]
 public struct TrafficSimulationJob : IJobParallelFor
 {
     public NativeArray<NativeVehicle> vehicles;
-    [ReadOnly] public NativeArray<NativeVehicle> previousstates;
+    [ReadOnly] public NativeArray<NativeVehicle> previousStates;
     [ReadOnly] public NativeParallelMultiHashMap<int, int> vehicleMap;
     [ReadOnly] public NativeArray<NativeEdge> edges;
     [ReadOnly] public NativeArray<ushort> connections;
@@ -22,16 +24,17 @@ public struct TrafficSimulationJob : IJobParallelFor
     public void Execute(int index)
     {
         NativeVehicle vehicle = vehicles[index];
-        NativeEdge currentEdge = edges[vehicle.currentEdgeIndex];
+        NativeEdge currentEdge = edges[vehicle.currentEdgeId];
         float distanceToFront = float.MaxValue;
+        vehicle.lastLaneChangeTime += deltaTime;
 
-        if (vehicleMap.TryGetFirstValue(vehicle.currentEdgeIndex, out int otherIndex, out NativeParallelMultiHashMapIterator<int> it))
+        if (vehicleMap.TryGetFirstValue(vehicle.currentEdgeId, out int otherIndex, out NativeParallelMultiHashMapIterator<int> it))
         {
             do
             {
                 if (otherIndex == index) continue;
                 
-                NativeVehicle other = previousstates[otherIndex];
+                NativeVehicle other = previousStates[otherIndex];
                 float dist = other.distance - vehicle.distance;
                 
                 if (dist > 0 && dist < distanceToFront)
@@ -44,14 +47,83 @@ public struct TrafficSimulationJob : IJobParallelFor
         bool canEnterIntersection = true;
         float distanceToEnd = currentEdge.length - vehicle.distance;
 
-        if (distanceToEnd < safeDistance && currentEdge.endNodeID >= 0)
+        if (distanceToEnd < safeDistance && currentEdge.endNodeID != -1)
         {
-            int lockValue = Interlocked.CompareExchange(ref nodeLocks.GetSubArray(currentEdge.endNodeID, 1).ToArray()[0], (int)vehicle.id + 1, 0);
-            
-            if (lockValue != 0 && lockValue != (int)vehicle.id + 1)
+            unsafe 
             {
-                canEnterIntersection = false;
-                distanceToFront = math.min(distanceToFront, distanceToEnd);
+                int* nodeLocksPtr = (int*)nodeLocks.GetUnsafePtr();
+                int lockValue = Interlocked.CompareExchange(ref nodeLocksPtr[currentEdge.endNodeID], (int)vehicle.id + 1, 0);
+                
+                if (lockValue != 0 && lockValue != (int)vehicle.id + 1)
+                {
+                    canEnterIntersection = false;
+                    distanceToFront = math.min(distanceToFront, distanceToEnd);
+                }
+            }
+        }
+
+        if (distanceToFront < safeDistance * 2f && vehicle.lastLaneChangeTime >= 5f)
+        {
+            int targetEdgeIndex = -1;
+
+            if (currentEdge.leftEdgeId != -1) targetEdgeIndex = currentEdge.leftEdgeId;
+            else if (currentEdge.rightEdgeId != -1) targetEdgeIndex = currentEdge.rightEdgeId;
+
+            if (targetEdgeIndex != -1)
+            {
+                float targetLaneDistToFront = float.MaxValue;
+                float targetLaneDistToBack = float.MaxValue;
+                bool safeToChange = true;
+
+                if (vehicleMap.TryGetFirstValue(targetEdgeIndex, out int adjIndex, out NativeParallelMultiHashMapIterator<int> adjIt))
+                {
+                    do
+                    {
+                        NativeVehicle adjVehicle = previousStates[adjIndex];
+                        float distDiff = adjVehicle.distance - vehicle.distance;
+
+                        // Vehicle in target lane ahead
+                        if (distDiff > 0 && distDiff < targetLaneDistToFront) targetLaneDistToFront = distDiff;
+                        // Vehicle in target lane behind
+                        else if (distDiff < 0 && math.abs(distDiff) < targetLaneDistToBack) targetLaneDistToBack = math.abs(distDiff);
+
+                        // Parallel vehicle check
+                        if (math.abs(distDiff) < (safeDistance * 0.5f))
+                        {
+                            safeToChange = false;
+                            break;
+                        }
+
+                    } while (vehicleMap.TryGetNextValue(out adjIndex, ref adjIt));
+                }
+
+                // MOBIL (Safe to switch lane and we speed advantage)
+                if (safeToChange && targetLaneDistToBack > safeDistance && targetLaneDistToFront > distanceToFront + (safeDistance * 1.5f))
+                {
+                    vehicle.currentEdgeId = targetEdgeIndex;
+
+                    float lengthRatio = edges[targetEdgeIndex].length / currentEdge.length;
+                    vehicle.distance *= lengthRatio;
+                    
+                    vehicle.lastLaneChangeTime = 0;
+                    
+                    currentEdge = edges[targetEdgeIndex];
+                    distanceToFront = targetLaneDistToFront;
+                }
+            }
+        }
+
+        if (distanceToEnd < safeDistance && currentEdge.connectionCount > 0)
+        {
+            int nextEdgeId = connections[currentEdge.connectionStartIndex];
+            if (vehicleMap.TryGetFirstValue(nextEdgeId, out int nextIdx, out NativeParallelMultiHashMapIterator<int> nextIt))
+            {
+                do
+                {
+                    NativeVehicle nextVehicle = previousStates[nextIdx];
+                    float dist = distanceToEnd + nextVehicle.distance;
+                    if (dist > 0 && dist < distanceToFront) distanceToFront = dist;
+                } while (vehicleMap.TryGetNextValue(out nextIdx, ref nextIt));
             }
         }
 
@@ -76,8 +148,8 @@ public struct TrafficSimulationJob : IJobParallelFor
                 int randomConnectionOffset = random.NextInt(0, currentEdge.connectionCount);
                 int nextEdgeId = connections[currentEdge.connectionStartIndex + randomConnectionOffset];
 
-                vehicle.currentEdgeIndex = nextEdgeId; 
-                vehicle.distance -= currentEdge.length; 
+                vehicle.currentEdgeId = nextEdgeId; 
+                vehicle.distance = 0f; 
             }
             else
             {

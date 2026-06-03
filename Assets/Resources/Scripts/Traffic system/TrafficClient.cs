@@ -27,7 +27,7 @@ public class TrafficClient : MonoBehaviour
             {
                 visual = SpawnVehicle(state.id);
             }
-            visual.UpdateTarget(state.currentEdgeIndex, state.distance);
+            visual.UpdateTarget(state.currentEdgeId, state.distance);
         }
     }
 

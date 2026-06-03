@@ -44,10 +44,22 @@ public class TrafficVehicleVisual : MonoBehaviour
         int indexB = Mathf.Min(indexA + 1, edge.points.Length - 1);
         float t = floatIndex - indexA;
 
-        Vector3 pos = Vector3.Lerp(edge.points[indexA].position, edge.points[indexB].position, t);
-        Vector3 dir = Vector3.Lerp(edge.points[indexA].tangent, edge.points[indexB].tangent, t);
+        Vector3 targetPos = Vector3.Lerp(edge.points[indexA].position, edge.points[indexB].position, t);
+        Vector3 targetDir = Vector3.Lerp(edge.points[indexA].tangent, edge.points[indexB].tangent, t);
 
-        transform.position = pos;
-        if (dir != Vector3.zero) transform.rotation = Quaternion.LookRotation(dir);
+        if (Vector3.Distance(transform.position, targetPos) > 5f)
+        {
+            transform.position = targetPos;
+        }
+        else
+        {
+            transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * 15f);
+        }
+
+        if (targetDir != Vector3.zero)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(targetDir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 15f);
+        }
     }
 }

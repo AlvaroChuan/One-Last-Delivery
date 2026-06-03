@@ -12,6 +12,7 @@ public class TrafficManager : NetworkBehaviour
     [SerializeField] private float _vehicleMaxSpeed = 20f; // Could add variability here
     [SerializeField] private float _vehicleAcceleration = 5f; // Could add variability here
     [SerializeField] private float _safeDistance = 5f;
+    [SerializeField] private float _spawnSpacing = 15f;
 
     [Header("Network Settings")]
     [SerializeField] private float _networkTickRate = 0.1f;
@@ -56,7 +57,7 @@ public class TrafficManager : NetworkBehaviour
         TrafficSimulationJob simulationJob = new TrafficSimulationJob
         {
             vehicles = _vehicleStates,
-            previousstates = _previousVehicleStates,
+            previousStates = _previousVehicleStates,
             vehicleMap = _edgeToVehiclesMap,
             edges = _edgeStates,
             connections = _edgeConnections,
@@ -93,8 +94,10 @@ public class TrafficManager : NetworkBehaviour
                 batch[j] = new NetworkVehicleState
                 {
                     id = _vehicleStates[index].id,
-                    currentEdgeIndex = _vehicleStates[index].currentEdgeIndex,
-                    distance = _vehicleStates[index].distance
+                    currentEdgeId = _vehicleStates[index].currentEdgeId,
+                    distance = _vehicleStates[index].distance,
+                    speed = _vehicleStates[index].speed,
+                    lastLaneChangeTime = _vehicleStates[index].lastLaneChangeTime
                 };
             }
 
@@ -120,7 +123,9 @@ public class TrafficManager : NetworkBehaviour
                 length = _trafficGraph.edges[i].length,
                 connectionStartIndex = startIndex,
                 connectionCount = count,
-                endNodeID = _trafficGraph.edges[i].endNodeID
+                endNodeID = _trafficGraph.edges[i].endNodeID,
+                leftEdgeId = GetEdgeIndexByID(_trafficGraph.edges[i].leftEdgeId),
+                rightEdgeId = GetEdgeIndexByID(_trafficGraph.edges[i].rightEdgeId)
             };
         }
 
@@ -130,22 +135,56 @@ public class TrafficManager : NetworkBehaviour
 
     private void InitializeVehicles()
     {
-        _vehicleStates = new NativeArray<NativeVehicle>(_totalVehicles, Allocator.Persistent);
-        _previousVehicleStates = new NativeArray<NativeVehicle>(_totalVehicles, Allocator.Persistent);
-        _edgeToVehiclesMap = new NativeParallelMultiHashMap<int, int>(_totalVehicles, Allocator.Persistent);
-        
-        for (int i = 0; i < _totalVehicles; i++)
+        List<NativeVehicle> possibleSpawns = new List<NativeVehicle>();
+
+        for (int i = 0; i < _edgeStates.Length; i++)
         {
-            int randomEdge = Random.Range(0, _edgeStates.Length);
-            
-            _vehicleStates[i] = new NativeVehicle
+            float edgeLength = _edgeStates[i].length;
+            int maxCarsOnEdge = Mathf.FloorToInt(edgeLength / _spawnSpacing);
+
+            for (int j = 0; j < maxCarsOnEdge; j++)
             {
-                id = (uint)i,
-                currentEdgeIndex = randomEdge,
-                distance = Random.Range(0f, _edgeStates[randomEdge].length),
-                speed = 0f
-            };
+                possibleSpawns.Add(new NativeVehicle
+                {
+                    currentEdgeId = i,
+                    distance = j * _spawnSpacing,
+                    speed = 0f
+                });
+            }
         }
+
+        for (int i = 0; i < possibleSpawns.Count; i++)
+        {
+            NativeVehicle temp = possibleSpawns[i];
+            int randomIndex = Random.Range(i, possibleSpawns.Count);
+            possibleSpawns[i] = possibleSpawns[randomIndex];
+            possibleSpawns[randomIndex] = temp;
+        }
+
+        int carsToSpawn = Mathf.Min(_totalVehicles, possibleSpawns.Count);
+        
+        _vehicleStates = new NativeArray<NativeVehicle>(carsToSpawn, Allocator.Persistent);
+        _previousVehicleStates = new NativeArray<NativeVehicle>(carsToSpawn, Allocator.Persistent);
+        _edgeToVehiclesMap = new NativeParallelMultiHashMap<int, int>(carsToSpawn, Allocator.Persistent);
+
+        for (int i = 0; i < carsToSpawn; i++)
+        {
+            NativeVehicle v = possibleSpawns[i];
+            v.id = (uint)i;
+            _vehicleStates[i] = v;
+        }
+
+        Debug.Log($"Spawned: {carsToSpawn} cars of {_totalVehicles} requested.");
+    }
+
+    private int GetEdgeIndexByID(int id)
+    {
+        if (id < 0) return -1;
+        for (int i = 0; i < _trafficGraph.edges.Count; i++)
+        {
+            if (_trafficGraph.edges[i].id == id) return i;
+        }
+        return -1;
     }
 
     private void OnDestroy()
