@@ -75,7 +75,7 @@ Material:
     - _InnerErosionTiling: 2
     - _NormalNoise: 161
     - _NormalStrength: 0.3
-    - _PaintIntensity: 0.15
+    - _PaintIntensity: 0.1
     - _PaintScale: 0.2
     - _PencilThreshold1: 0.1
     - _PencilThreshold2: 0.27
@@ -93,7 +93,7 @@ Material:
     - _WaveOffset: 10
     m_Colors:
     - _CellTiling: {r: 1, g: 0.4, b: 0, a: 0}
-    - _ColorA: {r: 0.49226046, g: 0.6792453, b: 0.34282663, a: 0}
+    - _ColorA: {r: 0.33962262, g: 0.33962262, b: 0.33962262, a: 0}
     - _ColorB: {r: 0.34413186, g: 0.56591886, b: 0.75471693, a: 0}
     - _ColorC: {r: 0, g: 0, b: 0, a: 0}
     - _PaintColor: {r: 0, g: 0, b: 0, a: 0}
