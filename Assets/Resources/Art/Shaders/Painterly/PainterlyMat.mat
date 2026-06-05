@@ -57,7 +57,7 @@ Material:
     - _CellNormal: 0.005
     - _CellOffsetIntensity: 0.2
     - _CellOffsetNoise: 0
-    - _FPS: 2
+    - _FPS: 5
     - _InnerErosionStrength: 2.76
     - _InnerErosionTiling: 1.03
     - _NormalNoise: 100

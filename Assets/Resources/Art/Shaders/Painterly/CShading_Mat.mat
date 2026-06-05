@@ -61,8 +61,8 @@ Material:
     - _InnerErosionStrength: 2.37
     - _InnerErosionTiling: 14.93
     - _NoiseOffset: 0.5
-    - _NormalNoise: 134
-    - _NormalStrength: 0.015
+    - _NormalNoise: 10
+    - _NormalStrength: 0.01
     - _PaintIntensity: 0.28
     - _PencilThreshold1: 0.18
     - _PencilThreshold2: 0.33
@@ -71,7 +71,7 @@ Material:
     - _QueueOffset: 0
     - _SpecularEdgeSmooth: 0
     - _SpecularOpacity: 2.26
-    - _SpecularReductor: 0.903
+    - _SpecularReductor: 1
     - _SpecularStrength: 0.73
     - _Threshold: 0.00002
     - _ThresholdA: -0.45
@@ -83,8 +83,8 @@ Material:
     - _CellTiling: {r: 1, g: 1, b: 0, a: 0}
     - _ColorA: {r: 0.70440245, g: 0.33448035, b: 0.41716895, a: 0}
     - _ColorB: {r: 0.78616345, g: 0.45241475, b: 0.5242341, a: 0}
-    - _ColorC: {r: 1, g: 0.6901961, b: 0.75786155, a: 0}
-    - _PaintColor: {r: 0.654088, g: 0.030853126, b: 0.40684396, a: 0}
+    - _ColorC: {r: 0.764151, g: 0.42172483, b: 0.4954115, a: 0}
+    - _PaintColor: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor: {r: 0.70440245, g: 0.42751464, b: 0.4855717, a: 0}
     - _SpecularColor: {r: 0.9685534, g: 0.70357174, b: 0.70357174, a: 0}
   m_BuildTextureStacks: []
