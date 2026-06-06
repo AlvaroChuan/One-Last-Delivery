@@ -11,9 +11,9 @@ public class PlayerLookComponent : InputComponent
     Camera _playerCamera;
     public Camera PlayerCamera => _playerCamera;
 
-    protected override void Start()
+    public override void OnStartClient()
     {
-        base.Start();
+        base.OnStartClient();
         _playerCamera = GetComponentInChildren<Camera>();
         if (!isLocalPlayer)
         {

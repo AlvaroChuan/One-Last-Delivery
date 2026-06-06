@@ -9,7 +9,7 @@ public class PlayerInventoryComponent : InputComponent
     [System.Serializable]
     struct ItemEntry
     {
-        public InventoryItemIDEnum itemID;
+        public ItemID itemID;
         public InventoryItem item;
     }
     [SerializeField] private int _inventorySize = 4;
@@ -32,7 +32,7 @@ public class PlayerInventoryComponent : InputComponent
         _inventory = new InventoryItemData[_inventorySize];
         for(int i = 0; i < _inventorySize; i++)
         {
-            _inventory[i] = new InventoryItemData { itemID = (int)InventoryItemIDEnum.None };
+            _inventory[i] = new InventoryItemData { itemID = (int)ItemID.None };
         }
     }
 
@@ -123,7 +123,7 @@ public class PlayerInventoryComponent : InputComponent
     void SetInventorySelection(int index)
     {
         _selectedInventoryIndex = index;
-        InventoryItemIDEnum itemID = InventoryItemIDEnum.None;
+        ItemID itemID = ItemID.None;
         if (index >= 0 && index < _inventorySize)
         {
             itemID = _inventory[index].itemID;
@@ -133,20 +133,20 @@ public class PlayerInventoryComponent : InputComponent
     }
 
     [Command]
-    void CmdUpdateVisualMesh(InventoryItemIDEnum itemID)
+    void CmdUpdateVisualMesh(ItemID itemID)
     {
         RpcUpdateVisualMesh(itemID);
     }
 
     [ClientRpc]
-    void RpcUpdateVisualMesh(InventoryItemIDEnum newItemID)
+    void RpcUpdateVisualMesh(ItemID newItemID)
     {
         if (isLocalPlayer) return; // Local player already updated their visuals in SetInventorySelection, so only update for remote clients
 
         UpdateVisualMesh(newItemID);
     }
 
-    void UpdateVisualMesh(InventoryItemIDEnum itemID)
+    void UpdateVisualMesh(ItemID itemID)
     {
         foreach (var entry in _itemEntryArray)
         {
@@ -176,18 +176,14 @@ public class PlayerInventoryComponent : InputComponent
         InventoryItem heldItem = GetItem(slotIndex);
         if (heldItem != null)
         {
-            DroppedItem droppedItem = heldItem.GetDroppedItemPrefab();
-            if (droppedItem != null)
-            {
-                // Spawn the dropped item on the server
-                CmdSpawnDroppedItem(_inventory[slotIndex], transform.position + transform.forward, throwForce);
+            // Spawn the dropped item on the server
+            CmdSpawnDroppedItem(_inventory[slotIndex], transform.position + transform.forward, throwForce);
 
-                // Clear the inventory slot locally for instant feedback
-                _inventory[slotIndex] = new InventoryItemData { itemID = InventoryItemIDEnum.None };
-                if (_selectedInventoryIndex == slotIndex)
-                {
-                    SetInventorySelection(slotIndex); // This will also update visuals and sync the change to other clients
-                }
+            // Clear the inventory slot locally for instant feedback
+            _inventory[slotIndex] = new InventoryItemData { itemID = ItemID.None };
+            if (_selectedInventoryIndex == slotIndex)
+            {
+                SetInventorySelection(slotIndex); // This will also update visuals and sync the change to other clients
             }
         }
 
@@ -198,25 +194,16 @@ public class PlayerInventoryComponent : InputComponent
         }
     }
 
-    // Mirror allows passing NetworkIdentity references of Registered Spawnable Prefabs inside Commands!
     [Command]
     private void CmdSpawnDroppedItem(InventoryItemData itemData, Vector3 dropPosition, Vector3 throwForce)
     {
-        GameObject droppedItemPrefab = null;
-        foreach (var entry in _itemEntryArray)
-        {
-            if (entry.itemID == itemData.itemID)
-            {
-                droppedItemPrefab = entry.item.GetDroppedItemPrefab().gameObject;
-                break;
-            }
-        }
+        DroppedItem droppedItemPrefab = ItemDataList.Instance.GetPrefabFromID(itemData.itemID);
 
         // Instantiate and spawn the object authoritatively on the server
-        GameObject droppedObject = Instantiate(droppedItemPrefab, dropPosition, Quaternion.identity);
-        droppedObject.GetComponent<DroppedItem>().SetInventoryItemData(itemData);
+        DroppedItem droppedObject = Instantiate(droppedItemPrefab, dropPosition, Quaternion.identity);
+        droppedObject.SetInventoryItemData(itemData);
         droppedObject.GetComponent<Rigidbody>().AddForce(throwForce, ForceMode.VelocityChange);
-        NetworkServer.Spawn(droppedObject);
+        NetworkServer.Spawn(droppedObject.gameObject);
     }
 
     [ClientRpc]
@@ -231,7 +218,7 @@ public class PlayerInventoryComponent : InputComponent
         {
             for (int i = 0; i < _inventorySize; i++)
             {
-                if (_inventory[i].itemID == (int)InventoryItemIDEnum.None)
+                if (_inventory[i].itemID == (int)ItemID.None)
                 {
                     affectedSlot = i;
                     break;
@@ -280,7 +267,7 @@ public class PlayerInventoryComponent : InputComponent
         {
             return _inventory[_selectedInventoryIndex];
         }
-        return new InventoryItemData { itemID = InventoryItemIDEnum.None };
+        return new InventoryItemData { itemID = ItemID.None };
     }
     public void UpdateHeldItemData(InventoryItemData newData)
     {

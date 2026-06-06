@@ -13,9 +13,9 @@ public class PlayerDeathComponent : PlayerComponent
         _spectatorComponent = GetComponent<SpectatorMovementComponent>();
     }
 
-    protected override void Start()
+    public override void OnStartLocalPlayer()
     {
-        base.Start();
+        base.OnStartLocalPlayer();
         _spectatorComponent.enabled = false; // Start with spectator movement disabled
     }
 

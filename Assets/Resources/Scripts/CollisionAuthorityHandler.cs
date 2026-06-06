@@ -14,6 +14,7 @@ public class CollisionAuthorityHandler : NetworkBehaviour
     float _rubberbandDuration = 0.5f; // Duration to wait before rubberbanding back if authority isn't gained
     float _timeBetweenRequests = 0.5f; // Minimum time between authority requests to prevent spamming
     bool _canRequestAuthority = true;
+    bool _swappingAuthority = false;
 
     void Awake()
     {
@@ -35,6 +36,7 @@ public class CollisionAuthorityHandler : NetworkBehaviour
             _collider.isTrigger = true; // Prevent physics collisions on clients without authority
         }
     }
+
     void OnTriggerEnter(Collider other)
     {
         if(!_canRequestAuthority) return;
@@ -66,6 +68,11 @@ public class CollisionAuthorityHandler : NetworkBehaviour
         if (otherIdentity == null)
         {
             return;
+        }
+
+        if (isOwned && !otherIdentity.isOwned)
+        {
+            _swappingAuthority = true;
         }
 
         if(otherIdentity.isOwned && !isOwned)
@@ -122,7 +129,7 @@ public class CollisionAuthorityHandler : NetworkBehaviour
 
     public override void OnStopAuthority()
     {
-        if (!NetworkClient.active) return;
+        if (!NetworkClient.active || !_swappingAuthority) return;
         base.OnStopAuthority();
         _collider.isTrigger = true; // Prevent physics collisions for clients without authority
         CmdRestoreVelocity(_rigidbody.linearVelocity, _rigidbody.angularVelocity); // Restore velocity on all clients to prevent rubberbanding

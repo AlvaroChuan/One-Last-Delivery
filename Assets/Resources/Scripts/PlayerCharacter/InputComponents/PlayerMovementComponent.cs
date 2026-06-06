@@ -33,9 +33,9 @@ public class PlayerMovementComponent : InputComponent
         _rigidbody = GetComponent<Rigidbody>();
     }
 
-    protected override void Start()
+    public override void OnStartClient()
     {
-        base.Start();
+        base.OnStartClient();
         if (!isLocalPlayer)
         {
             _rigidbody.isKinematic = true;
