@@ -11,7 +11,7 @@ public class DroppedItem : Interactable
     }
     [SerializeField] private InventoryItemData _inventoryItemData;
     bool _pickedUp = false;
-    public override void Interact(GameObject interactor)
+    public override void ServerInteract(GameObject interactor)
     {
         // This should only run on the server since the item pickup logic is server-authoritative
         if (!isServer || _pickedUp) return;

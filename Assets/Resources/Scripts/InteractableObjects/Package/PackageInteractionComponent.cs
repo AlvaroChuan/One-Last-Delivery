@@ -27,7 +27,7 @@ public class PackageInteractionComponent : Interactable
         gameObject.layer = LayerMask.NameToLayer(_droppedLayer);
     }
 
-    public override void Interact(GameObject interactor)
+    public override void ServerInteract(GameObject interactor)
     {
         NetworkIdentity interactorIdentity = interactor.GetComponent<NetworkIdentity>();
 
