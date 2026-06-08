@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 5050711468161410030}
   - component: {fileID: 7707933276367622041}
   - component: {fileID: 3403190599787900221}
+  - component: {fileID: 959406920810335684}
   m_Layer: 3
   m_Name: Package
   m_TagString: Package
@@ -272,8 +273,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78e244c6bc4f3a840b469affb6823494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _streetName: 
-  _number: 0
+  _address:
+    streetName: 
+    number: 0
+  _isValidAddress: 0
+--- !u!114 &959406920810335684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1369721123284713815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7fbf3203985ba14d9554afd1fa06b68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _clearUsedAddressesOnAwake: 1
 --- !u!1 &8221240416261841595
 GameObject:
   m_ObjectHideFlags: 0

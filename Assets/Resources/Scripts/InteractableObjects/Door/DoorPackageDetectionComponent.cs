@@ -41,7 +41,7 @@ public class DoorPackageDetectionComponent : NetworkBehaviour
 
         if (!collision.collider.CompareTag("Package")) return;
 
-        if (collision.gameObject.GetComponent<AddressComponent>().MatchesAddress(_addressComponent.StreetName, _addressComponent.Number))
+        if (collision.gameObject.GetComponent<AddressComponent>().MatchesAddress(_addressComponent.Address))
         {
             Debug.Log($"Package {collision.gameObject.name} matches the address of the door {gameObject.name}. Storing package value.");
             _storedPackage = collision.gameObject;

@@ -5,10 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class DroppedItem : Interactable
 {
-    void Start()
-    {
-        Debug.Log($"DroppedItem {gameObject.name} network identity: {GetComponent<NetworkIdentity>().netId}, isServer: {isServer}, isClient: {isClient}");
-    }
     [SerializeField] private InventoryItemData _inventoryItemData;
     bool _pickedUp = false;
     public override void ServerInteract(GameObject interactor)
