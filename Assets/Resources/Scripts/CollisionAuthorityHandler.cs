@@ -103,14 +103,11 @@ public class CollisionAuthorityHandler : NetworkBehaviour
             otherIdentity = collider.GetComponentInParent<NetworkIdentity>();
         }
 
-        if (otherIdentity != null)
+        if (otherIdentity != null && otherIdentity.connectionToClient != null && otherIdentity.connectionToClient != _ownerConnection)
         {
-            if (otherIdentity.connectionToClient != _ownerConnection)
-            {
-                _ownerConnection = otherIdentity.connectionToClient;
-                netIdentity.RemoveClientAuthority();
-                netIdentity.AssignClientAuthority(otherIdentity.connectionToClient);
-            }
+            _ownerConnection = otherIdentity.connectionToClient;
+            netIdentity.RemoveClientAuthority();
+            netIdentity.AssignClientAuthority(otherIdentity.connectionToClient);
         }
     }
 

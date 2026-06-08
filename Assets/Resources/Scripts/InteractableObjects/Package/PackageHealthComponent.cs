@@ -10,6 +10,9 @@ public class PackageHealthComponent : NetworkBehaviour
     private float _currentHealth;
     private Rigidbody _rigidbody;
 
+    public float MaxHealth => _maxHealth;
+    public float CurrentHealth => _currentHealth;
+
     void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -72,10 +75,5 @@ public class PackageHealthComponent : NetworkBehaviour
     void OnDestroy()
     {
         // Here you can add code to play destruction effects on clients
-    }
-
-    public float GetCurrentHealth()
-    {
-        return _currentHealth;
     }
 }

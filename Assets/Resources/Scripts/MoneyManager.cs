@@ -1,21 +1,53 @@
 using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MoneyManager : NetworkBehaviour
 {
     public static MoneyManager Instance { get; private set; }
     [SyncVar (hook = nameof(OnMoneyChanged))]
-    private int _currentMoney;
-    public int CurrentMoney => _currentMoney;
+    private float _currentMoney;
+    public float CurrentMoney => _currentMoney;
+    string[] _gameSceneNames = new string[] { "GameScene" };
 
-    private void Awake()
+    void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            if (NetworkServer.active)
+            {
+                NetworkServer.Destroy(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
             return;
         }
         Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    public override void OnStartServer()
+    {
+        SceneManager.sceneLoaded += OnSceneChange;
+    }
+
+    void OnSceneChange(Scene scene, LoadSceneMode mode)
+    {
+        bool isGameScene = false;
+        foreach (string gameSceneName in _gameSceneNames)
+        {
+            if (scene.name == gameSceneName)
+            {
+                isGameScene = true;
+                break;
+            }
+        }
+        if (!isGameScene)
+        {
+            NetworkManager.Destroy(gameObject);
+        }
     }
 
     void OnDestroy()
@@ -24,10 +56,16 @@ public class MoneyManager : NetworkBehaviour
         {
             Instance = null;
         }
+        SceneManager.sceneLoaded -= OnSceneChange;
     }
 
     [Command]
-    public void CmdAddMoney(int amount)
+    public void CmdAddMoney(float amount)
+    {
+        _currentMoney += amount;
+    }
+    [Server]
+    public void ServerAddMoney(float amount)
     {
         _currentMoney += amount;
     }
@@ -38,7 +76,7 @@ public class MoneyManager : NetworkBehaviour
     /// <param name="sender"></param>
     /// <param name="amount"></param>
     [Server]
-    public bool ServerSubtractMoney(int amount)
+    public bool ServerSubtractMoney(float amount)
     {
         if (_currentMoney >= amount)
         {
@@ -49,7 +87,7 @@ public class MoneyManager : NetworkBehaviour
     }
 
     [Server]
-    public bool ServerSubtractQuota(int amount)
+    public bool ServerSubtractQuota(float amount)
     {
         if (_currentMoney >= amount)
         {
@@ -59,7 +97,7 @@ public class MoneyManager : NetworkBehaviour
         return false;
     }
 
-    private void OnMoneyChanged(int oldMoneyAmount, int newMoneyAmount)
+    private void OnMoneyChanged(float oldMoneyAmount, float newMoneyAmount)
     {
         // Update UI on clients when money changes
     }

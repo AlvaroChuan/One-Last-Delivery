@@ -37,7 +37,7 @@ public class PackageInteractionComponent : Interactable
         netIdentity.AssignClientAuthority(interactorIdentity.connectionToClient);
     }
 
-    public override void LocalInteraction(GameObject interactor)
+    public override void ClientInteraction(GameObject interactor)
     {
         _interacted = true;
     }

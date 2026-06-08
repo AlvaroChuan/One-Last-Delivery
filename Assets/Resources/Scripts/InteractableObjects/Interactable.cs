@@ -10,7 +10,7 @@ public abstract class Interactable : NetworkBehaviour
     }
     public void LocalInteract(GameObject interactor)
     {
-        LocalInteraction(interactor);
+        ClientInteraction(interactor);
     }
 
     /// <summary>
@@ -23,7 +23,7 @@ public abstract class Interactable : NetworkBehaviour
     /// This method is called on the client when a player interacts with this object. The interactor parameter is the GameObject that is interacting with this object. This can be used to play local effects, animations, etc. that should not be handled by the server.
     /// </summary>
     /// <param name="interactor"></param>
-    public virtual void LocalInteraction(GameObject interactor)
+    public virtual void ClientInteraction(GameObject interactor)
     {
         // Default implementation - can be overridden by derived classes
     }

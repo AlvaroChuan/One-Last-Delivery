@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class QuotaSystem : NetworkBehaviour
 {
@@ -10,26 +11,61 @@ public class QuotaSystem : NetworkBehaviour
     private int _currentQuota;
     public int CurrentQuota => _currentQuota;
 
-    override public void OnStartServer()
-    {
-        base.OnStartServer();
-        _currentQuota = _initialQuota;
-    }
+    string[] _gameSceneNames = new string[] { "GameScene" };
 
-    override public void OnStartClient()
+    void Awake()
     {
-        base.OnStartClient();
         if (Instance != null && Instance != this)
         {
-            if(isServer)
+            if (NetworkServer.active)
             {
-                Instance.IncreaseQuota(); // Increase quota on scene reload
                 NetworkServer.Destroy(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
             }
             return;
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    override public void OnStartServer()
+    {
+        base.OnStartServer();
+        _currentQuota = _initialQuota;
+        SceneManager.sceneLoaded += OnSceneChange;
+    }
+
+    void OnSceneChange(Scene scene, LoadSceneMode mode)
+    {
+        bool isGameScene = false;
+        foreach (string gameSceneName in _gameSceneNames)
+        {
+            if (scene.name == gameSceneName)
+            {
+                isGameScene = true;
+                break;
+            }
+        }
+        if (isGameScene)
+        {
+            IncreaseQuota();
+        }
+        else
+        {
+            NetworkManager.Destroy(gameObject);
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+        SceneManager.sceneLoaded -= OnSceneChange;
     }
 
     [Command]
