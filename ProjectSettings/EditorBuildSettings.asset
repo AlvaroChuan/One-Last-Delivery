@@ -5,18 +5,12 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/TestChat.unity
-    guid: a33d7af6cd93d694fa0647ae7f5dc65a
+  - enabled: 1
+    path: Assets/Scenes/GameScene.unity
+    guid: a9f2b09a7c8f7c34c8372390065a3a4d
   - enabled: 1
     path: Assets/Scenes/GraphicsMainMenu.unity
     guid: 0e8bd7bfb75f3354dab056ca538f7386
-  - enabled: 1
-    path: Assets/Scenes/KCP/kcpGraphicsMainMenu.unity
-    guid: 0a8aa4ebd76bd0245b3243b4be7ce6c4
-  - enabled: 0
-    path: Assets/Scenes/GameScene.unity
-    guid: a9f2b09a7c8f7c34c8372390065a3a4d
   - enabled: 1
     path: Assets/Scenes/VoiceChatLobby.unity
     guid: 216a2d2b9452fac48a7126508e61362d

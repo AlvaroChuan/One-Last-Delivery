@@ -665,7 +665,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 81846151}
-  - component: {fileID: 81846150}
+  - component: {fileID: 81846155}
   - component: {fileID: 81846154}
   - component: {fileID: 81846153}
   - component: {fileID: 81846152}
@@ -676,51 +676,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &81846150
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 81846148}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8aab4c8111b7c411b9b92cf3dbc5bd4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dontDestroyOnLoad: 1
-  runInBackground: 1
-  headlessStartMode: 0
-  editorAutoStart: 0
-  sendRate: 60
-  offlineScene: 
-  onlineScene: 
-  offlineSceneLoadDelay: 0
-  transport: {fileID: 81846154}
-  networkAddress: localhost
-  maxConnections: 4
-  disconnectInactiveConnections: 0
-  disconnectInactiveTimeout: 60
-  authenticator: {fileID: 0}
-  playerPrefab: {fileID: 5188595553858114656, guid: ce4c0afbb40426f49af333d9a6e30c4b, type: 3}
-  autoCreatePlayer: 0
-  playerSpawnMethod: 0
-  spawnPrefabs: []
-  exceptionsDisconnect: 1
-  snapshotSettings:
-    bufferTimeMultiplier: 2
-    bufferLimit: 32
-    catchupNegativeThreshold: -1
-    catchupPositiveThreshold: 1
-    catchupSpeed: 0.019999999552965164
-    slowdownSpeed: 0.03999999910593033
-    driftEmaDuration: 1
-    dynamicAdjustment: 1
-    dynamicAdjustmentTolerance: 1
-    deliveryTimeEmaDuration: 2
-  evaluationMethod: 0
-  evaluationInterval: 3
-  timeInterpolationGui: 0
 --- !u!4 &81846151
 Transform:
   m_ObjectHideFlags: 0
@@ -781,6 +736,54 @@ MonoBehaviour:
   Timeout: 25
   AllowSteamRelay: 1
   UseNextGenSteamNetworking: 1
+--- !u!114 &81846155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 81846148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bcdec740c344724a9f860c2bbef73ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  runInBackground: 1
+  headlessStartMode: 0
+  editorAutoStart: 0
+  sendRate: 60
+  offlineScene: 
+  onlineScene: 
+  offlineSceneLoadDelay: 0
+  transport: {fileID: 81846154}
+  networkAddress: localhost
+  maxConnections: 4
+  disconnectInactiveConnections: 0
+  disconnectInactiveTimeout: 60
+  authenticator: {fileID: 0}
+  playerPrefab: {fileID: 5188595553858114656, guid: ce4c0afbb40426f49af333d9a6e30c4b, type: 3}
+  autoCreatePlayer: 0
+  playerSpawnMethod: 0
+  spawnPrefabs: []
+  exceptionsDisconnect: 1
+  snapshotSettings:
+    bufferTimeMultiplier: 2
+    bufferLimit: 32
+    catchupNegativeThreshold: -1
+    catchupPositiveThreshold: 1
+    catchupSpeed: 0.019999999552965164
+    slowdownSpeed: 0.03999999910593033
+    driftEmaDuration: 1
+    dynamicAdjustment: 1
+    dynamicAdjustmentTolerance: 1
+    deliveryTimeEmaDuration: 2
+  evaluationMethod: 0
+  evaluationInterval: 3
+  timeInterpolationGui: 0
+  _playerPrefabs: []
+  _gameScene: GameScene
+  _lobbyManager: {fileID: 81846152}
 --- !u!1 &86512460
 GameObject:
   m_ObjectHideFlags: 0

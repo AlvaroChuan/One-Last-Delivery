@@ -19,7 +19,7 @@ public class SteamLobbyManager : MonoBehaviour
 
     private const string GAME_ID_KEY = "OneLastDeliveryID_145";
     private const string HOST_ADDRESS_KEY = "HostAddress";
-    private NetworkManager _networkManager;
+    private CustomNetworkManager _networkManager;
     private CSteamID _currentLobbyID;
     private Coroutine _autoRefreshCoroutine;
 
@@ -27,7 +27,7 @@ public class SteamLobbyManager : MonoBehaviour
 
     private void Start()
     {
-        _networkManager = GetComponent<NetworkManager>();
+        _networkManager = GetComponent<CustomNetworkManager>();
         if (!SteamManager.Initialized) return;
         SteamNetworkingUtils.InitRelayNetworkAccess();
         SteamNetworkingUtils.CheckPingDataUpToDate(60f);
@@ -136,28 +136,16 @@ public class SteamLobbyManager : MonoBehaviour
 
         if (NetworkServer.active && NetworkClient.isConnected)
         {
-            StartCoroutine(HostExitRoutine());
+            LeaveAndCloseLobby();
+            _networkManager.StopHost();
+
+            _uiManager.OnLobbyExit();
         }
         else if (NetworkClient.isConnected)
         {
             LeaveLobbyOnly();
             _networkManager.StopClient();
         }
-        _uiManager.OnLobbyExit();
-    }
-
-    private IEnumerator HostExitRoutine()
-    {
-        if (playerManager != null)
-        {
-            playerManager.CmdForceLobbyExit();
-        }
-
-        yield return new WaitForSeconds(0.5f);
-
-        LeaveAndCloseLobby();
-        _networkManager.StopHost();
-
         _uiManager.OnLobbyExit();
     }
 

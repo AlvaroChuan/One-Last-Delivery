@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 489388016568251116}
   - component: {fileID: 2100252814373838175}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Torch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1894408493477047082}
   - component: {fileID: 9137903591430432154}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 8517291312362443515}
   - component: {fileID: 3742217791020854913}
   - component: {fileID: 1501342456397114089}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194,7 +194,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6975627077292954180}
   - component: {fileID: 9024121452587854868}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Bat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244,7 +244,7 @@ GameObject:
   - component: {fileID: 1625571981040534112}
   - component: {fileID: 5378266759716608294}
   - component: {fileID: 566313204321324162}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -331,7 +331,7 @@ GameObject:
   - component: {fileID: 444454163612861109}
   - component: {fileID: 7106556604290779128}
   - component: {fileID: 1148001095579775547}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Visor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -452,7 +452,7 @@ GameObject:
   - component: {fileID: 914616681754940778}
   - component: {fileID: 7421884826395284621}
   - component: {fileID: 5181455968678062674}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -538,7 +538,7 @@ GameObject:
   - component: {fileID: 3968812676207850975}
   - component: {fileID: 2515011216095788743}
   - component: {fileID: 3058115293482910324}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -638,7 +638,8 @@ GameObject:
   - component: {fileID: 2281851746822864845}
   - component: {fileID: 3225894332428466817}
   - component: {fileID: 4208426610961486441}
-  m_Layer: 6
+  - component: {fileID: 4733201813937319502}
+  m_Layer: 0
   m_Name: PlayerCharacter
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -1000,6 +1001,21 @@ MonoBehaviour:
   _groundLayer:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &4733201813937319502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6383342393515265997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2848897f5cf42e14599ed82e958db6b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useRNNoise4UnityIfAvailable: 1
+  useConcentusEncodeAndDecode: 1
+  useVad: 1
 --- !u!1 &6716311414115863244
 GameObject:
   m_ObjectHideFlags: 0
@@ -1010,7 +1026,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6946660395612119076}
   - component: {fileID: 7320817283622514378}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Taser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1061,7 +1077,7 @@ GameObject:
   - component: {fileID: 4609731769684413400}
   - component: {fileID: 5270497101395708473}
   - component: {fileID: 1275454881959677262}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1196,7 +1212,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8805882298280181877}
   - component: {fileID: 7536628629068665602}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: WalkieTalkie
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1246,7 +1262,7 @@ GameObject:
   - component: {fileID: 5573923244049570718}
   - component: {fileID: 5069429380193213904}
   - component: {fileID: 1582652698410507765}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1338,7 +1354,7 @@ GameObject:
   - component: {fileID: 8273341685121984630}
   - component: {fileID: 4209519292353400892}
   - component: {fileID: 4271437837520756243}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}

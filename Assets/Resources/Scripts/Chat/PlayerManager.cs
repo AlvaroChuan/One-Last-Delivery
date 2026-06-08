@@ -43,18 +43,4 @@ public class PlayerManager : NetworkBehaviour
             .ReceiveMessage(message);
     }
     #endregion
-
-    [Command(requiresAuthority = false)]
-    public void CmdForceLobbyExit()
-    {
-        _isHost = true;
-        RpcLeaveLobby();
-    }
-
-    [ClientRpc]
-    private void RpcLeaveLobby()
-    {
-        if (_isHost) return;
-        _uiManager.OnLobbyExit();
-    }
 }

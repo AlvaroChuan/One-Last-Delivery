@@ -8,6 +8,9 @@ public class CustomNetworkManager : NetworkManager
     [SerializeField] private GameObject[] _playerPrefabs;
     [SerializeField] private string _gameScene = "GameScene";
 
+    [Header("Lobby Settings")]
+    [SerializeField] private SteamLobbyManager _lobbyManager;
+
     // Track how many characters we have spawned in the game scene
     private int _numberOfPlayers = 0;
 
@@ -69,5 +72,13 @@ public class CustomNetworkManager : NetworkManager
                 }
             }
         }
+    }
+
+    public override void OnClientDisconnect()
+    {
+        base.OnClientDisconnect();
+
+        Debug.Log("Disconnected");
+        _lobbyManager.ExitLobby();
     }
 }
