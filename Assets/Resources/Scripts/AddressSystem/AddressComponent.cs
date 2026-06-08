@@ -5,7 +5,7 @@ public class AddressComponent : MonoBehaviour
 {
     [SerializeField] AddressInfo _address;
     public AddressInfo Address => _address;
-    bool _isValidAddress = false;
+    [SerializeField] bool _isValidAddress = false;
     public bool IsValidAddress => _isValidAddress;
     public bool MatchesAddress(AddressInfo address)
     {

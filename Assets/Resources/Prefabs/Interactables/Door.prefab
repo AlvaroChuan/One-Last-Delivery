@@ -173,8 +173,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78e244c6bc4f3a840b469affb6823494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _streetName: 
-  _number: 0
+  _address:
+    streetName: 
+    number: 0
+  _isValidAddress: 1
 --- !u!114 &7579130165737401680
 MonoBehaviour:
   m_ObjectHideFlags: 0
