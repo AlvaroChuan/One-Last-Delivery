@@ -96,8 +96,7 @@ public class TrafficManager : NetworkBehaviour
                     id = _vehicleStates[index].id,
                     currentEdgeId = _vehicleStates[index].currentEdgeId,
                     distance = _vehicleStates[index].distance,
-                    speed = _vehicleStates[index].speed,
-                    lastLaneChangeTime = _vehicleStates[index].lastLaneChangeTime
+                    speed = _vehicleStates[index].speed
                 };
             }
 

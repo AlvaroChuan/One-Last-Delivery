@@ -27,7 +27,6 @@ public struct NetworkVehicleState
     public int currentEdgeId;
     public float distance;
     public float speed;
-    public float lastLaneChangeTime;
 }
 
 public struct TrafficBatchMessage : NetworkMessage
