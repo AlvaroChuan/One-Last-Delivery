@@ -70,7 +70,7 @@ public class TrafficManager : NetworkBehaviour
             safeDistance = _safeDistance,
             randomSeed = (uint) Random.Range(1, 100000)
         };
-        JobHandle handle = simulationJob.Schedule(_vehicleStates.Length, 64, populateHandle);
+        JobHandle handle = simulationJob.Schedule(_vehicleStates.Length, 64, clearLocksHandle);
         handle.Complete();
 
         if (Time.time >= _nextSyncTime)
@@ -138,7 +138,7 @@ public class TrafficManager : NetworkBehaviour
 
         _edgeConnections = new NativeArray<ushort>(allConnections.ToArray(), Allocator.Persistent);
         _edgeConflicts = new NativeArray<ushort>(allConflicts.ToArray(), Allocator.Persistent);
-        _nodeLocks = new NativeArray<int>(_totalNodes, Allocator.Persistent);
+        _nodeLocks = new NativeArray<int>(_trafficGraph.edges.Count, Allocator.Persistent);
     }
 
     private void InitializeVehicles()

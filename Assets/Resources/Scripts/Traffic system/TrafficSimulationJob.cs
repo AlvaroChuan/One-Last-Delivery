@@ -99,7 +99,8 @@ public struct TrafficSimulationJob : IJobParallelFor
             }
         }
 
-        if (distanceToEnd < safeDistance && currentEdge.connectionCount > 0)
+        float lookAhead = math.max(safeDistance, (vehicle.speed * vehicle.speed) / (2f * acceleration * 2f) + 2f);
+        if (distanceToEnd < lookAhead && currentEdge.connectionCount > 0)
         {
             uint stableSeed = (uint)math.max(1, vehicle.id * 73856 + currentEdge.id * 19284);
             Random random = new Random(stableSeed);
@@ -118,13 +119,46 @@ public struct TrafficSimulationJob : IJobParallelFor
             }
 
             bool hasConflict = false;
-            for (int i = 0; i < nextEdge.conflictCount; i++)
+            unsafe
             {
-                ushort conflictId = conflicts[nextEdge.conflictStartIndex + i];
-                if (vehicleMap.TryGetFirstValue(conflictId, out int confIdx, out NativeParallelMultiHashMapIterator<int> confIt))
+                int* locksPtr = (int*)nodeLocks.GetUnsafePtr();
+                int myLockValue = (int)currentEdge.id + 1; // Use approach lane ID to share lock with vehicles behind
+                
+                int currentLock = Interlocked.CompareExchange(ref locksPtr[nextEdgeId], myLockValue, 0);
+                bool ownsLock = (currentLock == 0 || currentLock == myLockValue);
+
+                if (!ownsLock)
                 {
                     hasConflict = true;
-                    break;
+                }
+                else
+                {
+                    for (int i = 0; i < nextEdge.conflictCount; i++)
+                    {
+                        ushort conflictId = conflicts[nextEdge.conflictStartIndex + i];
+                        
+                        int confLock = Interlocked.CompareExchange(ref locksPtr[conflictId], 0, 0);
+                        if (confLock != 0 && confLock != myLockValue)
+                        {
+                            if (confLock < myLockValue)
+                            {
+                                hasConflict = true;
+                                break;
+                            }
+                        }
+
+                        if (vehicleMap.TryGetFirstValue(conflictId, out int confIdx, out NativeParallelMultiHashMapIterator<int> confIt))
+                        {
+                            hasConflict = true;
+                            break;
+                        }
+                    }
+
+                    if (hasConflict && currentLock == 0)
+                    {
+                        // Only release if WE were the ones who acquired it (not a shared lock from another car ahead)
+                        Interlocked.CompareExchange(ref locksPtr[nextEdgeId], 0, myLockValue);
+                    }
                 }
             }
 
@@ -135,7 +169,8 @@ public struct TrafficSimulationJob : IJobParallelFor
             }
         }
 
-        if (distanceToFront < safeDistance || !canEnterIntersection)
+        float dynamicSafeDistance = safeDistance + vehicle.speed * 1.0f; // Scale following distance with speed
+        if (distanceToFront < dynamicSafeDistance || !canEnterIntersection)
         {
             vehicle.speed -= acceleration * 2f * deltaTime; 
             if (vehicle.speed < 0f) vehicle.speed = 0f;
@@ -150,7 +185,7 @@ public struct TrafficSimulationJob : IJobParallelFor
         
         if (vehicle.distance >= currentEdge.length)
         {
-            if (currentEdge.connectionCount > 0)
+            if (currentEdge.connectionCount > 0 && canEnterIntersection)
             {
                 uint stableSeed = (uint)math.max(1, vehicle.id * 73856 + currentEdge.id * 19284);
                 Random random = new Random(stableSeed);
