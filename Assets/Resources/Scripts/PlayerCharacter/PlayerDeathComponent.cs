@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerMovementComponent))]
 [RequireComponent(typeof(SpectatorMovementComponent))]
 public class PlayerDeathComponent : PlayerComponent
 {
+    public Action onPlayerDeathEvent;
     private PlayerMovementComponent _movementComponent;
     private SpectatorMovementComponent _spectatorComponent;
 
@@ -26,5 +28,6 @@ public class PlayerDeathComponent : PlayerComponent
         Debug.Log("Player has died. Switching to spectator mode.");
         _movementComponent.enabled = false;
         _spectatorComponent.enabled = true;
+        onPlayerDeathEvent?.Invoke();
     }
 }

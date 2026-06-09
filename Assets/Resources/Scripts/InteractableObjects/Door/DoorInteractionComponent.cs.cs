@@ -1,9 +1,15 @@
+using System;
 using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(LocalAddressComponent))]
 public class DoorInteractionComponent : Interactable
 {
+    public struct DoorInteractionInfo
+    {
+        public bool isSuccessful;
+    }
+    public Action<DoorInteractionInfo> onDoorInteractionEvent;
     LocalAddressComponent _localAddressComponent;
 
     void Awake()
@@ -32,5 +38,14 @@ public class DoorInteractionComponent : Interactable
             MoneyManager.Instance.ServerAddMoney(package.GetComponent<PackageValueComponent>()?.GetValue() ?? 0);
             NetworkServer.Destroy(package);
         }
+    }
+
+    [ClientRpc]
+    public void RpcDoorInteraction(bool isSuccessful)
+    {
+        onDoorInteractionEvent?.Invoke(new DoorInteractionInfo
+        {
+            isSuccessful = isSuccessful
+        });
     }
 }

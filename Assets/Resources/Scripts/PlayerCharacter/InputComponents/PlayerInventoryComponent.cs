@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerInventoryComponent : InputComponent
 {
-    [System.Serializable]
+    [Serializable]
     struct ItemEntry
     {
         public ItemID itemID;

@@ -1,9 +1,17 @@
+using System;
 using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerDeathComponent))]
 public class PlayerHealthComponent : PlayerComponent
 {
+    public struct HealthChangeInfo
+    {
+        public float oldHealth;
+        public float newHealth;
+    }
+
+    public Action<HealthChangeInfo> onHealthChangedEvent;
     [SerializeField]
     float _maxHealth = 100f;
     float _currentHealth;
@@ -42,14 +50,42 @@ public class PlayerHealthComponent : PlayerComponent
         if (_currentHealth <= 0)
             return;
 
+        float oldHealth = _currentHealth;
+
         Debug.Log($"Taking {damage} damage");
         _currentHealth -= damage;
+
+        onHealthChangedEvent?.Invoke(new HealthChangeInfo
+        {
+            oldHealth = oldHealth,
+            newHealth = _currentHealth
+        });
+
         if (_currentHealth <= 0)
         {
             _currentHealth = 0;
             Die();
         }
     }
+
+    [ClientRpc]
+    public void RpcHeal(float healAmount)
+    {
+        if (!isLocalPlayer) return;
+
+        if (_currentHealth <= 0)
+            return;
+
+        float oldHealth = _currentHealth;
+        _currentHealth = Mathf.Min(_currentHealth + healAmount, _maxHealth);
+
+        onHealthChangedEvent?.Invoke(new HealthChangeInfo
+        {
+            oldHealth = oldHealth,
+            newHealth = _currentHealth
+        });
+    }
+
     void Die()
     {
         _controller.Die();

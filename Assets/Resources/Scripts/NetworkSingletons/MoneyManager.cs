@@ -1,12 +1,20 @@
+using System;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MoneyManager : NetworkSingleton<MoneyManager>
 {
+    public struct MoneyChangeInfo
+    {
+        public float oldMoneyAmount;
+        public float newMoneyAmount;
+    }
     [SyncVar (hook = nameof(OnMoneyChanged))]
+    [SerializeField]
     private float _currentMoney;
     public float CurrentMoney => _currentMoney;
+    public Action<MoneyChangeInfo> onMoneyChangedEvent;
 
     [Command]
     public void CmdAddMoney(float amount)
@@ -19,11 +27,6 @@ public class MoneyManager : NetworkSingleton<MoneyManager>
         _currentMoney += amount;
     }
 
-    /// <summary>
-    /// Send Network
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="amount"></param>
     [Server]
     public bool ServerSubtractMoney(float amount)
     {
@@ -48,6 +51,10 @@ public class MoneyManager : NetworkSingleton<MoneyManager>
 
     private void OnMoneyChanged(float oldMoneyAmount, float newMoneyAmount)
     {
-        // Update UI on clients when money changes
+        onMoneyChangedEvent?.Invoke(new MoneyChangeInfo
+        {
+            oldMoneyAmount = oldMoneyAmount,
+            newMoneyAmount = newMoneyAmount
+        });
     }
 }

@@ -1,12 +1,19 @@
+using System;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class QuotaSystem : NetworkSingleton<QuotaSystem>
 {
+    public struct QuotaChangeInfo
+    {
+        public int oldQuotaAmount;
+        public int newQuotaAmount;
+    }
     [SerializeField] private int _initialQuota = 100;
     [SerializeField] private int _quotaIncreasePerDay = 10;
     [SyncVar (hook = nameof(OnQuotaChanged))]
+    public Action<QuotaChangeInfo> onQuotaChangedEvent;
     private int _currentQuota;
     public int CurrentQuota => _currentQuota;
 
@@ -38,11 +45,14 @@ public class QuotaSystem : NetworkSingleton<QuotaSystem>
     public void ServerDefeat()
     {
         // Handle defeat condition (e.g., end game, show defeat screen, etc.)
-
     }
     private void OnQuotaChanged(int oldQuotaAmount, int newQuotaAmount)
     {
-        // Update UI on clients when quota changes
+        onQuotaChangedEvent?.Invoke(new QuotaChangeInfo
+        {
+            oldQuotaAmount = oldQuotaAmount,
+            newQuotaAmount = newQuotaAmount
+        });
     }
 
     private void IncreaseQuota()
