@@ -18,7 +18,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: MetallicSign
-    second: {fileID: 2100000, guid: 22b21116f1c551240a93f228b52ebb53, type: 2}
+    second: {fileID: 2100000, guid: de7ccdd8e9924f1488d995ea085aedce, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -38,27 +38,27 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: SpeedSign25
-    second: {fileID: 2100000, guid: aeba2d7aa7c7d8b49b017e6de63c06ff, type: 2}
+    second: {fileID: 2100000, guid: c875d80a76234a04d924c8dad2720d83, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: SpeedSign35
-    second: {fileID: 2100000, guid: 59428ebc650c35041a7f33a5873d692c, type: 2}
+    second: {fileID: 2100000, guid: ea0bde469f7d02d4c883999761255369, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: SpeedSign45
-    second: {fileID: 2100000, guid: deca446833e08b747a43d8034d7de878, type: 2}
+    second: {fileID: 2100000, guid: af64a23e1588c484d8db9dd9691b9efb, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: SpeedSign65
-    second: {fileID: 2100000, guid: 786b6453077c68d438cd3d3be72f1ff6, type: 2}
+    second: {fileID: 2100000, guid: 69e8a9fd91451384e98fb3eae8e1d6d4, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: SpeedSignBackground
-    second: {fileID: 2100000, guid: 42566fe2b0035954fa57f593d528ca87, type: 2}
+    second: {fileID: 2100000, guid: 618db95193f0ade498916184e86feeb1, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -148,7 +148,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: cubicity_metal.005
-    second: {fileID: 2100000, guid: 22b21116f1c551240a93f228b52ebb53, type: 2}
+    second: {fileID: 2100000, guid: de7ccdd8e9924f1488d995ea085aedce, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
