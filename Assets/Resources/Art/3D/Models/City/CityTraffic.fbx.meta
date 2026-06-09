@@ -83,62 +83,62 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: cubicity_asphault.001
-    second: {fileID: 2100000, guid: 1ad647b781aa33b429b910a3c9cf3794, type: 2}
+    second: {fileID: 2100000, guid: 7fc8ede914d82f044b7e8f10b0e566ae, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: cubicity_asphault.003
-    second: {fileID: 2100000, guid: 1ad647b781aa33b429b910a3c9cf3794, type: 2}
+    second: {fileID: 2100000, guid: 7fc8ede914d82f044b7e8f10b0e566ae, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: cubicity_asphault.005
-    second: {fileID: 2100000, guid: 1ad647b781aa33b429b910a3c9cf3794, type: 2}
+    second: {fileID: 2100000, guid: 7fc8ede914d82f044b7e8f10b0e566ae, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: cubicity_asphault.007
-    second: {fileID: 2100000, guid: 1ad647b781aa33b429b910a3c9cf3794, type: 2}
+    second: {fileID: 2100000, guid: 7fc8ede914d82f044b7e8f10b0e566ae, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: cubicity_asphault.008
-    second: {fileID: 2100000, guid: 1ad647b781aa33b429b910a3c9cf3794, type: 2}
+    second: {fileID: 2100000, guid: 7fc8ede914d82f044b7e8f10b0e566ae, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: cubicity_asphault.009
-    second: {fileID: 2100000, guid: 1ad647b781aa33b429b910a3c9cf3794, type: 2}
+    second: {fileID: 2100000, guid: 7fc8ede914d82f044b7e8f10b0e566ae, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: cubicity_concrete.001
-    second: {fileID: 2100000, guid: 1ad647b781aa33b429b910a3c9cf3794, type: 2}
+    second: {fileID: 2100000, guid: 8740d22cb3869b34ebb42e864c2c0518, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: cubicity_concrete.009
-    second: {fileID: 2100000, guid: 2699b7eb3da5bd64b87c1241f94a6fc2, type: 2}
+    second: {fileID: 2100000, guid: 8740d22cb3869b34ebb42e864c2c0518, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: cubicity_concrete.016
-    second: {fileID: 2100000, guid: 2699b7eb3da5bd64b87c1241f94a6fc2, type: 2}
+    second: {fileID: 2100000, guid: 8740d22cb3869b34ebb42e864c2c0518, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: cubicity_concrete.018
-    second: {fileID: 2100000, guid: 2699b7eb3da5bd64b87c1241f94a6fc2, type: 2}
+    second: {fileID: 2100000, guid: 8740d22cb3869b34ebb42e864c2c0518, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: cubicity_concrete.019
-    second: {fileID: 2100000, guid: 2699b7eb3da5bd64b87c1241f94a6fc2, type: 2}
+    second: {fileID: 2100000, guid: 8740d22cb3869b34ebb42e864c2c0518, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: cubicity_concrete.020
-    second: {fileID: 2100000, guid: 2699b7eb3da5bd64b87c1241f94a6fc2, type: 2}
+    second: {fileID: 2100000, guid: 8740d22cb3869b34ebb42e864c2c0518, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
