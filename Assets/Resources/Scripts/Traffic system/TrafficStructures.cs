@@ -16,7 +16,8 @@ public struct NativeEdge
     public float length;
     public int connectionStartIndex;
     public int connectionCount;
-    public int endNodeID;
+    public int conflictStartIndex;
+    public int conflictCount;
     public int leftEdgeId;
     public int rightEdgeId;
 }

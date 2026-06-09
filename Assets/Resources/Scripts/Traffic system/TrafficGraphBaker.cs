@@ -29,7 +29,6 @@ public class TrafficGraphBaker : MonoBehaviour
                     length = spline.GetLength(),
                     points = new EdgePoint[_pointsPerEdge],
                     nextEdgeIDs = new ushort[0],
-                    endNodeID = -1
                 };
 
                 for (int i = 0; i < _pointsPerEdge; i++)
@@ -58,15 +57,81 @@ public class TrafficGraphBaker : MonoBehaviour
             {
                 if (edge.id == potentialNextEdge.id) continue;
                 Vector3 startPoint = potentialNextEdge.points[0].position;
-                if (Vector3.Distance(endPoint, startPoint) <= _connectionThreshold) connectedEdges.Add(potentialNextEdge.id);
+                if (Vector3.Distance(endPoint, startPoint) <= _connectionThreshold) 
+                {
+                    connectedEdges.Add(potentialNextEdge.id);
+                }
             }
-
             edge.nextEdgeIDs = connectedEdges.ToArray();
+        }
+
+        foreach (var edge in _outputGraph.edges)
+        {
+            List<ushort> conflicts = new List<ushort>();
+            foreach (var potentialNextEdge in _outputGraph.edges)
+            {
+                if (edge.id == potentialNextEdge.id) continue;
+
+                // Do not consider direct connections as conflicts
+                if (System.Array.IndexOf(edge.nextEdgeIDs, potentialNextEdge.id) >= 0) continue;
+                if (System.Array.IndexOf(potentialNextEdge.nextEdgeIDs, edge.id) >= 0) continue;
+
+                bool intersects = false;
+                for (int i = 0; i < edge.points.Length - 1 && !intersects; i++)
+                {
+                    Vector2 p1 = new Vector2(edge.points[i].position.x, edge.points[i].position.z);
+                    Vector2 p2 = new Vector2(edge.points[i+1].position.x, edge.points[i+1].position.z);
+                    
+                    for (int j = 0; j < potentialNextEdge.points.Length - 1 && !intersects; j++)
+                    {
+                        Vector2 q1 = new Vector2(potentialNextEdge.points[j].position.x, potentialNextEdge.points[j].position.z);
+                        Vector2 q2 = new Vector2(potentialNextEdge.points[j+1].position.x, potentialNextEdge.points[j+1].position.z);
+
+                        if (LineSegmentsIntersect(p1, p2, q1, q2))
+                        {
+                            intersects = true;
+                        }
+                    }
+                }
+                if (intersects) conflicts.Add(potentialNextEdge.id);
+            }
+            edge.conflictingEdgeIDs = conflicts.ToArray();
         }
 
         EditorUtility.SetDirty(_outputGraph);
         AssetDatabase.SaveAssets();
         Debug.Log($"Bake completed: {_outputGraph.edges.Count} edges generated.");
 #endif
+    }
+    private bool OnSegment(Vector2 p, Vector2 q, Vector2 r)
+    {
+        if (q.x <= Mathf.Max(p.x, r.x) && q.x >= Mathf.Min(p.x, r.x) &&
+            q.y <= Mathf.Max(p.y, r.y) && q.y >= Mathf.Min(p.y, r.y))
+            return true;
+        return false;
+    }
+
+    private int Orientation(Vector2 p, Vector2 q, Vector2 r)
+    {
+        float val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+        if (Mathf.Abs(val) < 0.001f) return 0;
+        return (val > 0) ? 1 : 2;
+    }
+
+    private bool LineSegmentsIntersect(Vector2 p1, Vector2 q1, Vector2 p2, Vector2 q2)
+    {
+        int o1 = Orientation(p1, q1, p2);
+        int o2 = Orientation(p1, q1, q2);
+        int o3 = Orientation(p2, q2, p1);
+        int o4 = Orientation(p2, q2, q1);
+
+        if (o1 != o2 && o3 != o4) return true;
+
+        if (o1 == 0 && OnSegment(p1, p2, q1)) return true;
+        if (o2 == 0 && OnSegment(p1, q2, q1)) return true;
+        if (o3 == 0 && OnSegment(p2, p1, q2)) return true;
+        if (o4 == 0 && OnSegment(p2, q1, q2)) return true;
+
+        return false;
     }
 }

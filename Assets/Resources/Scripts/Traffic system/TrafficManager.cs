@@ -23,6 +23,7 @@ public class TrafficManager : NetworkBehaviour
     private NativeArray<NativeEdge> _edgeStates;
     private NativeParallelMultiHashMap<int, int> _edgeToVehiclesMap;
     private NativeArray<ushort> _edgeConnections;
+    private NativeArray<ushort> _edgeConflicts;
     private NativeArray<int> _nodeLocks;
     private int _totalNodes;
     private float _nextSyncTime;
@@ -61,6 +62,7 @@ public class TrafficManager : NetworkBehaviour
             vehicleMap = _edgeToVehiclesMap,
             edges = _edgeStates,
             connections = _edgeConnections,
+            conflicts = _edgeConflicts,
             nodeLocks = _nodeLocks,
             deltaTime = Time.deltaTime,
             maxSpeed = _vehicleMaxSpeed,
@@ -109,12 +111,17 @@ public class TrafficManager : NetworkBehaviour
         _edgeStates = new NativeArray<NativeEdge>(_trafficGraph.edges.Count, Allocator.Persistent);
         
         List<ushort> allConnections = new List<ushort>();
+        List<ushort> allConflicts = new List<ushort>();
 
         for (int i = 0; i < _trafficGraph.edges.Count; i++)
         {
             int startIndex = allConnections.Count;
-            int count = _trafficGraph.edges[i].nextEdgeIDs.Length;
-            allConnections.AddRange(_trafficGraph.edges[i].nextEdgeIDs);
+            int count = _trafficGraph.edges[i].nextEdgeIDs != null ? _trafficGraph.edges[i].nextEdgeIDs.Length : 0;
+            if (count > 0) allConnections.AddRange(_trafficGraph.edges[i].nextEdgeIDs);
+
+            int conflictStart = allConflicts.Count;
+            int conflictCount = _trafficGraph.edges[i].conflictingEdgeIDs != null ? _trafficGraph.edges[i].conflictingEdgeIDs.Length : 0;
+            if (conflictCount > 0) allConflicts.AddRange(_trafficGraph.edges[i].conflictingEdgeIDs);
 
             _edgeStates[i] = new NativeEdge
             {
@@ -122,13 +129,15 @@ public class TrafficManager : NetworkBehaviour
                 length = _trafficGraph.edges[i].length,
                 connectionStartIndex = startIndex,
                 connectionCount = count,
-                endNodeID = _trafficGraph.edges[i].endNodeID,
+                conflictStartIndex = conflictStart,
+                conflictCount = conflictCount,
                 leftEdgeId = GetEdgeIndexByID(_trafficGraph.edges[i].leftEdgeId),
                 rightEdgeId = GetEdgeIndexByID(_trafficGraph.edges[i].rightEdgeId)
             };
         }
 
         _edgeConnections = new NativeArray<ushort>(allConnections.ToArray(), Allocator.Persistent);
+        _edgeConflicts = new NativeArray<ushort>(allConflicts.ToArray(), Allocator.Persistent);
         _nodeLocks = new NativeArray<int>(_totalNodes, Allocator.Persistent);
     }
 
@@ -194,5 +203,6 @@ public class TrafficManager : NetworkBehaviour
         if (_previousVehicleStates.IsCreated) _previousVehicleStates.Dispose();
         if (_edgeToVehiclesMap.IsCreated) _edgeToVehiclesMap.Dispose();
         if (_nodeLocks.IsCreated) _nodeLocks.Dispose();
+        if (_edgeConflicts.IsCreated) _edgeConflicts.Dispose();
     }
 }

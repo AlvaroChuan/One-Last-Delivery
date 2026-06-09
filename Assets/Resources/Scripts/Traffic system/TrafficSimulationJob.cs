@@ -15,6 +15,7 @@ public struct TrafficSimulationJob : IJobParallelFor
     [ReadOnly] public NativeArray<NativeEdge> edges;
     [ReadOnly] public NativeArray<ushort> connections;
     [NativeDisableParallelForRestriction] public NativeArray<int> nodeLocks;
+    [ReadOnly] public NativeArray<ushort> conflicts;
     public float deltaTime;
     public float maxSpeed;
     public float acceleration;
@@ -46,21 +47,6 @@ public struct TrafficSimulationJob : IJobParallelFor
 
         bool canEnterIntersection = true;
         float distanceToEnd = currentEdge.length - vehicle.distance;
-
-        if (distanceToEnd < safeDistance && currentEdge.endNodeID != -1)
-        {
-            unsafe 
-            {
-                int* nodeLocksPtr = (int*)nodeLocks.GetUnsafePtr();
-                int lockValue = Interlocked.CompareExchange(ref nodeLocksPtr[currentEdge.endNodeID], (int)vehicle.id + 1, 0);
-                
-                if (lockValue != 0 && lockValue != (int)vehicle.id + 1)
-                {
-                    canEnterIntersection = false;
-                    distanceToFront = math.min(distanceToFront, distanceToEnd);
-                }
-            }
-        }
 
         if (distanceToFront < safeDistance * 2f && vehicle.lastLaneChangeTime >= 5f)
         {
@@ -115,7 +101,12 @@ public struct TrafficSimulationJob : IJobParallelFor
 
         if (distanceToEnd < safeDistance && currentEdge.connectionCount > 0)
         {
-            int nextEdgeId = connections[currentEdge.connectionStartIndex];
+            uint stableSeed = (uint)math.max(1, vehicle.id * 73856 + currentEdge.id * 19284);
+            Random random = new Random(stableSeed);
+            int nextEdgeOffset = random.NextInt(0, currentEdge.connectionCount);
+            int nextEdgeId = connections[currentEdge.connectionStartIndex + nextEdgeOffset];
+            NativeEdge nextEdge = edges[nextEdgeId];
+
             if (vehicleMap.TryGetFirstValue(nextEdgeId, out int nextIdx, out NativeParallelMultiHashMapIterator<int> nextIt))
             {
                 do
@@ -124,6 +115,23 @@ public struct TrafficSimulationJob : IJobParallelFor
                     float dist = distanceToEnd + nextVehicle.distance;
                     if (dist > 0 && dist < distanceToFront) distanceToFront = dist;
                 } while (vehicleMap.TryGetNextValue(out nextIdx, ref nextIt));
+            }
+
+            bool hasConflict = false;
+            for (int i = 0; i < nextEdge.conflictCount; i++)
+            {
+                ushort conflictId = conflicts[nextEdge.conflictStartIndex + i];
+                if (vehicleMap.TryGetFirstValue(conflictId, out int confIdx, out NativeParallelMultiHashMapIterator<int> confIt))
+                {
+                    hasConflict = true;
+                    break;
+                }
+            }
+
+            if (hasConflict)
+            {
+                canEnterIntersection = false;
+                distanceToFront = math.min(distanceToFront, distanceToEnd);
             }
         }
 
@@ -144,9 +152,10 @@ public struct TrafficSimulationJob : IJobParallelFor
         {
             if (currentEdge.connectionCount > 0)
             {
-                Random random = new Random(randomSeed + (uint)index + 1);
-                int randomConnectionOffset = random.NextInt(0, currentEdge.connectionCount);
-                int nextEdgeId = connections[currentEdge.connectionStartIndex + randomConnectionOffset];
+                uint stableSeed = (uint)math.max(1, vehicle.id * 73856 + currentEdge.id * 19284);
+                Random random = new Random(stableSeed);
+                int nextEdgeOffset = random.NextInt(0, currentEdge.connectionCount);
+                int nextEdgeId = connections[currentEdge.connectionStartIndex + nextEdgeOffset];
 
                 vehicle.currentEdgeId = nextEdgeId; 
                 vehicle.distance = 0f; 

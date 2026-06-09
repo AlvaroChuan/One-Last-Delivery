@@ -16,7 +16,7 @@ public class TrafficEdge
     public float length;
     public ushort[] nextEdgeIDs;
     public EdgePoint[] points;
-    public int endNodeID;
+    public ushort[] conflictingEdgeIDs;
     public int leftEdgeId = -1;
     public int rightEdgeId = -1;
 }
