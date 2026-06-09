@@ -10,10 +10,10 @@ public class AddressLibraryGenerator
     {
         string assetPath = AddressLibrary.GetPath();
         AddressLibrary addressLibrary = ScriptableObject.CreateInstance<AddressLibrary>();
-        AddressComponent[] validAddresses = Object.FindObjectsByType<AddressComponent>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        LocalAddressComponent[] validAddresses = Object.FindObjectsByType<LocalAddressComponent>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
         foreach (var addressComponent in validAddresses)
         {
-            if (addressComponent.IsValidAddress)
+            if (!addressLibrary.validAddresses.Contains(addressComponent.Address))
             {
                 addressLibrary.validAddresses.Add(addressComponent.Address);
             }

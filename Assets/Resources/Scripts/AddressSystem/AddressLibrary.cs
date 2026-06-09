@@ -8,5 +8,9 @@ public class AddressLibrary : ScriptableObject
     {
         return "Assets/Resources/ScriptableObjects/AddressLibrary" + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name + ".asset";
     }
+    public static string GetResourcePath()
+    {
+        return "ScriptableObjects/AddressLibrary" + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+    }
     public List<AddressInfo> validAddresses = new List<AddressInfo>();
 }

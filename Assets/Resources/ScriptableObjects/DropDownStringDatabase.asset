@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 418a7348c14f89a48bc3719abf636559, type: 3}
   m_Name: DropDownStringDatabase
   m_EditorClassIdentifier: 
-  _entries: []
+  _entries:
+  - _key: StreetNames
+    _options:
+    - 4th Street
+    - 2nd Street

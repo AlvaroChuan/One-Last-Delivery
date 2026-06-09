@@ -124,5 +124,7 @@ public class DropdownStringDrawer : PropertyDrawer
         }
 
         _database.AddOption(key, option);
+        EditorUtility.SetDirty(_database);
+        AssetDatabase.SaveAssets();
     }
 }

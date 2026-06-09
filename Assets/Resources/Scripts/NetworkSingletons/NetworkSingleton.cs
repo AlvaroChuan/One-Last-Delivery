@@ -9,22 +9,41 @@ using UnityEngine.SceneManagement;
 public class NetworkSingleton<T> : NetworkBehaviour where T : NetworkSingleton<T>
 {
     [SerializeField] protected string[] _activeSceneNames = new string[] { "GameScene" };
+    [SerializeField] protected bool _oldInstanceTakesPrecedence = true;
 
     bool _isSubscribedToSceneChange = false;
 
     public static T Instance { get; private set; }
 
-    protected virtual void Awake()
+    public override void OnStartClient()
     {
         if (Instance != null && Instance != this)
         {
-            if (NetworkServer.active)
+            if (_oldInstanceTakesPrecedence)
             {
-                NetworkServer.Destroy(gameObject);
+                if (NetworkServer.active)
+                {
+                    NetworkServer.Destroy(gameObject);
+                }
+                else
+                {
+                    Destroy(gameObject);
+                }
             }
             else
             {
-                Destroy(gameObject);
+                if (NetworkServer.active)
+                {
+                    NetworkServer.Destroy(Instance.gameObject);
+                }
+                else
+                {
+                    Destroy(Instance.gameObject);
+                }
+                Instance = this as T;
+                DontDestroyOnLoad(gameObject);
+                SceneManager.sceneLoaded += OnSceneChange;
+                _isSubscribedToSceneChange = true;
             }
             return;
         }

@@ -31,7 +31,7 @@ public class PackageInteractionComponent : Interactable
     {
         NetworkIdentity interactorIdentity = interactor.GetComponent<NetworkIdentity>();
 
-        gameObject.layer = LayerMask.NameToLayer(_carriedLayer);
+        ServerSetCarriedLayer();
 
         netIdentity.RemoveClientAuthority();
         netIdentity.AssignClientAuthority(interactorIdentity.connectionToClient);
@@ -65,7 +65,7 @@ public class PackageInteractionComponent : Interactable
 
         PlayerInventoryComponent inventory = playerIdentity.gameObject.GetComponent<PlayerInventoryComponent>();
         inventory.SetSlotSelection(-1);
-        inventory.SetCarryingPackage(this);
+        inventory.SetCarryingPackage(gameObject);
 
         _carryComponent.StartCarrying(playerIdentity.gameObject);
 
@@ -79,11 +79,28 @@ public class PackageInteractionComponent : Interactable
         _carryComponent.StopCarrying();
         _rigidbody.AddForce(throwForce, ForceMode.Impulse);
 
-        CmdDrop();
+        CmdSetDroppedLayer();
     }
 
+    [Server]
+    void ServerSetCarriedLayer()
+    {
+        gameObject.layer = LayerMask.NameToLayer(_carriedLayer);
+        RpcSetCarriedLayer();
+    }
+    [ClientRpc]
+    void RpcSetCarriedLayer()
+    {
+        gameObject.layer = LayerMask.NameToLayer(_carriedLayer);
+    }
     [Command(requiresAuthority = false)]
-    void CmdDrop()
+    void CmdSetDroppedLayer()
+    {
+        gameObject.layer = LayerMask.NameToLayer(_droppedLayer);
+        RpcSetDroppedLayer();
+    }
+    [ClientRpc]
+    void RpcSetDroppedLayer()
     {
         gameObject.layer = LayerMask.NameToLayer(_droppedLayer);
     }

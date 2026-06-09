@@ -24,7 +24,9 @@ public class PlayerInventoryComponent : InputComponent
 
     private Camera _playerCamera;
 
-    private PackageInteractionComponent _carriedPackage; // Reference to the currently carried package, if any
+    [SerializeField] private GameObject _carriedPackage; // Reference to the currently carried package, if any
+
+    public GameObject CarriedPackage => _carriedPackage != null ? _carriedPackage.gameObject : null;
 
     void Awake()
     {
@@ -93,8 +95,8 @@ public class PlayerInventoryComponent : InputComponent
 
         if (_carriedPackage != null)
         {
-            _carriedPackage.DropFromPlayer(Vector3.zero);
-            _carriedPackage = null;
+            _carriedPackage.GetComponent<PackageInteractionComponent>()?.DropFromPlayer(Vector3.zero);
+            SetCarryingPackage(null);
         }
 
         Debug.Log("Selected inventory index: " + _selectedInventoryIndex);
@@ -114,8 +116,8 @@ public class PlayerInventoryComponent : InputComponent
         }
         if (_carriedPackage != null)
         {
-            _carriedPackage.DropFromPlayer(Vector3.zero);
-            _carriedPackage = null;
+            _carriedPackage.GetComponent<PackageInteractionComponent>()?.DropFromPlayer(Vector3.zero);
+            SetCarryingPackage(null);
         }
         SetInventorySelection(_selectedInventoryIndex);
     }
@@ -189,8 +191,8 @@ public class PlayerInventoryComponent : InputComponent
 
         if (_carriedPackage != null)
         {
-            _carriedPackage.DropFromPlayer(throwForce);
-            _carriedPackage = null;
+            _carriedPackage.GetComponent<PackageInteractionComponent>()?.DropFromPlayer(throwForce);
+            SetCarryingPackage(null);
         }
     }
 
@@ -284,7 +286,17 @@ public class PlayerInventoryComponent : InputComponent
         SetInventorySelection(index);
     }
 
-    internal void SetCarryingPackage(PackageInteractionComponent package)
+    internal void SetCarryingPackage(GameObject package)
+    {
+        _carriedPackage = package;
+        if(!isServer)
+        {
+            CmdSetCarryingPackage(package);
+        }
+    }
+
+    [Command]
+    public void CmdSetCarryingPackage(GameObject package)
     {
         _carriedPackage = package;
     }

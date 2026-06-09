@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: AddressLibraryGameScene
   m_EditorClassIdentifier: 
   validAddresses:
-  - streetName: 2nd Street
-    number: 2
-  - streetName: Gay Street
+  - streetName: 4th Street
     number: 0

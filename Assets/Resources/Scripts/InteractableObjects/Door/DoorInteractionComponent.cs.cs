@@ -1,34 +1,36 @@
 using Mirror;
 using UnityEngine;
 
-[RequireComponent(typeof(AddressComponent))]
+[RequireComponent(typeof(LocalAddressComponent))]
 public class DoorInteractionComponent : Interactable
 {
-    DoorPackageDetectionComponent _packageDetectionComponent;
+    LocalAddressComponent _localAddressComponent;
+
     void Awake()
     {
-        _packageDetectionComponent = GetComponent<DoorPackageDetectionComponent>();
-        if(_packageDetectionComponent == null)
+        _localAddressComponent = GetComponent<LocalAddressComponent>();
+        if (_localAddressComponent == null)
         {
-            _packageDetectionComponent = GetComponentInChildren<DoorPackageDetectionComponent>();
-        }
-        if(_packageDetectionComponent == null)
-        {
-            Debug.LogError("Door is missing a PackageDetectionComponent, please add one to the door or its children.");
+            Debug.LogError("Door is missing a LocalAddressComponent, please add one to the door.");
         }
     }
+
     public override void ServerInteract(GameObject interactor)
     {
-        Debug.Log($"Door {gameObject.name} has been interacted with by {interactor.name}. Checking for stored package value.");
-        if(_packageDetectionComponent.StoredValue > 0f)
-        {
-            _packageDetectionComponent.CanLoseValue = false;
-            MoneyManager.Instance.ServerAddMoney(_packageDetectionComponent.StoredKnockValue);
-            NetworkServer.Destroy(_packageDetectionComponent.StoredPackage);
-        }
-    }
-    public override void ClientInteraction(GameObject interactor)
-    {
+        GameObject package = interactor.GetComponent<PlayerInventoryComponent>()?.CarriedPackage;
+        if (package == null) return;
 
+        NetworkAddressComponent packageAddressComponent = package.GetComponent<NetworkAddressComponent>();
+        if (packageAddressComponent == null)
+        {
+            Debug.LogError("Package is missing a NetworkAddressComponent, please add one to the package.");
+            return;
+        }
+
+        if (packageAddressComponent.MatchesAddress(_localAddressComponent.Address))
+        {
+            MoneyManager.Instance.ServerAddMoney(package.GetComponent<PackageValueComponent>()?.GetValue() ?? 0);
+            NetworkServer.Destroy(package);
+        }
     }
 }

@@ -830,7 +830,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4c5fa168c618154aac03bf9ce8931d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
+  syncDirection: 1
   syncMode: 0
   syncInterval: 0
   _inventorySize: 4
@@ -850,6 +850,7 @@ MonoBehaviour:
     item: {fileID: 9137903591430432154}
   - itemID: 5
     item: {fileID: 7536628629068665602}
+  _carriedPackage: {fileID: 0}
 --- !u!114 &5535736397123714588
 MonoBehaviour:
   m_ObjectHideFlags: 0
