@@ -78,13 +78,13 @@ Material:
     - _FPS: 12
     - _InnerErosionStrength: 3
     - _InnerErosionTiling: 2
-    - _LightFactor: 0.2
+    - _LightFactor: 0.1
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _MetallicFactor: 0
     - _NormalNoise: 161
     - _NormalStrength: 0.3
-    - _PaintIntensity: 0.1
+    - _PaintIntensity: 0.03
     - _PaintScale: 0.2
     - _PencilThreshold1: 0.1
     - _PencilThreshold2: 0.27
@@ -107,10 +107,10 @@ Material:
     - _WaveOffset: 10
     m_Colors:
     - _CellTiling: {r: 1, g: 0.4, b: 0, a: 0}
-    - _ColorA: {r: 0.33962262, g: 0.33962262, b: 0.33962262, a: 0}
+    - _ColorA: {r: 0.313, g: 0.313, b: 0.313, a: 0}
     - _ColorB: {r: 0.34117648, g: 0.34117648, b: 0.34117648, a: 0}
     - _ColorC: {r: 0, g: 0, b: 0, a: 0}
-    - _PaintColor: {r: 0, g: 0, b: 0, a: 0}
+    - _PaintColor: {r: 0.6531979, g: 0.6855345, b: 0.6849361, a: 0}
     - _ShadowColor: {r: 0.18867922, g: 0.18867922, b: 0.18867922, a: 0}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
