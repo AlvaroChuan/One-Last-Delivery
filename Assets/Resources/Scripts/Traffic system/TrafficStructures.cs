@@ -22,6 +22,16 @@ public struct NativeEdge
     public int rightEdgeId;
 }
 
+public struct NativeIntersection
+{
+    public int phaseAStartIndex;
+    public int phaseACount;
+    public int phaseBStartIndex;
+    public int phaseBCount;
+    public float currentTimer;
+    public int currentStep;
+}
+
 public struct NetworkVehicleState
 {
     public uint id;
@@ -33,4 +43,5 @@ public struct NetworkVehicleState
 public struct TrafficBatchMessage : NetworkMessage
 {
     public NetworkVehicleState[] vehicles;
+    public byte[] lightStates;
 }

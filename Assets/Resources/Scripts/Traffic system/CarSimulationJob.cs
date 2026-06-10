@@ -4,10 +4,9 @@ using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Mathematics;
 using System.Threading;
-using System.Linq;
 
 [BurstCompile]
-public struct TrafficSimulationJob : IJobParallelFor
+public struct CarSimulationJob : IJobParallelFor
 {
     public NativeArray<NativeVehicle> vehicles;
     [ReadOnly] public NativeArray<NativeVehicle> previousStates;
@@ -16,6 +15,7 @@ public struct TrafficSimulationJob : IJobParallelFor
     [ReadOnly] public NativeArray<ushort> connections;
     [NativeDisableParallelForRestriction] public NativeArray<int> nodeLocks;
     [ReadOnly] public NativeArray<ushort> conflicts;
+    [ReadOnly] public NativeArray<byte> edgeStopSignals;
     public float deltaTime;
     public float maxSpeed;
     public float acceleration;
@@ -29,24 +29,33 @@ public struct TrafficSimulationJob : IJobParallelFor
         float distanceToFront = float.MaxValue;
         vehicle.lastLaneChangeTime += deltaTime;
 
+        // Check vehicles on the same lane (go through all the cars on the same edge and find the closest one in front)
         if (vehicleMap.TryGetFirstValue(vehicle.currentEdgeId, out int otherIndex, out NativeParallelMultiHashMapIterator<int> it))
         {
             do
             {
                 if (otherIndex == index) continue;
-                
                 NativeVehicle other = previousStates[otherIndex];
                 float dist = other.distance - vehicle.distance;
-                
-                if (dist > 0 && dist < distanceToFront)
-                {
-                    distanceToFront = dist;
-                }
+                if (dist > 0 && dist < distanceToFront) distanceToFront = dist;
+
             } while (vehicleMap.TryGetNextValue(out otherIndex, ref it));
         }
 
+        
+        // Lane changing logic (MOBIL inspired) NOT WORKING CHECK IN THE FUTURE
         bool canEnterIntersection = true;
         float distanceToEnd = currentEdge.length - vehicle.distance;
+
+        // Virtual Obstacle for Traffic Lights
+        if (edgeStopSignals[vehicle.currentEdgeId] == 1)
+        {
+            float distToLight = currentEdge.length - vehicle.distance;
+            if (distToLight > 0 && distToLight < distanceToFront)
+            {
+                distanceToFront = distToLight;
+            }
+        }
 
         if (distanceToFront < safeDistance * 2f && vehicle.lastLaneChangeTime >= 5f)
         {
@@ -99,6 +108,7 @@ public struct TrafficSimulationJob : IJobParallelFor
             }
         }
 
+        // Intersection logic: Check if we are close to the end of the edge and if we can enter the intersection (no conflicts or we have priority)
         float lookAhead = math.max(safeDistance, (vehicle.speed * vehicle.speed) / (2f * acceleration * 2f) + 2f);
         if (distanceToEnd < lookAhead && currentEdge.connectionCount > 0)
         {
@@ -108,6 +118,7 @@ public struct TrafficSimulationJob : IJobParallelFor
             int nextEdgeId = connections[currentEdge.connectionStartIndex + nextEdgeOffset];
             NativeEdge nextEdge = edges[nextEdgeId];
 
+            // Check for vehicles in the next edge to brake if necessary
             if (vehicleMap.TryGetFirstValue(nextEdgeId, out int nextIdx, out NativeParallelMultiHashMapIterator<int> nextIt))
             {
                 do
@@ -115,9 +126,11 @@ public struct TrafficSimulationJob : IJobParallelFor
                     NativeVehicle nextVehicle = previousStates[nextIdx];
                     float dist = distanceToEnd + nextVehicle.distance;
                     if (dist > 0 && dist < distanceToFront) distanceToFront = dist;
+
                 } while (vehicleMap.TryGetNextValue(out nextIdx, ref nextIt));
             }
 
+            // Check for conflicts in the intersection (simplified: if any conflicting edge has a vehicle, we have to wait)
             bool hasConflict = false;
             unsafe
             {
@@ -125,12 +138,9 @@ public struct TrafficSimulationJob : IJobParallelFor
                 int myLockValue = (int)currentEdge.id + 1; // Use approach lane ID to share lock with vehicles behind
                 
                 int currentLock = Interlocked.CompareExchange(ref locksPtr[nextEdgeId], myLockValue, 0);
-                bool ownsLock = (currentLock == 0 || currentLock == myLockValue);
+                bool ownsLock = currentLock == 0 || currentLock == myLockValue;
 
-                if (!ownsLock)
-                {
-                    hasConflict = true;
-                }
+                if (!ownsLock) hasConflict = true;
                 else
                 {
                     for (int i = 0; i < nextEdge.conflictCount; i++)
@@ -140,7 +150,7 @@ public struct TrafficSimulationJob : IJobParallelFor
                         int confLock = Interlocked.CompareExchange(ref locksPtr[conflictId], 0, 0);
                         if (confLock != 0 && confLock != myLockValue)
                         {
-                            if (confLock < myLockValue)
+                            if (confLock < myLockValue) // In case of tie, lower edge ID wins
                             {
                                 hasConflict = true;
                                 break;
@@ -169,7 +179,8 @@ public struct TrafficSimulationJob : IJobParallelFor
             }
         }
 
-        float dynamicSafeDistance = safeDistance + vehicle.speed * 1.0f; // Scale following distance with speed
+        // Speed control logic
+        float dynamicSafeDistance = safeDistance + vehicle.speed * 1.0f;
         if (distanceToFront < dynamicSafeDistance || !canEnterIntersection)
         {
             vehicle.speed -= acceleration * 2f * deltaTime; 
@@ -180,9 +191,9 @@ public struct TrafficSimulationJob : IJobParallelFor
             vehicle.speed += acceleration * deltaTime;
             if (vehicle.speed > maxSpeed) vehicle.speed = maxSpeed;
         }
-
         vehicle.distance += vehicle.speed * deltaTime;
         
+        // Check end of edge and decide next edge or stop if there aren't
         if (vehicle.distance >= currentEdge.length)
         {
             if (currentEdge.connectionCount > 0 && canEnterIntersection)

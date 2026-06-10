@@ -11,6 +11,7 @@ public class TrafficGraphBaker : MonoBehaviour
     [SerializeField] SplineContainer[] _splineContainers;
     [SerializeField] int _pointsPerEdge = 20;
     [SerializeField] float _connectionThreshold = 1.0f;
+    [SerializeField] float _trafficLightSearchRadius = 15.0f;
 
     [ContextMenu("Bake Splines to Graph")]
     public void BakeGraph()
@@ -96,6 +97,77 @@ public class TrafficGraphBaker : MonoBehaviour
                 if (intersects) conflicts.Add(potentialNextEdge.id);
             }
             edge.conflictingEdgeIDs = conflicts.ToArray();
+        }
+
+        TrafficLightController[] lights = FindObjectsByType<TrafficLightController>(FindObjectsSortMode.None);
+        int lightIdCounter = 0;
+        foreach (var light in lights)
+        {
+            light.lightId = lightIdCounter++;
+            float minDistance = float.MaxValue;
+            ushort closestEdge = 0xFFFF;
+            foreach (var edge in _outputGraph.edges)
+            {
+                // Traffic light is placed at the stop line, which is the END of the edge
+                Vector3 endPoint = edge.points[edge.points.Length - 1].position;
+                float dist = Vector3.Distance(light.transform.position, endPoint);
+                if (dist < minDistance && dist <_trafficLightSearchRadius)
+                {
+                    minDistance = dist;
+                    closestEdge = edge.id;
+                }
+            }
+            light.edgeId = closestEdge;
+            EditorUtility.SetDirty(light);
+        }
+
+        System.Array.Sort(lights, (a, b) => a.lightId.CompareTo(b.lightId));
+
+        _outputGraph.intersections.Clear();
+        List<TrafficLightController> unassignedLights = new List<TrafficLightController>(lights);
+
+        while (unassignedLights.Count > 0)
+        {
+            TrafficLightController centerLight = unassignedLights[0];
+            List<TrafficLightController> cluster = new List<TrafficLightController>();
+            
+            for (int i = unassignedLights.Count - 1; i >= 0; i--)
+            {
+                if (Vector3.Distance(centerLight.transform.position, unassignedLights[i].transform.position) <= 25f)
+                {
+                    cluster.Add(unassignedLights[i]);
+                    unassignedLights.RemoveAt(i);
+                }
+            }
+
+            List<int> phaseALights = new List<int>();
+            List<int> phaseBLights = new List<int>();
+
+            foreach (var l in cluster)
+            {
+                if (l.phase == TrafficLightController.LightPhase.PhaseA) phaseALights.Add(l.lightId);
+                else phaseBLights.Add(l.lightId);
+            }
+
+            _outputGraph.intersections.Add(new IntersectionData
+            {
+                phaseALightIds = phaseALights.ToArray(),
+                phaseBLightIds = phaseBLights.ToArray()
+            });
+        }
+
+        TrafficManager manager = FindFirstObjectByType<TrafficManager>();
+        if (manager != null)
+        {
+            manager.trafficLights = lights;
+            EditorUtility.SetDirty(manager);
+        }
+
+        TrafficClient client = FindFirstObjectByType<TrafficClient>();
+        if (client != null)
+        {
+            client.trafficLights = lights;
+            EditorUtility.SetDirty(client);
         }
 
         EditorUtility.SetDirty(_outputGraph);

@@ -21,8 +21,16 @@ public class TrafficEdge
     public int rightEdgeId = -1;
 }
 
+[Serializable]
+public struct IntersectionData
+{
+    public int[] phaseALightIds;
+    public int[] phaseBLightIds;
+}
+
 [CreateAssetMenu(fileName = "TrafficGraph", menuName = "Traffic/Traffic Graph")]
 public class TrafficGraph : ScriptableObject
 {
     public List<TrafficEdge> edges = new List<TrafficEdge>();
+    public List<IntersectionData> intersections = new List<IntersectionData>();
 }

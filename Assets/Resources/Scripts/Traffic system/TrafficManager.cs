@@ -18,6 +18,11 @@ public class TrafficManager : NetworkBehaviour
     [SerializeField] private float _networkTickRate = 0.1f;
     [SerializeField] private int _maxBatchSize = 100;
 
+    [Header("Traffic Light Settings")]
+    [SerializeField] private float _greenTime = 10f;
+    [SerializeField] private float _yellowTime = 3f;
+    [SerializeField] private float _bothRedTime = 1f;
+
     private NativeArray<NativeVehicle> _previousVehicleStates;
     private NativeArray<NativeVehicle> _vehicleStates;
     private NativeArray<NativeEdge> _edgeStates;
@@ -25,7 +30,14 @@ public class TrafficManager : NetworkBehaviour
     private NativeArray<ushort> _edgeConnections;
     private NativeArray<ushort> _edgeConflicts;
     private NativeArray<int> _nodeLocks;
-    private int _totalNodes;
+    private NativeArray<byte> _edgeStopSignals;
+    
+    private NativeArray<NativeIntersection> _intersections;
+    private NativeArray<int> _intersectionLightIds;
+    private NativeArray<ushort> _lightToEdgeMapping;
+    private NativeArray<byte> _lightStates;
+    
+    public TrafficLightController[] trafficLights;
     private float _nextSyncTime;
 
     private void Start()
@@ -39,8 +51,25 @@ public class TrafficManager : NetworkBehaviour
     {
         if (!isServer || !_vehicleStates.IsCreated) return;
 
+        // Zero out edge stop signals (Job will write to them)
+        for (int i = 0; i < _edgeStopSignals.Length; i++) _edgeStopSignals[i] = 0;
+
         _previousVehicleStates.CopyFrom(_vehicleStates);
         _edgeToVehiclesMap.Clear();
+
+        TrafficLightSimulationJob lightJob = new TrafficLightSimulationJob
+        {
+            intersections = _intersections,
+            intersectionLightIds = _intersectionLightIds,
+            lightToEdgeMapping = _lightToEdgeMapping,
+            lightStates = _lightStates,
+            edgeStopSignals = _edgeStopSignals,
+            deltaTime = Time.deltaTime,
+            greenTime = _greenTime,
+            yellowTime = _yellowTime,
+            bothRedTime = _bothRedTime
+        };
+        JobHandle lightHandle = lightJob.Schedule(_intersections.Length, 8);
 
         PopulateMapJob populateJob = new PopulateMapJob
         {
@@ -53,9 +82,9 @@ public class TrafficManager : NetworkBehaviour
         {
             locks = _nodeLocks
         };
-        JobHandle clearLocksHandle = clearLocksJob.Schedule(_nodeLocks.Length, 64, populateHandle);
+        JobHandle clearLocksHandle = clearLocksJob.Schedule(_nodeLocks.Length, 64, JobHandle.CombineDependencies(populateHandle, lightHandle));
 
-        TrafficSimulationJob simulationJob = new TrafficSimulationJob
+        CarSimulationJob simulationJob = new CarSimulationJob
         {
             vehicles = _vehicleStates,
             previousStates = _previousVehicleStates,
@@ -64,6 +93,7 @@ public class TrafficManager : NetworkBehaviour
             connections = _edgeConnections,
             conflicts = _edgeConflicts,
             nodeLocks = _nodeLocks,
+            edgeStopSignals = _edgeStopSignals,
             deltaTime = Time.deltaTime,
             maxSpeed = _vehicleMaxSpeed,
             acceleration = _vehicleAcceleration,
@@ -82,18 +112,19 @@ public class TrafficManager : NetworkBehaviour
 
     private void BroadcastTrafficStates()
     {
-        int totalVehicles = _vehicleStates.Length;
-        int totalBatches = Mathf.CeilToInt((float)totalVehicles / _maxBatchSize);
+        byte[] currentLightStates = _lightStates.ToArray();
 
-        for (int i = 0; i < totalBatches; i++)
+        int batches = Mathf.CeilToInt((float)_totalVehicles / _maxBatchSize);
+        for (int b = 0; b < batches; b++)
         {
-            int currentBatchSize = Mathf.Min(_maxBatchSize, totalVehicles - (i * _maxBatchSize));
-            NetworkVehicleState[] batch = new NetworkVehicleState[currentBatchSize];
+            int offset = b * _maxBatchSize;
+            int count = Mathf.Min(_maxBatchSize, _totalVehicles - offset);
+            NetworkVehicleState[] batch = new NetworkVehicleState[count];
 
-            for (int j = 0; j < currentBatchSize; j++)
+            for (int i = 0; i < count; i++)
             {
-                int index = (i * _maxBatchSize) + j;
-                batch[j] = new NetworkVehicleState
+                int index = offset + i;
+                batch[i] = new NetworkVehicleState
                 {
                     id = _vehicleStates[index].id,
                     currentEdgeId = _vehicleStates[index].currentEdgeId,
@@ -102,7 +133,7 @@ public class TrafficManager : NetworkBehaviour
                 };
             }
 
-            NetworkServer.SendToReady(new TrafficBatchMessage { vehicles = batch }, Channels.Unreliable);
+            NetworkServer.SendToReady(new TrafficBatchMessage { vehicles = batch, lightStates = currentLightStates }, Channels.Unreliable);
         }
     }
 
@@ -139,6 +170,37 @@ public class TrafficManager : NetworkBehaviour
         _edgeConnections = new NativeArray<ushort>(allConnections.ToArray(), Allocator.Persistent);
         _edgeConflicts = new NativeArray<ushort>(allConflicts.ToArray(), Allocator.Persistent);
         _nodeLocks = new NativeArray<int>(_trafficGraph.edges.Count, Allocator.Persistent);
+        _edgeStopSignals = new NativeArray<byte>(_trafficGraph.edges.Count, Allocator.Persistent);
+
+        _intersections = new NativeArray<NativeIntersection>(_trafficGraph.intersections.Count, Allocator.Persistent);
+        List<int> allLightIds = new List<int>();
+        for (int i = 0; i < _trafficGraph.intersections.Count; i++)
+        {
+            var data = _trafficGraph.intersections[i];
+            int aStart = allLightIds.Count;
+            if (data.phaseALightIds != null) allLightIds.AddRange(data.phaseALightIds);
+            int bStart = allLightIds.Count;
+            if (data.phaseBLightIds != null) allLightIds.AddRange(data.phaseBLightIds);
+
+            _intersections[i] = new NativeIntersection
+            {
+                phaseAStartIndex = aStart,
+                phaseACount = data.phaseALightIds != null ? data.phaseALightIds.Length : 0,
+                phaseBStartIndex = bStart,
+                phaseBCount = data.phaseBLightIds != null ? data.phaseBLightIds.Length : 0,
+                currentTimer = _greenTime,
+                currentStep = 0
+            };
+        }
+        _intersectionLightIds = new NativeArray<int>(allLightIds.ToArray(), Allocator.Persistent);
+
+        _lightToEdgeMapping = new NativeArray<ushort>(trafficLights.Length, Allocator.Persistent);
+        for (int i = 0; i < trafficLights.Length; i++)
+        {
+            _lightToEdgeMapping[i] = trafficLights[i] != null ? trafficLights[i].edgeId : (ushort)0xFFFF;
+        }
+
+        _lightStates = new NativeArray<byte>(trafficLights.Length, Allocator.Persistent);
     }
 
     private void InitializeVehicles()
@@ -200,9 +262,15 @@ public class TrafficManager : NetworkBehaviour
         if (_vehicleStates.IsCreated) _vehicleStates.Dispose();
         if (_edgeStates.IsCreated) _edgeStates.Dispose();
         if (_edgeConnections.IsCreated) _edgeConnections.Dispose();
+        if (_edgeConflicts.IsCreated) _edgeConflicts.Dispose();
+        if (_nodeLocks.IsCreated) _nodeLocks.Dispose();
+        if (_edgeStopSignals.IsCreated) _edgeStopSignals.Dispose();
         if (_previousVehicleStates.IsCreated) _previousVehicleStates.Dispose();
         if (_edgeToVehiclesMap.IsCreated) _edgeToVehiclesMap.Dispose();
-        if (_nodeLocks.IsCreated) _nodeLocks.Dispose();
-        if (_edgeConflicts.IsCreated) _edgeConflicts.Dispose();
+        
+        if (_intersections.IsCreated) _intersections.Dispose();
+        if (_intersectionLightIds.IsCreated) _intersectionLightIds.Dispose();
+        if (_lightToEdgeMapping.IsCreated) _lightToEdgeMapping.Dispose();
+        if (_lightStates.IsCreated) _lightStates.Dispose();
     }
 }

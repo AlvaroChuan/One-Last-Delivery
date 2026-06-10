@@ -8,6 +8,7 @@ public class TrafficClient : MonoBehaviour
     [SerializeField] private GameObject _vehiclePrefab;
     
     private Dictionary<uint, TrafficVehicleVisual> _vehicles = new Dictionary<uint, TrafficVehicleVisual>();
+    public TrafficLightController[] trafficLights;
 
     private void Start()
     {
@@ -21,6 +22,17 @@ public class TrafficClient : MonoBehaviour
 
     private void OnTrafficBatchReceived(TrafficBatchMessage message)
     {
+        if (message.lightStates != null && message.lightStates.Length == trafficLights.Length)
+        {
+            for (int i = 0; i < message.lightStates.Length; i++)
+            {
+                if (trafficLights[i] != null)
+                {
+                    trafficLights[i].SetState((TrafficLightController.TrafficLightState)message.lightStates[i]);
+                }
+            }
+        }
+
         foreach (NetworkVehicleState state in message.vehicles)
         {
             if (!_vehicles.TryGetValue(state.id, out TrafficVehicleVisual visual))
