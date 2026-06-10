@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 using Adrenak.UniMic;
@@ -9,10 +10,10 @@ using Adrenak.UniVoice.Inputs;
 using Adrenak.UniVoice.Filters;
 using Adrenak.UniVoice.Samples;
 using Mirror;
+using Unity.VisualScripting;
 
-[RequireComponent(typeof(PlayerVoiceID))]
-public class PlayerVoiceProxyComponent : PlayerComponent {
-    const string TAG = "[BasicUniVoiceSetupSample]";
+public class PlayerVoiceProxyComponent : MonoBehaviour {
+    const string TAG = "[PlayerVoiceProxyComponent]";
 
     /// <summary>
     /// Whether UniVoice has been setup successfully. This field will return true if the setup was successful.
@@ -41,32 +42,21 @@ public class PlayerVoiceProxyComponent : PlayerComponent {
 
     void Start() {
         if (HasSetUp) {
-            Debug.unityLogger.Log(LogType.Log, TAG, "UniVoice is already set up. Ignoring...");
             return;
         }
         HasSetUp = Setup();
     }
 
     bool Setup() {
-        Debug.unityLogger.Log(LogType.Log, TAG, "Trying to setup UniVoice");
-
         bool failed = false;
 
-        // Set setup the AudioServer and ClientSession on ALL builds. This means that you'd
-        // have a ClientSession on a dedicated server, even though there's not much you can do with it.
-        // Similarly, a client would also have an AudioServer object. But it would just be inactive.
-        // This sample is for ease of use and to get something working quickly, so we don't bother
-        // with these minor details. Note that doing so does not have any performance implications
-        // so you can do this, so you could keep this approach without any tradeoffs.
         var createdAudioServer = SetupAudioServer();
         if (!createdAudioServer) {
-            Debug.unityLogger.Log(LogType.Error, TAG, "Could not setup UniVoice server.");
             failed = true;
         }
 
         var setupAudioClient = SetupClientSession();
         if (!setupAudioClient) {
-            Debug.unityLogger.Log(LogType.Error, TAG, "Could not setup UniVoice client.");
             failed = true;
         }
 
@@ -74,6 +64,8 @@ public class PlayerVoiceProxyComponent : PlayerComponent {
             Debug.unityLogger.Log(LogType.Log, TAG, "UniVoice successfully setup!");
         else
             Debug.unityLogger.Log(LogType.Error, TAG, $"Refer to the notes on top of {typeof(UniVoiceMirrorSetupSample).Name}.cs for setup instructions.");
+
+
         return !failed;
     }
 
@@ -84,7 +76,6 @@ public class PlayerVoiceProxyComponent : PlayerComponent {
         // or automatically handling all incoming messages. On a device connecting as a client,
         // this code doesn't do anything.
         AudioServer = new MirrorServer();
-        Debug.unityLogger.Log(LogType.Log, TAG, "Created MirrorServer object");
 
         AudioServer.OnServerStart += () => {
             Debug.unityLogger.Log(LogType.Log, TAG, "Server started");
@@ -107,6 +98,7 @@ public class PlayerVoiceProxyComponent : PlayerComponent {
 
         client.OnJoined += (id, peerIds) => {
             Debug.unityLogger.Log(LogType.Log, TAG, $"You are Peer ID {id}");
+            ClientSession.Client.SubmitVoiceSettings();
         };
 
         client.OnLeft += () => {
@@ -116,7 +108,7 @@ public class PlayerVoiceProxyComponent : PlayerComponent {
         // When a peer joins, we instantiate a new peer view
         client.OnPeerJoined += id =>
         {
-            StartCoroutine(InitializeAudio(id));
+            StartCoroutine(ConfigureAudio(id));
         };
 
         // When a peer leaves, destroy the UI representing them
@@ -192,49 +184,96 @@ public class PlayerVoiceProxyComponent : PlayerComponent {
 #endif
     }
 
-    private IEnumerator InitializeAudio(int id)
+    private IEnumerator ConfigureAudio(int id)
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForEndOfFrame();
+
+        if (ClientSession == null || !ClientSession.PeerOutputs.ContainsKey(id)) yield break;
 
         IAudioOutput peerOutput = ClientSession.PeerOutputs[id];
         StreamedAudioSourceOutput streamedAudioSourceOutput = peerOutput as StreamedAudioSourceOutput;
         AudioSource peerAudioSource = streamedAudioSourceOutput.Stream.UnityAudioSource;
         Transform peerAvatar = GetAvatarForPeerID(id);
 
-        peerAudioSource.transform.SetParent(peerAvatar);
-        peerAudioSource.transform.localPosition = Vector3.zero;
+        if (peerAvatar != null)
+        {
+            peerAudioSource.transform.SetParent(peerAvatar);
+            peerAudioSource.transform.localPosition = Vector3.zero;
+        }
+
         peerAudioSource.rolloffMode = AudioRolloffMode.Linear;
-        peerAudioSource.spatialBlend = 1;
         peerAudioSource.maxDistance = distanceProximityChat;
+
+        bool peerIsAlive = true;
+        if (peerAvatar != null)
+        {
+            var deathComp = peerAvatar.GetComponent<PlayerVoiceDeathComponent>();
+            if (deathComp != null)
+            {
+                peerIsAlive = deathComp.isAlive;
+            }
+        }
+
+        bool localIsAlive = true;
+        var localDeathComp = GetLocalPlayerDeathComponent();
+        if (localDeathComp != null)
+        {
+            localIsAlive = localDeathComp.isAlive;
+        }
+
+        if (peerIsAlive)
+        {
+            // Alive hears Alive spatially
+            peerAudioSource.mute = false;
+            peerAudioSource.spatialBlend = 1f;
+        }
+        else if (localIsAlive)
+        {
+            peerAudioSource.mute = true;
+        }
+        else
+        {
+            peerAudioSource.mute = false;
+            peerAudioSource.spatialBlend = 0f;
+        }
+    }
+
+    public void UpdateAudio()
+    {
+        if (ClientSession == null) return;
+        foreach (int id in ClientSession.PeerOutputs.Keys)
+        {
+            StartCoroutine(ConfigureAudio(id));
+        }
+    }
+
+    private PlayerVoiceDeathComponent GetLocalPlayerDeathComponent()
+    {
+        var players = FindObjectsOfType<PlayerVoiceDeathComponent>();
+        foreach (var p in players)
+        {
+            if (p.isLocalPlayer) return p;
+        }
+        return null;
     }
 
     private Transform GetAvatarForPeerID(int id)
     {
-        Transform peerAvatar = null;
+        // For pure clients, use the synced voiceId
+        var players = FindObjectsOfType<PlayerVoiceDeathComponent>();
+        foreach (var p in players)
+        {
+            if (p.voiceId == id) return p.transform;
+        }
 
-        if (NetworkServer.connections.TryGetValue(id, out var connection))
+        // Fallback for Host/Server
+        if (NetworkServer.active && NetworkServer.connections.TryGetValue(id, out var connection))
         {
             if (connection.identity != null)
             {
-                peerAvatar = connection.identity.transform;
+                return connection.identity.transform;
             }
         }
-
-        if (peerAvatar == null)
-        {
-
-            foreach (NetworkIdentity netIdentity in FindObjectsOfType<Mirror.NetworkIdentity>())
-            {
-                PlayerVoiceID voiceIdComponent = netIdentity.GetComponent<PlayerVoiceID>();
-
-                if (voiceIdComponent != null && voiceIdComponent.univoicePeerId == id)
-                {
-                    peerAvatar = netIdentity.transform;
-                    break;
-                }
-            }
-        }
-
-        return peerAvatar;
+        return null;
     }
 }
