@@ -2,6 +2,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "TrafficGraph", menuName = "Traffic/Traffic Graph")]
+public class TrafficGraph : ScriptableObject
+{
+    public List<TrafficEdge> edges = new List<TrafficEdge>();
+    public List<IntersectionData> intersections = new List<IntersectionData>();
+}
+
 [Serializable]
 public struct EdgePoint
 {
@@ -28,9 +35,4 @@ public struct IntersectionData
     public int[] phaseBLightIds;
 }
 
-[CreateAssetMenu(fileName = "TrafficGraph", menuName = "Traffic/Traffic Graph")]
-public class TrafficGraph : ScriptableObject
-{
-    public List<TrafficEdge> edges = new List<TrafficEdge>();
-    public List<IntersectionData> intersections = new List<IntersectionData>();
-}
+

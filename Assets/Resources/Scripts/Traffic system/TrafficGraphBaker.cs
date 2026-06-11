@@ -99,11 +99,12 @@ public class TrafficGraphBaker : MonoBehaviour
             edge.conflictingEdgeIDs = conflicts.ToArray();
         }
 
-        TrafficLightController[] lights = FindObjectsByType<TrafficLightController>(FindObjectsSortMode.None);
+        TrafficLightController[] allLights = FindObjectsByType<TrafficLightController>(FindObjectsSortMode.None);
+        List<TrafficLightController> validLights = new List<TrafficLightController>();
         int lightIdCounter = 0;
-        foreach (var light in lights)
+        
+        foreach (var light in allLights)
         {
-            light.lightId = lightIdCounter++;
             float minDistance = float.MaxValue;
             ushort closestEdge = 0xFFFF;
             foreach (var edge in _outputGraph.edges)
@@ -117,10 +118,17 @@ public class TrafficGraphBaker : MonoBehaviour
                     closestEdge = edge.id;
                 }
             }
-            light.edgeId = closestEdge;
-            EditorUtility.SetDirty(light);
+            
+            if (closestEdge != 0xFFFF)
+            {
+                light.lightId = lightIdCounter++;
+                light.edgeId = closestEdge;
+                EditorUtility.SetDirty(light);
+                validLights.Add(light);
+            }
         }
 
+        TrafficLightController[] lights = validLights.ToArray();
         System.Array.Sort(lights, (a, b) => a.lightId.CompareTo(b.lightId));
 
         _outputGraph.intersections.Clear();
@@ -156,14 +164,18 @@ public class TrafficGraphBaker : MonoBehaviour
             });
         }
 
-        TrafficManager manager = FindFirstObjectByType<TrafficManager>();
+        TrafficManager manager = GetComponent<TrafficManager>();
+        if (manager == null) manager = FindFirstObjectByType<TrafficManager>();
+        
         if (manager != null)
         {
             manager.trafficLights = lights;
             EditorUtility.SetDirty(manager);
         }
 
-        TrafficClient client = FindFirstObjectByType<TrafficClient>();
+        TrafficClient client = GetComponent<TrafficClient>();
+        if (client == null) client = FindFirstObjectByType<TrafficClient>();
+        
         if (client != null)
         {
             client.trafficLights = lights;

@@ -49,6 +49,7 @@ public class TrafficManager : NetworkBehaviour
     private NativeArray<DynamicObstacleData> _dynamicObstacles;
     private NativeArray<NativeObstacle> _mappedObstacles;
     
+    [HideInInspector]
     public TrafficLightController[] trafficLights;
     private float _nextSyncTime;
 

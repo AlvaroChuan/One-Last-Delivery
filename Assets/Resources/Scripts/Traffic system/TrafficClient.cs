@@ -8,6 +8,7 @@ public class TrafficClient : MonoBehaviour
     [SerializeField] private GameObject _vehiclePrefab;
     
     private Dictionary<uint, TrafficVehicleVisual> _vehicles = new Dictionary<uint, TrafficVehicleVisual>();
+    [HideInInspector]
     public TrafficLightController[] trafficLights;
 
     private void Start()

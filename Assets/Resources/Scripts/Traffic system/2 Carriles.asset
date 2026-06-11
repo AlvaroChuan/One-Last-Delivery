@@ -217,7 +217,7 @@ MonoBehaviour:
       tangent: {x: 0, y: -0.008527789, z: 0.99996364}
     - position: {x: -2.5, y: 1, z: 75}
       tangent: {x: 0, y: -0.020404082, z: 0.9997918}
-    endNodeID: -1
+    conflictingEdgeIDs: 
     leftEdgeId: -1
     rightEdgeId: -1
   - id: 1
@@ -424,7 +424,7 @@ MonoBehaviour:
       tangent: {x: -0.0000004773148, y: 0.000000007458044, z: -1}
     - position: {x: -35, y: 1, z: 75}
       tangent: {x: -0.00000084770863, y: 0, z: -1}
-    endNodeID: -1
+    conflictingEdgeIDs: 
     leftEdgeId: -1
     rightEdgeId: -1
   - id: 2
@@ -631,7 +631,7 @@ MonoBehaviour:
       tangent: {x: -0.00000006754674, y: -0.00874206, z: 0.9999618}
     - position: {x: 2.5, y: 1, z: 75}
       tangent: {x: 0, y: -0.02040413, z: 0.9997918}
-    endNodeID: -1
+    conflictingEdgeIDs: 
     leftEdgeId: -1
     rightEdgeId: -1
   - id: 3
@@ -838,6 +838,7 @@ MonoBehaviour:
       tangent: {x: -0.00000053639775, y: 0, z: -1}
     - position: {x: -40, y: 1, z: 75}
       tangent: {x: 0, y: 0, z: -1}
-    endNodeID: -1
+    conflictingEdgeIDs: 
     leftEdgeId: -1
     rightEdgeId: -1
+  intersections: []
