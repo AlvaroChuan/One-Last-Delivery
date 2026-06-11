@@ -7,7 +7,7 @@ public static class DevLogger
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         string callerName = System.IO.Path.GetFileNameWithoutExtension(caller);
-        UnityEngine.Debug.Log($"[{callerName}]: {message}");
+        UnityEngine.Debug.Log($"[{callerName}] {message}");
 #endif
     }
 
@@ -16,13 +16,13 @@ public static class DevLogger
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         string callerName = System.IO.Path.GetFileNameWithoutExtension(caller);
-        UnityEngine.Debug.LogWarning($"[{callerName}]: {message}");
+        UnityEngine.Debug.LogWarning($"[{callerName}] {message}");
 #endif
     }
 
     public static void LogError(string message, [System.Runtime.CompilerServices.CallerFilePath] string caller = "")
     {
         string callerName = System.IO.Path.GetFileNameWithoutExtension(caller);
-        UnityEngine.Debug.LogError($"[{callerName}]: {message}");
+        UnityEngine.Debug.LogError($"[{callerName}] {message}");
     }
 }
