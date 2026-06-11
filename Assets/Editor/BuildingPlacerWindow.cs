@@ -4,23 +4,24 @@ using UnityEngine.Splines;
 using System.Collections.Generic;
 using System.Linq;
 
-// ── 3. EDITOR WINDOW ───────────────────────────────────
+// ── 3. VENTANA DEL EDITOR ──────────────────────────────
 public class BuildingPlacerWindow : EditorWindow
 {
-    // Tool configuration
+    // Configuración de la herramienta
     private SplineContainer _targetSpline;
     private float _inset = 3.0f;
     private string _generatedTag = "Building";
     private float _cornerAngleThresh = 45f;
 
-    // NEW: Global factor to adjust spacing between buildings (0.5 = tight, 1.0 = default, 1.5 = spacious)
+    // Control de Espacios
     private float _spacingFactor = 1.0f;
+    private float _cornerGap = 6.0f; // NUEVO: Margen para que las esquinas no se solapen
 
-    // Generation limits configuration
+    // Control de Límites
     private int _maxBuildingsPerType = 0;
     private int _maxConsecutiveSameType = 3;
 
-    // Our save file reference and UI
+    // Nuestro archivo de guardado y UI
     private BuildingPlacerProfile _profile;
     private Vector2 _scroll;
     private string _newProfileName = "MiNuevoBarrio";
@@ -40,19 +41,18 @@ public class BuildingPlacerWindow : EditorWindow
         _inset = EditorGUILayout.FloatField("Inset (meters)", _inset);
         _cornerAngleThresh = EditorGUILayout.FloatField("Corner Angle", _cornerAngleThresh);
 
-        // ── NEW: Spacing factor slider in the UI ──
-        _spacingFactor = EditorGUILayout.Slider("Spacing Factor", _spacingFactor, 0.5f, 1.5f);
+        EditorGUILayout.Space();
+        GUILayout.Label("Ajuste de Espacios", EditorStyles.boldLabel);
+        _spacingFactor = EditorGUILayout.Slider("Factor de Separación", _spacingFactor, 0.5f, 1.5f);
+        _cornerGap = EditorGUILayout.FloatField("Hueco previo a Esquina (m)", _cornerGap);
 
         EditorGUILayout.Space();
-
+        GUILayout.Label("Límites de Generación", EditorStyles.boldLabel);
         _maxBuildingsPerType = EditorGUILayout.IntField("Máx. Edificios por Tipo", _maxBuildingsPerType);
-        if (_maxBuildingsPerType <= 0)
-            EditorGUILayout.HelpBox("El límite total está en 0 (Generación infinita).", MessageType.Info);
-
         _maxConsecutiveSameType = EditorGUILayout.IntSlider("Máx. Consecutivos Mismo Tipo", _maxConsecutiveSameType, 1, 10);
 
         EditorGUILayout.Space();
-        GUILayout.Label("Datos de Generación", EditorStyles.boldLabel);
+        GUILayout.Label("Datos de Perfil", EditorStyles.boldLabel);
 
         _profile = (BuildingPlacerProfile)EditorGUILayout.ObjectField("💾 Prefab Profile", _profile, typeof(BuildingPlacerProfile), false);
 
@@ -79,13 +79,13 @@ public class BuildingPlacerWindow : EditorWindow
         _profile.probSameTypeDiffSize = EditorGUILayout.Slider("Prob. Mismo Tipo / Dist. Tamaño", _profile.probSameTypeDiffSize, 0f, 1f);
         EditorGUILayout.Space();
 
-        // ── RESIDENTIAL LISTS ───────────────────────────
+        // ── LISTAS RESIDENCIALES ───────────────────────────
         DrawBuildingList("🏡 ResA Houses", _profile.resA);
         DrawBuildingList("🏡 ResB Houses", _profile.resB);
         DrawBuildingList("🏡 ResC Houses", _profile.resC);
         DrawBuildingList("🏡 ResD Houses", _profile.resD);
 
-        // ── CORNERS LIST ─────────────────────────────────
+        // ── LISTA ESQUINAS ─────────────────────────────────
         GUILayout.Label("📐 Corner Prefabs:", EditorStyles.boldLabel);
         for (int i = 0; i < _profile.cornerPrefabs.Count; i++)
         {
@@ -169,10 +169,12 @@ public class BuildingPlacerWindow : EditorWindow
         {
             int iNext = (i + 1) % knotCount;
             int iPrev = (i - 1 + knotCount) % knotCount;
+            int iNextNext = (i + 2) % knotCount; // Nodo subsiguiente para mirar al futuro
 
             Vector3 pCurr = _targetSpline.transform.TransformPoint(spline[i].Position);
             Vector3 pNext = _targetSpline.transform.TransformPoint(spline[iNext].Position);
             Vector3 pPrev = _targetSpline.transform.TransformPoint(spline[iPrev].Position);
+            Vector3 pNextNext = _targetSpline.transform.TransformPoint(spline[iNextNext].Position);
 
             Vector3 edgeDir = (pNext - pCurr).normalized;
             float edgeLen = Vector3.Distance(pCurr, pNext);
@@ -186,6 +188,7 @@ public class BuildingPlacerWindow : EditorWindow
 
             Quaternion rot = Quaternion.LookRotation(outward, Vector3.up);
 
+            // 1. Detección de la esquina ACTUAL
             Vector3 edgeIn = (pCurr - pPrev).normalized;
             float angle = Vector3.Angle(edgeIn, edgeDir);
             bool isCorner = angle > _cornerAngleThresh;
@@ -198,8 +201,6 @@ public class BuildingPlacerWindow : EditorWindow
                 {
                     var prefab = validCorners[UnityEngine.Random.Range(0, validCorners.Count)];
                     Bounds b = GetPrefabBounds(prefab);
-
-                    // NEW: Apply spacing factor to corner width calculation
                     cornerWidth = b.size.x * _spacingFactor;
 
                     Vector3 pos = pCurr + edgeDir * (cornerWidth / 2f) + outward * (-(_inset + b.size.z / 2f));
@@ -208,6 +209,18 @@ public class BuildingPlacerWindow : EditorWindow
                 }
             }
 
+            // 2. Detección de la FUTURA esquina (Look-ahead)
+            Vector3 edgeDirNext = (pNextNext - pNext).normalized;
+            bool nextIsCorner = Vector3.Angle(edgeDir, edgeDirNext) > _cornerAngleThresh;
+
+            // Restamos el gap a la longitud disponible si nos acercamos a una esquina
+            float effectiveEdgeLen = edgeLen;
+            if (nextIsCorner)
+            {
+                effectiveEdgeLen -= _cornerGap;
+            }
+
+            // 3. Rellenar con edificios rectos
             float cursor = cornerWidth;
             Vector3 vStart = pCurr;
 
@@ -218,19 +231,19 @@ public class BuildingPlacerWindow : EditorWindow
                 BuildingData nextData = ChooseNextBuilding(allResLists, ref lastTypeIndex, lastBuilding, typeCounters, _maxBuildingsPerType, consecutiveCount, _maxConsecutiveSameType);
                 if (nextData == null || nextData.prefab == null) break;
 
+                Bounds b = GetPrefabBounds(nextData.prefab);
+                float bw = b.size.x * _spacingFactor;
+                float bd = b.size.z;
+
+                // AHORA COMPROBAMOS CONTRA EL effectiveEdgeLen RECORTE
+                if (cursor + bw > effectiveEdgeLen + 0.01f) break;
+
+                // Solo si el edificio cabe (no ha hecho break), actualizamos los contadores
                 if (lastTypeIndex == prevTypeIndex) consecutiveCount++;
                 else consecutiveCount = 1;
 
                 lastBuilding = nextData;
                 typeCounters[lastTypeIndex]++;
-
-                Bounds b = GetPrefabBounds(nextData.prefab);
-
-                // NEW: Apply global spacing factor directly to the width stride calculation
-                float bw = b.size.x * _spacingFactor;
-                float bd = b.size.z;
-
-                if (cursor + bw > edgeLen + 0.01f) break;
 
                 Vector3 pos = vStart + edgeDir * (cursor + bw / 2f) + outward * (-(_inset + bd / 2f));
                 pos.y = 0;
@@ -243,7 +256,7 @@ public class BuildingPlacerWindow : EditorWindow
         Debug.Log("✅ Generación completada.");
     }
 
-    // ── PROBABILITY LOGIC ──────────────────────────────────
+    // ── LÓGICA DE PROBABILIDAD ──────────────────────────────────
     BuildingData ChooseNextBuilding(List<List<BuildingData>> allLists, ref int lastTypeIndex, BuildingData lastBuilding, int[] typeCounters, int maxLimit, int consecutiveCount, int maxConsecutive)
     {
         List<int> validIndices = new List<int>();
