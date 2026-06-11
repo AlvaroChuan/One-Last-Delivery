@@ -1,11 +1,11 @@
-using System.Collections;
-using Adrenak.UniVoice.Samples;
 using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerDeathComponent))]
 public class PlayerVoiceDeathComponent : PlayerComponent
 {
     PlayerVoiceProxyComponent _playerVoiceProxyComponent;
+    PlayerDeathComponent _deathComponent;
 
     [SyncVar]
     public int voiceId = -1;
@@ -22,9 +22,24 @@ public class PlayerVoiceDeathComponent : PlayerComponent
         }
     }
 
+    void Awake()
+    {
+        _deathComponent = GetComponent<PlayerDeathComponent>();
+    }
+
     private void Start()
     {
-        _playerVoiceProxyComponent = FindObjectOfType<PlayerVoiceProxyComponent>();
+        _playerVoiceProxyComponent = FindAnyObjectByType<PlayerVoiceProxyComponent>();
+    }
+
+    void OnEnable()
+    {
+        _deathComponent.onPlayerDeathEvent += CmdNotifyDeathOnNetwork;
+    }
+
+    void OnDisable()
+    {
+        _deathComponent.onPlayerDeathEvent -= CmdNotifyDeathOnNetwork;
     }
 
     [Command]
