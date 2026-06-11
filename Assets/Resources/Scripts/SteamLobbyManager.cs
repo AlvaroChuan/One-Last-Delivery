@@ -125,6 +125,10 @@ public class SteamLobbyManager : MonoBehaviour
         if (allReady)
         {
             SteamMatchmaking.SetLobbyJoinable(_currentLobbyID, false);
+            if(_startGameCoroutine != null)
+            {
+                StopCoroutine(_startGameCoroutine);
+            }
             _startGameCoroutine = StartCoroutine(StartGameCountdown());
         }
         else
@@ -135,7 +139,6 @@ public class SteamLobbyManager : MonoBehaviour
                 DevLogger.Log("Not all players are ready. Stopping game start countdown.");
                 StopCoroutine(_startGameCoroutine);
                 _uiManager.UpdateCountdown();
-                _startGameCoroutine = null;
             }
         }
     }
