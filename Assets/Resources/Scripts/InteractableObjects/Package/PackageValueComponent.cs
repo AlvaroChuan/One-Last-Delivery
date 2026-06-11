@@ -12,7 +12,7 @@ public class PackageValueComponent : MonoBehaviour
         _packageHealthComponent = GetComponent<PackageHealthComponent>();
         if(_packageHealthComponent == null)
         {
-            Debug.LogError("Package is missing a PackageHealthComponent, please add one to the package.");
+            DevLogger.LogError("Package is missing a PackageHealthComponent, please add one to the package.");
         }
     }
     public float GetValue()

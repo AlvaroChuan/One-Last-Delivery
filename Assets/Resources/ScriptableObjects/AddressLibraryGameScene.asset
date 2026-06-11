@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c233cbd0ca4d24484dd265f0adaa11, type: 3}
   m_Name: AddressLibraryGameScene
   m_EditorClassIdentifier: 
-  validAddresses:
+  _addresses:
   - streetName: 4th Street
     number: 0

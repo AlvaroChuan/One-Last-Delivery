@@ -32,7 +32,7 @@ public class SpectatorMovementComponent : InputComponent
             enabled = false; // Disable this component for non-local players
             return;
         }
-        Debug.Log("Enabling SpectatorMovementComponent for local player.");
+        DevLogger.Log("Enabling SpectatorMovementComponent for local player.");
         base.OnEnable();
         _collider = GetComponent<Collider>();
         _collider.isTrigger = true; // Set collider to trigger to avoid physics interactions
@@ -104,7 +104,7 @@ public class SpectatorMovementComponent : InputComponent
 
     void FixedUpdate()
     {
-        Debug.Log("Movement Action enabled: " + _movementInput.action.enabled);
+        DevLogger.Log("Movement Action enabled: " + _movementInput.action.enabled);
 
         if(_rigidbody == null || !_canMove || !isLocalPlayer)
             return;

@@ -107,7 +107,7 @@ public class DropdownStringDrawer : PropertyDrawer
     {
         if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(option))
         {
-            Debug.LogWarning("Key and option cannot be empty.");
+            DevLogger.LogError("Key and option cannot be empty.");
             return;
         }
 

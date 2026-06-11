@@ -907,6 +907,7 @@ MonoBehaviour:
   _activeSceneNames:
   - GameScene
   _oldInstanceTakesPrecedence: 1
+  _currentMoney: 0
 --- !u!4 &1116074231
 Transform:
   m_ObjectHideFlags: 0
@@ -1053,7 +1054,7 @@ MonoBehaviour:
   _packageEntries:
   - prefab: {fileID: 1369721123284713815, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
     probability: 1
-  _spawnBounds: {x: 1, y: 5, z: 1}
+  _spawnBounds: {x: 5, y: 5, z: 5}
   _packagesToSpawn: 1
   _coordinateOrder: 1
   _packageSize: 1

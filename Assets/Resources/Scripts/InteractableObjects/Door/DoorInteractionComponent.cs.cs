@@ -17,7 +17,7 @@ public class DoorInteractionComponent : Interactable
         _localAddressComponent = GetComponent<LocalAddressComponent>();
         if (_localAddressComponent == null)
         {
-            Debug.LogError("Door is missing a LocalAddressComponent, please add one to the door.");
+            DevLogger.LogError("Door is missing a LocalAddressComponent, please add one to the door.");
         }
     }
 
@@ -29,7 +29,7 @@ public class DoorInteractionComponent : Interactable
         NetworkAddressComponent packageAddressComponent = package.GetComponent<NetworkAddressComponent>();
         if (packageAddressComponent == null)
         {
-            Debug.LogError("Package is missing a NetworkAddressComponent, please add one to the package.");
+            DevLogger.LogError("Package is missing a NetworkAddressComponent, please add one to the package.");
             return;
         }
 

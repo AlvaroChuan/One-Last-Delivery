@@ -40,6 +40,17 @@ public class PackageSpawner : NetworkBehaviour
     void SpawnPackages()
     {
         Vector3Int currentPosition = Vector3Int.zero;
+        AddressLibrary addressLibrary = Resources.Load<AddressLibrary>(AddressLibrary.GetResourcePath());
+        if (addressLibrary == null || addressLibrary.AddressCount == 0)
+        {
+            DevLogger.LogError("Address library is missing or empty. Please generate the address library before spawning packages.");
+            return;
+        }
+        if (_packagesToSpawn > addressLibrary.AddressCount)
+        {
+            DevLogger.LogError("Not enough valid addresses to assign unique addresses to all packages. Only spawning " + addressLibrary.AddressCount + " packages.");
+            _packagesToSpawn = addressLibrary.AddressCount; // Adjust the number of packages to spawn to match the number of available addresses
+        }
         for (int i = 0; i < _packagesToSpawn; i++)
         {
             GameObject packagePrefab = GetRandomPackagePrefab();
@@ -49,21 +60,10 @@ public class PackageSpawner : NetworkBehaviour
             NetworkServer.Spawn(packageInstance);
 
             NetworkAddressComponent addressComponent = packageInstance.GetComponent<NetworkAddressComponent>();
-            AddressLibrary addressLibrary = Resources.Load<AddressLibrary>(AddressLibrary.GetResourcePath());
-            if (addressLibrary == null || addressLibrary.validAddresses.Count == 0)
-            {
-                Debug.LogError("[PackageSpawner] Address library is missing or empty. Please generate the address library before spawning packages.");
-                return;
-            }
-            if (UsedAddresses.Count >= addressLibrary.validAddresses.Count)
-            {
-                Debug.LogError("[PackageSpawner] All valid addresses have been used. Cannot assign unique addresses to packages.");
-                return;
-            }
             AddressInfo newAddress;
             do
             {
-                newAddress = addressLibrary.validAddresses[Random.Range(0, addressLibrary.validAddresses.Count)];
+                newAddress = addressLibrary.GetRandomAddress();
             } while (UsedAddresses.Contains(newAddress));
 
             addressComponent.SetAddress(newAddress);
@@ -82,7 +82,7 @@ public class PackageSpawner : NetworkBehaviour
         }
         if (total == 0f)
         {
-            Debug.LogWarning("[PackageSpawner] Total probability is zero. Assigning equal probabilities to all package entries.");
+            DevLogger.LogWarning("Total probability is zero. Assigning equal probabilities to all package entries.");
             for (int i = 0; i < _packageEntries.Length; i++)
             {
                 _packageEntries[i].probability = 1f / _packageEntries.Length;

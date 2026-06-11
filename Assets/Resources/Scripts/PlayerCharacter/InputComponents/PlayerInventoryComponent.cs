@@ -99,7 +99,7 @@ public class PlayerInventoryComponent : InputComponent
             SetCarryingPackage(null);
         }
 
-        Debug.Log("Selected inventory index: " + _selectedInventoryIndex);
+        DevLogger.Log("Selected inventory index: " + _selectedInventoryIndex);
         SetInventorySelection(_selectedInventoryIndex);
     }
     private void OnSelectInput(InputAction.CallbackContext context)
@@ -213,7 +213,7 @@ public class PlayerInventoryComponent : InputComponent
     {
         if (!isLocalPlayer) return;
 
-        Debug.Log($"Adding item {itemData.itemID} to inventory");
+        DevLogger.Log($"Adding item {itemData.itemID} to inventory");
 
         int affectedSlot = -1;
         if (affectedSlot == -1)

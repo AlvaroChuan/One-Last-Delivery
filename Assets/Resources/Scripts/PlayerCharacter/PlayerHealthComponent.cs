@@ -44,7 +44,7 @@ public class PlayerHealthComponent : PlayerComponent
     [ClientRpc]
     public void RpcTakeDamage(float damage)
     {
-        Debug.Log($"RpcTakeDamage called with damage: {damage}");
+        DevLogger.Log($"RpcTakeDamage called with damage: {damage}");
         if (!isLocalPlayer) return;
 
         if (_currentHealth <= 0)
@@ -52,7 +52,7 @@ public class PlayerHealthComponent : PlayerComponent
 
         float oldHealth = _currentHealth;
 
-        Debug.Log($"Taking {damage} damage");
+        DevLogger.Log($"Taking {damage} damage");
         _currentHealth -= damage;
 
         onHealthChangedEvent?.Invoke(new HealthChangeInfo

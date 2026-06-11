@@ -173,7 +173,7 @@ namespace Adrenak.UniVoice.Samples
         {
             if (HasSetUp)
             {
-                Debug.unityLogger.Log(LogType.Log, TAG, "UniVoice is already set up. Ignoring...");
+                UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "UniVoice is already set up. Ignoring...");
                 return;
             }
 
@@ -219,7 +219,7 @@ namespace Adrenak.UniVoice.Samples
             IsMuted = false;
             HasSetUp = false;
 
-            Debug.unityLogger.Log(LogType.Log, TAG, "UniVoice stopped.");
+            UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "UniVoice stopped.");
         }
 
         /// <summary>
@@ -246,7 +246,7 @@ namespace Adrenak.UniVoice.Samples
                 _voiceInputControlFilter.IsMuted = muted;
             }
 
-            Debug.unityLogger.Log(
+            UnityEngine.Debug.unityLogger.Log(
                 LogType.Log,
                 TAG,
                 muted ? "Microphone muted" : "Microphone unmuted"
@@ -287,7 +287,7 @@ namespace Adrenak.UniVoice.Samples
             }
             UpdatePushToTalkButtons();
 
-            Debug.unityLogger.Log(
+            UnityEngine.Debug.unityLogger.Log(
                 LogType.Log,
                 TAG,
                 enabled ? "Push To Talk enabled" : "Push To Talk disabled"
@@ -363,7 +363,7 @@ namespace Adrenak.UniVoice.Samples
                 ClientSession.Input = newInput;
             }
 
-            Debug.unityLogger.Log(
+            UnityEngine.Debug.unityLogger.Log(
                 LogType.Log,
                 TAG,
                 $"Changed microphone to {Mic.AvailableDevices[deviceIndex].Name}"
@@ -380,7 +380,7 @@ namespace Adrenak.UniVoice.Samples
         /// <returns>True if setup succeeded, false otherwise.</returns>
         private bool Setup()
         {
-            Debug.unityLogger.Log(LogType.Log, TAG, "Trying to setup UniVoice");
+            UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Trying to setup UniVoice");
 
             bool failed = false;
 
@@ -388,7 +388,7 @@ namespace Adrenak.UniVoice.Samples
 
             if (!createdAudioServer)
             {
-                Debug.unityLogger.Log(LogType.Error, TAG, "Could not setup UniVoice server.");
+                UnityEngine.Debug.unityLogger.Log(LogType.Error, TAG, "Could not setup UniVoice server.");
                 failed = true;
             }
 
@@ -396,17 +396,17 @@ namespace Adrenak.UniVoice.Samples
 
             if (!setupAudioClient)
             {
-                Debug.unityLogger.Log(LogType.Error, TAG, "Could not setup UniVoice client.");
+                UnityEngine.Debug.unityLogger.Log(LogType.Error, TAG, "Could not setup UniVoice client.");
                 failed = true;
             }
 
             if (!failed)
             {
-                Debug.unityLogger.Log(LogType.Log, TAG, "UniVoice successfully setup!");
+                UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "UniVoice successfully setup!");
             }
             else
             {
-                Debug.unityLogger.Log(
+                UnityEngine.Debug.unityLogger.Log(
                     LogType.Error,
                     TAG,
                     "Could not setup UniVoice. Check that Mirror is imported and UNIVOICE_NETWORK_MIRROR is added as a scripting define symbol."
@@ -425,16 +425,16 @@ namespace Adrenak.UniVoice.Samples
 #if MIRROR
             AudioServer = new MirrorServer();
 
-            Debug.unityLogger.Log(LogType.Log, TAG, "Created MirrorServer object");
+            UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Created MirrorServer object");
 
             AudioServer.OnServerStart += () =>
             {
-                Debug.unityLogger.Log(LogType.Log, TAG, "Voice server started");
+                UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Voice server started");
             };
 
             AudioServer.OnServerStop += () =>
             {
-                Debug.unityLogger.Log(LogType.Log, TAG, "Voice server stopped");
+                UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Voice server stopped");
             };
 
             return true;
@@ -455,25 +455,25 @@ namespace Adrenak.UniVoice.Samples
 
             client.OnJoined += (id, peerIds) =>
             {
-                Debug.unityLogger.Log(LogType.Log, TAG, $"You are Peer ID {id}");
+                UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, $"You are Peer ID {id}");
             };
 
             client.OnLeft += () =>
             {
-                Debug.unityLogger.Log(LogType.Log, TAG, "You left the voice chatroom");
+                UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "You left the voice chatroom");
             };
 
             client.OnPeerJoined += id =>
             {
-                Debug.unityLogger.Log(LogType.Log, TAG, $"Peer {id} joined voice chat");
+                UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, $"Peer {id} joined voice chat");
             };
 
             client.OnPeerLeft += id =>
             {
-                Debug.unityLogger.Log(LogType.Log, TAG, $"Peer {id} left voice chat");
+                UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, $"Peer {id} left voice chat");
             };
 
-            Debug.unityLogger.Log(LogType.Log, TAG, "Created MirrorClient object");
+            UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Created MirrorClient object");
 
             SetupMicrophoneDropdown();
 
@@ -481,11 +481,11 @@ namespace Adrenak.UniVoice.Samples
 
             IAudioOutputFactory outputFactory = new StreamedAudioSourceOutput.Factory();
 
-            Debug.unityLogger.Log(LogType.Log, TAG, "Using StreamedAudioSourceOutput.Factory as output factory");
+            UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Using StreamedAudioSourceOutput.Factory as output factory");
 
             ClientSession = new ClientSession<int>(client, input, outputFactory);
 
-            Debug.unityLogger.Log(LogType.Log, TAG, "Created voice session");
+            UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Created voice session");
 
             _voiceInputControlFilter = new VoiceInputControlFilter
             {
@@ -496,7 +496,7 @@ namespace Adrenak.UniVoice.Samples
             };
 
             ClientSession.InputFilters.Add(_voiceInputControlFilter);
-            Debug.unityLogger.Log(LogType.Log, TAG, "Registered VoiceInputControlFilter as an input filter");
+            UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Registered VoiceInputControlFilter as an input filter");
 
 #if UNIVOICE_FILTER_RNNOISE4UNITY
             if (_useRNNoise4UnityIfAvailable)
@@ -509,16 +509,16 @@ namespace Adrenak.UniVoice.Samples
             if (_useVad)
             {
                 ClientSession.InputFilters.Add(new SimpleVadFilter(new SimpleVad()));
-                Debug.unityLogger.Log(LogType.Log, TAG, "Registered SimpleVadFilter as an input filter");
+                UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Registered SimpleVadFilter as an input filter");
             }
 
             if (_useConcentusEncodeAndDecode)
             {
                 ClientSession.InputFilters.Add(new ConcentusEncodeFilter());
-                Debug.unityLogger.Log(LogType.Log, TAG, "Registered ConcentusEncodeFilter as an input filter");
+                UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Registered ConcentusEncodeFilter as an input filter");
 
                 ClientSession.AddOutputFilter<ConcentusDecodeFilter>(() => new ConcentusDecodeFilter());
-                Debug.unityLogger.Log(LogType.Log, TAG, "Registered ConcentusDecodeFilter as an output filter");
+                UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Registered ConcentusDecodeFilter as an output filter");
             }
 
             return true;
@@ -617,13 +617,13 @@ namespace Adrenak.UniVoice.Samples
 
             if (Mic.AvailableDevices.Count == 0)
             {
-                Debug.unityLogger.Log(
+                UnityEngine.Debug.unityLogger.Log(
                     LogType.Log,
                     TAG,
                     "Device has no microphones. Will only be able to hear other clients, cannot send any audio."
                 );
 
-                Debug.unityLogger.Log(LogType.Log, TAG, "Created EmptyAudioInput");
+                UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Created EmptyAudioInput");
 
                 _currentInput = new EmptyAudioInput();
                 _currentMicrophoneIndex = -1;
@@ -639,7 +639,7 @@ namespace Adrenak.UniVoice.Samples
 
             _currentMicrophoneIndex = deviceIndex;
 
-            Debug.unityLogger.Log(
+            UnityEngine.Debug.unityLogger.Log(
                 LogType.Log,
                 TAG,
                 "Started recording with Mic device named " +
@@ -649,7 +649,7 @@ namespace Adrenak.UniVoice.Samples
 
             _currentInput = new UniMicInput(mic);
 
-            Debug.unityLogger.Log(LogType.Log, TAG, "Created UniMicInput");
+            UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Created UniMicInput");
 
             return _currentInput;
         }

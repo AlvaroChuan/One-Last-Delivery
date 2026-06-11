@@ -61,7 +61,7 @@ public class SteamLobbyManager : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Error trying to shutdown Mirror: {e.Message}");
+            UnityEngine.Debug.LogError($"Error trying to shutdown Mirror: {e.Message}");
         }
     }
 

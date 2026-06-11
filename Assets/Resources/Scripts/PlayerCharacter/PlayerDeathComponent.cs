@@ -25,7 +25,7 @@ public class PlayerDeathComponent : PlayerComponent
     {
         if (!isLocalPlayer) return;
 
-        Debug.Log("Player has died. Switching to spectator mode.");
+        DevLogger.Log("Player has died. Switching to spectator mode.");
         _movementComponent.enabled = false;
         _spectatorComponent.enabled = true;
         onPlayerDeathEvent?.Invoke();
