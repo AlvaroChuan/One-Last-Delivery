@@ -8,11 +8,15 @@ public class CustomNetworkManager : NetworkManager
     [SerializeField] private GameObject[] _playerPrefabs;
     [SerializeField] private string _gameScene = "GameScene";
 
-    [Header("Lobby Settings")]
-    [SerializeField] private SteamLobbyManager _lobbyManager;
-
     // Track how many characters we have spawned in the game scene
     private int _numberOfPlayers = 0;
+
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+
+        DevLogger.Log("CustomNetworkManager started on server.");
+    }
 
     public override void OnServerReady(NetworkConnectionToClient conn)
     {
@@ -48,11 +52,11 @@ public class CustomNetworkManager : NetworkManager
             NetworkServer.AddPlayerForConnection(conn, playerInstance);
 
             _numberOfPlayers++;
-            DevLogger.Log($"Game Scene Loaded: Spawned character index {_numberOfPlayers - 1} for Connection {conn.connectionId}");
+            Debug.Log($"Game Scene Loaded: Spawned character index {_numberOfPlayers - 1} for Connection {conn.connectionId}");
         }
         else
         {
-            DevLogger.LogWarning("Run out of unique player prefabs for joining players!");
+            Debug.LogWarning("Run out of unique player prefabs for joining players!");
         }
     }
 
@@ -63,22 +67,6 @@ public class CustomNetworkManager : NetworkManager
         if (newSceneName != _gameScene)
         {
             _numberOfPlayers = 0;
-
-            foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values)
-            {
-                if (conn.identity != null)
-                {
-                    NetworkServer.RemovePlayerForConnection(conn, RemovePlayerOptions.Destroy);
-                }
-            }
         }
-    }
-
-    public override void OnClientDisconnect()
-    {
-        base.OnClientDisconnect();
-
-        Debug.Log("Disconnected");
-        _lobbyManager.ExitLobby();
     }
 }

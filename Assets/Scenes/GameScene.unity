@@ -395,6 +395,7 @@ MonoBehaviour:
   _lobbyListContent: {fileID: 0}
   _uiManager: {fileID: 0}
   _lobbyVoiceChat: {fileID: 0}
+  _gameSceneName: GameScene
   playerManager: {fileID: 0}
 --- !u!114 &465940427
 MonoBehaviour:
@@ -517,7 +518,6 @@ MonoBehaviour:
   - {fileID: 6030126412903574998, guid: c17bd1a966515634d8c868af5345f378, type: 3}
   - {fileID: 6030126412903574998, guid: e7d8b0890447ccf4ba52ba7d4efb6ac4, type: 3}
   _gameScene: GameScene
-  _lobbyManager: {fileID: 0}
 --- !u!114 &465940433
 MonoBehaviour:
   m_ObjectHideFlags: 0

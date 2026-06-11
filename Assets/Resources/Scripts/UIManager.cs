@@ -37,6 +37,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform _playersListContent;
     [SerializeField] private Button _confirmPasswordButton;
     [SerializeField] private TextMeshProUGUI _lobbyPlayerCountText;
+    [SerializeField] private TextMeshProUGUI _countdownText;
 
     [Header("3D Elements")]
     [SerializeField] private GameObject _clipboardModel;
@@ -487,6 +488,19 @@ public class UIManager : MonoBehaviour
                 _paperSheets[_currentPaperSheetIndex].associatedPanel.SetActive(true);
                 yield return new WaitForSeconds(0.05f);
             }
+        }
+    }
+
+    public void UpdateCountdown(int secondsLeft = -1)
+    {
+        if (secondsLeft < 0)
+        {
+            _countdownText.gameObject.SetActive(false);
+        }
+        else
+        {
+            _countdownText.gameObject.SetActive(true);
+            _countdownText.text = $"Starting in\n{secondsLeft}";
         }
     }
 }
