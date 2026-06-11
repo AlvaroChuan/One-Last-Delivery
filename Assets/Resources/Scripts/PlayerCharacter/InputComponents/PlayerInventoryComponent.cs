@@ -176,7 +176,9 @@ public class PlayerInventoryComponent : InputComponent
         if (heldItem != null)
         {
             // Spawn the dropped item on the server
-            CmdSpawnDroppedItem(_inventory[slotIndex], transform.position + transform.forward, throwForce);
+            Vector3 forwardDirection = Camera.main.transform.forward;
+            forwardDirection.y = 0f; // Flatten the throw direction to the horizontal plane
+            CmdSpawnDroppedItem(_inventory[slotIndex], transform.position + forwardDirection, throwForce);
 
             // Clear the inventory slot locally for instant feedback
             _inventory[slotIndex] = new InventoryItemData { itemID = ItemID.None };
