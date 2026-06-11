@@ -4,27 +4,27 @@ using UnityEngine.Splines;
 using System.Collections.Generic;
 using System.Linq;
 
-// ── 3. VENTANA DEL EDITOR ──────────────────────────────
+// ── 3. EDITOR WINDOW ──────────────────────────────
 public class BuildingPlacerWindow : EditorWindow
 {
-    // Configuración de la herramienta
+    // Tool configuration
     private SplineContainer _targetSpline;
     private float _inset = 3.0f;
     private string _generatedTag = "Building";
     private float _cornerAngleThresh = 45f;
 
-    // Control de Espacios
+    // Simplified space control
     private float _spacingFactor = 1.0f;
-    private float _cornerGap = 6.0f; // NUEVO: Margen para que las esquinas no se solapen
+    private float _cornerGap = 6.0f; // Space left free for the "Filler" logic
 
-    // Control de Límites
+    // Generation limits
     private int _maxBuildingsPerType = 0;
     private int _maxConsecutiveSameType = 3;
 
-    // Nuestro archivo de guardado y UI
+    // Save profile and UI
     private BuildingPlacerProfile _profile;
     private Vector2 _scroll;
-    private string _newProfileName = "MiNuevoBarrio";
+    private string _newProfileName = "MyNewNeighborhood";
 
     [MenuItem("Tools/Building Placer")]
     public static void ShowWindow()
@@ -36,33 +36,33 @@ public class BuildingPlacerWindow : EditorWindow
     {
         _scroll = EditorGUILayout.BeginScrollView(_scroll);
 
-        GUILayout.Label("Configuración General", EditorStyles.boldLabel);
+        GUILayout.Label("General Configuration", EditorStyles.boldLabel);
         _targetSpline = (SplineContainer)EditorGUILayout.ObjectField("City Block Spline", _targetSpline, typeof(SplineContainer), true);
         _inset = EditorGUILayout.FloatField("Inset (meters)", _inset);
         _cornerAngleThresh = EditorGUILayout.FloatField("Corner Angle", _cornerAngleThresh);
 
         EditorGUILayout.Space();
-        GUILayout.Label("Ajuste de Espacios", EditorStyles.boldLabel);
-        _spacingFactor = EditorGUILayout.Slider("Factor de Separación", _spacingFactor, 0.5f, 1.5f);
-        _cornerGap = EditorGUILayout.FloatField("Hueco previo a Esquina (m)", _cornerGap);
+        GUILayout.Label("Space Adjustment", EditorStyles.boldLabel);
+        _spacingFactor = EditorGUILayout.Slider("Straight Spacing Factor", _spacingFactor, 0.5f, 1.5f);
+        _cornerGap = EditorGUILayout.FloatField("Corner Gap (m)", _cornerGap);
 
         EditorGUILayout.Space();
-        GUILayout.Label("Límites de Generación", EditorStyles.boldLabel);
-        _maxBuildingsPerType = EditorGUILayout.IntField("Máx. Edificios por Tipo", _maxBuildingsPerType);
-        _maxConsecutiveSameType = EditorGUILayout.IntSlider("Máx. Consecutivos Mismo Tipo", _maxConsecutiveSameType, 1, 10);
+        GUILayout.Label("Generation Limits", EditorStyles.boldLabel);
+        _maxBuildingsPerType = EditorGUILayout.IntField("Max Buildings Per Type", _maxBuildingsPerType);
+        _maxConsecutiveSameType = EditorGUILayout.IntSlider("Max Consecutive Same Type", _maxConsecutiveSameType, 1, 10);
 
         EditorGUILayout.Space();
-        GUILayout.Label("Datos de Perfil", EditorStyles.boldLabel);
+        GUILayout.Label("Profile Data", EditorStyles.boldLabel);
 
-        _profile = (BuildingPlacerProfile)EditorGUILayout.ObjectField("💾 Prefab Profile", _profile, typeof(BuildingPlacerProfile), false);
+        _profile = (BuildingPlacerProfile)EditorGUILayout.ObjectField("Prefab Profile", _profile, typeof(BuildingPlacerProfile), false);
 
         if (_profile == null)
         {
-            EditorGUILayout.HelpBox("Asigna un Perfil para ver las listas, o escribe un nombre abajo para crear uno nuevo.", MessageType.Warning);
+            EditorGUILayout.HelpBox("Assign a Profile to view lists, or type a name below to create a new one.", MessageType.Warning);
 
             EditorGUILayout.BeginHorizontal();
-            _newProfileName = EditorGUILayout.TextField("Nombre del Perfil", _newProfileName);
-            if (GUILayout.Button("Crear y Asignar", GUILayout.Width(120)))
+            _newProfileName = EditorGUILayout.TextField("Profile Name", _newProfileName);
+            if (GUILayout.Button("Create & Assign", GUILayout.Width(120)))
             {
                 CreateCustomProfile(_newProfileName);
             }
@@ -75,18 +75,18 @@ public class BuildingPlacerWindow : EditorWindow
         EditorGUI.BeginChangeCheck();
 
         EditorGUILayout.Space();
-        _profile.probDiffType = EditorGUILayout.Slider("Prob. Tipo Distinto", _profile.probDiffType, 0f, 1f);
-        _profile.probSameTypeDiffSize = EditorGUILayout.Slider("Prob. Mismo Tipo / Dist. Tamaño", _profile.probSameTypeDiffSize, 0f, 1f);
+        _profile.probDiffType = EditorGUILayout.Slider("Prob. Different Type", _profile.probDiffType, 0f, 1f);
+        _profile.probSameTypeDiffSize = EditorGUILayout.Slider("Prob. Same Type / Diff. Size", _profile.probSameTypeDiffSize, 0f, 1f);
         EditorGUILayout.Space();
 
-        // ── LISTAS RESIDENCIALES ───────────────────────────
-        DrawBuildingList("🏡 ResA Houses", _profile.resA);
-        DrawBuildingList("🏡 ResB Houses", _profile.resB);
-        DrawBuildingList("🏡 ResC Houses", _profile.resC);
-        DrawBuildingList("🏡 ResD Houses", _profile.resD);
+        // ── RESIDENTIAL LISTS ───────────────────────────
+        DrawBuildingList("ResA Houses", _profile.resA);
+        DrawBuildingList("ResB Houses", _profile.resB);
+        DrawBuildingList("ResC Houses", _profile.resC);
+        DrawBuildingList("ResD Houses", _profile.resD);
 
-        // ── LISTA ESQUINAS ─────────────────────────────────
-        GUILayout.Label("📐 Corner Prefabs:", EditorStyles.boldLabel);
+        // ── CORNER LIST ─────────────────────────────────
+        GUILayout.Label("Corner Prefabs:", EditorStyles.boldLabel);
         for (int i = 0; i < _profile.cornerPrefabs.Count; i++)
         {
             EditorGUILayout.BeginHorizontal();
@@ -104,10 +104,10 @@ public class BuildingPlacerWindow : EditorWindow
         EditorGUILayout.Space();
 
         GUI.backgroundColor = Color.green;
-        if (GUILayout.Button("▶ Generate buildings", GUILayout.Height(30))) GenerateBuildings();
+        if (GUILayout.Button("Generate buildings", GUILayout.Height(30))) GenerateBuildings();
 
         GUI.backgroundColor = Color.red;
-        if (GUILayout.Button("✕ Clear generated", GUILayout.Height(30))) ClearGenerated();
+        if (GUILayout.Button("Clear generated", GUILayout.Height(30))) ClearGenerated();
 
         GUI.backgroundColor = Color.white;
 
@@ -136,7 +136,7 @@ public class BuildingPlacerWindow : EditorWindow
             if (GUILayout.Button("X", GUILayout.Width(20))) { list.RemoveAt(i); i--; }
             EditorGUILayout.EndHorizontal();
         }
-        if (GUILayout.Button("+ Add to " + title.Replace("🏡 ", ""))) list.Add(new BuildingData());
+        if (GUILayout.Button("+ Add to " + title.Replace(" Houses", ""))) list.Add(new BuildingData());
         EditorGUILayout.Space();
     }
 
@@ -144,9 +144,10 @@ public class BuildingPlacerWindow : EditorWindow
     {
         var toDelete = GameObject.FindGameObjectsWithTag(_generatedTag);
         foreach (var go in toDelete) DestroyImmediate(go);
-        Debug.Log($"Borrados {toDelete.Length} edificios generados.");
+        Debug.Log($"Cleared {toDelete.Length} generated buildings.");
     }
 
+    // ── CORE GENERATION ENGINE WITH SCALED CAPPING ──
     void GenerateBuildings()
     {
         if (_targetSpline == null) return;
@@ -169,7 +170,7 @@ public class BuildingPlacerWindow : EditorWindow
         {
             int iNext = (i + 1) % knotCount;
             int iPrev = (i - 1 + knotCount) % knotCount;
-            int iNextNext = (i + 2) % knotCount; // Nodo subsiguiente para mirar al futuro
+            int iNextNext = (i + 2) % knotCount;
 
             Vector3 pCurr = _targetSpline.transform.TransformPoint(spline[i].Position);
             Vector3 pNext = _targetSpline.transform.TransformPoint(spline[iNext].Position);
@@ -188,10 +189,9 @@ public class BuildingPlacerWindow : EditorWindow
 
             Quaternion rot = Quaternion.LookRotation(outward, Vector3.up);
 
-            // 1. Detección de la esquina ACTUAL
+            // 1. Current corner detection
             Vector3 edgeIn = (pCurr - pPrev).normalized;
-            float angle = Vector3.Angle(edgeIn, edgeDir);
-            bool isCorner = angle > _cornerAngleThresh;
+            bool isCorner = Vector3.Angle(edgeIn, edgeDir) > _cornerAngleThresh;
 
             float cornerWidth = 0f;
             if (isCorner && _profile.cornerPrefabs.Count > 0)
@@ -201,7 +201,7 @@ public class BuildingPlacerWindow : EditorWindow
                 {
                     var prefab = validCorners[UnityEngine.Random.Range(0, validCorners.Count)];
                     Bounds b = GetPrefabBounds(prefab);
-                    cornerWidth = b.size.x * _spacingFactor;
+                    cornerWidth = b.size.x;
 
                     Vector3 pos = pCurr + edgeDir * (cornerWidth / 2f) + outward * (-(_inset + b.size.z / 2f));
                     pos.y = 0;
@@ -209,36 +209,51 @@ public class BuildingPlacerWindow : EditorWindow
                 }
             }
 
-            // 2. Detección de la FUTURA esquina (Look-ahead)
+            // 2. Future corner detection (Look-ahead)
             Vector3 edgeDirNext = (pNextNext - pNext).normalized;
             bool nextIsCorner = Vector3.Angle(edgeDir, edgeDirNext) > _cornerAngleThresh;
 
-            // Restamos el gap a la longitud disponible si nos acercamos a una esquina
-            float effectiveEdgeLen = edgeLen;
-            if (nextIsCorner)
+            float nextCornerDepth = 0f;
+            if (nextIsCorner && _profile.cornerPrefabs.Count > 0)
             {
-                effectiveEdgeLen -= _cornerGap;
+                var validCorners = _profile.cornerPrefabs.Where(c => c != null).ToList();
+                if (validCorners.Count > 0)
+                {
+                    nextCornerDepth = GetPrefabBounds(validCorners[0]).size.z;
+                }
             }
 
-            // 3. Rellenar con edificios rectos
-            float cursor = cornerWidth;
+            // Define street core
+            float coreStart = cornerWidth > 0f ? cornerWidth + _cornerGap : 0f;
+            float coreEnd = edgeLen;
+            if (nextIsCorner) coreEnd -= (nextCornerDepth + _cornerGap);
+
+            if (coreStart > coreEnd)
+            {
+                coreStart = Mathf.Max(cornerWidth, edgeLen - nextCornerDepth);
+                coreStart = Mathf.Min(coreStart, edgeLen);
+                coreEnd = coreStart;
+            }
+
+            // 3. Fill central core with straight buildings
+            float cursor = coreStart;
             Vector3 vStart = pCurr;
 
             while (true)
             {
                 int prevTypeIndex = lastTypeIndex;
+                float remainingSpace = coreEnd - cursor;
 
-                BuildingData nextData = ChooseNextBuilding(allResLists, ref lastTypeIndex, lastBuilding, typeCounters, _maxBuildingsPerType, consecutiveCount, _maxConsecutiveSameType);
+                BuildingData nextData = ChooseNextBuilding(allResLists, ref lastTypeIndex, lastBuilding, typeCounters, _maxBuildingsPerType, consecutiveCount, _maxConsecutiveSameType, remainingSpace);
                 if (nextData == null || nextData.prefab == null) break;
 
                 Bounds b = GetPrefabBounds(nextData.prefab);
+
                 float bw = b.size.x * _spacingFactor;
                 float bd = b.size.z;
 
-                // AHORA COMPROBAMOS CONTRA EL effectiveEdgeLen RECORTE
-                if (cursor + bw > effectiveEdgeLen + 0.01f) break;
+                if (cursor + bw > coreEnd + 0.01f) break;
 
-                // Solo si el edificio cabe (no ha hecho break), actualizamos los contadores
                 if (lastTypeIndex == prevTypeIndex) consecutiveCount++;
                 else consecutiveCount = 1;
 
@@ -251,20 +266,134 @@ public class BuildingPlacerWindow : EditorWindow
                 PlacePrefab(nextData.prefab, pos, rot);
                 cursor += bw;
             }
+
+            float actualCoreEnd = cursor;
+
+            // ── 4. INTELLIGENT GAP SEALING WITH UNIFORM/CAPPED SCALING ──
+
+            // START Gap (Post-Current Corner)
+            if (isCorner && coreStart > cornerWidth)
+            {
+                float gapStart = cornerWidth;
+                float gapSize = coreStart - gapStart;
+
+                if (gapSize > 0.1f)
+                {
+                    float origWidth;
+                    BuildingData filler = FindBestBuildingForGap(allResLists, gapSize, out origWidth);
+                    if (filler != null)
+                    {
+                        float scaleFactor = gapSize / origWidth;
+                        float zScale = Mathf.Max(scaleFactor, 0.8f); // Minimum Z scale cap
+
+                        float posCursor = gapStart + gapSize / 2f;
+                        float scaledDepth = GetPrefabBounds(filler.prefab).size.z * zScale;
+
+                        Vector3 pos = vStart + edgeDir * posCursor + outward * (-(_inset + scaledDepth / 2f));
+                        pos.y = 0;
+                        PlaceScaledPrefab(filler.prefab, pos, rot, scaleFactor, zScale);
+                    }
+                }
+            }
+
+            // END Gap (Pre-Next Corner)
+            if (nextIsCorner && (edgeLen - nextCornerDepth) > actualCoreEnd)
+            {
+                float gapStart = actualCoreEnd;
+                float gapEnd = edgeLen - nextCornerDepth;
+                float gapSize = gapEnd - gapStart;
+
+                if (gapSize > 0.1f)
+                {
+                    float origWidth;
+                    BuildingData filler = FindBestBuildingForGap(allResLists, gapSize, out origWidth);
+                    if (filler != null)
+                    {
+                        float scaleFactor = gapSize / origWidth;
+                        float zScale = Mathf.Max(scaleFactor, 0.8f); // Minimum Z scale cap
+
+                        float posCursor = gapStart + gapSize / 2f;
+                        float scaledDepth = GetPrefabBounds(filler.prefab).size.z * zScale;
+
+                        Vector3 pos = vStart + edgeDir * posCursor + outward * (-(_inset + scaledDepth / 2f));
+                        pos.y = 0;
+                        PlaceScaledPrefab(filler.prefab, pos, rot, scaleFactor, zScale);
+                    }
+                }
+            }
         }
 
-        Debug.Log("✅ Generación completada.");
+        Debug.Log("Generation Completed: Base blocks + Scaled corner caps.");
     }
 
-    // ── LÓGICA DE PROBABILIDAD ──────────────────────────────────
-    BuildingData ChooseNextBuilding(List<List<BuildingData>> allLists, ref int lastTypeIndex, BuildingData lastBuilding, int[] typeCounters, int maxLimit, int consecutiveCount, int maxConsecutive)
+    // ── SEARCH FOR THE BEST FITTING BUILDING ──
+    BuildingData FindBestBuildingForGap(List<List<BuildingData>> allLists, float targetGap, out float originalWidth)
     {
+        BuildingData best = null;
+        float closestDiff = float.MaxValue;
+        originalWidth = 1f;
+
+        foreach (var list in allLists)
+        {
+            foreach (var b in list)
+            {
+                if (b != null && b.prefab != null)
+                {
+                    float bw = GetPrefabBounds(b.prefab).size.x;
+                    float diff = Mathf.Abs(bw - targetGap);
+                    if (diff < closestDiff)
+                    {
+                        closestDiff = diff;
+                        best = b;
+                        originalWidth = bw;
+                    }
+                }
+            }
+        }
+        return best;
+    }
+
+    // ── PREFAB PLACEMENT WITH INDEPENDENT Z SCALING ──
+    void PlaceScaledPrefab(GameObject prefab, Vector3 pos, Quaternion rot, float xyScale, float zScale)
+    {
+        var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+        go.transform.position = pos;
+        go.transform.rotation = rot * prefab.transform.rotation;
+
+        Vector3 newScale = go.transform.localScale;
+        newScale.x *= xyScale;
+        newScale.y *= xyScale;
+        newScale.z *= zScale; // Applies the cap limit of 0.8 min
+        go.transform.localScale = newScale;
+
+        go.tag = _generatedTag;
+        Undo.RegisterCreatedObjectUndo(go, "Place Scaled Building");
+    }
+
+    // ── STRAIGHT PROBABILITY LOGIC ──────────────────────────────
+    BuildingData ChooseNextBuilding(List<List<BuildingData>> allLists, ref int lastTypeIndex, BuildingData lastBuilding, int[] typeCounters, int maxLimit, int consecutiveCount, int maxConsecutive, float remainingSpace)
+    {
+        List<List<BuildingData>> fittingLists = new List<List<BuildingData>>();
+        for (int i = 0; i < allLists.Count; i++)
+        {
+            var validInList = new List<BuildingData>();
+            foreach (var b in allLists[i])
+            {
+                if (b != null && b.prefab != null)
+                {
+                    float bw = GetPrefabBounds(b.prefab).size.x * _spacingFactor;
+                    if (bw <= remainingSpace + 0.05f) validInList.Add(b);
+                }
+            }
+            fittingLists.Add(validInList);
+        }
+
         List<int> validIndices = new List<int>();
         bool consecutiveLimitReached = (lastTypeIndex != -1 && consecutiveCount >= maxConsecutive);
 
-        for (int i = 0; i < allLists.Count; i++)
+        for (int i = 0; i < fittingLists.Count; i++)
         {
-            if (allLists[i].Any(b => b != null && b.prefab != null))
+            if (fittingLists[i].Count > 0)
             {
                 if (maxLimit <= 0 || typeCounters[i] < maxLimit)
                 {
@@ -278,8 +407,11 @@ public class BuildingPlacerWindow : EditorWindow
         {
             if (maxLimit <= 0 || typeCounters[lastTypeIndex] < maxLimit)
             {
-                validIndices.Add(lastTypeIndex);
-                consecutiveLimitReached = false;
+                if (fittingLists[lastTypeIndex].Count > 0)
+                {
+                    validIndices.Add(lastTypeIndex);
+                    consecutiveLimitReached = false;
+                }
             }
         }
 
@@ -288,7 +420,7 @@ public class BuildingPlacerWindow : EditorWindow
         if (lastTypeIndex == -1 || lastBuilding == null || !validIndices.Contains(lastTypeIndex))
         {
             int rIdx = validIndices[UnityEngine.Random.Range(0, validIndices.Count)];
-            var validBuildings = allLists[rIdx].Where(b => b != null && b.prefab != null).ToList();
+            var validBuildings = fittingLists[rIdx];
             lastTypeIndex = rIdx;
             return validBuildings[UnityEngine.Random.Range(0, validBuildings.Count)];
         }
@@ -306,7 +438,7 @@ public class BuildingPlacerWindow : EditorWindow
             if (otherIndices.Count > 0)
             {
                 nextTypeIndex = otherIndices[UnityEngine.Random.Range(0, otherIndices.Count)];
-                var validBuildings = allLists[nextTypeIndex].Where(b => b != null && b.prefab != null).ToList();
+                var validBuildings = fittingLists[nextTypeIndex];
 
                 float subRoll = UnityEngine.Random.value;
                 if (subRoll < 0.20f)
@@ -326,13 +458,13 @@ public class BuildingPlacerWindow : EditorWindow
         }
         else if (roll < _profile.probDiffType + _profile.probSameTypeDiffSize)
         {
-            var currentList = allLists[currentTypeIndex].Where(b => b != null && b.prefab != null).ToList();
+            var currentList = fittingLists[currentTypeIndex];
             var diffSize = currentList.Where(b => b.size != currentSize).ToList();
             if (diffSize.Count > 0) nextBuilding = diffSize[UnityEngine.Random.Range(0, diffSize.Count)];
         }
         else
         {
-            var currentList = allLists[currentTypeIndex].Where(b => b != null && b.prefab != null).ToList();
+            var currentList = fittingLists[currentTypeIndex];
             var sameSize = currentList.Where(b => b.size == currentSize).ToList();
             if (sameSize.Count > 0) nextBuilding = sameSize[UnityEngine.Random.Range(0, sameSize.Count)];
         }
@@ -340,7 +472,7 @@ public class BuildingPlacerWindow : EditorWindow
         if (nextBuilding == null)
         {
             nextTypeIndex = validIndices[UnityEngine.Random.Range(0, validIndices.Count)];
-            var validBuildings = allLists[nextTypeIndex].Where(b => b != null && b.prefab != null).ToList();
+            var validBuildings = fittingLists[nextTypeIndex];
             nextBuilding = validBuildings[UnityEngine.Random.Range(0, validBuildings.Count)];
         }
 
@@ -348,7 +480,6 @@ public class BuildingPlacerWindow : EditorWindow
         return nextBuilding;
     }
 
-    // ── HELPERS ────────────────────────────────────────────
     void PlacePrefab(GameObject prefab, Vector3 pos, Quaternion rot)
     {
         var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
