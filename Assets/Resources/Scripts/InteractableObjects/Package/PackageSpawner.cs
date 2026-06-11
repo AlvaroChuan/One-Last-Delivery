@@ -22,19 +22,15 @@ public class PackageSpawner : NetworkBehaviour
     }
     [SerializeField] PackageEntry[] _packageEntries;
     [SerializeField] Vector3Int _spawnBounds;
-    [SerializeField] int _packagesToSpawn = 5;
     [SerializeField] CoordinateOrder _coordinateOrder = CoordinateOrder.XZY;
     [SerializeField] float _packageSize = 1f;
     public static List<AddressInfo> UsedAddresses = new List<AddressInfo>();
+    public static int PackagesToSpawn = 5;
 
     void Awake()
     {
         UsedAddresses.Clear();
         NormalizeProbabilities();
-    }
-    public override void OnStartServer()
-    {
-        SpawnPackages();
     }
 
     void SpawnPackages()
@@ -46,12 +42,12 @@ public class PackageSpawner : NetworkBehaviour
             DevLogger.LogError("Address library is missing or empty. Please generate the address library before spawning packages.");
             return;
         }
-        if (_packagesToSpawn > addressLibrary.AddressCount)
+        if (PackagesToSpawn > addressLibrary.AddressCount)
         {
-            DevLogger.LogError("Not enough valid addresses to assign unique addresses to all packages. Only spawning " + addressLibrary.AddressCount + " packages.");
-            _packagesToSpawn = addressLibrary.AddressCount; // Adjust the number of packages to spawn to match the number of available addresses
+            DevLogger.LogWarning("Not enough valid addresses to assign unique addresses to all packages. Only spawning " + addressLibrary.AddressCount + " packages.");
+            PackagesToSpawn = addressLibrary.AddressCount; // Adjust the number of packages to spawn to match the number of available addresses
         }
-        for (int i = 0; i < _packagesToSpawn; i++)
+        for (int i = 0; i < PackagesToSpawn; i++)
         {
             GameObject packagePrefab = GetRandomPackagePrefab();
 

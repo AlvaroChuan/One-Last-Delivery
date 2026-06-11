@@ -9,13 +9,15 @@ using UnityEngine.SceneManagement;
 public class NetworkSingleton<T> : NetworkBehaviour where T : NetworkSingleton<T>
 {
     [SerializeField] protected string[] _activeSceneNames = new string[] { "GameScene" };
+    [SerializeField] protected string[] _passiveSceneNames = new string[0];
+    [SerializeField] protected string[] _destroyOnLoadSceneNames = new string[] { "MainMenu", "LobbyScene" };
     [SerializeField] protected bool _oldInstanceTakesPrecedence = true;
 
     bool _isSubscribedToSceneChange = false;
 
     public static T Instance { get; private set; }
 
-    public override void OnStartClient()
+    sealed public override void OnStartClient()
     {
         if (Instance != null && Instance != this)
         {
@@ -53,9 +55,9 @@ public class NetworkSingleton<T> : NetworkBehaviour where T : NetworkSingleton<T
         _isSubscribedToSceneChange = true;
     }
 
-    protected virtual void OnSceneChange(Scene scene, LoadSceneMode mode)
+    private void OnSceneChange(Scene scene, LoadSceneMode mode)
     {
-        if (!IsActiveScene())
+        if (IsDestroyOnLoadScene())
         {
             if (NetworkServer.active)
             {
@@ -66,6 +68,31 @@ public class NetworkSingleton<T> : NetworkBehaviour where T : NetworkSingleton<T
                 Destroy(gameObject);
             }
         }
+        else if (IsActiveScene())
+        {
+            // Do nothing, stay alive in active scenes
+        }
+        else if (IsPassiveScene())
+        {
+            // Do nothing, stay alive in passive scenes
+        }
+        else
+        {
+            // If the new scene is not in either list, destroy the singleton to prevent unintended persistence
+            if (NetworkServer.active)
+            {
+                NetworkServer.Destroy(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    protected virtual void OnLoadActiveScene()
+    {
+        // Override in derived classes to perform actions when an active scene is loaded
     }
 
     protected virtual void OnDestroy()
@@ -86,6 +113,30 @@ public class NetworkSingleton<T> : NetworkBehaviour where T : NetworkSingleton<T
         foreach (string gameSceneName in _activeSceneNames)
         {
             if (currentScene.name == gameSceneName)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    protected bool IsPassiveScene()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        foreach (string passiveSceneName in _passiveSceneNames)
+        {
+            if (currentScene.name == passiveSceneName)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    protected bool IsDestroyOnLoadScene()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        foreach (string destroySceneName in _destroyOnLoadSceneNames)
+        {
+            if (currentScene.name == destroySceneName)
             {
                 return true;
             }

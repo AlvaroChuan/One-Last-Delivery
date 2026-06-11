@@ -12,6 +12,8 @@ public class QuotaSystem : NetworkSingleton<QuotaSystem>
     }
     [SerializeField] private int _initialQuota = 100;
     [SerializeField] private int _quotaIncreasePerDay = 10;
+    [SerializeField] private int _initialPackagesToSpawn = 5;
+    [SerializeField] private int _packageIncreasePerDay = 1;
     public Action<QuotaChangeInfo> onQuotaChangedEvent;
     [SyncVar (hook = nameof(OnQuotaChanged))]
     private int _currentQuota;
@@ -21,15 +23,14 @@ public class QuotaSystem : NetworkSingleton<QuotaSystem>
     {
         base.OnStartServer();
         _currentQuota = _initialQuota;
+        PackageSpawner.PackagesToSpawn = _initialPackagesToSpawn;
     }
 
-    protected override void OnSceneChange(Scene scene, LoadSceneMode mode)
+    protected override void OnLoadActiveScene()
     {
-        base.OnSceneChange(scene, mode);
-        if (IsActiveScene())
-        {
-            IncreaseQuota();
-        }
+        base.OnLoadActiveScene();
+        IncreaseQuota();
+        IncreasePackagesToSpawn();
     }
 
     [Command]
@@ -58,5 +59,9 @@ public class QuotaSystem : NetworkSingleton<QuotaSystem>
     private void IncreaseQuota()
     {
         _currentQuota += _quotaIncreasePerDay;
+    }
+    private void IncreasePackagesToSpawn()
+    {
+        PackageSpawner.PackagesToSpawn += _packageIncreasePerDay;
     }
 }
