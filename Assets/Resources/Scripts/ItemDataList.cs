@@ -13,7 +13,7 @@ public class ItemDataList : ScriptableObject
                 _instance = Resources.Load<ItemDataList>("ScriptableObjects/ItemDataList");
                 if (_instance == null)
                 {
-                    Debug.LogError("ItemDataList asset not found in Resources folder!");
+                    DevLogger.LogError("ItemDataList asset not found in Resources folder!");
                 }
             }
             return _instance;
@@ -35,7 +35,7 @@ public class ItemDataList : ScriptableObject
                 return entry.itemPrefab;
             }
         }
-        Debug.LogWarning($"Dropped item with ID {itemID} not found in ItemDataList.");
+        DevLogger.LogWarning($"Dropped item with ID {itemID} not found in ItemDataList.");
         return null;
     }
     public DroppedItem GetPrefabFromID(int itemID)

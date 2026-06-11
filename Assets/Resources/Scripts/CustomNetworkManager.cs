@@ -48,11 +48,11 @@ public class CustomNetworkManager : NetworkManager
             NetworkServer.AddPlayerForConnection(conn, playerInstance);
 
             _numberOfPlayers++;
-            Debug.Log($"Game Scene Loaded: Spawned character index {_numberOfPlayers - 1} for Connection {conn.connectionId}");
+            DevLogger.Log($"Game Scene Loaded: Spawned character index {_numberOfPlayers - 1} for Connection {conn.connectionId}");
         }
         else
         {
-            Debug.LogWarning("Run out of unique player prefabs for joining players!");
+            DevLogger.LogWarning("Run out of unique player prefabs for joining players!");
         }
     }
 

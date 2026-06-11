@@ -45,7 +45,7 @@ public class CollisionAuthorityHandler : NetworkBehaviour
         {
             if (otherHandler._priority < _priority)
             {
-                Debug.Log("Collision detected with lower priority object. Keeping authority.");
+                DevLogger.Log("Collision detected with lower priority object. Keeping authority.");
                 return;
             }
         }
@@ -77,7 +77,7 @@ public class CollisionAuthorityHandler : NetworkBehaviour
 
         if(otherIdentity.isOwned && !isOwned)
         {
-            Debug.Log("Client-side collision detected with local player. Predicting authority change.");
+            DevLogger.Log("Client-side collision detected with local player. Predicting authority change.");
             _rigidbody.isKinematic = false;
             _collider.isTrigger = false; // Enable physics collisions for prediction
             StartCoroutine(Rubberband());
@@ -103,14 +103,11 @@ public class CollisionAuthorityHandler : NetworkBehaviour
             otherIdentity = collider.GetComponentInParent<NetworkIdentity>();
         }
 
-        if (otherIdentity != null)
+        if (otherIdentity != null && otherIdentity.connectionToClient != null && otherIdentity.connectionToClient != _ownerConnection)
         {
-            if (otherIdentity.connectionToClient != _ownerConnection)
-            {
-                _ownerConnection = otherIdentity.connectionToClient;
-                netIdentity.RemoveClientAuthority();
-                netIdentity.AssignClientAuthority(otherIdentity.connectionToClient);
-            }
+            _ownerConnection = otherIdentity.connectionToClient;
+            netIdentity.RemoveClientAuthority();
+            netIdentity.AssignClientAuthority(otherIdentity.connectionToClient);
         }
     }
 

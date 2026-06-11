@@ -1,9 +1,16 @@
+using System;
 using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerInteractComponent : InputComponent
 {
+    public struct InteractInfo
+    {
+        public Interactable interactable;
+        public bool isSuccessful;
+    }
+    public Action<InteractInfo> onInteractEvent;
     [SerializeField] private InputActionReference _interactInput;
     [SerializeField] private float _interactionRange = 3f;
     [SerializeField] private float _interactionSphereRadius = 0.1f;
@@ -40,10 +47,27 @@ public class PlayerInteractComponent : InputComponent
         if (Physics.SphereCast(ray, _interactionSphereRadius, out hitInfo, _interactionRange, _interactableLayerMask))
         {
             Interactable interactable = hitInfo.collider.GetComponent<Interactable>();
+            if (interactable == null)
+            {
+                interactable = hitInfo.collider.GetComponentInParent<Interactable>();
+            }
             if (interactable != null)
             {
                 interactable.CmdInteract(GetComponent<NetworkIdentity>());
                 interactable.LocalInteract(gameObject);
+                onInteractEvent?.Invoke(new InteractInfo
+                {
+                    interactable = interactable,
+                    isSuccessful = true
+                });
+            }
+            else
+            {
+                onInteractEvent?.Invoke(new InteractInfo
+                {
+                    interactable = null,
+                    isSuccessful = false
+                });
             }
         }
     }

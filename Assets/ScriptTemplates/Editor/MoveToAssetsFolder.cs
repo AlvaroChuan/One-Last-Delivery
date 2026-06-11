@@ -32,7 +32,7 @@ public class MoveToAssetsFolder
                 if (folderName == targetFolder && !path.StartsWith(targetPath))
                 {
                     AssetDatabase.MoveAsset(path, targetPath);
-                    Debug.LogFormat(LogType.Log, LogOption.NoStacktrace, null, $"Moved {targetFolder} to Assets folder.");
+                    UnityEngine.Debug.LogFormat(LogType.Log, LogOption.NoStacktrace, null, $"Moved {targetFolder} to Assets folder.");
                 }
             }
         }

@@ -5,18 +5,14 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class DroppedItem : Interactable
 {
-    void Start()
-    {
-        Debug.Log($"DroppedItem {gameObject.name} network identity: {GetComponent<NetworkIdentity>().netId}, isServer: {isServer}, isClient: {isClient}");
-    }
     [SerializeField] private InventoryItemData _inventoryItemData;
     bool _pickedUp = false;
-    public override void Interact(GameObject interactor)
+    public override void ServerInteract(GameObject interactor)
     {
         // This should only run on the server since the item pickup logic is server-authoritative
         if (!isServer || _pickedUp) return;
 
-        Debug.Log($"Player {interactor.name} interacted with dropped item {gameObject.name} containing {GetInventoryItemData().itemID}");
+        DevLogger.Log($"Player {interactor.name} interacted with dropped item {gameObject.name} containing {GetInventoryItemData().itemID}");
 
         PlayerInventoryComponent inventory = interactor.GetComponent<PlayerInventoryComponent>();
         if (inventory != null)
@@ -27,7 +23,7 @@ public class DroppedItem : Interactable
 
             // Destroy the world object after pickup
             NetworkServer.Destroy(gameObject);
-            Debug.Log($"Item {gameObject.name} picked up by {interactor.name} and destroyed in the world.");
+            DevLogger.Log($"Item {gameObject.name} picked up by {interactor.name} and destroyed in the world.");
         }
     }
     public void SetInventoryItemData(InventoryItemData itemData)

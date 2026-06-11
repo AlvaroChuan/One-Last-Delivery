@@ -1,8 +1,16 @@
+using System;
 using Mirror;
 using UnityEngine;
 
 public class ItemShopSystem : NetworkBehaviour
 {
+    public struct ItemPurchaseInfo
+    {
+        public NetworkConnectionToClient buyerConnection;
+        public bool purchaseSuccessful;
+    }
+
+    public Action<ItemPurchaseInfo> onItemPurchasedEvent;
     public static ItemShopSystem Instance { get; private set; }
 
     void Awake()
@@ -38,11 +46,21 @@ public class ItemShopSystem : NetworkBehaviour
     public void TargetBuyItemSuccess(NetworkConnectionToClient conn)
     {
         // Handle UI on clients for successful purchase
+        onItemPurchasedEvent?.Invoke(new ItemPurchaseInfo
+        {
+            buyerConnection = conn,
+            purchaseSuccessful = true
+        });
     }
 
     [TargetRpc]
     public void TargetBuyItemFailure(NetworkConnectionToClient conn)
     {
         // Handle UI on clients for failed purchase
+        onItemPurchasedEvent?.Invoke(new ItemPurchaseInfo
+        {
+            buyerConnection = conn,
+            purchaseSuccessful = false
+        });
     }
 }

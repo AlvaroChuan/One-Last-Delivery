@@ -48,7 +48,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _droppedItem: {fileID: 1065216563640160880, guid: febbd443ff10c4b4ca8c901c070e8726, type: 3}
 --- !u!1 &739334043246547540
 GameObject:
   m_ObjectHideFlags: 0
@@ -97,7 +96,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _droppedItem: {fileID: 1065216563640160880, guid: 0a2c088a476b6bf4caa4345510dff9bd, type: 3}
 --- !u!1 &2173985810452841351
 GameObject:
   m_ObjectHideFlags: 0
@@ -232,7 +230,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _droppedItem: {fileID: 1065216563640160880, guid: 2ac8c80f493bb6a4ea408a722cfd7ae7, type: 3}
 --- !u!1 &3822200935483650862
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,8 +776,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _maxMoveSpeed: 5
-  _acceleration: 10
-  _deceleration: 15
+  _acceleration: 20
+  _deceleration: 35
   _movementInput: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &8358508418812949759
 MonoBehaviour:
@@ -833,7 +830,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4c5fa168c618154aac03bf9ce8931d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
+  syncDirection: 1
   syncMode: 0
   syncInterval: 0
   _inventorySize: 4
@@ -853,6 +850,7 @@ MonoBehaviour:
     item: {fileID: 9137903591430432154}
   - itemID: 5
     item: {fileID: 7536628629068665602}
+  _carriedPackage: {fileID: 0}
 --- !u!114 &5535736397123714588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1048,7 +1046,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _droppedItem: {fileID: 1065216563640160880, guid: 9629c2b8feda0e546ac06e52a9403220, type: 3}
 --- !u!1 &7415408336277559922
 GameObject:
   m_ObjectHideFlags: 0
@@ -1234,7 +1231,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _droppedItem: {fileID: 1065216563640160880, guid: aa05df3845a55b347956092d92ce91d4, type: 3}
 --- !u!1 &8206743838274619028
 GameObject:
   m_ObjectHideFlags: 0

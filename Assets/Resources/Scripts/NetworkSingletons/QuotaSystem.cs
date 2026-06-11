@@ -1,11 +1,20 @@
+using System;
 using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class QuotaSystem : NetworkBehaviour
+public class QuotaSystem : NetworkSingleton<QuotaSystem>
 {
+    public struct QuotaChangeInfo
+    {
+        public int oldQuotaAmount;
+        public int newQuotaAmount;
+    }
     [SerializeField] private int _initialQuota = 100;
     [SerializeField] private int _quotaIncreasePerDay = 10;
-    public static QuotaSystem Instance { get; private set; }
+    [SerializeField] private int _initialPackagesToSpawn = 5;
+    [SerializeField] private int _packageIncreasePerDay = 1;
+    public Action<QuotaChangeInfo> onQuotaChangedEvent;
     [SyncVar (hook = nameof(OnQuotaChanged))]
     private int _currentQuota;
     public int CurrentQuota => _currentQuota;
@@ -14,22 +23,14 @@ public class QuotaSystem : NetworkBehaviour
     {
         base.OnStartServer();
         _currentQuota = _initialQuota;
+        PackageSpawner.PackagesToSpawn = _initialPackagesToSpawn;
     }
 
-    override public void OnStartClient()
+    protected override void OnLoadActiveScene()
     {
-        base.OnStartClient();
-        if (Instance != null && Instance != this)
-        {
-            if(isServer)
-            {
-                Instance.IncreaseQuota(); // Increase quota on scene reload
-                NetworkServer.Destroy(gameObject);
-            }
-            return;
-        }
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
+        base.OnLoadActiveScene();
+        IncreaseQuota();
+        IncreasePackagesToSpawn();
     }
 
     [Command]
@@ -45,15 +46,22 @@ public class QuotaSystem : NetworkBehaviour
     public void ServerDefeat()
     {
         // Handle defeat condition (e.g., end game, show defeat screen, etc.)
-
     }
     private void OnQuotaChanged(int oldQuotaAmount, int newQuotaAmount)
     {
-        // Update UI on clients when quota changes
+        onQuotaChangedEvent?.Invoke(new QuotaChangeInfo
+        {
+            oldQuotaAmount = oldQuotaAmount,
+            newQuotaAmount = newQuotaAmount
+        });
     }
 
     private void IncreaseQuota()
     {
         _currentQuota += _quotaIncreasePerDay;
+    }
+    private void IncreasePackagesToSpawn()
+    {
+        PackageSpawner.PackagesToSpawn += _packageIncreasePerDay;
     }
 }
