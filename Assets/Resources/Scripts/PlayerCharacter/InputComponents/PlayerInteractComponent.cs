@@ -15,13 +15,6 @@ public class PlayerInteractComponent : InputComponent
     [SerializeField] private float _interactionRange = 3f;
     [SerializeField] private float _interactionSphereRadius = 0.1f;
     [SerializeField] private LayerMask _interactableLayerMask;
-    private Camera _playerCamera;
-
-    void Awake()
-    {
-        _playerCamera = GetComponentInChildren<Camera>();
-    }
-
     protected override void BindInputs()
     {
         if (!isLocalPlayer) return;
@@ -42,7 +35,7 @@ public class PlayerInteractComponent : InputComponent
     {
         if (!isLocalPlayer) return;
 
-        Ray ray = new Ray(_playerCamera.transform.position, _playerCamera.transform.forward);
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         RaycastHit hitInfo;
         if (Physics.SphereCast(ray, _interactionSphereRadius, out hitInfo, _interactionRange, _interactableLayerMask))
         {

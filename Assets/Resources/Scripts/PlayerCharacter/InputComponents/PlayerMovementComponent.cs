@@ -88,7 +88,10 @@ public class PlayerMovementComponent : InputComponent
     private void HandleMovement()
     {
         Vector3 currentVelocity = _rigidbody.linearVelocity;
-        Vector3 targetFoward = Camera.main.transform.forward * _movementDirection.z;
+        Vector3 cameraForward = Camera.main.transform.forward;
+        cameraForward.y = 0f; // Flatten the camera forward vector to the horizontal plane
+        cameraForward.Normalize();
+        Vector3 targetFoward = cameraForward * _movementDirection.z;
         Vector3 targetRight = Camera.main.transform.right * _movementDirection.x;
         Vector3 targetVelocity = (targetFoward + targetRight) * _maxMoveSpeed;
 

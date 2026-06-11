@@ -22,15 +22,12 @@ public class PlayerInventoryComponent : InputComponent
     private InventoryItemData[] _inventory;
     private int _selectedInventoryIndex = -1; // Local copy of the selected index for instant responsiveness
 
-    private Camera _playerCamera;
-
     [SerializeField] private GameObject _carriedPackage; // Reference to the currently carried package, if any
 
     public GameObject CarriedPackage => _carriedPackage != null ? _carriedPackage.gameObject : null;
 
     void Awake()
     {
-        _playerCamera = GetComponentInChildren<Camera>();
         _inventory = new InventoryItemData[_inventorySize];
         for(int i = 0; i < _inventorySize; i++)
         {
@@ -170,7 +167,7 @@ public class PlayerInventoryComponent : InputComponent
 
     private void OnThrowInput(InputAction.CallbackContext context)
     {
-        DropItem(_selectedInventoryIndex, _playerCamera.transform.forward * _throwForce);
+        DropItem(_selectedInventoryIndex, Camera.main.transform.forward * _throwForce);
     }
 
     void DropItem(int slotIndex, Vector3 throwForce = default)
