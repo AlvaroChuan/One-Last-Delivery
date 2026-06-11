@@ -48,8 +48,7 @@ public class TrafficManager : NetworkBehaviour
     private NativeParallelMultiHashMap<int, int> _spatialGrid;
     private NativeArray<DynamicObstacleData> _dynamicObstacles;
     private NativeArray<NativeObstacle> _mappedObstacles;
-    public Transform[] dynamicObstacleTransforms;
-
+    
     public TrafficLightController[] trafficLights;
     private float _nextSyncTime;
 
@@ -98,18 +97,28 @@ public class TrafficManager : NetworkBehaviour
         JobHandle clearLocksHandle = clearLocksJob.Schedule(_nodeLocks.Length, 64, populateHandle);
 
         // Update Dynamic Obstacles
-        if (dynamicObstacleTransforms != null)
+        if (TrafficObstacle.ActiveObstacles.Count > _dynamicObstacles.Length)
         {
-            for (int i = 0; i < dynamicObstacleTransforms.Length && i < _dynamicObstacles.Length; i++)
+            // Resize Native Arrays if we have more obstacles than capacity
+            int newCapacity = Mathf.Max(_dynamicObstacles.Length * 2, TrafficObstacle.ActiveObstacles.Count);
+            _dynamicObstacles.Dispose();
+            _mappedObstacles.Dispose();
+            _dynamicObstacles = new NativeArray<DynamicObstacleData>(newCapacity, Allocator.Persistent);
+            _mappedObstacles = new NativeArray<NativeObstacle>(newCapacity, Allocator.Persistent);
+        }
+
+        // Fill NativeArray with active obstacles
+        int activeCount = 0;
+        foreach (var obs in TrafficObstacle.ActiveObstacles)
+        {
+            if (obs != null)
             {
-                if (dynamicObstacleTransforms[i] != null)
+                _dynamicObstacles[activeCount] = new DynamicObstacleData
                 {
-                    _dynamicObstacles[i] = new DynamicObstacleData
-                    {
-                        id = (uint)i,
-                        position = dynamicObstacleTransforms[i].position
-                    };
-                }
+                    id = (uint)activeCount,
+                    position = obs.transform.position
+                };
+                activeCount++;
             }
         }
 
@@ -123,7 +132,8 @@ public class TrafficManager : NetworkBehaviour
             snapDistance = _obstacleSnapDistance,
             outputObstacles = _mappedObstacles
         };
-        JobHandle mapObstaclesHandle = mapObstaclesJob.Schedule(_dynamicObstacles.Length, 64, clearLocksHandle);
+        // We only schedule the Map job for the actual number of active obstacles!
+        JobHandle mapObstaclesHandle = mapObstaclesJob.Schedule(activeCount, 64, clearLocksHandle);
 
         CarSimulationJob simulationJob = new CarSimulationJob
         {
