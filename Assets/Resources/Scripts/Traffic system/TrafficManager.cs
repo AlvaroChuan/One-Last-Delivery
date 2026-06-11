@@ -267,7 +267,6 @@ public class TrafficManager : NetworkBehaviour
         if (_edgeStopSignals.IsCreated) _edgeStopSignals.Dispose();
         if (_previousVehicleStates.IsCreated) _previousVehicleStates.Dispose();
         if (_edgeToVehiclesMap.IsCreated) _edgeToVehiclesMap.Dispose();
-        
         if (_intersections.IsCreated) _intersections.Dispose();
         if (_intersectionLightIds.IsCreated) _intersectionLightIds.Dispose();
         if (_lightToEdgeMapping.IsCreated) _lightToEdgeMapping.Dispose();
