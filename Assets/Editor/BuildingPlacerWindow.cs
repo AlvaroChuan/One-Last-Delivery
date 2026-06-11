@@ -13,15 +13,15 @@ public class BuildingPlacerWindow : EditorWindow
     private string _generatedTag = "Building";
     private float _cornerAngleThresh = 45f;
 
-    // Simplified space control
+    // Space control variables
     private float _spacingFactor = 1.0f;
-    private float _cornerGap = 6.0f; // Space left free for the "Filler" logic
+    private float _cornerGap = 6.0f;
 
     // Generation limits
     private int _maxBuildingsPerType = 0;
     private int _maxConsecutiveSameType = 3;
 
-    // Save profile and UI
+    // Save profile and UI references
     private BuildingPlacerProfile _profile;
     private Vector2 _scroll;
     private string _newProfileName = "MyNewNeighborhood";
@@ -140,14 +140,27 @@ public class BuildingPlacerWindow : EditorWindow
         EditorGUILayout.Space();
     }
 
+    // ── TARGETED CLEAR METHOD ──
     void ClearGenerated()
     {
-        var toDelete = GameObject.FindGameObjectsWithTag(_generatedTag);
-        foreach (var go in toDelete) DestroyImmediate(go);
-        Debug.Log($"Cleared {toDelete.Length} generated buildings.");
+        if (_targetSpline == null)
+        {
+            Debug.LogError("Assign a City Block Spline first to target its specific container group.");
+            return;
+        }
+
+        // Find the specific parent container for the selected spline to prevent wiping other generations
+        string parentName = "Buildings_" + _targetSpline.name;
+        GameObject parentGO = GameObject.Find(parentName);
+
+        if (parentGO != null)
+        {
+            Undo.DestroyObjectImmediate(parentGO);
+            Debug.Log($"Cleared generated buildings specifically for {_targetSpline.name}.");
+        }
     }
 
-    // ── CORE GENERATION ENGINE WITH SCALED CAPPING ──
+    // ── CORE GENERATION ENGINE WITH TWO-PASS AND SCALED CAPPING ──
     void GenerateBuildings()
     {
         if (_targetSpline == null) return;
@@ -155,8 +168,15 @@ public class BuildingPlacerWindow : EditorWindow
         List<List<BuildingData>> allResLists = new List<List<BuildingData>> { _profile.resA, _profile.resB, _profile.resC, _profile.resD };
         if (!allResLists.Any(list => list.Any(b => b != null && b.prefab != null))) return;
 
+        // Clear only the current spline group before regenerating
         ClearGenerated();
         EnsureTag(_generatedTag);
+
+        // Create a unique root parent container for this spline assignment
+        string parentName = "Buildings_" + _targetSpline.name;
+        GameObject parentGO = new GameObject(parentName);
+        Undo.RegisterCreatedObjectUndo(parentGO, "Create Spline Buildings Root Container");
+        Transform parentTransform = parentGO.transform;
 
         Spline spline = _targetSpline.Spline;
         int knotCount = spline.Count;
@@ -166,78 +186,92 @@ public class BuildingPlacerWindow : EditorWindow
         int[] typeCounters = new int[allResLists.Count];
         int consecutiveCount = 0;
 
+        bool[] nodeHasCorner = new bool[knotCount];
+        Vector3[] pCurrArray = new Vector3[knotCount];
+        Vector3[] edgeDirArray = new Vector3[knotCount];
+        Vector3[] outwardArray = new Vector3[knotCount];
+        Quaternion[] rotArray = new Quaternion[knotCount];
+        float[] cornerWidths = new float[knotCount];
+        float[] cornerDepths = new float[knotCount];
+
+        // ── PASS 1: INSTANTIATE FIXED CORNER ANCHORS ──
         for (int i = 0; i < knotCount; i++)
         {
             int iNext = (i + 1) % knotCount;
             int iPrev = (i - 1 + knotCount) % knotCount;
-            int iNextNext = (i + 2) % knotCount;
 
             Vector3 pCurr = _targetSpline.transform.TransformPoint(spline[i].Position);
             Vector3 pNext = _targetSpline.transform.TransformPoint(spline[iNext].Position);
             Vector3 pPrev = _targetSpline.transform.TransformPoint(spline[iPrev].Position);
-            Vector3 pNextNext = _targetSpline.transform.TransformPoint(spline[iNextNext].Position);
 
             Vector3 edgeDir = (pNext - pCurr).normalized;
-            float edgeLen = Vector3.Distance(pCurr, pNext);
-
             Vector3 outward = new Vector3(-edgeDir.z, 0, edgeDir.x).normalized;
+
             Vector3 edgeMid = (pCurr + pNext) / 2f;
             Vector3 splineCenter = GetSplineCenter(spline, _targetSpline.transform);
-
             if (Vector3.Dot(outward, (splineCenter - edgeMid).normalized) > 0)
                 outward = -outward;
 
             Quaternion rot = Quaternion.LookRotation(outward, Vector3.up);
 
-            // 1. Current corner detection
-            Vector3 edgeIn = (pCurr - pPrev).normalized;
+            pCurrArray[i] = pCurr;
+            edgeDirArray[i] = edgeDir;
+            outwardArray[i] = outward;
+            rotArray[i] = rot;
+
+            Vector3 edgeIn = (pPrev - pCurr).normalized;
             bool isCorner = Vector3.Angle(edgeIn, edgeDir) > _cornerAngleThresh;
 
-            float cornerWidth = 0f;
             if (isCorner && _profile.cornerPrefabs.Count > 0)
             {
                 var validCorners = _profile.cornerPrefabs.Where(c => c != null).ToList();
                 if (validCorners.Count > 0)
                 {
+                    nodeHasCorner[i] = true;
                     var prefab = validCorners[UnityEngine.Random.Range(0, validCorners.Count)];
                     Bounds b = GetPrefabBounds(prefab);
-                    cornerWidth = b.size.x;
 
-                    Vector3 pos = pCurr + edgeDir * (cornerWidth / 2f) + outward * (-(_inset + b.size.z / 2f));
+                    cornerWidths[i] = b.size.x;
+                    cornerDepths[i] = b.size.z;
+
+                    Vector3 pos = pCurr + edgeDir * (b.size.x / 2f) + outward * (-(_inset + b.size.z / 2f));
                     pos.y = 0;
-                    PlacePrefab(prefab, pos, rot);
+                    PlacePrefab(prefab, pos, rot, parentTransform);
                 }
             }
+        }
 
-            // 2. Future corner detection (Look-ahead)
-            Vector3 edgeDirNext = (pNextNext - pNext).normalized;
-            bool nextIsCorner = Vector3.Angle(edgeDir, edgeDirNext) > _cornerAngleThresh;
+        // ── PASS 2: GENERATE STRAIGHT CORE BUILDINGS ──
+        for (int i = 0; i < knotCount; i++)
+        {
+            int iNext = (i + 1) % knotCount;
 
-            float nextCornerDepth = 0f;
-            if (nextIsCorner && _profile.cornerPrefabs.Count > 0)
-            {
-                var validCorners = _profile.cornerPrefabs.Where(c => c != null).ToList();
-                if (validCorners.Count > 0)
-                {
-                    nextCornerDepth = GetPrefabBounds(validCorners[0]).size.z;
-                }
-            }
+            float edgeLen = Vector3.Distance(pCurrArray[i], pCurrArray[iNext]);
 
-            // Define street core
-            float coreStart = cornerWidth > 0f ? cornerWidth + _cornerGap : 0f;
+            float currentCornerWidth = cornerWidths[i];
+            float nextCornerDepth = nodeHasCorner[iNext] ? cornerDepths[iNext] : 0f;
+
+            // Define straight safe zones boundaries based on gaps
+            float coreStart = currentCornerWidth > 0f ? currentCornerWidth + _cornerGap : 0f;
             float coreEnd = edgeLen;
-            if (nextIsCorner) coreEnd -= (nextCornerDepth + _cornerGap);
+            if (nodeHasCorner[iNext]) coreEnd -= (nextCornerDepth + _cornerGap);
 
             if (coreStart > coreEnd)
             {
-                coreStart = Mathf.Max(cornerWidth, edgeLen - nextCornerDepth);
+                coreStart = Mathf.Max(currentCornerWidth, edgeLen - nextCornerDepth);
                 coreStart = Mathf.Min(coreStart, edgeLen);
                 coreEnd = coreStart;
             }
 
-            // 3. Fill central core with straight buildings
             float cursor = coreStart;
-            Vector3 vStart = pCurr;
+            Vector3 vStart = pCurrArray[i];
+            Vector3 edgeDir = edgeDirArray[i];
+            Vector3 outward = outwardArray[i];
+            Quaternion rot = rotArray[i];
+
+            float firstPlacedCursor = -1f;
+            float lastPlacedEndCursor = -1f;
+            bool hasPlacedAnyStraight = false;
 
             while (true)
             {
@@ -254,6 +288,12 @@ public class BuildingPlacerWindow : EditorWindow
 
                 if (cursor + bw > coreEnd + 0.01f) break;
 
+                if (!hasPlacedAnyStraight)
+                {
+                    firstPlacedCursor = cursor;
+                    hasPlacedAnyStraight = true;
+                }
+
                 if (lastTypeIndex == prevTypeIndex) consecutiveCount++;
                 else consecutiveCount = 1;
 
@@ -263,19 +303,21 @@ public class BuildingPlacerWindow : EditorWindow
                 Vector3 pos = vStart + edgeDir * (cursor + bw / 2f) + outward * (-(_inset + bd / 2f));
                 pos.y = 0;
 
-                PlacePrefab(nextData.prefab, pos, rot);
+                PlacePrefab(nextData.prefab, pos, rot, parentTransform);
                 cursor += bw;
+                lastPlacedEndCursor = cursor;
             }
 
             float actualCoreEnd = cursor;
 
-            // ── 4. INTELLIGENT GAP SEALING WITH UNIFORM/CAPPED SCALING ──
+            // ── PASS 3: GAP SEALING WITH INDEPENDENT AXIS SCALING & MIN CAPPING ──
 
-            // START Gap (Post-Current Corner)
-            if (isCorner && coreStart > cornerWidth)
+            // POST-CORNER FILLER (Start of the segment)
+            if (nodeHasCorner[i] && coreStart > currentCornerWidth)
             {
-                float gapStart = cornerWidth;
-                float gapSize = coreStart - gapStart;
+                float gapStart = currentCornerWidth;
+                float gapEnd = hasPlacedAnyStraight ? firstPlacedCursor : (edgeLen - nextCornerDepth);
+                float gapSize = gapEnd - gapStart;
 
                 if (gapSize > 0.1f)
                 {
@@ -283,21 +325,22 @@ public class BuildingPlacerWindow : EditorWindow
                     BuildingData filler = FindBestBuildingForGap(allResLists, gapSize, out origWidth);
                     if (filler != null)
                     {
-                        float scaleFactor = gapSize / origWidth;
-                        float zScale = Mathf.Max(scaleFactor, 0.8f); // Minimum Z scale cap
+                        float xScale = gapSize / origWidth;
+                        float yScale = Mathf.Max(xScale, 0.8f);
+                        float zScale = Mathf.Max(xScale, 0.8f);
 
                         float posCursor = gapStart + gapSize / 2f;
                         float scaledDepth = GetPrefabBounds(filler.prefab).size.z * zScale;
 
                         Vector3 pos = vStart + edgeDir * posCursor + outward * (-(_inset + scaledDepth / 2f));
                         pos.y = 0;
-                        PlaceScaledPrefab(filler.prefab, pos, rot, scaleFactor, zScale);
+                        PlaceScaledPrefab(filler.prefab, pos, rot, xScale, yScale, zScale, parentTransform);
                     }
                 }
             }
 
-            // END Gap (Pre-Next Corner)
-            if (nextIsCorner && (edgeLen - nextCornerDepth) > actualCoreEnd)
+            // PRE-CORNER FILLER (End of the segment)
+            if (nodeHasCorner[iNext] && (edgeLen - nextCornerDepth) > actualCoreEnd)
             {
                 float gapStart = actualCoreEnd;
                 float gapEnd = edgeLen - nextCornerDepth;
@@ -309,24 +352,25 @@ public class BuildingPlacerWindow : EditorWindow
                     BuildingData filler = FindBestBuildingForGap(allResLists, gapSize, out origWidth);
                     if (filler != null)
                     {
-                        float scaleFactor = gapSize / origWidth;
-                        float zScale = Mathf.Max(scaleFactor, 0.8f); // Minimum Z scale cap
+                        float xScale = gapSize / origWidth;
+                        float yScale = Mathf.Max(xScale, 0.8f);
+                        float zScale = Mathf.Max(xScale, 0.8f);
 
                         float posCursor = gapStart + gapSize / 2f;
                         float scaledDepth = GetPrefabBounds(filler.prefab).size.z * zScale;
 
                         Vector3 pos = vStart + edgeDir * posCursor + outward * (-(_inset + scaledDepth / 2f));
                         pos.y = 0;
-                        PlaceScaledPrefab(filler.prefab, pos, rot, scaleFactor, zScale);
+                        PlaceScaledPrefab(filler.prefab, pos, rot, xScale, yScale, zScale, parentTransform);
                     }
                 }
             }
         }
 
-        Debug.Log("Generation Completed: Base blocks + Scaled corner caps.");
+        Debug.Log($"Generation Completed: Buildings successfully structured under hierarchy container node: {parentName}");
     }
 
-    // ── SEARCH FOR THE BEST FITTING BUILDING ──
+    // ── SEARCHES FOR THE BEST BUILDING PROFILE FOR THE GAP SIZE ──
     BuildingData FindBestBuildingForGap(List<List<BuildingData>> allLists, float targetGap, out float originalWidth)
     {
         BuildingData best = null;
@@ -353,24 +397,25 @@ public class BuildingPlacerWindow : EditorWindow
         return best;
     }
 
-    // ── PREFAB PLACEMENT WITH INDEPENDENT Z SCALING ──
-    void PlaceScaledPrefab(GameObject prefab, Vector3 pos, Quaternion rot, float xyScale, float zScale)
+    // ── PLACES THE PREFAB APPLYING MODIFIED SCALE VECTOR UNDER PARENT ──
+    void PlaceScaledPrefab(GameObject prefab, Vector3 pos, Quaternion rot, float xScale, float yScale, float zScale, Transform parent)
     {
         var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
         go.transform.position = pos;
         go.transform.rotation = rot * prefab.transform.rotation;
+        go.transform.SetParent(parent);
 
         Vector3 newScale = go.transform.localScale;
-        newScale.x *= xyScale;
-        newScale.y *= xyScale;
-        newScale.z *= zScale; // Applies the cap limit of 0.8 min
+        newScale.x *= xScale;
+        newScale.y *= yScale;
+        newScale.z *= zScale;
         go.transform.localScale = newScale;
 
         go.tag = _generatedTag;
         Undo.RegisterCreatedObjectUndo(go, "Place Scaled Building");
     }
 
-    // ── STRAIGHT PROBABILITY LOGIC ──────────────────────────────
+    // ── PROCEDURAL PROBABILITY LOGIC FOR THE CENTRAL CORE ──
     BuildingData ChooseNextBuilding(List<List<BuildingData>> allLists, ref int lastTypeIndex, BuildingData lastBuilding, int[] typeCounters, int maxLimit, int consecutiveCount, int maxConsecutive, float remainingSpace)
     {
         List<List<BuildingData>> fittingLists = new List<List<BuildingData>>();
@@ -480,11 +525,12 @@ public class BuildingPlacerWindow : EditorWindow
         return nextBuilding;
     }
 
-    void PlacePrefab(GameObject prefab, Vector3 pos, Quaternion rot)
+    void PlacePrefab(GameObject prefab, Vector3 pos, Quaternion rot, Transform parent)
     {
         var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
         go.transform.position = pos;
         go.transform.rotation = rot * prefab.transform.rotation;
+        go.transform.SetParent(parent);
         go.tag = _generatedTag;
         Undo.RegisterCreatedObjectUndo(go, "Place Building");
     }

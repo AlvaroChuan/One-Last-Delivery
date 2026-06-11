@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ResBuilderProfile
   m_EditorClassIdentifier: 
   resA:
-  - prefab: {fileID: 2841358808115011191, guid: ef0bdbf2726d50b4d9aecfe7da27ccbf, type: 3}
+  - prefab: {fileID: 1234090743300794238, guid: ef0bdbf2726d50b4d9aecfe7da27ccbf, type: 3}
     size: 0
   - prefab: {fileID: 4681149745628389771, guid: 2b4a68af198ea4e49b4cf858bb76d539, type: 3}
     size: 1
