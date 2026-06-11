@@ -132,6 +132,7 @@ public class SteamLobbyManager : MonoBehaviour
             SteamMatchmaking.SetLobbyJoinable(_currentLobbyID, true);
             if (_startGameCoroutine != null)
             {
+                DevLogger.Log("Not all players are ready. Stopping game start countdown.");
                 StopCoroutine(_startGameCoroutine);
                 _uiManager.UpdateCountdown();
                 _startGameCoroutine = null;

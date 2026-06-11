@@ -3,7 +3,7 @@ using Mirror;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PackageSpawner : NetworkBehaviour
+public class PackageSpawner : MonoBehaviour
 {
     public enum CoordinateOrder
     {
@@ -26,14 +26,16 @@ public class PackageSpawner : NetworkBehaviour
     [SerializeField] float _packageSize = 1f;
     public static List<AddressInfo> UsedAddresses = new List<AddressInfo>();
     public static int PackagesToSpawn = 5;
+    public static PackageSpawner Instance { get; private set; }
 
     void Awake()
     {
         UsedAddresses.Clear();
         NormalizeProbabilities();
+        Instance = this;
     }
 
-    void SpawnPackages()
+    public void SpawnPackages()
     {
         Vector3Int currentPosition = Vector3Int.zero;
         AddressLibrary addressLibrary = Resources.Load<AddressLibrary>(AddressLibrary.GetResourcePath());

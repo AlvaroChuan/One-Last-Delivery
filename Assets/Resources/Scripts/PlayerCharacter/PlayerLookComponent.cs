@@ -1,5 +1,29 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
+using Unity.Cinemachine;
+
+
+public class PlayerLookComponent : PlayerComponent
+{
+    [SerializeField] private Transform _eyes;
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        if (isLocalPlayer)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            CinemachineCamera cinemachineCamera = FindAnyObjectByType<CinemachineCamera>();
+
+            if (cinemachineCamera != null)
+            {
+                cinemachineCamera.Follow = _eyes;
+                cinemachineCamera.LookAt = _eyes;
+            }
+        }
+    }
+}
+
+/*
 
 public class PlayerLookComponent : InputComponent
 {
@@ -69,3 +93,4 @@ public class PlayerLookComponent : InputComponent
         Look();
     }
 }
+*/

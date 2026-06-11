@@ -24,6 +24,7 @@ public class QuotaSystem : NetworkSingleton<QuotaSystem>
         base.OnStartServer();
         _currentQuota = _initialQuota;
         PackageSpawner.PackagesToSpawn = _initialPackagesToSpawn;
+        PackageSpawner.Instance.SpawnPackages();
     }
 
     protected override void OnLoadActiveScene()
