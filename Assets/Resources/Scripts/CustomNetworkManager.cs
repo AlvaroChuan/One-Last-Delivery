@@ -26,6 +26,7 @@ public class CustomNetworkManager : NetworkManager
         // (Make sure this matches your actual Game scene name exactly)
         if (SceneManager.GetActiveScene().name == _gameScene)
         {
+            DevLogger.Log("Player " + conn.connectionId + " has identity: " + (conn.identity != null) + " when joining active game scene.");
             // Only spawn if this connection doesn't already have an assigned character
             if (conn.identity == null)
             {
@@ -52,11 +53,11 @@ public class CustomNetworkManager : NetworkManager
             NetworkServer.AddPlayerForConnection(conn, playerInstance);
 
             _numberOfPlayers++;
-            Debug.Log($"Game Scene Loaded: Spawned character index {_numberOfPlayers - 1} for Connection {conn.connectionId}");
+            DevLogger.Log($"Game Scene Loaded: Spawned character index {_numberOfPlayers - 1} for Connection {conn.connectionId}");
         }
         else
         {
-            Debug.LogWarning("Run out of unique player prefabs for joining players!");
+            DevLogger.LogWarning("Run out of unique player prefabs for joining players!");
         }
     }
 

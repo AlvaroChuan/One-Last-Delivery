@@ -1428,58 +1428,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 341985414230683797, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 487808135324588365, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1931968203}
-    - target: {fileID: 523159930077989547, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
-      propertyPath: m_text
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 523159930077989547, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
-      propertyPath: m_fontSize
-      value: 8.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 2348854323591362597, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2348854323591362597, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2348854323591362597, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 36.4
-      objectReference: {fileID: 0}
     - target: {fileID: 2608228557497949612, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1931968203}
-    - target: {fileID: 2838654585621935383, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
-      propertyPath: m_text
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2838654585621935383, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
-      propertyPath: m_fontSize
-      value: 6.78
-      objectReference: {fileID: 0}
-    - target: {fileID: 2838654585621935383, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
-      propertyPath: m_margin.w
-      value: -6.995599
-      objectReference: {fileID: 0}
-    - target: {fileID: 2838654585621935383, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
-      propertyPath: m_fontSizeBase
-      value: 6.78
-      objectReference: {fileID: 0}
-    - target: {fileID: 2838654585621935383, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
-      propertyPath: m_enableAutoSizing
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4262107870113582342, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -1540,10 +1496,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1931968203}
-    - target: {fileID: 7047173921125714234, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7132210047121035143, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
       propertyPath: m_Name
       value: Clipboard
