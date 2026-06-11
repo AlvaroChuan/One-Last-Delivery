@@ -12,8 +12,8 @@ public class QuotaSystem : NetworkSingleton<QuotaSystem>
     }
     [SerializeField] private int _initialQuota = 100;
     [SerializeField] private int _quotaIncreasePerDay = 10;
-    [SyncVar (hook = nameof(OnQuotaChanged))]
     public Action<QuotaChangeInfo> onQuotaChangedEvent;
+    [SyncVar (hook = nameof(OnQuotaChanged))]
     private int _currentQuota;
     public int CurrentQuota => _currentQuota;
 
