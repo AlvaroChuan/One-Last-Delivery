@@ -16,6 +16,7 @@ public struct CarSimulationJob : IJobParallelFor
     [NativeDisableParallelForRestriction] public NativeArray<int> nodeLocks;
     [ReadOnly] public NativeArray<ushort> conflicts;
     [ReadOnly] public NativeArray<byte> edgeStopSignals;
+    [ReadOnly] public NativeArray<NativeObstacle> dynamicObstacles;
     public float deltaTime;
     public float maxSpeed;
     public float acceleration;
@@ -54,6 +55,19 @@ public struct CarSimulationJob : IJobParallelFor
             if (distToLight > 0 && distToLight < distanceToFront)
             {
                 distanceToFront = distToLight;
+            }
+        }
+
+        // Virtual Obstacles for Players and Dynamics
+        for (int i = 0; i < dynamicObstacles.Length; i++)
+        {
+            if (dynamicObstacles[i].edgeId == vehicle.currentEdgeId)
+            {
+                float distToObs = dynamicObstacles[i].distance - vehicle.distance;
+                if (distToObs > 0 && distToObs < distanceToFront)
+                {
+                    distanceToFront = distToObs;
+                }
             }
         }
 

@@ -11909,7 +11909,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!23 &1439263590
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -16040,8 +16040,16 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8227465571552678054, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
+      propertyPath: _spatialGridCellSize
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8227465571552678054, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: _vehicleAcceleration
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8227465571552678054, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
+      propertyPath: _obstacleSnapDistance
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8227465571552678054, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: trafficLights.Array.size
@@ -16063,6 +16071,14 @@ PrefabInstance:
       propertyPath: 'trafficLights.Array.data[3]'
       value: 
       objectReference: {fileID: 690632031}
+    - target: {fileID: 8227465571552678054, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
+      propertyPath: dynamicObstacleTransforms.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8227465571552678054, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
+      propertyPath: 'dynamicObstacleTransforms.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1439263592}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

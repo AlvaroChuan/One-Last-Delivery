@@ -10,6 +10,18 @@ public struct NativeVehicle
     public float lastLaneChangeTime;
 }
 
+public struct NativeObstacle
+{
+    public int edgeId;
+    public float distance;
+}
+
+public struct DynamicObstacleData
+{
+    public uint id;
+    public Unity.Mathematics.float3 position;
+}
+
 public struct NativeEdge
 {
     public ushort id;
@@ -18,6 +30,8 @@ public struct NativeEdge
     public int connectionCount;
     public int conflictStartIndex;
     public int conflictCount;
+    public int pointsStartIndex;
+    public int pointsCount;
     public int leftEdgeId;
     public int rightEdgeId;
 }

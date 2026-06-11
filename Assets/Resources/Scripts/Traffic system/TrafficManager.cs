@@ -23,6 +23,11 @@ public class TrafficManager : NetworkBehaviour
     [SerializeField] private float _yellowTime = 3f;
     [SerializeField] private float _bothRedTime = 1f;
 
+    [Header("Dynamic Obstacles")]
+    [SerializeField] private float _spatialGridCellSize = 20f;
+    [SerializeField] private float _obstacleSnapDistance = 5f;
+
+    // Edges and Vehicles
     private NativeArray<NativeVehicle> _previousVehicleStates;
     private NativeArray<NativeVehicle> _vehicleStates;
     private NativeArray<NativeEdge> _edgeStates;
@@ -32,11 +37,19 @@ public class TrafficManager : NetworkBehaviour
     private NativeArray<int> _nodeLocks;
     private NativeArray<byte> _edgeStopSignals;
     
+    // Traffic Light Data
     private NativeArray<NativeIntersection> _intersections;
     private NativeArray<int> _intersectionLightIds;
     private NativeArray<ushort> _lightToEdgeMapping;
     private NativeArray<byte> _lightStates;
     
+    // Spatial Grid for Dynamic Obstacles
+    private NativeArray<EdgePoint> _allPoints;
+    private NativeParallelMultiHashMap<int, int> _spatialGrid;
+    private NativeArray<DynamicObstacleData> _dynamicObstacles;
+    private NativeArray<NativeObstacle> _mappedObstacles;
+    public Transform[] dynamicObstacleTransforms;
+
     public TrafficLightController[] trafficLights;
     private float _nextSyncTime;
 
@@ -82,7 +95,35 @@ public class TrafficManager : NetworkBehaviour
         {
             locks = _nodeLocks
         };
-        JobHandle clearLocksHandle = clearLocksJob.Schedule(_nodeLocks.Length, 64, JobHandle.CombineDependencies(populateHandle, lightHandle));
+        JobHandle clearLocksHandle = clearLocksJob.Schedule(_nodeLocks.Length, 64, populateHandle);
+
+        // Update Dynamic Obstacles
+        if (dynamicObstacleTransforms != null)
+        {
+            for (int i = 0; i < dynamicObstacleTransforms.Length && i < _dynamicObstacles.Length; i++)
+            {
+                if (dynamicObstacleTransforms[i] != null)
+                {
+                    _dynamicObstacles[i] = new DynamicObstacleData
+                    {
+                        id = (uint)i,
+                        position = dynamicObstacleTransforms[i].position
+                    };
+                }
+            }
+        }
+
+        MapObstaclesJob mapObstaclesJob = new MapObstaclesJob
+        {
+            inputObstacles = _dynamicObstacles,
+            spatialGrid = _spatialGrid,
+            edges = _edgeStates,
+            allPoints = _allPoints,
+            cellSize = _spatialGridCellSize,
+            snapDistance = _obstacleSnapDistance,
+            outputObstacles = _mappedObstacles
+        };
+        JobHandle mapObstaclesHandle = mapObstaclesJob.Schedule(_dynamicObstacles.Length, 64, clearLocksHandle);
 
         CarSimulationJob simulationJob = new CarSimulationJob
         {
@@ -94,13 +135,16 @@ public class TrafficManager : NetworkBehaviour
             conflicts = _edgeConflicts,
             nodeLocks = _nodeLocks,
             edgeStopSignals = _edgeStopSignals,
+            dynamicObstacles = _mappedObstacles,
             deltaTime = Time.deltaTime,
             maxSpeed = _vehicleMaxSpeed,
             acceleration = _vehicleAcceleration,
             safeDistance = _safeDistance,
             randomSeed = (uint) Random.Range(1, 100000)
         };
-        JobHandle handle = simulationJob.Schedule(_vehicleStates.Length, 64, clearLocksHandle);
+        
+        JobHandle combinedHandle = JobHandle.CombineDependencies(mapObstaclesHandle, lightHandle);
+        JobHandle handle = simulationJob.Schedule(_vehicleStates.Length, 64, combinedHandle);
         handle.Complete();
 
         if (Time.time >= _nextSyncTime)
@@ -143,6 +187,13 @@ public class TrafficManager : NetworkBehaviour
         
         List<ushort> allConnections = new List<ushort>();
         List<ushort> allConflicts = new List<ushort>();
+        List<EdgePoint> allPointsList = new List<EdgePoint>();
+        
+        // Count total points for spatial hash estimation
+        int totalPoints = 0;
+        foreach (var e in _trafficGraph.edges) totalPoints += e.points.Length;
+
+        _spatialGrid = new NativeParallelMultiHashMap<int, int>(totalPoints, Allocator.Persistent);
 
         for (int i = 0; i < _trafficGraph.edges.Count; i++)
         {
@@ -154,6 +205,27 @@ public class TrafficManager : NetworkBehaviour
             int conflictCount = _trafficGraph.edges[i].conflictingEdgeIDs != null ? _trafficGraph.edges[i].conflictingEdgeIDs.Length : 0;
             if (conflictCount > 0) allConflicts.AddRange(_trafficGraph.edges[i].conflictingEdgeIDs);
 
+            int pointsStart = allPointsList.Count;
+            int pointsCount = _trafficGraph.edges[i].points.Length;
+            
+            HashSet<int> edgeGridCells = new HashSet<int>();
+
+            for (int p = 0; p < pointsCount; p++)
+            {
+                EdgePoint pt = _trafficGraph.edges[i].points[p];
+                allPointsList.Add(pt);
+
+                int gridX = (int)Mathf.Floor(pt.position.x / _spatialGridCellSize);
+                int gridZ = (int)Mathf.Floor(pt.position.z / _spatialGridCellSize);
+                int gridKey = (gridX * 73856) ^ (gridZ * 19284);
+                
+                // Add to multi-hash map if not already added for this edge
+                if (edgeGridCells.Add(gridKey))
+                {
+                    _spatialGrid.Add(gridKey, i);
+                }
+            }
+
             _edgeStates[i] = new NativeEdge
             {
                 id = _trafficGraph.edges[i].id,
@@ -162,6 +234,8 @@ public class TrafficManager : NetworkBehaviour
                 connectionCount = count,
                 conflictStartIndex = conflictStart,
                 conflictCount = conflictCount,
+                pointsStartIndex = pointsStart,
+                pointsCount = pointsCount,
                 leftEdgeId = GetEdgeIndexByID(_trafficGraph.edges[i].leftEdgeId),
                 rightEdgeId = GetEdgeIndexByID(_trafficGraph.edges[i].rightEdgeId)
             };
@@ -169,8 +243,13 @@ public class TrafficManager : NetworkBehaviour
 
         _edgeConnections = new NativeArray<ushort>(allConnections.ToArray(), Allocator.Persistent);
         _edgeConflicts = new NativeArray<ushort>(allConflicts.ToArray(), Allocator.Persistent);
+        _allPoints = new NativeArray<EdgePoint>(allPointsList.ToArray(), Allocator.Persistent);
         _nodeLocks = new NativeArray<int>(_trafficGraph.edges.Count, Allocator.Persistent);
         _edgeStopSignals = new NativeArray<byte>(_trafficGraph.edges.Count, Allocator.Persistent);
+        
+        // Initialize max 10 dynamic obstacles
+        _dynamicObstacles = new NativeArray<DynamicObstacleData>(10, Allocator.Persistent);
+        _mappedObstacles = new NativeArray<NativeObstacle>(10, Allocator.Persistent);
 
         _intersections = new NativeArray<NativeIntersection>(_trafficGraph.intersections.Count, Allocator.Persistent);
         List<int> allLightIds = new List<int>();
@@ -271,5 +350,9 @@ public class TrafficManager : NetworkBehaviour
         if (_intersectionLightIds.IsCreated) _intersectionLightIds.Dispose();
         if (_lightToEdgeMapping.IsCreated) _lightToEdgeMapping.Dispose();
         if (_lightStates.IsCreated) _lightStates.Dispose();
+        if (_allPoints.IsCreated) _allPoints.Dispose();
+        if (_spatialGrid.IsCreated) _spatialGrid.Dispose();
+        if (_dynamicObstacles.IsCreated) _dynamicObstacles.Dispose();
+        if (_mappedObstacles.IsCreated) _mappedObstacles.Dispose();
     }
 }
