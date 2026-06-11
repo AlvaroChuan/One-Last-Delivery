@@ -2,8 +2,9 @@ using Mirror;
 
 public class PlayerComponent : NetworkBehaviour
 {
-    protected virtual void Start()
+    public override void OnStartClient()
     {
+        base.OnStartClient();
         if (!isLocalPlayer)
         {
             enabled = false;

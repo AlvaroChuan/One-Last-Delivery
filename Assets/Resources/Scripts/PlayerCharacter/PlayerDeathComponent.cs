@@ -17,10 +17,10 @@ public class PlayerDeathComponent : PlayerComponent
         _deathComponent = GetComponent<PlayerVoiceDeathComponent>();
     }
 
-    protected override void Start()
+    public override void OnStartLocalPlayer()
     {
-        base.Start();
-        _spectatorComponent.enabled = false; // Start with spectator movement disabled/
+        base.OnStartLocalPlayer();
+        _spectatorComponent.enabled = false; // Start with spectator movement disabled
     }
 
     public void Die()

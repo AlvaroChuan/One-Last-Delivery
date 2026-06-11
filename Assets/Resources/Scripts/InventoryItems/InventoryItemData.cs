@@ -3,7 +3,7 @@ using UnityEngine;
 [System.Serializable]
 public struct InventoryItemData
 {
-    public InventoryItemIDEnum itemID;
+    public ItemID itemID;
     [Tooltip("If true, the item is used instantly on use input and doesn't require holding down the use button.")]
     public bool oneShot;
     public bool infiniteDurability;
@@ -12,5 +12,5 @@ public struct InventoryItemData
     public float durabilityCost;
 
     // A helper property to check if the slot is actually empty
-    public bool IsEmpty => itemID == InventoryItemIDEnum.None;
+    public bool IsEmpty => itemID == ItemID.None;
 }

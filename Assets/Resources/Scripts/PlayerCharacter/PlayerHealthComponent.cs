@@ -14,10 +14,9 @@ public class PlayerHealthComponent : PlayerComponent
         _controller = GetComponent<PlayerDeathComponent>();
     }
 
-
-    protected override void Start()
+    public override void OnStartClient()
     {
-        base.Start();
+        base.OnStartClient();
         _currentHealth = _maxHealth;
     }
 

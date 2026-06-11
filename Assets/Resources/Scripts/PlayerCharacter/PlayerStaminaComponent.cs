@@ -7,9 +7,9 @@ public class PlayerStaminaComponent : PlayerComponent
     private float _currentStamina;
     private int _staminaregenDisableCounter = 0;
 
-    protected override void Start()
+    public override void OnStartClient()
     {
-        base.Start();
+        base.OnStartClient();
         _currentStamina = _maxStamina;
     }
 
