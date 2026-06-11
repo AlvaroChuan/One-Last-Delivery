@@ -110,7 +110,9 @@ public struct CarSimulationJob : IJobParallelFor
 
         // Intersection logic: Check if we are close to the end of the edge and if we can enter the intersection (no conflicts or we have priority)
         float lookAhead = math.max(safeDistance, (vehicle.speed * vehicle.speed) / (2f * acceleration * 2f) + 2f);
-        if (distanceToEnd < lookAhead && currentEdge.connectionCount > 0)
+        bool isAtRedLight = edgeStopSignals[vehicle.currentEdgeId] == 1;
+
+        if (distanceToEnd < lookAhead && currentEdge.connectionCount > 0 && !isAtRedLight)
         {
             uint stableSeed = (uint)math.max(1, vehicle.id * 73856 + currentEdge.id * 19284);
             Random random = new Random(stableSeed);
@@ -128,6 +130,25 @@ public struct CarSimulationJob : IJobParallelFor
                     if (dist > 0 && dist < distanceToFront) distanceToFront = dist;
 
                 } while (vehicleMap.TryGetNextValue(out nextIdx, ref nextIt));
+            }
+
+            // Double look-ahead for the edge after the next one to avoid entering an intersection if the way ahead is blocked
+            if (nextEdge.connectionCount > 0 && (distanceToEnd + nextEdge.length) < lookAhead)
+            {
+                uint nextStableSeed = (uint)math.max(1, vehicle.id * 73856 + nextEdgeId * 19284);
+                Random nextRandom = new Random(nextStableSeed);
+                int nextNextEdgeOffset = nextRandom.NextInt(0, nextEdge.connectionCount);
+                int nextNextEdgeId = connections[nextEdge.connectionStartIndex + nextNextEdgeOffset];
+                
+                if (vehicleMap.TryGetFirstValue(nextNextEdgeId, out int nextNextIdx, out NativeParallelMultiHashMapIterator<int> nextNextIt))
+                {
+                    do
+                    {
+                        NativeVehicle nextNextVehicle = previousStates[nextNextIdx];
+                        float dist2 = distanceToEnd + nextEdge.length + nextNextVehicle.distance;
+                        if (dist2 > 0 && dist2 < distanceToFront) distanceToFront = dist2;
+                    } while (vehicleMap.TryGetNextValue(out nextNextIdx, ref nextNextIt));
+                }
             }
 
             // Check for conflicts in the intersection (simplified: if any conflicting edge has a vehicle, we have to wait)
