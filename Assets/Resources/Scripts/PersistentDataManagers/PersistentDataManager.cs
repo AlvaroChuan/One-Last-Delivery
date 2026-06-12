@@ -3,6 +3,24 @@ using UnityEngine.SceneManagement;
 using Mirror;
 using System;
 
+internal static class PersistentDataSceneRegistry
+{
+    public static event Action<Scene, LoadSceneMode> CentralOnSceneLoaded;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void InitializeSceneChangeListener()
+    {
+        DevLogger.Log("Initializing PersistentDataSceneRegistry and subscribing to sceneLoaded event.");
+        SceneManager.sceneLoaded -= OnGlobalSceneChange;
+        SceneManager.sceneLoaded += OnGlobalSceneChange;
+    }
+
+    private static void OnGlobalSceneChange(Scene scene, LoadSceneMode mode)
+    {
+        CentralOnSceneLoaded?.Invoke(scene, mode);
+    }
+}
+
 public abstract class PersistentDataManager<T, TStaticState, TDataType> : NetworkBehaviour
     where T : PersistentDataManager<T, TStaticState, TDataType>
     where TStaticState : PersistentDataManager<T, TStaticState, TDataType>.StaticStateBase, new()
@@ -48,6 +66,8 @@ public abstract class PersistentDataManager<T, TStaticState, TDataType> : Networ
     {
         Instance = this as T;
         StaticDataState.SetManagerInstance(this);
+        PersistentDataSceneRegistry.CentralOnSceneLoaded -= OnSceneChange;
+        PersistentDataSceneRegistry.CentralOnSceneLoaded += OnSceneChange;
     }
 
     public override void OnStartServer()
@@ -60,12 +80,6 @@ public abstract class PersistentDataManager<T, TStaticState, TDataType> : Networ
 
     abstract protected void ServerUpdateInstanceData();
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    private static void InitializeSceneChangeListener()
-    {
-        SceneManager.sceneLoaded += OnSceneChange;
-    }
-
     private static void OnSceneChange(Scene scene, LoadSceneMode mode)
     {
         T instance = Instance;
@@ -75,6 +89,7 @@ public abstract class PersistentDataManager<T, TStaticState, TDataType> : Networ
             if (!isActiveScene)
             {
                 StaticDataState.Reset();
+                PersistentDataSceneRegistry.CentralOnSceneLoaded -= OnSceneChange;
             }
         }
     }

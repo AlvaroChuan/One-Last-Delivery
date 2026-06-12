@@ -1271,6 +1271,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _activeSceneNames:
+  - GameScene
   _initialQuota: 100
   _quotaIncreasePerDay: 10
 --- !u!114 &1116074230
@@ -1288,6 +1290,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _activeSceneNames:
+  - GameScene
   _initialMoney: 100
 --- !u!4 &1116074231
 Transform:
@@ -1505,6 +1509,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _activeSceneNames:
+  - GameScene
   _initialPackagesToSpawn: 1
   _extraPackagesToSpawnPerDay: 1
   _packageEntries:
