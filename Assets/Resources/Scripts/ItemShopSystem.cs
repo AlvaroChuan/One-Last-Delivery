@@ -21,7 +21,7 @@ public class ItemShopSystem : NetworkBehaviour
     [Command]
     public void CmdRequestBuyItem(InventoryItemData itemData, int price, NetworkConnectionToClient conn = null)
     {
-        if (MoneyManager.Instance.ServerSubtractMoney(price))
+        if (MoneyManager.ServerSubtractMoney(price))
         {
             ServerSpawnItem(conn.identity.gameObject, itemData); // Spawn the item for the buyer
             TargetBuyItemSuccess(conn); // Notify the buyer of successful purchase

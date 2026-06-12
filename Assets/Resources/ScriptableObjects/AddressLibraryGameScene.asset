@@ -15,3 +15,7 @@ MonoBehaviour:
   _addresses:
   - streetName: 4th Street
     number: 0
+  - streetName: 4th Street
+    number: 1
+  - streetName: 4th Street
+    number: 2

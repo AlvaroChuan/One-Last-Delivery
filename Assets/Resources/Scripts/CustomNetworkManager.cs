@@ -65,9 +65,6 @@ public class CustomNetworkManager : NetworkManager
     {
         base.OnServerChangeScene(newSceneName);
 
-        if (newSceneName != _gameScene)
-        {
-            _numberOfPlayers = 0;
-        }
+        _numberOfPlayers = 0;
     }
 }

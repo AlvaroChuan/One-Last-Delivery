@@ -3,8 +3,17 @@ using Mirror;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PackageSpawner : MonoBehaviour
+public class PackageSpawner : PersistentDataManager<PackageSpawner, PackageSpawner.PackageSpawnerStaticState, int>
 {
+    public class PackageSpawnerStaticState : StaticStateBase
+    {
+        public bool isFirstDay = true;
+        public override void Reset()
+        {
+            StaticData = 0;
+            isFirstDay = true;
+        }
+    }
     public enum CoordinateOrder
     {
         XYZ,
@@ -20,23 +29,40 @@ public class PackageSpawner : MonoBehaviour
         public GameObject prefab;
         public float probability;
     }
+    [Header("Settings")]
+    [SerializeField] private int _initialPackagesToSpawn = 5;
+    [SerializeField] private int _extraPackagesToSpawnPerDay = 1;
     [SerializeField] PackageEntry[] _packageEntries;
     [SerializeField] Vector3Int _spawnBounds;
     [SerializeField] CoordinateOrder _coordinateOrder = CoordinateOrder.XZY;
     [SerializeField] float _packageSize = 1f;
     public static List<AddressInfo> UsedAddresses = new List<AddressInfo>();
-    public static int PackagesToSpawn = 5;
-    public static PackageSpawner Instance { get; private set; }
+    [SyncVar] private int _packagesToSpawn;
 
-    void Awake()
+    protected override void ServerInitializeStaticData()
     {
-        UsedAddresses.Clear();
-        NormalizeProbabilities();
-        Instance = this;
+        if (StaticDataState.isFirstDay)
+        {
+            StaticDataState.StaticData = _initialPackagesToSpawn;
+            StaticDataState.isFirstDay = false;
+        }
+        else
+        {
+            StaticDataState.StaticData += _extraPackagesToSpawnPerDay;
+        }
+        SpawnPackages();
+    }
+
+    protected override void ServerUpdateInstanceData()
+    {
+        _packagesToSpawn = StaticDataState.StaticData;
     }
 
     public void SpawnPackages()
     {
+        DevLogger.Log("Spawning packages. Total to spawn: " + _packagesToSpawn);
+        NormalizeProbabilities();
+        UsedAddresses.Clear();
         Vector3Int currentPosition = Vector3Int.zero;
         AddressLibrary addressLibrary = Resources.Load<AddressLibrary>(AddressLibrary.GetResourcePath());
         if (addressLibrary == null || addressLibrary.AddressCount == 0)
@@ -44,12 +70,12 @@ public class PackageSpawner : MonoBehaviour
             DevLogger.LogError("Address library is missing or empty. Please generate the address library before spawning packages.");
             return;
         }
-        if (PackagesToSpawn > addressLibrary.AddressCount)
+        if (_packagesToSpawn > addressLibrary.AddressCount)
         {
-            DevLogger.LogWarning("Not enough valid addresses to assign unique addresses to all packages. Only spawning " + addressLibrary.AddressCount + " packages.");
-            PackagesToSpawn = addressLibrary.AddressCount; // Adjust the number of packages to spawn to match the number of available addresses
+            DevLogger.LogWarning("Not enough valid addresses to assign unique addresses to all packages. Only spawning " + addressLibrary.AddressCount + " packages. Tried to spawn " + _packagesToSpawn + " packages.");
+            _packagesToSpawn = addressLibrary.AddressCount; // Adjust the number of packages to spawn to match the number of available addresses
         }
-        for (int i = 0; i < PackagesToSpawn; i++)
+        for (int i = 0; i < _packagesToSpawn; i++)
         {
             GameObject packagePrefab = GetRandomPackagePrefab();
 
@@ -59,9 +85,17 @@ public class PackageSpawner : MonoBehaviour
 
             NetworkAddressComponent addressComponent = packageInstance.GetComponent<NetworkAddressComponent>();
             AddressInfo newAddress;
+            int attempts = 0;
             do
             {
                 newAddress = addressLibrary.GetRandomAddress();
+                attempts++;
+                if (attempts > 100)
+                {
+                    DevLogger.LogError("Failed to find a unique address for package after 100 attempts. This likely means there are not enough unique addresses available. Stopping spawn process to prevent infinite loop.");
+                    NetworkServer.Destroy(packageInstance);
+                    return;
+                }
             } while (UsedAddresses.Contains(newAddress));
 
             addressComponent.SetAddress(newAddress);
