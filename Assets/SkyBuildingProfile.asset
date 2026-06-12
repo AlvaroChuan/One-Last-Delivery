@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fad99395cc368914ea0b2f3b19c2c26b, type: 3}
+  m_Name: SkyBuildingProfile
+  m_EditorClassIdentifier: 
+  resA:
+  - prefab: {fileID: 759668242526891535, guid: 95aa12da55b9e044e91cbfde5619e051, type: 3}
+    size: 0
+  resB:
+  - prefab: {fileID: 1902766811331015002, guid: a28cbd2ef5942c241ad20cb9cd89a07e, type: 3}
+    size: 0
+  - prefab: {fileID: 112884533389526385, guid: 1700441b44b1e924baaf4ade26cc9117, type: 3}
+    size: 1
+  - prefab: {fileID: 8097601992656797323, guid: 5c93e011ab2fbc542a5c5b7302e32484, type: 3}
+    size: 2
+  resC:
+  - prefab: {fileID: 8859778320231967809, guid: ae822a22eddd0d6488113b6d52c3e54a, type: 3}
+    size: 0
+  - prefab: {fileID: 7536045836632744653, guid: c348958c6b4c87f418b83ce9308d62c2, type: 3}
+    size: 1
+  - prefab: {fileID: 1848331278621263811, guid: d82478df248e6a341b9666d214f5a4f2, type: 3}
+    size: 2
+  resD: []
+  cornerPrefabs: []
+  probDiffType: 0.6
+  probSameTypeDiffSize: 0.3
