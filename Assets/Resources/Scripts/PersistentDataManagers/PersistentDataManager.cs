@@ -56,18 +56,18 @@ public abstract class PersistentDataManager<T, TStaticState, TDataType> : Networ
         public abstract void Reset();
     }
     [SerializeField] protected string[] _activeSceneNames;
+    private static string[] StaticActiveSceneNames;
 
     public Action<DataChangeInfo> onDataChangedEvent;
 
     protected static readonly TStaticState StaticDataState = new TStaticState();
-    private static T Instance;
 
     void Awake()
     {
-        Instance = this as T;
         StaticDataState.SetManagerInstance(this);
         PersistentDataSceneRegistry.CentralOnSceneLoaded -= OnSceneChange;
         PersistentDataSceneRegistry.CentralOnSceneLoaded += OnSceneChange;
+        StaticActiveSceneNames = _activeSceneNames;
     }
 
     public override void OnStartServer()
@@ -82,15 +82,14 @@ public abstract class PersistentDataManager<T, TStaticState, TDataType> : Networ
 
     private static void OnSceneChange(Scene scene, LoadSceneMode mode)
     {
-        T instance = Instance;
-        if (instance != null)
+        if (StaticActiveSceneNames == null) return;
+
+        bool isActiveScene = Array.Exists(StaticActiveSceneNames, name => name == scene.name);
+        if (!isActiveScene)
         {
-            bool isActiveScene = Array.Exists(instance._activeSceneNames, name => name == scene.name);
-            if (!isActiveScene)
-            {
-                StaticDataState.Reset();
-                PersistentDataSceneRegistry.CentralOnSceneLoaded -= OnSceneChange;
-            }
+            StaticDataState.Reset();
+            PersistentDataSceneRegistry.CentralOnSceneLoaded -= OnSceneChange;
+            StaticActiveSceneNames = null;
         }
     }
 }
