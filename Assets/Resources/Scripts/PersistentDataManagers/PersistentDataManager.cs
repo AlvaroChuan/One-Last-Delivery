@@ -43,7 +43,7 @@ public abstract class PersistentDataManager<T, TStaticState, TDataType> : Networ
             set
             {
                 _staticData = value;
-                if (_managerInstance != null && _managerInstance.isServer)
+                if (_managerInstance != null && NetworkServer.active)
                 {
                     _managerInstance.ServerUpdateInstanceData();
                 }
@@ -52,6 +52,10 @@ public abstract class PersistentDataManager<T, TStaticState, TDataType> : Networ
         public void SetManagerInstance(PersistentDataManager<T, TStaticState, TDataType> manager)
         {
             _managerInstance = manager;
+        }
+        public PersistentDataManager<T, TStaticState, TDataType> GetManagerInstance()
+        {
+            return _managerInstance;
         }
         public abstract void Reset();
     }
@@ -62,7 +66,7 @@ public abstract class PersistentDataManager<T, TStaticState, TDataType> : Networ
 
     protected static readonly TStaticState StaticDataState = new TStaticState();
 
-    void Awake()
+    protected virtual void Awake()
     {
         StaticDataState.SetManagerInstance(this);
         PersistentDataSceneRegistry.CentralOnSceneLoaded -= OnSceneChange;
@@ -80,13 +84,23 @@ public abstract class PersistentDataManager<T, TStaticState, TDataType> : Networ
 
     abstract protected void ServerUpdateInstanceData();
 
+    void OnDestroy()
+    {
+        if (StaticDataState.GetManagerInstance() == this)
+        {
+            StaticDataState.SetManagerInstance(null);
+        }
+    }
+
     private static void OnSceneChange(Scene scene, LoadSceneMode mode)
     {
+        if (mode != LoadSceneMode.Single) return;
         if (StaticActiveSceneNames == null) return;
 
         bool isActiveScene = Array.Exists(StaticActiveSceneNames, name => name == scene.name);
         if (!isActiveScene)
         {
+            StaticDataState.SetManagerInstance(null);
             StaticDataState.Reset();
             PersistentDataSceneRegistry.CentralOnSceneLoaded -= OnSceneChange;
             StaticActiveSceneNames = null;
