@@ -37,7 +37,7 @@ public abstract class PersistentDataManager<T, TStaticState, TDataType> : Networ
         }
         public abstract void Reset();
     }
-    [SerializeField] protected readonly string[] _activeSceneNames;
+    [SerializeField] protected string[] _activeSceneNames;
 
     public Action<DataChangeInfo> onDataChangedEvent;
 
