@@ -11,6 +11,7 @@ public struct PopulateMapJob : IJobParallelFor
     public void Execute(int index)
     {
         NativeVehicle vehicle = vehicles[index];
+        if (vehicle.currentEdgeId == -1) return; // Ignore inactive vehicles
         edgeMap.Add(vehicle.currentEdgeId, index);
     }
 }

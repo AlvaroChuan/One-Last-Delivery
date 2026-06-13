@@ -21,6 +21,8 @@ public class TrafficClient : MonoBehaviour
         NetworkClient.UnregisterHandler<TrafficBatchMessage>();
     }
 
+    private Dictionary<uint, float> _vehicleLastUpdate = new Dictionary<uint, float>();
+
     private void OnTrafficBatchReceived(TrafficBatchMessage message)
     {
         if (message.lightStates != null && message.lightStates.Length == trafficLights.Length)
@@ -41,6 +43,29 @@ public class TrafficClient : MonoBehaviour
                 visual = SpawnVehicle(state.id);
             }
             visual.UpdateTarget(state.currentEdgeId, state.distance, state.speed);
+            _vehicleLastUpdate[state.id] = Time.time;
+        }
+    }
+
+    private void Update()
+    {
+        List<uint> toRemove = new List<uint>();
+        foreach (var kvp in _vehicleLastUpdate)
+        {
+            if (Time.time - kvp.Value > 1.0f) // If not updated by the server in 1 second, it was despawned
+            {
+                toRemove.Add(kvp.Key);
+            }
+        }
+
+        foreach (uint id in toRemove)
+        {
+            if (_vehicles.TryGetValue(id, out TrafficVehicleVisual visual))
+            {
+                if (visual != null) Destroy(visual.gameObject);
+                _vehicles.Remove(id);
+            }
+            _vehicleLastUpdate.Remove(id);
         }
     }
 

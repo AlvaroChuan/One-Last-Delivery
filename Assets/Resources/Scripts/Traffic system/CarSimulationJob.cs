@@ -25,7 +25,13 @@ public struct CarSimulationJob : IJobParallelFor
 
     public void Execute(int index)
     {
-        NativeVehicle vehicle = vehicles[index];
+        NativeVehicle vehicle = previousStates[index];
+        if (vehicle.currentEdgeId == -1)
+        {
+            vehicles[index] = vehicle; // Write back the inactive state
+            return;
+        }
+
         NativeEdge currentEdge = edges[vehicle.currentEdgeId];
         float distanceToFront = float.MaxValue;
         vehicle.lastLaneChangeTime += deltaTime;

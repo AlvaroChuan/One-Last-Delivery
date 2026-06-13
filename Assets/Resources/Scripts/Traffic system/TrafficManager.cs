@@ -6,11 +6,12 @@ using System.Collections.Generic;
 
 public class TrafficManager : NetworkBehaviour
 {
-    [Header("Traffic Settings")]
+    [Header("Simulation Settings")]
     [SerializeField] private TrafficGraph _trafficGraph;
-    [SerializeField] private int _totalVehicles = 100;
-    [SerializeField] private float _vehicleMaxSpeed = 20f; // Could add variability here
-    [SerializeField] private float _vehicleAcceleration = 5f; // Could add variability here
+    [SerializeField] private int _initialVehiclesToSpawn = 200;
+    [SerializeField] private int _maxVehicleCapacity = 2000;
+    [SerializeField] private float _vehicleMaxSpeed = 20f;
+    [SerializeField] private float _vehicleAcceleration = 5f;
     [SerializeField] private float _safeDistance = 5f;
     [SerializeField] private float _spawnSpacing = 15f;
 
@@ -169,26 +170,63 @@ public class TrafficManager : NetworkBehaviour
     {
         byte[] currentLightStates = _lightStates.ToArray();
 
-        int batches = Mathf.CeilToInt((float)_totalVehicles / _maxBatchSize);
+        List<NetworkVehicleState> activeVehicles = new List<NetworkVehicleState>();
+        for (int i = 0; i < _vehicleStates.Length; i++)
+        {
+            if (_vehicleStates[i].currentEdgeId != -1)
+            {
+                activeVehicles.Add(new NetworkVehicleState
+                {
+                    id = _vehicleStates[i].id,
+                    currentEdgeId = _vehicleStates[i].currentEdgeId,
+                    distance = _vehicleStates[i].distance,
+                    speed = _vehicleStates[i].speed
+                });
+            }
+        }
+
+        int batches = Mathf.CeilToInt((float)activeVehicles.Count / _maxBatchSize);
         for (int b = 0; b < batches; b++)
         {
             int offset = b * _maxBatchSize;
-            int count = Mathf.Min(_maxBatchSize, _totalVehicles - offset);
+            int count = Mathf.Min(_maxBatchSize, activeVehicles.Count - offset);
             NetworkVehicleState[] batch = new NetworkVehicleState[count];
-
-            for (int i = 0; i < count; i++)
-            {
-                int index = offset + i;
-                batch[i] = new NetworkVehicleState
-                {
-                    id = _vehicleStates[index].id,
-                    currentEdgeId = _vehicleStates[index].currentEdgeId,
-                    distance = _vehicleStates[index].distance,
-                    speed = _vehicleStates[index].speed
-                };
-            }
+            activeVehicles.CopyTo(offset, batch, 0, count);
 
             NetworkServer.SendToReady(new TrafficBatchMessage { vehicles = batch, lightStates = currentLightStates }, Channels.Unreliable);
+        }
+    }
+
+    public void SpawnVehicle(int edgeId, float distance)
+    {
+        if (!_vehicleStates.IsCreated) return;
+        for (int i = 0; i < _vehicleStates.Length; i++)
+        {
+            if (_vehicleStates[i].currentEdgeId == -1)
+            {
+                var v = _vehicleStates[i];
+                v.currentEdgeId = edgeId;
+                v.distance = distance;
+                v.speed = 0f;
+                _vehicleStates[i] = v;
+                return;
+            }
+        }
+        Debug.LogWarning("Traffic Vehicle Pool is full!");
+    }
+
+    public void DespawnVehicle(uint vehicleId)
+    {
+        if (!_vehicleStates.IsCreated) return;
+        for (int i = 0; i < _vehicleStates.Length; i++)
+        {
+            if (_vehicleStates[i].id == vehicleId)
+            {
+                var v = _vehicleStates[i];
+                v.currentEdgeId = -1;
+                _vehicleStates[i] = v;
+                return;
+            }
         }
     }
 
@@ -321,12 +359,25 @@ public class TrafficManager : NetworkBehaviour
             possibleSpawns[randomIndex] = temp;
         }
 
-        int carsToSpawn = Mathf.Min(_totalVehicles, possibleSpawns.Count);
+        int carsToSpawn = Mathf.Min(_initialVehiclesToSpawn, possibleSpawns.Count);
         
-        _vehicleStates = new NativeArray<NativeVehicle>(carsToSpawn, Allocator.Persistent);
-        _previousVehicleStates = new NativeArray<NativeVehicle>(carsToSpawn, Allocator.Persistent);
-        _edgeToVehiclesMap = new NativeParallelMultiHashMap<int, int>(carsToSpawn, Allocator.Persistent);
+        _vehicleStates = new NativeArray<NativeVehicle>(_maxVehicleCapacity, Allocator.Persistent);
+        _previousVehicleStates = new NativeArray<NativeVehicle>(_maxVehicleCapacity, Allocator.Persistent);
+        _edgeToVehiclesMap = new NativeParallelMultiHashMap<int, int>(_maxVehicleCapacity, Allocator.Persistent);
 
+        // Pre-allocate the entire pool as inactive
+        for (int i = 0; i < _maxVehicleCapacity; i++)
+        {
+            _vehicleStates[i] = new NativeVehicle
+            {
+                id = (uint)i,
+                currentEdgeId = -1, // -1 means inactive
+                distance = 0f,
+                speed = 0f
+            };
+        }
+
+        // Activate the initial vehicles
         for (int i = 0; i < carsToSpawn; i++)
         {
             NativeVehicle v = possibleSpawns[i];
@@ -334,7 +385,7 @@ public class TrafficManager : NetworkBehaviour
             _vehicleStates[i] = v;
         }
 
-        Debug.Log($"Spawned: {carsToSpawn} cars of {_totalVehicles} requested.");
+        Debug.Log($"Initialized Pool: {_maxVehicleCapacity} capacity. Spawned: {carsToSpawn} initially.");
     }
 
     private int GetEdgeIndexByID(int id)
