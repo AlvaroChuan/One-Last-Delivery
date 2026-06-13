@@ -73,6 +73,7 @@ public class TrafficClient : MonoBehaviour
     {
         GameObject go = Instantiate(_vehiclePrefab);
         TrafficVehicleVisual visual = go.GetComponent<TrafficVehicleVisual>();
+        visual.CarId = id;
         visual.Initialize(_trafficGraph);
 
         _vehicles.Add(id, visual);

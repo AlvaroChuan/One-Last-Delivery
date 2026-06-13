@@ -8,6 +8,7 @@ public class TrafficManager : NetworkBehaviour
 {
     [Header("Simulation Settings")]
     [SerializeField] private TrafficGraph _trafficGraph;
+    [SerializeField] private GameObject _wreckPrefab;
     [SerializeField] private int _initialVehiclesToSpawn = 200;
     [SerializeField] private int _maxVehicleCapacity = 2000;
     [SerializeField] private float _vehicleMaxSpeed = 20f;
@@ -57,9 +58,14 @@ public class TrafficManager : NetworkBehaviour
     private void Start()
     {
         if (!isServer) return; 
+        
+        NetworkServer.RegisterHandler<CrashCarMessage>(OnCrashCarMessage);
+
         InitializeGraph();
         InitializeVehicles();
     }
+
+
 
     private void Update()
     {
@@ -226,6 +232,27 @@ public class TrafficManager : NetworkBehaviour
                 v.currentEdgeId = -1;
                 _vehicleStates[i] = v;
                 return;
+            }
+        }
+    }
+
+    private void OnCrashCarMessage(NetworkConnectionToClient conn, CrashCarMessage msg)
+    {
+        // 1. Despawn from Job System
+        DespawnVehicle(msg.carId);
+
+        // 2. Spawn the physical wreck
+        if (_wreckPrefab != null)
+        {
+            GameObject wreck = Instantiate(_wreckPrefab, msg.position, msg.rotation);
+            NetworkServer.Spawn(wreck);
+
+            Rigidbody rb = wreck.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                // Give it a rough tumbling force based on player impact
+                rb.AddForce(msg.impactVelocity * 1500f, ForceMode.Impulse);
+                rb.AddTorque(Random.insideUnitSphere * 5000f, ForceMode.Impulse);
             }
         }
     }
@@ -400,6 +427,8 @@ public class TrafficManager : NetworkBehaviour
 
     private void OnDestroy()
     {
+        if (isServer) NetworkServer.UnregisterHandler<CrashCarMessage>();
+
         if (_vehicleStates.IsCreated) _vehicleStates.Dispose();
         if (_edgeStates.IsCreated) _edgeStates.Dispose();
         if (_edgeConnections.IsCreated) _edgeConnections.Dispose();

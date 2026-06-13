@@ -59,3 +59,11 @@ public struct TrafficBatchMessage : NetworkMessage
     public NetworkVehicleState[] vehicles;
     public byte[] lightStates;
 }
+
+public struct CrashCarMessage : NetworkMessage
+{
+    public uint carId;
+    public Vector3 position;
+    public Quaternion rotation;
+    public Vector3 impactVelocity;
+}

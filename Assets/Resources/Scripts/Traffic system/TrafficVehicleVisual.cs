@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class TrafficVehicleVisual : MonoBehaviour
 {
+    public uint CarId { get; set; }
+    
     private TrafficGraph _graph;
     private int _targetEdgeIndex = -1;
     private float _logicalDistance;
