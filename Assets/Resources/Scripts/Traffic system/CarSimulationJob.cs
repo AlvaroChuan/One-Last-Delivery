@@ -73,52 +73,61 @@ public struct CarSimulationJob : IJobParallelFor
 
         if (distanceToFront < safeDistance * 2f && vehicle.lastLaneChangeTime >= 5f)
         {
-            int targetEdgeIndex = -1;
+            int bestTargetEdge = -1;
+            float bestTargetLaneDistToFront = distanceToFront + (safeDistance * 1.5f); // Must be strictly better than this
 
-            if (currentEdge.leftEdgeId != -1) targetEdgeIndex = currentEdge.leftEdgeId;
-            else if (currentEdge.rightEdgeId != -1) targetEdgeIndex = currentEdge.rightEdgeId;
+            NativeArray<int> adjacentLanes = new NativeArray<int>(2, Allocator.Temp);
+            adjacentLanes[0] = currentEdge.leftEdgeId;
+            adjacentLanes[1] = currentEdge.rightEdgeId;
 
-            if (targetEdgeIndex != -1)
+            for (int i = 0; i < 2; i++)
             {
+                int laneEdgeId = adjacentLanes[i];
+                if (laneEdgeId == -1) continue;
+
                 float targetLaneDistToFront = float.MaxValue;
                 float targetLaneDistToBack = float.MaxValue;
                 bool safeToChange = true;
 
-                if (vehicleMap.TryGetFirstValue(targetEdgeIndex, out int adjIndex, out NativeParallelMultiHashMapIterator<int> adjIt))
+                if (vehicleMap.TryGetFirstValue(laneEdgeId, out int adjIndex, out NativeParallelMultiHashMapIterator<int> adjIt))
                 {
                     do
                     {
                         NativeVehicle adjVehicle = previousStates[adjIndex];
-                        float distDiff = adjVehicle.distance - vehicle.distance;
+                        // Need to adjust for length differences to compare distances safely
+                        float ratio = edges[laneEdgeId].length / currentEdge.length;
+                        float myEquivalentDist = vehicle.distance * ratio;
+                        float distDiff = adjVehicle.distance - myEquivalentDist;
 
-                        // Vehicle in target lane ahead
                         if (distDiff > 0 && distDiff < targetLaneDistToFront) targetLaneDistToFront = distDiff;
-                        // Vehicle in target lane behind
                         else if (distDiff < 0 && math.abs(distDiff) < targetLaneDistToBack) targetLaneDistToBack = math.abs(distDiff);
 
-                        // Parallel vehicle check
                         if (math.abs(distDiff) < (safeDistance * 0.5f))
                         {
                             safeToChange = false;
                             break;
                         }
-
                     } while (vehicleMap.TryGetNextValue(out adjIndex, ref adjIt));
                 }
 
-                // MOBIL (Safe to switch lane and we speed advantage)
-                if (safeToChange && targetLaneDistToBack > safeDistance && targetLaneDistToFront > distanceToFront + (safeDistance * 1.5f))
+                if (safeToChange && targetLaneDistToBack > safeDistance && targetLaneDistToFront > bestTargetLaneDistToFront)
                 {
-                    vehicle.currentEdgeId = targetEdgeIndex;
-
-                    float lengthRatio = edges[targetEdgeIndex].length / currentEdge.length;
-                    vehicle.distance *= lengthRatio;
-                    
-                    vehicle.lastLaneChangeTime = 0;
-                    
-                    currentEdge = edges[targetEdgeIndex];
-                    distanceToFront = targetLaneDistToFront;
+                    bestTargetLaneDistToFront = targetLaneDistToFront;
+                    bestTargetEdge = laneEdgeId;
                 }
+            }
+
+            adjacentLanes.Dispose();
+
+            if (bestTargetEdge != -1)
+            {
+                vehicle.currentEdgeId = bestTargetEdge;
+                float lengthRatio = edges[bestTargetEdge].length / currentEdge.length;
+                vehicle.distance *= lengthRatio;
+                vehicle.lastLaneChangeTime = 0;
+                
+                currentEdge = edges[bestTargetEdge];
+                distanceToFront = bestTargetLaneDistToFront;
             }
         }
 

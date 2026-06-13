@@ -19,6 +19,11 @@ public class TrafficVehicleVisual : MonoBehaviour
     [SerializeField] private float _catchUpMultiplier = 2.0f;
     [SerializeField] private float _overshootBrakeFactor = 0.3f;
 
+    [Header("Lane Change Settings")]
+    [SerializeField] private float _laneChangeSmoothTime = 1.0f;
+    private float _currentLateralOffset = 0f;
+    private float _lateralVelocity = 0f;
+
     [Header("Debug")]
     [SerializeField] private bool _showDebugLogs = false;
 
@@ -28,6 +33,30 @@ public class TrafficVehicleVisual : MonoBehaviour
     {
         if (_targetEdgeIndex != edgeIndex)
         {
+            // If changing to a completely new edge, check if it's a parallel lane jump
+            if (_targetEdgeIndex != -1 && _graph != null && _graph.edges.Count > edgeIndex)
+            {
+                TrafficEdge newEdge = _graph.edges[edgeIndex];
+                float normalizedT = newEdge.length > 0 ? Mathf.Clamp01(distance / newEdge.length) : 0f;
+                float floatIndex = normalizedT * (newEdge.points.Length - 1);
+                int indexA = Mathf.FloorToInt(floatIndex);
+                int indexB = Mathf.Min(indexA + 1, newEdge.points.Length - 1);
+                float t = floatIndex - indexA;
+                
+                Vector3 newTargetPos = Vector3.Lerp(newEdge.points[indexA].position, newEdge.points[indexB].position, t);
+                Vector3 newTargetDir = Vector3.Lerp(newEdge.points[indexA].tangent, newEdge.points[indexB].tangent, t);
+                
+                Vector3 toNewTarget = transform.position - newTargetPos;
+                Vector3 rightVec = Vector3.Cross(Vector3.up, newTargetDir).normalized;
+                float lateralDist = Vector3.Dot(toNewTarget, rightVec);
+                
+                // If it's a sideways jump (lane change), store the offset to smooth it out
+                if (Mathf.Abs(lateralDist) > 1.5f && Mathf.Abs(lateralDist) < 10.0f) 
+                {
+                    _currentLateralOffset = lateralDist;
+                }
+            }
+
             _targetEdgeIndex = edgeIndex;
             _logicalDistance = distance;
         }
@@ -62,15 +91,25 @@ public class TrafficVehicleVisual : MonoBehaviour
         
         if (dir != Vector3.zero) _targetRotation = Quaternion.LookRotation(dir);
 
-        // Extgrapolatie when awiting data and edge lenght is exceeded
+        // Extrapolate when awaiting data and edge length is exceeded
         if (_logicalDistance > edge.length)
         {
             float excessDistance = _logicalDistance - edge.length;
             _targetPosition += _targetRotation * Vector3.forward * excessDistance;
         }
 
+        // Apply Smooth Lateral Offset for Lane Changes
+        if (Mathf.Abs(_currentLateralOffset) > 0.01f)
+        {
+            _currentLateralOffset = Mathf.SmoothDamp(_currentLateralOffset, 0f, ref _lateralVelocity, _laneChangeSmoothTime);
+            Vector3 rightVec = Vector3.Cross(Vector3.up, dir).normalized;
+            _targetPosition += rightVec * _currentLateralOffset;
+        }
+
         Vector3 directionToTarget = _targetPosition - transform.position;
         float distanceToTarget = directionToTarget.magnitude;
+
+        Vector3 previousPosition = transform.position;
 
         // Debug variables
         float actualSpeed = 0f;
@@ -99,12 +138,29 @@ public class TrafficVehicleVisual : MonoBehaviour
                 transform.position = Vector3.MoveTowards(transform.position, _targetPosition, actualSpeed * Time.deltaTime);
                 stateMsg = "CATCH-UP (Accelerating to catch target)";
             }
-            transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, Time.deltaTime * _rotationSpeed);
+
+            // If changing lanes, point the car in the actual movement direction
+            if (Mathf.Abs(_currentLateralOffset) > 0.1f)
+            {
+                Vector3 moveDir = (transform.position - previousPosition).normalized;
+                if (moveDir.sqrMagnitude > 0.01f)
+                {
+                    _targetRotation = Quaternion.LookRotation(moveDir);
+                }
+            }
         }
         else
         {
             stateMsg = "SYNCED (Perectly in sync with target)";
             actualSpeed = _networkSpeed;
+        }
+
+        // Apply rotation scaled by physical distance traveled (physically accurate steering)
+        if (distanceToTarget <= _teleportDistanceThreshold)
+        {
+            float distanceTravelled = actualSpeed * Time.deltaTime;
+            // _rotationSpeed now acts as a steering multiplier per meter traveled
+            transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, distanceTravelled * _rotationSpeed);
         }
 
         if (_showDebugLogs)

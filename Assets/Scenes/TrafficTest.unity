@@ -3869,8 +3869,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffde78aca256bbb4bb1dc675f68e8088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightId: 3
-  edgeId: 1
+  lightId: 1
+  edgeId: 65535
   phase: 0
   greenLight: {fileID: 245887671}
   yellowLight: {fileID: 672439382}
@@ -5275,7 +5275,7 @@ MonoBehaviour:
   - m_EditModeType: 1
     m_Knots:
     - Position:
-        x: -35
+        x: -36
         y: 0.5
         z: 0
       TangentIn:
@@ -5293,17 +5293,17 @@ MonoBehaviour:
           z: 0
           w: -0.00000005897799
     - Position:
-        x: -35
+        x: -36
         y: 0.5
         z: -24.5
       TangentIn:
         x: 0
         y: 0
-        z: -3
+        z: -2
       TangentOut:
         x: 0
         y: 0
-        z: 3
+        z: 2
       Rotation:
         value:
           x: 0
@@ -5311,61 +5311,61 @@ MonoBehaviour:
           z: 0
           w: -0.00000004371139
     - Position:
-        x: -30
+        x: -32.5
         y: 0.5
-        z: -27
+        z: -28
       TangentIn:
         x: 0
         y: 0
-        z: -3
+        z: -2
       TangentOut:
         x: 0
         y: 0
-        z: 3
+        z: 2
       Rotation:
         value:
           x: 0
-          y: 0.7071067
+          y: 0.70710665
           z: 0
-          w: 0.70710677
+          w: 0.7071068
     - Position:
         x: -5
         y: 0.5
-        z: -27
+        z: -28
       TangentIn:
         x: 0
         y: 0
-        z: -3
+        z: -2
       TangentOut:
         x: 0
         y: 0
-        z: 3
+        z: 2
       Rotation:
         value:
           x: 0
-          y: 0.7071067
+          y: 0.70710665
           z: 0
-          w: 0.70710677
+          w: 0.7071069
     - Position:
-        x: -2.5
+        x: -1.5
         y: 0.5
         z: -24.5
       TangentIn:
         x: 0
         y: 0
-        z: 0
+        z: -2
       TangentOut:
         x: 0
         y: 0
-        z: 0
+        z: 2
       Rotation:
         value:
-          x: 0.00054324465
-          y: 0.21995771
-          z: 0.0024092754
-          w: 0.97550637
+          x: 3.0012115e-10
+          y: -8.1315376e-20
+          z: 0.0022307867
+          w: 0.9999976
     - Position:
-        x: -2.5
+        x: -1.5
         y: 0.5
         z: 0
       TangentIn:
@@ -5378,9 +5378,9 @@ MonoBehaviour:
         z: 2.9999998
       Rotation:
         value:
-          x: 0.010202596
-          y: 0.0000000036840495
-          z: -3.7588065e-11
+          x: 0.010202665
+          y: 0.0000000036840713
+          z: -3.7587666e-11
           w: 0.999948
     m_MetaData:
     - Mode: 2
@@ -5391,7 +5391,7 @@ MonoBehaviour:
       Tension: 0.5
     - Mode: 2
       Tension: 0.5
-    - Mode: 1
+    - Mode: 2
       Tension: 0.5
     - Mode: 2
       Tension: 0.5
@@ -5407,7 +5407,7 @@ MonoBehaviour:
   - m_EditModeType: 1
     m_Knots:
     - Position:
-        x: -2.5
+        x: -1.5
         y: 0.5
         z: 0
       TangentIn:
@@ -5425,17 +5425,17 @@ MonoBehaviour:
           z: 0
           w: 1
     - Position:
-        x: -2.5
+        x: -1.5
         y: 0.5
         z: 24.5
       TangentIn:
         x: 0
         y: 0
-        z: -3
+        z: -2
       TangentOut:
         x: 0
         y: 0
-        z: 3
+        z: 2
       Rotation:
         value:
           x: -1.1641536e-10
@@ -5445,59 +5445,59 @@ MonoBehaviour:
     - Position:
         x: -5
         y: 0.5
-        z: 27
+        z: 28
       TangentIn:
         x: 0
         y: 0
-        z: 0
+        z: -2
       TangentOut:
         x: 0
         y: 0
-        z: 0
+        z: 2
       Rotation:
         value:
           x: 0
-          y: -0.7071067
+          y: -0.70710665
           z: -0
-          w: 0.70710677
+          w: 0.7071069
     - Position:
         x: -32.5
         y: 0.5
-        z: 27
+        z: 28
       TangentIn:
         x: 0
         y: 0
-        z: -3
+        z: -2
       TangentOut:
         x: 0
         y: 0
-        z: 3
+        z: 2
       Rotation:
         value:
           x: 0
-          y: -0.7071067
+          y: -0.70710665
           z: -0
-          w: 0.70710677
+          w: 0.7071068
     - Position:
-        x: -35
+        x: -36
         y: 0.5
         z: 24.5
       TangentIn:
         x: 0
         y: 0
-        z: 0
+        z: -2
       TangentOut:
         x: 0
         y: 0
-        z: 0
+        z: 2
       Rotation:
         value:
           x: 0
           y: 1
           z: 0
-          w: -0.00000005897799
+          w: 0
     - Position:
-        x: -35
+        x: -36
         y: 0.5
         z: 0
       TangentIn:
@@ -5519,11 +5519,11 @@ MonoBehaviour:
       Tension: 0.5
     - Mode: 2
       Tension: 0.5
-    - Mode: 1
+    - Mode: 2
       Tension: 0.5
     - Mode: 2
       Tension: 0.5
-    - Mode: 1
+    - Mode: 2
       Tension: 0.5
     - Mode: 2
       Tension: 0.5
@@ -5539,7 +5539,7 @@ MonoBehaviour:
   - m_EditModeType: 1
     m_Knots:
     - Position:
-        x: -40
+        x: -39
         y: 0.5
         z: 0
       TangentIn:
@@ -5557,35 +5557,35 @@ MonoBehaviour:
           z: 0
           w: -0.00000005897799
     - Position:
-        x: -40
+        x: -39
         y: 0.5
         z: -24.5
       TangentIn:
         x: 0
         y: 0
-        z: -3
+        z: -4
       TangentOut:
         x: 0
         y: 0
-        z: 3
+        z: 4
       Rotation:
         value:
           x: 0
           y: 1
           z: 0
-          w: -0.00000004371139
+          w: -0.000000043711392
     - Position:
         x: -32.5
         y: 0.5
-        z: -32
+        z: -31
       TangentIn:
         x: 0
         y: 0
-        z: -8.085
+        z: -4
       TangentOut:
         x: 0
         y: 0
-        z: 8.085
+        z: 4
       Rotation:
         value:
           x: 0
@@ -5594,16 +5594,16 @@ MonoBehaviour:
           w: 0.707107
     - Position:
         x: -5
-        y: 0
-        z: -32
+        y: 0.5
+        z: -31
       TangentIn:
         x: 0
         y: 0
-        z: -3
+        z: -4
       TangentOut:
         x: 0
         y: 0
-        z: 3
+        z: 4
       Rotation:
         value:
           x: 0
@@ -5611,25 +5611,25 @@ MonoBehaviour:
           z: 0
           w: 0.7071069
     - Position:
-        x: 2.5
+        x: 1.5
         y: 0.5
         z: -24.5
       TangentIn:
         x: 0
         y: 0
-        z: -8.085
+        z: -4
       TangentOut:
         x: 0
         y: 0
-        z: 8.085
+        z: 4
       Rotation:
         value:
-          x: 1.3566119e-10
-          y: 0.0000000737224
-          z: 0.002230784
+          x: 1.3566256e-10
+          y: 0.000000073722696
+          z: 0.0022307937
           w: 0.9999976
     - Position:
-        x: 2.5
+        x: 1.5
         y: 0.5
         z: 0
       TangentIn:
@@ -5642,9 +5642,9 @@ MonoBehaviour:
         z: 2.9999998
       Rotation:
         value:
-          x: 0.010202621
-          y: 0.0000000036840575
-          z: -3.758792e-11
+          x: 0.010202658
+          y: 0.0000000036840693
+          z: -3.7587697e-11
           w: 0.999948
     m_MetaData:
     - Mode: 2
@@ -5671,7 +5671,7 @@ MonoBehaviour:
   - m_EditModeType: 1
     m_Knots:
     - Position:
-        x: 2.5
+        x: 1.5
         y: 0.5
         z: 0
       TangentIn:
@@ -5689,17 +5689,17 @@ MonoBehaviour:
           z: 0
           w: 1
     - Position:
-        x: 2.5
+        x: 1.5
         y: 0.5
         z: 24.5
       TangentIn:
         x: 0
         y: 0
-        z: -0
+        z: -4
       TangentOut:
         x: 0
         y: 0
-        z: 0
+        z: 4
       Rotation:
         value:
           x: 0
@@ -5709,15 +5709,15 @@ MonoBehaviour:
     - Position:
         x: -5
         y: 0.5
-        z: 32
+        z: 31
       TangentIn:
         x: 0
         y: 0
-        z: -8.085
+        z: -4
       TangentOut:
         x: 0
         y: 0
-        z: 8.085
+        z: 4
       Rotation:
         value:
           x: 0
@@ -5727,15 +5727,15 @@ MonoBehaviour:
     - Position:
         x: -32.5
         y: 0.5
-        z: 32
+        z: 31
       TangentIn:
         x: 0
         y: 0
-        z: -3
+        z: -4
       TangentOut:
         x: 0
         y: 0
-        z: 3
+        z: 4
       Rotation:
         value:
           x: 0
@@ -5743,17 +5743,17 @@ MonoBehaviour:
           z: -0
           w: 0.7071069
     - Position:
-        x: -40
+        x: -39
         y: 0.5
         z: 24.5
       TangentIn:
         x: 0
         y: 0
-        z: -7.7349143
+        z: -4
       TangentOut:
         x: 0
         y: 0
-        z: 7.7349143
+        z: 4
       Rotation:
         value:
           x: 0
@@ -5761,7 +5761,7 @@ MonoBehaviour:
           z: 0
           w: -0.00000004371139
     - Position:
-        x: -40
+        x: -39
         y: 0.5
         z: 0
       TangentIn:
@@ -6122,8 +6122,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffde78aca256bbb4bb1dc675f68e8088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightId: 0
-  edgeId: 3
+  lightId: 3
+  edgeId: 65535
   phase: 0
   greenLight: {fileID: 374392390}
   yellowLight: {fileID: 1139177327}
@@ -11054,8 +11054,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffde78aca256bbb4bb1dc675f68e8088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightId: 2
-  edgeId: 18
+  lightId: 0
+  edgeId: 65535
   phase: 1
   greenLight: {fileID: 1800916155}
   yellowLight: {fileID: 1334947919}
@@ -13238,8 +13238,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffde78aca256bbb4bb1dc675f68e8088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightId: 1
-  edgeId: 17
+  lightId: 2
+  edgeId: 65535
   phase: 1
   greenLight: {fileID: 178619917}
   yellowLight: {fileID: 1598208842}
@@ -15987,27 +15987,27 @@ PrefabInstance:
     - target: {fileID: 5234839964796977862, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: _trafficGraph
       value: 
-      objectReference: {fileID: 11400000, guid: 930af5b2e84e6bb4c958374db7a56606, type: 2}
+      objectReference: {fileID: 11400000, guid: a649ba78569b6bd41aaf33c543d5c268, type: 2}
     - target: {fileID: 5234839964796977862, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: trafficLights.Array.size
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5234839964796977862, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: 'trafficLights.Array.data[0]'
       value: 
-      objectReference: {fileID: 998843371}
+      objectReference: {fileID: 1300525301}
     - target: {fileID: 5234839964796977862, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: 'trafficLights.Array.data[1]'
       value: 
-      objectReference: {fileID: 1690856516}
+      objectReference: {fileID: 998843371}
     - target: {fileID: 5234839964796977862, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: 'trafficLights.Array.data[2]'
       value: 
-      objectReference: {fileID: 1300525301}
+      objectReference: {fileID: 690632031}
     - target: {fileID: 5234839964796977862, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: 'trafficLights.Array.data[3]'
       value: 
-      objectReference: {fileID: 690632031}
+      objectReference: {fileID: 1690856516}
     - target: {fileID: 6268867871268749539, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: sceneId
       value: 4123539122
@@ -16015,7 +16015,7 @@ PrefabInstance:
     - target: {fileID: 6976170459701134898, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: _outputGraph
       value: 
-      objectReference: {fileID: 11400000, guid: 930af5b2e84e6bb4c958374db7a56606, type: 2}
+      objectReference: {fileID: 11400000, guid: a649ba78569b6bd41aaf33c543d5c268, type: 2}
     - target: {fileID: 6976170459701134898, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: _pointsPerEdge
       value: 100
@@ -16031,7 +16031,7 @@ PrefabInstance:
     - target: {fileID: 6976170459701134898, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: '_splineContainers.Array.data[0]'
       value: 
-      objectReference: {fileID: 1273020787}
+      objectReference: {fileID: 959863042}
     - target: {fileID: 8227465571552678054, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: _safeDistance
       value: 5
@@ -16043,7 +16043,7 @@ PrefabInstance:
     - target: {fileID: 8227465571552678054, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: _trafficGraph
       value: 
-      objectReference: {fileID: 11400000, guid: 930af5b2e84e6bb4c958374db7a56606, type: 2}
+      objectReference: {fileID: 11400000, guid: a649ba78569b6bd41aaf33c543d5c268, type: 2}
     - target: {fileID: 8227465571552678054, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: _totalVehicles
       value: 20
@@ -16066,24 +16066,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8227465571552678054, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: trafficLights.Array.size
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8227465571552678054, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: 'trafficLights.Array.data[0]'
       value: 
-      objectReference: {fileID: 998843371}
+      objectReference: {fileID: 1300525301}
     - target: {fileID: 8227465571552678054, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: 'trafficLights.Array.data[1]'
       value: 
-      objectReference: {fileID: 1690856516}
+      objectReference: {fileID: 998843371}
     - target: {fileID: 8227465571552678054, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: 'trafficLights.Array.data[2]'
       value: 
-      objectReference: {fileID: 1300525301}
+      objectReference: {fileID: 690632031}
     - target: {fileID: 8227465571552678054, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: 'trafficLights.Array.data[3]'
       value: 
-      objectReference: {fileID: 690632031}
+      objectReference: {fileID: 1690856516}
     - target: {fileID: 8227465571552678054, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
       propertyPath: dynamicObstacleTransforms.Array.size
       value: 1

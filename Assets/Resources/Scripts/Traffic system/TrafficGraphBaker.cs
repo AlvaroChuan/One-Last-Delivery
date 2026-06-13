@@ -12,6 +12,7 @@ public class TrafficGraphBaker : MonoBehaviour
     [SerializeField] int _pointsPerEdge = 20;
     [SerializeField] float _connectionThreshold = 1.0f;
     [SerializeField] float _trafficLightSearchRadius = 15.0f;
+    [SerializeField] float _laneDistanceThreshold = 5.0f;
 
     [ContextMenu("Bake Splines to Graph")]
     public void BakeGraph()
@@ -64,6 +65,54 @@ public class TrafficGraphBaker : MonoBehaviour
                 }
             }
             edge.nextEdgeIDs = connectedEdges.ToArray();
+        }
+
+        // Detect Left and Right Lanes
+        foreach (var edge in _outputGraph.edges)
+        {
+            edge.leftEdgeId = -1;
+            edge.rightEdgeId = -1;
+
+            Vector3 startPos = edge.points[0].position;
+            Vector3 endPos = edge.points[edge.points.Length - 1].position;
+            Vector3 startTangent = edge.points[0].tangent;
+
+            float minRightDist = float.MaxValue;
+            float minLeftDist = float.MaxValue;
+
+            foreach (var potentialLane in _outputGraph.edges)
+            {
+                if (edge.id == potentialLane.id) continue;
+
+                Vector3 otherStart = potentialLane.points[0].position;
+                Vector3 otherEnd = potentialLane.points[potentialLane.points.Length - 1].position;
+                Vector3 otherTangent = potentialLane.points[0].tangent;
+
+                float startDist = Vector3.Distance(startPos, otherStart);
+                float endDist = Vector3.Distance(endPos, otherEnd);
+
+                if (startDist <= _laneDistanceThreshold && startDist > 0.5f && endDist <= _laneDistanceThreshold && endDist > 0.5f)
+                {
+                    // Ensure they flow in the exact same direction
+                    if (Vector3.Dot(startTangent, otherTangent) > 0.8f)
+                    {
+                        Vector3 toOther = (otherStart - startPos).normalized;
+                        Vector3 cross = Vector3.Cross(startTangent, toOther);
+
+                        // Y > 0 means it's on the right, Y < 0 means it's on the left
+                        if (cross.y > 0 && startDist < minRightDist)
+                        {
+                            minRightDist = startDist;
+                            edge.rightEdgeId = potentialLane.id;
+                        }
+                        else if (cross.y < 0 && startDist < minLeftDist)
+                        {
+                            minLeftDist = startDist;
+                            edge.leftEdgeId = potentialLane.id;
+                        }
+                    }
+                }
+            }
         }
 
         foreach (var edge in _outputGraph.edges)

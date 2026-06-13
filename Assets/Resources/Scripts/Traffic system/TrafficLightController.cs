@@ -15,8 +15,10 @@ public class TrafficLightController : MonoBehaviour
         PhaseB
     }
 
-    public int lightId = -1; // Assigned by the Baker
-    public ushort edgeId = 0xFFFF; // The edge this light controls
+    [HideInInspector] public int lightId = -1; // Assigned by the Baker
+    [HideInInspector] public ushort edgeId = 0xFFFF; // The edge this light controls
+    
+    [Header("Phase")]
     public LightPhase phase; // Phase A or Phase B
 
 
