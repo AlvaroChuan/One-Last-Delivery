@@ -819,10 +819,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2848897f5cf42e14599ed82e958db6b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useRNNoise4UnityIfAvailable: 1
-  useConcentusEncodeAndDecode: 1
-  useVad: 1
-  distanceProximityChat: 10
+  _useRNNoise4UnityIfAvailable: 1
+  _useConcentusEncodeAndDecode: 1
+  _useVad: 1
+  _muteInput: {fileID: -6059103604277978334, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _startMuted: 0
+  _pushToTalkEnabled: 0
+  _pushToTalkInput: {fileID: -1199959785099435234, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _microphoneVolume: 1
+  _distanceProximityChat: 10
 --- !u!4 &691435008
 Transform:
   m_ObjectHideFlags: 0
