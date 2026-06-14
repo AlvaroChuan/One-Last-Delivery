@@ -1,15 +1,22 @@
+using System;
 using UnityEngine;
 
 public class PlayerStaminaComponent : PlayerComponent
 {
+    public struct StaminaChangeInfo
+    {
+        public float oldStamina;
+        public float newStamina;
+    }
+    public Action<StaminaChangeInfo> onStaminaChangedEvent;
     [SerializeField] private float _maxStamina = 100f;
     [SerializeField] private float _staminaRegenRate = 5f;
     private float _currentStamina;
     private int _staminaregenDisableCounter = 0;
 
-    protected override void Start()
+    public override void OnStartClient()
     {
-        base.Start();
+        base.OnStartClient();
         _currentStamina = _maxStamina;
     }
 
@@ -64,22 +71,38 @@ public class PlayerStaminaComponent : PlayerComponent
     {
         if (_currentStamina <= 0) return;
 
+        float oldStamina = _currentStamina;
+
         _currentStamina -= amount;
         if (_currentStamina < 0)
         {
             _currentStamina = 0;
         }
+
+        onStaminaChangedEvent?.Invoke(new StaminaChangeInfo
+        {
+            oldStamina = oldStamina,
+            newStamina = _currentStamina
+        });
     }
 
     public void RegenerateStamina(float amount)
     {
         if (_currentStamina >= _maxStamina) return;
 
+        float oldStamina = _currentStamina;
+
         _currentStamina += amount;
         if (_currentStamina > _maxStamina)
         {
             _currentStamina = _maxStamina;
         }
+
+        onStaminaChangedEvent?.Invoke(new StaminaChangeInfo
+        {
+            oldStamina = oldStamina,
+            newStamina = _currentStamina
+        });
     }
 
     public float GetCurrentStamina()

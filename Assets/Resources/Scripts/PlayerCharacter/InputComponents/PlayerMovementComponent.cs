@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(PlayerStaminaComponent))]
@@ -8,7 +9,9 @@ public class PlayerMovementComponent : InputComponent
     [SerializeField] private float _maxMoveSpeed = 5f;
     [SerializeField] private float _acceleration = 10f;
     [SerializeField] private float _deceleration = 15f;
+    [SerializeField] private float _rotationSpeed = 10f;
     [SerializeField] private InputActionReference _movementInput;
+    [SerializeField] private GameObject _model;
 
     public float MaxMoveSpeed {
         get => _maxMoveSpeed;
@@ -33,9 +36,9 @@ public class PlayerMovementComponent : InputComponent
         _rigidbody = GetComponent<Rigidbody>();
     }
 
-    protected override void Start()
+    public override void OnStartClient()
     {
-        base.Start();
+        base.OnStartClient();
         if (!isLocalPlayer)
         {
             _rigidbody.isKinematic = true;
@@ -80,12 +83,16 @@ public class PlayerMovementComponent : InputComponent
             return;
 
         HandleMovement();
+        HandleRotation();
     }
     private void HandleMovement()
     {
         Vector3 currentVelocity = _rigidbody.linearVelocity;
-        Vector3 targetFoward = transform.forward * _movementDirection.z;
-        Vector3 targetRight = transform.right * _movementDirection.x;
+        Vector3 cameraForward = Camera.main.transform.forward;
+        cameraForward.y = 0f; // Flatten the camera forward vector to the horizontal plane
+        cameraForward.Normalize();
+        Vector3 targetFoward = cameraForward * _movementDirection.z;
+        Vector3 targetRight = Camera.main.transform.right * _movementDirection.x;
         Vector3 targetVelocity = (targetFoward + targetRight) * _maxMoveSpeed;
 
         float accelerationToUse = Vector3.Dot(currentVelocity, targetVelocity) <= 0f ? _deceleration : _acceleration;
@@ -94,5 +101,17 @@ public class PlayerMovementComponent : InputComponent
         newVelocity.y = currentVelocity.y; // Preserve vertical velocity (gravity/falling)
 
         _rigidbody.linearVelocity = newVelocity;
+    }
+
+    private void HandleRotation()
+    {
+        Vector3 forward = Camera.main.transform.forward;
+        forward.y = 0f;
+
+        if (forward.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(forward);
+            _model.transform.rotation = Quaternion.Slerp(_model.transform.rotation, targetRotation, _rotationSpeed * Time.fixedDeltaTime);
+        }
     }
 }

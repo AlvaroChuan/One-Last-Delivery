@@ -11,6 +11,13 @@ public class CustomNetworkManager : NetworkManager
     // Track how many characters we have spawned in the game scene
     private int _numberOfPlayers = 0;
 
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+
+        DevLogger.Log("CustomNetworkManager started on server.");
+    }
+
     public override void OnServerReady(NetworkConnectionToClient conn)
     {
         base.OnServerReady(conn);
@@ -19,6 +26,7 @@ public class CustomNetworkManager : NetworkManager
         // (Make sure this matches your actual Game scene name exactly)
         if (SceneManager.GetActiveScene().name == _gameScene)
         {
+            DevLogger.Log("Player " + conn.connectionId + " has identity: " + (conn.identity != null) + " when joining active game scene.");
             // Only spawn if this connection doesn't already have an assigned character
             if (conn.identity == null)
             {
@@ -45,11 +53,11 @@ public class CustomNetworkManager : NetworkManager
             NetworkServer.AddPlayerForConnection(conn, playerInstance);
 
             _numberOfPlayers++;
-            Debug.Log($"Game Scene Loaded: Spawned character index {_numberOfPlayers - 1} for Connection {conn.connectionId}");
+            DevLogger.Log($"Game Scene Loaded: Spawned character index {_numberOfPlayers - 1} for Connection {conn.connectionId}");
         }
         else
         {
-            Debug.LogWarning("Run out of unique player prefabs for joining players!");
+            DevLogger.LogWarning("Run out of unique player prefabs for joining players!");
         }
     }
 
@@ -57,17 +65,6 @@ public class CustomNetworkManager : NetworkManager
     {
         base.OnServerChangeScene(newSceneName);
 
-        if (newSceneName != _gameScene)
-        {
-            _numberOfPlayers = 0;
-
-            foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values)
-            {
-                if (conn.identity != null)
-                {
-                    NetworkServer.RemovePlayerForConnection(conn, RemovePlayerOptions.Destroy);
-                }
-            }
-        }
+        _numberOfPlayers = 0;
     }
 }

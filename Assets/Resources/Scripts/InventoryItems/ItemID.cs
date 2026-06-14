@@ -1,5 +1,5 @@
 [System.Serializable]
-public enum InventoryItemIDEnum
+public enum ItemID
 {
     None = 0,
     BaseballBat = 1,

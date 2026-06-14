@@ -8,9 +8,8 @@ public class PackageInteractionComponent : Interactable
     [SerializeField] private string _droppedLayer = "Interactables";
     PackageCarryComponent _carryComponent;
     Rigidbody _rigidbody;
-    bool _isGrabbedByHost = false;
-    Vector3 _throwForce = new Vector3(0f, 0f, 0f);
     bool _interacted = false;
+    bool _isCarried = false;
 
     void Awake()
     {
@@ -28,19 +27,17 @@ public class PackageInteractionComponent : Interactable
         gameObject.layer = LayerMask.NameToLayer(_droppedLayer);
     }
 
-    public override void Interact(GameObject interactor)
+    public override void ServerInteract(GameObject interactor)
     {
         NetworkIdentity interactorIdentity = interactor.GetComponent<NetworkIdentity>();
 
-        gameObject.layer = LayerMask.NameToLayer(_carriedLayer);
-
-        _isGrabbedByHost = interactorIdentity.isLocalPlayer;
+        ServerSetCarriedLayer();
 
         netIdentity.RemoveClientAuthority();
         netIdentity.AssignClientAuthority(interactorIdentity.connectionToClient);
     }
 
-    public override void LocalInteraction(GameObject interactor)
+    public override void ClientInteraction(GameObject interactor)
     {
         _interacted = true;
     }
@@ -48,57 +45,63 @@ public class PackageInteractionComponent : Interactable
     public override void OnStartAuthority()
     {
         base.OnStartAuthority();
-
         if(!_interacted)
         {
             return; // Prevent grabbing logic from running on clients that gain authority without interacting (e.g. when the object is spawned and authority is assigned to the host)
         }
-
         _interacted = false; // Reset interaction flag for future interactions
-
-        _rigidbody.isKinematic = false;
-
-        if (isServer)
-        {
-            _rigidbody.AddForce(_throwForce, ForceMode.VelocityChange);
-            _throwForce = Vector3.zero; // Reset throw force after applying it on the server
-            if(!_isGrabbedByHost)
-            {
-                return; // Skip grabbing logic on the initial authority assignment when the object is spawned
-            }
-        }
-
         Grab();
+    }
+
+    public override void OnStopAuthority()
+    {
+        if(!_isCarried) return; // Prevent dropping logic from running if we lose authority without being carried (e.g. when the object is destroyed or authority is transferred to another client)
+        DropFromPlayer(Vector3.zero);
     }
 
     void Grab()
     {
-
         NetworkIdentity playerIdentity = NetworkClient.connection.identity;
 
         PlayerInventoryComponent inventory = playerIdentity.gameObject.GetComponent<PlayerInventoryComponent>();
         inventory.SetSlotSelection(-1);
-        inventory.SetCarryingPackage(this);
+        inventory.SetCarryingPackage(gameObject);
 
         _carryComponent.StartCarrying(playerIdentity.gameObject);
+
+        _isCarried = true;
     }
 
     public void DropFromPlayer(Vector3 throwForce)
     {
-        if (!isOwned) return;
+        _isCarried = false;
 
         _carryComponent.StopCarrying();
+        _rigidbody.AddForce(throwForce, ForceMode.Impulse);
 
-        CmdDrop(throwForce);
+        CmdSetDroppedLayer();
     }
 
-    [Command(requiresAuthority = false)]
-    void CmdDrop(Vector3 throwForce)
+    [Server]
+    void ServerSetCarriedLayer()
     {
-        _isGrabbedByHost = false;
+        gameObject.layer = LayerMask.NameToLayer(_carriedLayer);
+        RpcSetCarriedLayer();
+    }
+    [ClientRpc]
+    void RpcSetCarriedLayer()
+    {
+        gameObject.layer = LayerMask.NameToLayer(_carriedLayer);
+    }
+    [Command(requiresAuthority = false)]
+    void CmdSetDroppedLayer()
+    {
         gameObject.layer = LayerMask.NameToLayer(_droppedLayer);
-        _throwForce = throwForce;
-        netIdentity.RemoveClientAuthority();
-        netIdentity.AssignClientAuthority(NetworkServer.localConnection);
+        RpcSetDroppedLayer();
+    }
+    [ClientRpc]
+    void RpcSetDroppedLayer()
+    {
+        gameObject.layer = LayerMask.NameToLayer(_droppedLayer);
     }
 }

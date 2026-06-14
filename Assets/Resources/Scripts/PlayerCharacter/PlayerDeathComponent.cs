@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerMovementComponent))]
 [RequireComponent(typeof(SpectatorMovementComponent))]
 public class PlayerDeathComponent : PlayerComponent
 {
+    public Action onPlayerDeathEvent;
     private PlayerMovementComponent _movementComponent;
     private SpectatorMovementComponent _spectatorComponent;
 
@@ -13,9 +15,9 @@ public class PlayerDeathComponent : PlayerComponent
         _spectatorComponent = GetComponent<SpectatorMovementComponent>();
     }
 
-    protected override void Start()
+    public override void OnStartLocalPlayer()
     {
-        base.Start();
+        base.OnStartLocalPlayer();
         _spectatorComponent.enabled = false; // Start with spectator movement disabled
     }
 
@@ -23,8 +25,9 @@ public class PlayerDeathComponent : PlayerComponent
     {
         if (!isLocalPlayer) return;
 
-        Debug.Log("Player has died. Switching to spectator mode.");
+        DevLogger.Log("Player has died. Switching to spectator mode.");
         _movementComponent.enabled = false;
         _spectatorComponent.enabled = true;
+        onPlayerDeathEvent?.Invoke();
     }
 }

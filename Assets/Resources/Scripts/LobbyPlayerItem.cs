@@ -8,37 +8,92 @@ public class LobbyPlayerItem : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _playerNameText;
     [SerializeField] private Image _playerAvatarImage;
+    [SerializeField] private TextMeshProUGUI _pingText;
+    [SerializeField] private Button _muteButton;
+    [SerializeField] private Image[] _status;
+    [SerializeField] private Sprite[] _muteButtonSprites; // 0: Unmuted, 1: Muted
+    private CSteamID _steamID;
+    private bool _ready = false;
 
-    public void SetupPlayer(CSteamID steamID)
+    public CSteamID SteamID => _steamID;
+    private bool _isAvatarFetched = false;
+    private bool _isMuted = false;
+
+    public void SetupPlayer(CSteamID steamID, CSteamID lobbyID)
     {
+        this._steamID = steamID;
         string playerName = SteamFriends.GetFriendPersonaName(steamID);
         _playerNameText.text = playerName;
 
-        StartCoroutine(FetchAvatar(steamID));
+        string readyStr = SteamMatchmaking.GetLobbyMemberData(lobbyID, steamID, "ready");
+        _ready = readyStr == "true";
+        UpdateReadyStatus();
+
+        string pingStr = SteamMatchmaking.GetLobbyMemberData(lobbyID, steamID, "ping");
+        if (string.IsNullOrEmpty(pingStr) || pingStr == "N/A") _pingText.text = "N/A";
+        else _pingText.text = pingStr;
+
+        if(gameObject.activeInHierarchy) StartCoroutine(FetchAvatar(steamID));
+    }
+
+    public void OnEnable()
+    {
+        if (!_isAvatarFetched)
+        {
+            _isAvatarFetched = true;
+            StartCoroutine(FetchAvatar(_steamID));
+        }
+    }
+
+    public void UpdateReadyStatus()
+    {
+        if (_status != null && _status.Length >= 2)
+        {
+            _status[0].gameObject.SetActive(!_ready);
+            _status[1].gameObject.SetActive(_ready);
+        }
+    }
+
+    public void MutePlayer()
+    {
+        _isMuted = !_isMuted;
+        _muteButton.image.sprite = _isMuted ? _muteButtonSprites[1] : _muteButtonSprites[0];
+        if (SteamFriends.GetFriendPersonaName(_steamID) == SteamFriends.GetPersonaName())
+        {
+            //TODO: Mute self
+        }
+        else
+        {
+            //TODO: Mute other player
+        }
     }
 
     IEnumerator FetchAvatar(CSteamID steamID)
     {
         int avatarHandle = SteamFriends.GetMediumFriendAvatar(steamID);
 
-        while (avatarHandle == -1)
+        float timeout = 5f;
+        while (avatarHandle == 0 && timeout > 0)
         {
+            avatarHandle = SteamFriends.GetMediumFriendAvatar(steamID);
+            timeout -= Time.deltaTime;
             yield return null;
         }
 
-        uint width, height;
-        if (SteamUtils.GetImageSize(avatarHandle, out width, out height))
+        if (avatarHandle != 0)
         {
-            byte[] imageBuffer = new byte[width * height * 4];
-
-            if (SteamUtils.GetImageRGBA(avatarHandle, imageBuffer, (int)(width * height * 4)))
+            uint width, height;
+            if (SteamUtils.GetImageSize(avatarHandle, out width, out height))
             {
-                Texture2D texture = new Texture2D((int)width, (int)height, TextureFormat.RGBA32, false);
-                texture.LoadRawTextureData(imageBuffer);
-                texture.Apply();
+                byte[] imageBuffer = new byte[width * height * 4];
 
-
-                _playerAvatarImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                if (SteamUtils.GetImageRGBA(avatarHandle, imageBuffer, (int)(width * height * 4)))
+                {
+                    Texture2D texture = new Texture2D((int)width, (int)height, TextureFormat.RGBA32, false);
+                    texture.LoadRawTextureData(imageBuffer);
+                    texture.Apply();
+                    _playerAvatarImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                }
             }
         }
     }

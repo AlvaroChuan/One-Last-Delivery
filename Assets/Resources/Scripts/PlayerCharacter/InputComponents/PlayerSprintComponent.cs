@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,6 +7,8 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerGroundCheckComponent))]
 public class PlayerSprintComponent : InputComponent
 {
+    public Action onStartSprintEvent;
+    public Action onStopSprintEvent;
     [SerializeField] private float _sprintSpeedMultiplier = 1.5f;
     [SerializeField] private float _sprintStaminaRequirement = 20f;
     [SerializeField] private float _sprintStaminaCostPerSecond = 10f;
@@ -82,6 +85,7 @@ public class PlayerSprintComponent : InputComponent
         _movementComponent.Acceleration *= _sprintSpeedMultiplier;
         _movementComponent.Deceleration *= _sprintSpeedMultiplier;
         _staminaComponent.DisableStaminaRegen();
+        onStartSprintEvent?.Invoke();
     }
 
     void StopSprint()
@@ -93,5 +97,6 @@ public class PlayerSprintComponent : InputComponent
         _movementComponent.Acceleration /= _sprintSpeedMultiplier;
         _movementComponent.Deceleration /= _sprintSpeedMultiplier;
         _staminaComponent.EnableStaminaRegen(_staminaLockoutAfterSprint);
+        onStopSprintEvent?.Invoke();
     }
 }

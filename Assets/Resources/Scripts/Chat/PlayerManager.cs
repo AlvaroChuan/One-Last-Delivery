@@ -6,6 +6,8 @@ using Steamworks;
 public class PlayerManager : NetworkBehaviour
 {
     public string playerName;
+    public UIManager _uiManager;
+    private bool _isHost = false;
 
     public override void OnStartLocalPlayer()
     {
@@ -13,7 +15,17 @@ public class PlayerManager : NetworkBehaviour
 
         string steamName = SteamFriends.GetPersonaName();
 
-        playerName = steamName;
+        _uiManager = FindAnyObjectByType<UIManager>();
+        SteamLobbyManager lobbyManager = FindAnyObjectByType<SteamLobbyManager>();
+        lobbyManager.playerManager = this;
+
+        CmdSetPlayerName(steamName);
+    }
+
+    [Command(requiresAuthority = false)]
+    private void CmdSetPlayerName(string newName)
+    {
+        playerName = newName;
     }
 
     #region TEXT_CHAT
