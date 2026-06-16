@@ -245,7 +245,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 161d830d43ca65540967d24bd9ee45d5, type: 3}
       propertyPath: m_Name
-      value: DoorB_Model
+      value: Model
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 161d830d43ca65540967d24bd9ee45d5, type: 3}
       propertyPath: m_Layer
