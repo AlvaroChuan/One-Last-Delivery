@@ -3,7 +3,7 @@ using Mirror;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PackageSpawner : PersistentDataManager<PackageSpawner, PackageSpawner.PackageSpawnerStaticState, int>
+public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSpawner.PackageSpawnerStaticState, int>
 {
     public class PackageSpawnerStaticState : StaticStateBase
     {

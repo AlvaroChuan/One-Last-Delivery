@@ -3,7 +3,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MoneyManager : PersistentDataManager<MoneyManager, MoneyManager.MoneyStaticState, float>
+public class MoneyManager : NetPersistentDataManager<MoneyManager, MoneyManager.MoneyStaticState, float>
 {
     public class MoneyStaticState : StaticStateBase
     {

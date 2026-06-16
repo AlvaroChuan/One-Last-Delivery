@@ -3,7 +3,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class QuotaManager : PersistentDataManager<QuotaManager, QuotaManager.QuotaStaticState, float>
+public class QuotaManager : NetPersistentDataManager<QuotaManager, QuotaManager.QuotaStaticState, float>
 {
     public class QuotaStaticState : StaticStateBase
     {
