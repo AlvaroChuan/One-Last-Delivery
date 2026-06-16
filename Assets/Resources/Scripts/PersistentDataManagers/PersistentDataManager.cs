@@ -24,7 +24,6 @@ internal static class PersistentDataSceneRegistry
 public abstract class PersistentDataManager<T, TStaticState, TDataType> : MonoBehaviour
     where T : PersistentDataManager<T, TStaticState, TDataType>
     where TStaticState : PersistentDataManager<T, TStaticState, TDataType>.StaticStateBase, new()
-    where TDataType : struct
 {
     public struct DataChangeInfo
     {
@@ -35,16 +34,30 @@ public abstract class PersistentDataManager<T, TStaticState, TDataType> : MonoBe
     // This retains data in memory when the GameScene reloads.
     public abstract class StaticStateBase
     {
+        private PersistentDataManager<T, TStaticState, TDataType> _managerInstance;
         private TDataType _staticData;
         public TDataType StaticData
         {
             get => _staticData;
             set
             {
+                TDataType oldValue = _staticData;
                 _staticData = value;
+                if (_managerInstance != null)
+                {
+                    _managerInstance.onDataChangedEvent?.Invoke(new DataChangeInfo { oldValue = oldValue, newValue = value });
+                }
             }
         }
         public abstract void Reset();
+        public void SetManagerInstance(PersistentDataManager<T, TStaticState, TDataType> manager)
+        {
+            _managerInstance = manager;
+        }
+        public PersistentDataManager<T, TStaticState, TDataType> GetManagerInstance()
+        {
+            return _managerInstance;
+        }
     }
     [SerializeField] protected string[] _activeSceneNames;
     private static string[] StaticActiveSceneNames;
@@ -58,9 +71,16 @@ public abstract class PersistentDataManager<T, TStaticState, TDataType> : MonoBe
         PersistentDataSceneRegistry.CentralOnSceneLoaded -= OnSceneChange;
         PersistentDataSceneRegistry.CentralOnSceneLoaded += OnSceneChange;
         StaticActiveSceneNames = _activeSceneNames;
+        StaticDataState.SetManagerInstance(this);
     }
 
-    protected abstract void InitializeStaticData();
+    void OnDestroy()
+    {
+        if (StaticDataState.GetManagerInstance() == this)
+        {
+            StaticDataState.SetManagerInstance(null);
+        }
+    }
 
     private static void OnSceneChange(Scene scene, LoadSceneMode mode)
     {
@@ -70,6 +90,7 @@ public abstract class PersistentDataManager<T, TStaticState, TDataType> : MonoBe
         bool isActiveScene = Array.Exists(StaticActiveSceneNames, name => name == scene.name);
         if (!isActiveScene)
         {
+            StaticDataState.SetManagerInstance(null);
             StaticDataState.Reset();
             PersistentDataSceneRegistry.CentralOnSceneLoaded -= OnSceneChange;
             StaticActiveSceneNames = null;

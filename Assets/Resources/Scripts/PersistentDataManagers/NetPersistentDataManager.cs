@@ -5,7 +5,6 @@ using System;
 public abstract class NetPersistentDataManager<T, TStaticState, TDataType> : NetworkBehaviour
     where T : NetPersistentDataManager<T, TStaticState, TDataType>
     where TStaticState : NetPersistentDataManager<T, TStaticState, TDataType>.StaticStateBase, new()
-    where TDataType : struct
 {
     public struct DataChangeInfo
     {
