@@ -101,7 +101,7 @@ Material:
     - _HeightMapIntensity: 1
     - _InnerErosionStrength: 3
     - _InnerErosionTiling: 2
-    - _LightFactor: 0.15
+    - _LightFactor: 0.422
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _MetallicFactor: 0
