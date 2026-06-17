@@ -4,6 +4,7 @@ using Mirror;
 [RequireComponent(typeof(ChaseBehaviour))]
 [RequireComponent(typeof(AttackComponent))]
 [RequireComponent(typeof(PlayerDistanceDetector))]
+[RequireComponent(typeof(EnemyStunComponent))]
 public class BasicEnemy : NetworkBehaviour
 {
     [SerializeField] private float _detectionRange = 10f; // Range within which the enemy can detect players
@@ -13,8 +14,10 @@ public class BasicEnemy : NetworkBehaviour
     private ChaseBehaviour _chaseBehaviour;
     private AttackComponent _attackComponent;
     private PlayerDistanceDetector _playerDistanceDetector;
+    private EnemyStunComponent _enemyStunComponent;
     private RaycastHit[] _raycastHitBuffer = new RaycastHit[10]; // Preallocate array for raycast hits
     private bool _isAttacking = false;
+    private bool _isStunned = false;
 
     public override void OnStartServer()
     {
@@ -22,6 +25,7 @@ public class BasicEnemy : NetworkBehaviour
         _chaseBehaviour = GetComponent<ChaseBehaviour>();
         _attackComponent = GetComponent<AttackComponent>();
         _playerDistanceDetector = GetComponent<PlayerDistanceDetector>();
+        _enemyStunComponent = GetComponent<EnemyStunComponent>();
         _playerRecheckTimer = Random.Range(0f, _playerRecheckInterval); // Randomize initial timer to avoid synchronized checks
     }
 
@@ -31,6 +35,7 @@ public class BasicEnemy : NetworkBehaviour
         {
             _attackComponent.onAttackEndedEvent += OnAttackEnded;
             _attackComponent.onAttackStartedEvent += OnAttackStarted;
+            _enemyStunComponent.onStunChangedEvent += OnStunChanged;
         }
     }
 
@@ -40,6 +45,7 @@ public class BasicEnemy : NetworkBehaviour
         {
             _attackComponent.onAttackEndedEvent -= OnAttackEnded;
             _attackComponent.onAttackStartedEvent -= OnAttackStarted;
+            _enemyStunComponent.onStunChangedEvent -= OnStunChanged;
         }
     }
 
@@ -48,6 +54,8 @@ public class BasicEnemy : NetworkBehaviour
         if (!isServer) return;
 
         if (_isAttacking) return;
+
+        if (_enemyStunComponent.IsStunned) return;
 
         _playerRecheckTimer += Time.deltaTime;
         if (_playerRecheckTimer >= _playerRecheckInterval)
@@ -95,5 +103,15 @@ public class BasicEnemy : NetworkBehaviour
     void OnAttackEnded()
     {
         _isAttacking = false;
+    }
+
+    void OnStunChanged(EnemyStunComponent.StunChangeInfo stunInfo)
+    {
+        _isStunned = stunInfo.isStunned;
+        if (_isStunned)
+        {
+            _chaseBehaviour.StopChasing();
+            _isAttacking = false; // Stop attacking when stunned
+        }
     }
 }
