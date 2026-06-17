@@ -3,7 +3,7 @@ using Mirror;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class ChaseBehaviour : MonoBehaviour
+public class ChaseBehaviour : NetworkBehaviour
 {
     [SerializeField] float _recalculationInterval = 0.5f; // Time in seconds between path recalculations
     private float _recalculationTimer = 0f;
@@ -11,9 +11,15 @@ public class ChaseBehaviour : MonoBehaviour
     public GameObject Target => _target;
     private NavMeshAgent _navMeshAgent;
     private bool _isChasing = false;
-    public void Awake()
+    public override void OnStartServer()
     {
+        base.OnStartServer();
         _navMeshAgent = GetComponent<NavMeshAgent>();
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
         if(!NetworkServer.active)
         {
             enabled = false;
@@ -46,6 +52,7 @@ public class ChaseBehaviour : MonoBehaviour
     {
         _isChasing = false;
         _navMeshAgent.ResetPath();
+        _navMeshAgent.velocity = Vector3.zero; // Stop any residual movement
     }
 
     void Update()

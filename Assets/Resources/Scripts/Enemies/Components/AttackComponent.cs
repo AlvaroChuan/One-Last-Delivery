@@ -5,6 +5,7 @@ using System;
 [RequireComponent(typeof(Animator))]
 public class AttackComponent : MonoBehaviour
 {
+    private static readonly int AttackHash = Animator.StringToHash("Attack");
     public Action onAttackStartedEvent;
     public Action onAttackEndedEvent;
     [SerializeField] private float _attackCooldown = 1f; // Time between attacks
@@ -14,6 +15,10 @@ public class AttackComponent : MonoBehaviour
     void Awake()
     {
         _animator = GetComponent<Animator>();
+        if (_animator == null)
+        {
+            Debug.LogError("Animator component is missing on AttackComponent.");
+        }
     }
 
     void Update()
@@ -28,9 +33,10 @@ public class AttackComponent : MonoBehaviour
     {
         if (_currentAttackCooldown <= 0f)
         {
+            DevLogger.Log("Attack initiated.");
             _currentAttackCooldown = _attackCooldown; // Reset cooldown
             onAttackStartedEvent?.Invoke(); // Notify that the attack has started
-            _animator.SetTrigger("Attack"); // Trigger the attack animation
+            _animator.SetTrigger(AttackHash); // Trigger the attack animation
             return true; // Attack initiated
         }
         return false; // Attack not initiated due to cooldown
@@ -38,6 +44,7 @@ public class AttackComponent : MonoBehaviour
 
     public void OnAttackAnimationEnd()
     {
+        DevLogger.Log("Attack animation ended.");
         onAttackEndedEvent?.Invoke();
     }
 }

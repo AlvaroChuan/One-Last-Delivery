@@ -7,7 +7,6 @@ using Mirror;
 [RequireComponent(typeof(EnemyStunComponent))]
 public class BasicEnemy : NetworkBehaviour
 {
-    [SerializeField] private float _detectionRange = 10f; // Range within which the enemy can detect players
     [SerializeField] private float _attackRange = 2f; // Range within which the enemy can attack players
     [SerializeField] private float _playerRecheckInterval = 1f; // Interval to check for players
     private float _playerRecheckTimer = 0f;
@@ -18,6 +17,7 @@ public class BasicEnemy : NetworkBehaviour
     private RaycastHit[] _raycastHitBuffer = new RaycastHit[10]; // Preallocate array for raycast hits
     private bool _isAttacking = false;
     private bool _isStunned = false;
+    private GameObject _currentTarget;
 
     public override void OnStartServer()
     {
@@ -61,18 +61,21 @@ public class BasicEnemy : NetworkBehaviour
         if (_playerRecheckTimer >= _playerRecheckInterval)
         {
             _playerRecheckTimer = 0f;
-            GameObject closestPlayer = _playerDistanceDetector.DetectClosestPlayer();
+            _currentTarget = _playerDistanceDetector.DetectClosestPlayer();
 
-            if (closestPlayer != null)
+            if (_currentTarget != null)
             {
-                _chaseBehaviour.SetTarget(closestPlayer);
+                _chaseBehaviour.SetTarget(_currentTarget);
                 _chaseBehaviour.StartChasing();
-                TryAttackPlayer(closestPlayer);
             }
             else
             {
                 _chaseBehaviour.StopChasing();
             }
+        }
+        if (_currentTarget != null)
+        {
+            TryAttackPlayer(_currentTarget);
         }
     }
 
