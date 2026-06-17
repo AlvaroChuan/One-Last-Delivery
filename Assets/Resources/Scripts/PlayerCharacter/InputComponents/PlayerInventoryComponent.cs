@@ -26,12 +26,14 @@ public class PlayerInventoryComponent : InputComponent
 
     public GameObject CarriedPackage => _carriedPackage != null ? _carriedPackage.gameObject : null;
 
-    void Awake()
+    public override void OnStartLocalPlayer()
     {
+        base.OnStartLocalPlayer();
         _inventoryManager = FindAnyObjectByType<PlayerInventoryManager>();
         if (_inventoryManager == null)
         {
             Debug.LogError("PlayerInventoryManager not found in the scene.");
+            return;
         }
     }
 

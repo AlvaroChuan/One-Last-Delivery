@@ -1,16 +1,17 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInventoryManager : PersistentDataManager<PlayerInventoryManager, PlayerInventoryManager.StaticState, PlayerInventoryManager.Inventory>
+public class PlayerInventoryManager : PersistentDataManager<PlayerInventoryManager, PlayerInventoryManager.PlayerInventoryStaticState, PlayerInventoryManager.Inventory>
 {
     public class Inventory
     {
-        public InventoryItemData[] items = new InventoryItemData[0];
+        public List<InventoryItemData> items = new List<InventoryItemData>();
     }
-    public class StaticState : StaticStateBase
+    public class PlayerInventoryStaticState : StaticStateBase
     {
         public override void Reset()
         {
-            StaticData = new Inventory { items = new InventoryItemData[0] };
+            StaticData.items.Clear();
         }
     }
     public void SetInventorySlot(int index, InventoryItemData itemData)
@@ -20,21 +21,19 @@ public class PlayerInventoryManager : PersistentDataManager<PlayerInventoryManag
             Debug.LogWarning($"Attempted to set inventory slot {index} which is out of bounds.");
             return;
         }
-        if(StaticDataState.StaticData.items == null || index >= StaticDataState.StaticData.items.Length)
+        if(StaticDataState.StaticData.items == null || index >= StaticDataState.StaticData.items.Count)
         {
-            // Resize the array to accommodate the new index
-            InventoryItemData[] newItems = new InventoryItemData[index + 1];
-            if(StaticDataState.StaticData.items != null)
+            // Resize the list to accommodate the new index
+            while(StaticDataState.StaticData.items.Count <= index)
             {
-                StaticDataState.StaticData.items.CopyTo(newItems, 0);
+                StaticDataState.StaticData.items.Add(new InventoryItemData { itemID = ItemID.None });
             }
-            StaticDataState.StaticData.items = newItems;
         }
         StaticDataState.StaticData.items[index] = itemData;
     }
     public InventoryItemData GetInventorySlot(int index)
     {
-        if(index < 0 || StaticDataState.StaticData.items == null || index >= StaticDataState.StaticData.items.Length)
+        if(index < 0 || StaticDataState.StaticData.items == null || index >= StaticDataState.StaticData.items.Count)
         {
             Debug.LogWarning($"Attempted to get inventory slot {index} which is out of bounds.");
             return new InventoryItemData { itemID = ItemID.None };
