@@ -1,7 +1,7 @@
 using UnityEngine;
 using Mirror;
 
-public class Hitbox : MonoBehaviour
+public class EnemyHitbox : MonoBehaviour
 {
     [SerializeField] private int _damage = 10; // Damage dealt by the hitbox
 
