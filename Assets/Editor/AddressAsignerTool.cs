@@ -2,40 +2,43 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 using System.Collections.Generic;
+using TMPro;
 
 public class AddressAssignerTool : EditorWindow
 {
-    // Tool variables
-    private Transform streetParent;
-    private Transform streetZeroPoint;
-    private string targetStreetName = "North Boulevard";
-    private int startingBlockNumber = 100;
-    private bool isEvenSide = true;
-    private float blockGapThreshold = 25f;
+    private Transform _streetParent;
+    private Transform _streetZeroPoint;
+    private DropDownStringDatabase _dropdownDatabase;
 
-    // Creates the menu in the Unity top bar
+    private string _targetStreetName = "North Boulevard";
+    private int _startingBlockNumber = 100;
+    private bool _isEvenSide = true;
+    private float _blockGapThreshold = 25f;
+
     [MenuItem("Tools/City/Address Assigner")]
     public static void ShowWindow()
     {
         GetWindow<AddressAssignerTool>("Address Assigner");
     }
 
-    // Draws the window interface
     private void OnGUI()
     {
-        GUILayout.Label("Scene References", EditorStyles.boldLabel);
-        streetParent = (Transform)EditorGUILayout.ObjectField("Sidewalk Parent", streetParent, typeof(Transform), true);
+        GUILayout.Label("Global Settings", EditorStyles.boldLabel);
+        _dropdownDatabase = (DropDownStringDatabase)EditorGUILayout.ObjectField("Street Database Asset", _dropdownDatabase, typeof(DropDownStringDatabase), false);
 
-        // Changed label slightly to reflect it doesn't care about Z direction anymore
-        streetZeroPoint = (Transform)EditorGUILayout.ObjectField("Zero Point (Start Location)", streetZeroPoint, typeof(Transform), true);
+        EditorGUILayout.Space();
+
+        GUILayout.Label("Scene References", EditorStyles.boldLabel);
+        _streetParent = (Transform)EditorGUILayout.ObjectField("Sidewalk Parent", _streetParent, typeof(Transform), true);
+        _streetZeroPoint = (Transform)EditorGUILayout.ObjectField("Zero Point (Start Location)", _streetZeroPoint, typeof(Transform), true);
 
         EditorGUILayout.Space();
 
         GUILayout.Label("Address Configuration", EditorStyles.boldLabel);
-        targetStreetName = EditorGUILayout.TextField("Street Name", targetStreetName);
-        startingBlockNumber = EditorGUILayout.IntField("Starting Block (Hundreds)", startingBlockNumber);
-        isEvenSide = EditorGUILayout.Toggle("Is Even Side?", isEvenSide);
-        blockGapThreshold = EditorGUILayout.FloatField("Block Gap Threshold", blockGapThreshold);
+        _targetStreetName = EditorGUILayout.TextField("Street Name", _targetStreetName);
+        _startingBlockNumber = EditorGUILayout.IntField("Starting Block (Hundreds)", _startingBlockNumber);
+        _isEvenSide = EditorGUILayout.Toggle("Is Even Side?", _isEvenSide);
+        _blockGapThreshold = EditorGUILayout.FloatField("Block Gap Threshold", _blockGapThreshold);
 
         EditorGUILayout.Space();
 
@@ -47,146 +50,102 @@ public class AddressAssignerTool : EditorWindow
 
     private void AssignAddresses()
     {
-        if (streetParent == null || streetZeroPoint == null)
+        if (_streetParent == null || _streetZeroPoint == null)
         {
-            Debug.LogError("Assigner: You need to assign the Sidewalk Parent and the Zero Point.");
+            Debug.LogError("Assigner: Faltan referencias de la escena (Sidewalk Parent o Zero Point).");
             return;
         }
 
-        // 1. Find your specific component in all children
-        LocalAddressComponent[] doors = streetParent.GetComponentsInChildren<LocalAddressComponent>(true);
+        LocalAddressComponent[] doorsArray = _streetParent.GetComponentsInChildren<LocalAddressComponent>(true);
 
-        if (doors.Length == 0)
+        if (doorsArray.Length == 0)
         {
-            Debug.LogWarning("Assigner: No LocalAddressComponent found in the children.");
+            Debug.LogWarning("Assigner: No se encontraron portales en el padre seleccionado.");
             return;
         }
 
-        // 2. Register the street name if it's not in the DropdownStringDatabase
-        RegisterStreetNameIfNeeded(targetStreetName);
+        RegisterStreetNameIfNeeded(_targetStreetName);
 
-        // 3. Sort spatially based on PURE DISTANCE from the zero point
-        List<LocalAddressComponent> orderedDoors = doors
-            .OrderBy(d => Vector3.Distance(streetZeroPoint.position, d.transform.position))
-            .ToList();
+        List<LocalAddressComponent> unassignedDoors = doorsArray.ToList();
+        List<LocalAddressComponent> orderedDoors = new List<LocalAddressComponent>();
+        Vector3 currentReferencePoint = _streetZeroPoint.position;
 
-        // 4. Iteration variables
-        int currentHundred = startingBlockNumber;
+        while (unassignedDoors.Count > 0)
+        {
+            LocalAddressComponent nextClosestDoor = unassignedDoors
+                .OrderBy(d => Vector3.Distance(currentReferencePoint, d.transform.position))
+                .First();
+
+            orderedDoors.Add(nextClosestDoor);
+            unassignedDoors.Remove(nextClosestDoor);
+            currentReferencePoint = nextClosestDoor.transform.position;
+        }
+
+        int currentHundred = _startingBlockNumber;
         int indexInBlock = 0;
-        float previousDistance = 0f;
 
-        // Prepare the Undo system (Ctrl+Z)
         Undo.RecordObjects(orderedDoors.ToArray(), "Assign Addresses");
 
         for (int i = 0; i < orderedDoors.Count; i++)
         {
-            // Calculate pure distance instead of forward projection
-            float currentDistance = Vector3.Distance(streetZeroPoint.position, orderedDoors[i].transform.position);
-
-            // Detect block jump (gap threshold)
-            if (i > 0 && (currentDistance - previousDistance) > blockGapThreshold)
+            if (i > 0)
             {
-                currentHundred += 100;
-                indexInBlock = 0;
+                float gapToPreviousBuilding = Vector3.Distance(orderedDoors[i].transform.position, orderedDoors[i - 1].transform.position);
+
+                if (gapToPreviousBuilding > _blockGapThreshold)
+                {
+                    currentHundred += 100;
+                    indexInBlock = 0;
+                }
             }
 
-            // Calculate final number
             int finalNumber = currentHundred + (indexInBlock * 2);
-            if (!isEvenSide)
+            if (!_isEvenSide)
             {
                 finalNumber += 1;
             }
 
-            // 5. MODIFY COMPONENT (Using SerializedObject to bypass "private" fields)
             SerializedObject so = new SerializedObject(orderedDoors[i]);
             SerializedProperty addressProp = so.FindProperty("_address");
 
-            // Assign values to the internal struct
-            addressProp.FindPropertyRelative("streetName").stringValue = targetStreetName;
+            addressProp.FindPropertyRelative("streetName").stringValue = _targetStreetName;
             addressProp.FindPropertyRelative("number").intValue = finalNumber;
 
-            // Apply changes
             so.ApplyModifiedProperties();
 
-            // Save state for the next building
-            previousDistance = currentDistance;
+            TextMeshPro textMesh = orderedDoors[i].GetComponentInChildren<TextMeshPro>(true);
+
+            if (textMesh != null)
+            {
+                Undo.RecordObject(textMesh, "Update Address Text");
+                textMesh.text = finalNumber.ToString();
+                EditorUtility.SetDirty(textMesh);
+            }
+
             indexInBlock++;
         }
 
-        Debug.Log($"<color=green><b>Success!</b></color> Sorted and assigned {orderedDoors.Count} doors on {targetStreetName} based on pure distance.");
+        Debug.Log($"<color=green><b>Success!</b></color> Portales y textos 3D actualizados correctamente en {_targetStreetName}.");
     }
 
-    // --- STREET REGISTRATION LOGIC ---
     private void RegisterStreetNameIfNeeded(string newStreetName)
     {
         if (string.IsNullOrWhiteSpace(newStreetName)) return;
 
-        // 1. Automatically find the DropdownStringDatabase file in the entire project
-        string[] guids = AssetDatabase.FindAssets("t:DropdownStringDatabase");
-        if (guids.Length == 0)
+        if (_dropdownDatabase == null)
         {
-            Debug.LogWarning("Assigner: No 'DropdownStringDatabase' found in the project.");
+            Debug.LogWarning("Assigner: ¡No has arrastrado tu base de datos al hueco 'Street Database Asset'!");
             return;
         }
-
-        // Load the first found asset
-        string assetPath = AssetDatabase.GUIDToAssetPath(guids[0]);
-        ScriptableObject database = AssetDatabase.LoadAssetAtPath<ScriptableObject>(assetPath);
-
-        if (database != null)
+        List<string> existingStreets = _dropdownDatabase.GetOptions("StreetNames");
+        if (existingStreets.Contains(newStreetName))
         {
-            SerializedObject so = new SerializedObject(database);
-
-            // Unity capitalizes names in the Inspector. We look for the actual variable name in code.
-            SerializedProperty entriesProp = so.FindProperty("Entries") ?? so.FindProperty("entries") ?? so.FindProperty("_entries");
-
-            if (entriesProp == null)
-            {
-                Debug.LogWarning("Assigner: Could not find the 'Entries' list in the database.");
-                return;
-            }
-
-            // 2. Loop through the entries to find the "StreetNames" Key
-            for (int i = 0; i < entriesProp.arraySize; i++)
-            {
-                SerializedProperty entryProp = entriesProp.GetArrayElementAtIndex(i);
-                SerializedProperty keyProp = entryProp.FindPropertyRelative("Key") ?? entryProp.FindPropertyRelative("key");
-
-                if (keyProp != null && keyProp.stringValue == "StreetNames")
-                {
-                    SerializedProperty optionsProp = entryProp.FindPropertyRelative("Options") ?? entryProp.FindPropertyRelative("options");
-
-                    if (optionsProp != null)
-                    {
-                        // 3. Check if the street already exists in the options list
-                        bool exists = false;
-                        for (int j = 0; j < optionsProp.arraySize; j++)
-                        {
-                            if (optionsProp.GetArrayElementAtIndex(j).stringValue == newStreetName)
-                            {
-                                exists = true;
-                                break;
-                            }
-                        }
-
-                        // 4. If it doesn't exist, append it
-                        if (!exists)
-                        {
-                            int newIndex = optionsProp.arraySize;
-                            optionsProp.InsertArrayElementAtIndex(newIndex);
-                            optionsProp.GetArrayElementAtIndex(newIndex).stringValue = newStreetName;
-
-                            so.ApplyModifiedProperties(); // Apply changes to SerializedObject
-
-                            EditorUtility.SetDirty(database); // Mark the file as modified
-                            AssetDatabase.SaveAssets();       // Save the asset to disk
-
-                            Debug.Log($"<color=cyan><b>Database:</b></color> Street '{newStreetName}' automatically added to the Dropdown.");
-                        }
-                    }
-                    break; // Found "StreetNames", no need to check other keys
-                }
-            }
+            return;
         }
+        Undo.RecordObject(_dropdownDatabase, "Add Street Name");
+        _dropdownDatabase.AddOption("StreetNames", newStreetName);
+        EditorUtility.SetDirty(_dropdownDatabase);
+        AssetDatabase.SaveAssets();
+        Debug.Log($"<color=cyan><b>Database:</b></color> Calle '{newStreetName}' guardada con éxito en el Dropdown de forma nativa.");
     }
 }

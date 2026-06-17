@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[SelectionBase]
 public class LocalAddressComponent : MonoBehaviour, IAddress
 {
     [SerializeField] AddressInfo _address;
