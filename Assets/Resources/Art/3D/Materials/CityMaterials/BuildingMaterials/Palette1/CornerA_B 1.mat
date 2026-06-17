@@ -117,7 +117,7 @@ Material:
     - _MetallicFactor: 1
     - _NormalNoise: 161
     - _NormalStrength: 0.3
-    - _PaintIntensity: 0.5
+    - _PaintIntensity: 0.2
     - _PaintScale: 0.19
     - _PencilThreshold1: 0.1
     - _PencilThreshold2: 0.32
@@ -148,10 +148,10 @@ Material:
     - _ZWriteControl: 0
     m_Colors:
     - _CellTiling: {r: 1, g: 0.4, b: 0, a: 0}
-    - _ColorA: {r: 0.3254902, g: 0.74509805, b: 0.7372549, a: 0}
-    - _ColorB: {r: 0.76862746, g: 0.40392157, b: 0.3647059, a: 0}
+    - _ColorA: {r: 0.29803923, g: 0.6039216, b: 0.37254903, a: 0}
+    - _ColorB: {r: 0.47058824, g: 0.47058824, b: 0.21568628, a: 0}
     - _ColorC: {r: 0, g: 0, b: 0, a: 0}
-    - _PaintColor: {r: 0.4528302, g: 0.23282307, b: 0.23282307, a: 0}
+    - _PaintColor: {r: 0.06795124, g: 0.2830189, b: 0.044054832, a: 1}
     - _ShadowColor: {r: 0.3490566, g: 0.3243592, b: 0.3243592, a: 0}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []

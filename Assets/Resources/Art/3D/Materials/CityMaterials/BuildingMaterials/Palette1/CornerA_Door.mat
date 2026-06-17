@@ -112,13 +112,13 @@ Material:
     - _LightFactor: 0.2
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
-    - _MainTexBlend: 0.58
+    - _MainTexBlend: 0
     - _MainTexIntensity: 2
     - _MetallicFactor: 1
     - _NormalNoise: 161
     - _NormalStrength: 0.3
-    - _PaintIntensity: 0.5
-    - _PaintScale: 0.14
+    - _PaintIntensity: 0.17
+    - _PaintScale: 0.34
     - _PencilThreshold1: 0.1
     - _PencilThreshold2: 0.32
     - _PencilThreshold3: 0.45
@@ -149,7 +149,7 @@ Material:
     m_Colors:
     - _CellTiling: {r: 1, g: 0.4, b: 0, a: 0}
     - _ColorA: {r: 0.3254902, g: 0.74509805, b: 0.7372549, a: 0}
-    - _ColorB: {r: 0.32156864, g: 0.6, b: 0.5882353, a: 0}
+    - _ColorB: {r: 0.24377, g: 0.6226415, b: 0.47267157, a: 0}
     - _ColorC: {r: 0, g: 0, b: 0, a: 0}
     - _PaintColor: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor: {r: 0.3490566, g: 0.3243592, b: 0.3243592, a: 0}

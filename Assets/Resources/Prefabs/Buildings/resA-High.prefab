@@ -97,10 +97,10 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 6420149349343741777, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
-  - {fileID: 5650674915284745703, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
-  - {fileID: 670789160007567082, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
-  - {fileID: -593453336676078234, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
+  - {fileID: 2100000, guid: 0b775b19d2f49e8468f566189f275f68, type: 2}
+  - {fileID: 2100000, guid: 2d7ee020edf2881409780a2e19649697, type: 2}
+  - {fileID: 2100000, guid: 0b775b19d2f49e8468f566189f275f68, type: 2}
+  - {fileID: 2100000, guid: 1766fa590b012b846a8079b2288060ed, type: 2}
   - {fileID: 497517018605243610, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -183,6 +183,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2459976231469306319, guid: fc47718555fd4d44bafcb3bdf0f17760, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 14d960600bf81614b993d0387fa45626, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -249,6 +253,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: c67924fe2b5340f428cb2560dd3a9bb7, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 14d960600bf81614b993d0387fa45626, type: 2}
+    - target: {fileID: -7511558181221131132, guid: c67924fe2b5340f428cb2560dd3a9bb7, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 1766fa590b012b846a8079b2288060ed, type: 2}
     - target: {fileID: 919132149155446097, guid: c67924fe2b5340f428cb2560dd3a9bb7, type: 3}
       propertyPath: m_Name
       value: DoorA_Model (1)
@@ -356,6 +368,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7194163651085556831, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 14d960600bf81614b993d0387fa45626, type: 2}
+    - target: {fileID: 7194163651085556831, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 1766fa590b012b846a8079b2288060ed, type: 2}
     - target: {fileID: 8331062712882997040, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.8

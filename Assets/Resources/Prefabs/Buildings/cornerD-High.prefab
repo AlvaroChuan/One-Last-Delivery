@@ -65,10 +65,10 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3416325910626428432, guid: d6bf625b54f3c5641afd674d9e3a163e, type: 3}
-  - {fileID: -3925415298335080542, guid: d6bf625b54f3c5641afd674d9e3a163e, type: 3}
-  - {fileID: 8102370130076171542, guid: d6bf625b54f3c5641afd674d9e3a163e, type: 3}
-  - {fileID: -8949027253796888376, guid: d6bf625b54f3c5641afd674d9e3a163e, type: 3}
+  - {fileID: 2100000, guid: 049a751b9e0068240b71b693ff4075fb, type: 2}
+  - {fileID: 2100000, guid: 3a306c1483f74aa408bf7705f65b560e, type: 2}
+  - {fileID: 2100000, guid: 6179913d87ccfe740ad0581a4e12820b, type: 2}
+  - {fileID: 2100000, guid: 1766fa590b012b846a8079b2288060ed, type: 2}
   - {fileID: 497517018605243610, guid: d6bf625b54f3c5641afd674d9e3a163e, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -99,6 +99,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3022300403193916082}
     m_Modifications:
+    - target: {fileID: 953438048223991250, guid: 6c383464f1f458c4e8669c514ac20265, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 1766fa590b012b846a8079b2288060ed, type: 2}
+    - target: {fileID: 953438048223991250, guid: 6c383464f1f458c4e8669c514ac20265, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 57c9984775deee044b5344b5173c4c47, type: 2}
     - target: {fileID: 1865245426965013292, guid: 6c383464f1f458c4e8669c514ac20265, type: 3}
       propertyPath: m_Name
       value: DoorB
@@ -244,6 +252,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -405
       objectReference: {fileID: 0}
+    - target: {fileID: 2459976231469306319, guid: fc47718555fd4d44bafcb3bdf0f17760, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 57c9984775deee044b5344b5173c4c47, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

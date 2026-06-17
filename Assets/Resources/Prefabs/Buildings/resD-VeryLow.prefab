@@ -65,14 +65,14 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -2500895444822963470, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
-  - {fileID: -3428980059079043827, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
-  - {fileID: -4420849813758396097, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
-  - {fileID: 7686897826028367369, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
+  - {fileID: 2100000, guid: 9e1fc2d6f2da9084fa071242cea682f2, type: 2}
+  - {fileID: 2100000, guid: 626864fcc277ac641923bc212ebfa8b9, type: 2}
+  - {fileID: 2100000, guid: 626864fcc277ac641923bc212ebfa8b9, type: 2}
+  - {fileID: 2100000, guid: 1766fa590b012b846a8079b2288060ed, type: 2}
   - {fileID: 497517018605243610, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
-  - {fileID: 8742816693302963299, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
-  - {fileID: 7136484507190353716, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
-  - {fileID: -1993325710322313288, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
+  - {fileID: 2100000, guid: bbe174d86c03a684197debef575dc24a, type: 2}
+  - {fileID: 2100000, guid: 02c7deffc6a38ec4fa5a5789f90e94a9, type: 2}
+  - {fileID: 2100000, guid: bbe174d86c03a684197debef575dc24a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -150,6 +150,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 161d830d43ca65540967d24bd9ee45d5, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 1766fa590b012b846a8079b2288060ed, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 161d830d43ca65540967d24bd9ee45d5, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4d7b2a285b9da9d42a0edd1cac1ba325, type: 2}
     - target: {fileID: 919132149155446097, guid: 161d830d43ca65540967d24bd9ee45d5, type: 3}
       propertyPath: m_Name
       value: DoorB_Model (1)
@@ -205,6 +213,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7137863104752455059}
     m_Modifications:
+    - target: {fileID: 953438048223991250, guid: 6c383464f1f458c4e8669c514ac20265, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 1766fa590b012b846a8079b2288060ed, type: 2}
+    - target: {fileID: 953438048223991250, guid: 6c383464f1f458c4e8669c514ac20265, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4d7b2a285b9da9d42a0edd1cac1ba325, type: 2}
     - target: {fileID: 1865245426965013292, guid: 6c383464f1f458c4e8669c514ac20265, type: 3}
       propertyPath: m_Name
       value: DoorB
@@ -337,6 +353,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -180
       objectReference: {fileID: 0}
+    - target: {fileID: 2459976231469306319, guid: fc47718555fd4d44bafcb3bdf0f17760, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4d7b2a285b9da9d42a0edd1cac1ba325, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

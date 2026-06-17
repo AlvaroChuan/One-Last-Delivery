@@ -65,11 +65,11 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 6993168003464703294, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
-  - {fileID: -1583008416449886989, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
-  - {fileID: 6379507204588091716, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
-  - {fileID: -2214116384618162206, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
-  - {fileID: 2233798212201948347, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
+  - {fileID: 2100000, guid: 01001edcbaad4b14ca3bbfc5fdc95154, type: 2}
+  - {fileID: 2100000, guid: 8e7eb21ee46014e49823f4b8816bf5b7, type: 2}
+  - {fileID: 2100000, guid: ee66dacb728e8f443980855babf72140, type: 2}
+  - {fileID: 2100000, guid: 1766fa590b012b846a8079b2288060ed, type: 2}
+  - {fileID: 2100000, guid: 8cd4af52f84dfe244a1d9ff02a6fb2bb, type: 2}
   - {fileID: 497517018605243610, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -156,6 +156,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 7194163651085556831, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 80fdfac695e3de84f82a0419b4c8af23, type: 2}
+    - target: {fileID: 7194163651085556831, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 1766fa590b012b846a8079b2288060ed, type: 2}
     - target: {fileID: 8331062712882997040, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.4
@@ -241,6 +249,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -225
       objectReference: {fileID: 0}
+    - target: {fileID: 2459976231469306319, guid: fc47718555fd4d44bafcb3bdf0f17760, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 80fdfac695e3de84f82a0419b4c8af23, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
