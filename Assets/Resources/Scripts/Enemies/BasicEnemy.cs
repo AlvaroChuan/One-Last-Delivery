@@ -102,10 +102,12 @@ public class BasicEnemy : NetworkBehaviour
     {
         _isAttacking = true;
         _playerRecheckTimer = 0f; // Reset the recheck timer to avoid chasing while attacking
+        _chaseBehaviour.StopChasing(); // Stop chasing when attacking
     }
     void OnAttackEnded()
     {
         _isAttacking = false;
+        _chaseBehaviour.StartChasing(); // Resume chasing after attack ends
     }
 
     void OnStunChanged(EnemyStunComponent.StunChangeInfo stunInfo)
@@ -115,6 +117,10 @@ public class BasicEnemy : NetworkBehaviour
         {
             _chaseBehaviour.StopChasing();
             _isAttacking = false; // Stop attacking when stunned
+        }
+        else
+        {
+            _chaseBehaviour.StartChasing();
         }
     }
 }
