@@ -15,11 +15,11 @@ public class PlayerHealthComponent : PlayerComponent
     [SerializeField]
     float _maxHealth = 100f;
     float _currentHealth;
-    PlayerDeathComponent _controller;
+    PlayerDeathComponent _playerDeathComponent;
 
     void Awake()
     {
-        _controller = GetComponent<PlayerDeathComponent>();
+        _playerDeathComponent = GetComponent<PlayerDeathComponent>();
     }
 
     public override void OnStartClient()
@@ -88,6 +88,6 @@ public class PlayerHealthComponent : PlayerComponent
 
     void Die()
     {
-        _controller.Die();
+        _playerDeathComponent.Die();
     }
 }
