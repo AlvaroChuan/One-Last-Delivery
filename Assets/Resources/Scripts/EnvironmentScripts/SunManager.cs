@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 [RequireComponent(typeof(Light))]
 public class SunManager : MonoBehaviour
@@ -34,6 +36,15 @@ public class SunManager : MonoBehaviour
     [SerializeField] private string _cloudsPosterizePropertyName = "_CloudsPosterize";
     [SerializeField] private float _cloudsPosterizeNight = 8f;
 
+    [Header("Fog Settings")]
+    [SerializeField] private float _fogDensityDay = 0.016f;
+    [SerializeField] private float _fogDensityNight = 0.033f;
+
+    [Header("Post Processing Settings")]
+    [SerializeField] private Volume _globalVolume;
+    [SerializeField] private float _vignetteIntensityDay = 0.29f;
+    [SerializeField] private float _vignetteIntensityNight = 0.44f;
+
     [Header("Height Offset Settings")]
     [SerializeField] private string _heightOffsetPropertyName = "_HeightOffset";
     [SerializeField] private float _heightOffsetLow = 0.4f;
@@ -65,13 +76,23 @@ public class SunManager : MonoBehaviour
     private float _exposureTargetValue;
     private bool _isFirstMorning = true;
 
+    // Variable para guardar la referencia al Vignette
+    private Vignette _vignette;
+
     private void Start()
     {
         _directionalLight = GetComponent<Light>();
         Shader.SetGlobalVector("_SunDirection", transform.forward);
         _cycleDurationSeconds = _cycleDurationMinutes * 60f;
         _dynamicDayExposure = _dayExposureDefault;
+
+        // Buscamos el efecto Vignette dentro de tu Volume al darle al Play
+        if (_globalVolume != null && _globalVolume.profile.TryGet(out _vignette))
+        {
+            // Encontrado y listo para usarse
+        }
     }
+
     private void Update()
     {
         UpdateTime();
@@ -83,6 +104,7 @@ public class SunManager : MonoBehaviour
         UpdateHeightOffset();
         UpdateDirectionalLightColor();
     }
+
     private void UpdateTime()
     {
         _currentTimeOfDay += Time.deltaTime / _cycleDurationSeconds;
@@ -91,6 +113,7 @@ public class SunManager : MonoBehaviour
             _currentTimeOfDay -= 1f;
         }
     }
+
     private bool IsNight()
     {
         if (_isFirstMorning)
@@ -107,6 +130,7 @@ public class SunManager : MonoBehaviour
 
         return _currentTimeOfDay >= 0.58f || _currentTimeOfDay < 0.08f;
     }
+
     private void UpdateSunRotation()
     {
         float sunAngle = (_currentTimeOfDay * 360f) - 30f;
@@ -120,16 +144,20 @@ public class SunManager : MonoBehaviour
         Vector3 realSunDirection = Quaternion.Euler(sunAngle, 170f, 0f) * Vector3.forward;
         Shader.SetGlobalVector("_SunDirection", realSunDirection);
     }
+
     private void UpdateSkyboxColors()
     {
+        Color currentHorizonColor = _horizonColorGradient.Evaluate(_currentTimeOfDay);
+
         if (_skyboxMaterial != null)
         {
             Color currentSkyColor = _skyColorGradient.Evaluate(_currentTimeOfDay);
-            Color currentHorizonColor = _horizonColorGradient.Evaluate(_currentTimeOfDay);
             _skyboxMaterial.SetColor(_skyColorPropertyName, currentSkyColor);
             _skyboxMaterial.SetColor(_horizonColorPropertyName, currentHorizonColor);
         }
+        RenderSettings.fogColor = currentHorizonColor;
     }
+
     private void UpdateStarsIntensity()
     {
         bool isNight = IsNight();
@@ -142,6 +170,7 @@ public class SunManager : MonoBehaviour
             _skyboxMaterial.SetFloat(_starsIntensityPropertyName, _currentStarsIntensity);
         }
     }
+
     private void UpdateDaytimeRandomizers()
     {
         if (_environmentTransitionProgress == 1f)
@@ -176,6 +205,7 @@ public class SunManager : MonoBehaviour
             }
         }
     }
+
     private void UpdateEnvironmentTransitions()
     {
         bool isNight = IsNight();
@@ -190,17 +220,29 @@ public class SunManager : MonoBehaviour
             _environmentTransitionProgress = Mathf.Clamp01(_environmentTransitionProgress - fadeStep);
         }
 
+        float smoothProgress = Mathf.SmoothStep(0f, 1f, _environmentTransitionProgress);
+
         if (_skyboxMaterial != null)
         {
-            float smoothProgress = Mathf.SmoothStep(0f, 1f, _environmentTransitionProgress);
             float currentBlend = Mathf.Lerp(_hdriBlendDay, _hdriBlendNight, smoothProgress);
             float currentExposure = Mathf.Lerp(_dynamicDayExposure, _hdriExposureNight, smoothProgress);
             Color currentClouds = Color.Lerp(_cloudsColorDay, _cloudsColorNight, smoothProgress);
+
             _skyboxMaterial.SetFloat(_hdriBlendPropertyName, currentBlend);
             _skyboxMaterial.SetFloat(_hdriExposurePropertyName, currentExposure);
             _skyboxMaterial.SetColor(_cloudsColorPropertyName, currentClouds);
         }
+
+        RenderSettings.fogDensity = Mathf.Lerp(_fogDensityDay, _fogDensityNight, smoothProgress);
+
+        // Actualizamos el Vignette de forma limpia usando .Override()
+        if (_vignette != null)
+        {
+            float targetVignette = Mathf.Lerp(_vignetteIntensityDay, _vignetteIntensityNight, smoothProgress);
+            _vignette.intensity.Override(targetVignette);
+        }
     }
+
     private void UpdateHeightOffset()
     {
         if (_skyboxMaterial != null)
@@ -218,9 +260,11 @@ public class SunManager : MonoBehaviour
                 float smoothT = Mathf.SmoothStep(0f, 1f, t);
                 currentHeight = Mathf.Lerp(_heightOffsetLow, _heightOffsetHigh, smoothT);
             }
+
             _skyboxMaterial.SetFloat(_heightOffsetPropertyName, currentHeight);
         }
     }
+
     private void UpdateDirectionalLightColor()
     {
         _directionalLight.color = _directionalLightColorGradient.Evaluate(_currentTimeOfDay);
