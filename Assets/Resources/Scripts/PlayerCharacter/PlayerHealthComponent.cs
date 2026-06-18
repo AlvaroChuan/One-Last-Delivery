@@ -53,6 +53,8 @@ public class PlayerHealthComponent : PlayerComponent
 
         _currentHealth -= damage;
 
+        DevLogger.Log($"Player took {damage} damage. Health: {_currentHealth}/{_maxHealth}");
+
         onHealthChangedEvent?.Invoke(new HealthChangeInfo
         {
             oldHealth = oldHealth,
