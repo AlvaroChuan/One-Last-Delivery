@@ -1,9 +1,17 @@
+using System;
 using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerDeathComponent))]
 public class PlayerHealthComponent : PlayerComponent
 {
+    public struct HealthChangeInfo
+    {
+        public float oldHealth;
+        public float newHealth;
+    }
+
+    public Action<HealthChangeInfo> onHealthChangedEvent;
     [SerializeField]
     float _maxHealth = 100f;
     float _currentHealth;
@@ -14,10 +22,9 @@ public class PlayerHealthComponent : PlayerComponent
         _controller = GetComponent<PlayerDeathComponent>();
     }
 
-
-    protected override void Start()
+    public override void OnStartClient()
     {
-        base.Start();
+        base.OnStartClient();
         _currentHealth = _maxHealth;
     }
 
@@ -37,20 +44,48 @@ public class PlayerHealthComponent : PlayerComponent
     [ClientRpc]
     public void RpcTakeDamage(float damage)
     {
-        Debug.Log($"RpcTakeDamage called with damage: {damage}");
+        DevLogger.Log($"RpcTakeDamage called with damage: {damage}");
         if (!isLocalPlayer) return;
 
         if (_currentHealth <= 0)
             return;
 
-        Debug.Log($"Taking {damage} damage");
+        float oldHealth = _currentHealth;
+
+        DevLogger.Log($"Taking {damage} damage");
         _currentHealth -= damage;
+
+        onHealthChangedEvent?.Invoke(new HealthChangeInfo
+        {
+            oldHealth = oldHealth,
+            newHealth = _currentHealth
+        });
+
         if (_currentHealth <= 0)
         {
             _currentHealth = 0;
             Die();
         }
     }
+
+    [ClientRpc]
+    public void RpcHeal(float healAmount)
+    {
+        if (!isLocalPlayer) return;
+
+        if (_currentHealth <= 0)
+            return;
+
+        float oldHealth = _currentHealth;
+        _currentHealth = Mathf.Min(_currentHealth + healAmount, _maxHealth);
+
+        onHealthChangedEvent?.Invoke(new HealthChangeInfo
+        {
+            oldHealth = oldHealth,
+            newHealth = _currentHealth
+        });
+    }
+
     void Die()
     {
         _controller.Die();

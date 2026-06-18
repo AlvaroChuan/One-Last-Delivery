@@ -14,6 +14,7 @@ public class CollisionAuthorityHandler : NetworkBehaviour
     float _rubberbandDuration = 0.5f; // Duration to wait before rubberbanding back if authority isn't gained
     float _timeBetweenRequests = 0.5f; // Minimum time between authority requests to prevent spamming
     bool _canRequestAuthority = true;
+    bool _swappingAuthority = false;
 
     void Awake()
     {
@@ -35,6 +36,7 @@ public class CollisionAuthorityHandler : NetworkBehaviour
             _collider.isTrigger = true; // Prevent physics collisions on clients without authority
         }
     }
+
     void OnTriggerEnter(Collider other)
     {
         if(!_canRequestAuthority) return;
@@ -43,7 +45,7 @@ public class CollisionAuthorityHandler : NetworkBehaviour
         {
             if (otherHandler._priority < _priority)
             {
-                Debug.Log("Collision detected with lower priority object. Keeping authority.");
+                DevLogger.Log("Collision detected with lower priority object. Keeping authority.");
                 return;
             }
         }
@@ -68,9 +70,14 @@ public class CollisionAuthorityHandler : NetworkBehaviour
             return;
         }
 
+        if (isOwned && !otherIdentity.isOwned)
+        {
+            _swappingAuthority = true;
+        }
+
         if(otherIdentity.isOwned && !isOwned)
         {
-            Debug.Log("Client-side collision detected with local player. Predicting authority change.");
+            DevLogger.Log("Client-side collision detected with local player. Predicting authority change.");
             _rigidbody.isKinematic = false;
             _collider.isTrigger = false; // Enable physics collisions for prediction
             StartCoroutine(Rubberband());
@@ -96,14 +103,11 @@ public class CollisionAuthorityHandler : NetworkBehaviour
             otherIdentity = collider.GetComponentInParent<NetworkIdentity>();
         }
 
-        if (otherIdentity != null)
+        if (otherIdentity != null && otherIdentity.connectionToClient != null && otherIdentity.connectionToClient != _ownerConnection)
         {
-            if (otherIdentity.connectionToClient != _ownerConnection)
-            {
-                _ownerConnection = otherIdentity.connectionToClient;
-                netIdentity.RemoveClientAuthority();
-                netIdentity.AssignClientAuthority(otherIdentity.connectionToClient);
-            }
+            _ownerConnection = otherIdentity.connectionToClient;
+            netIdentity.RemoveClientAuthority();
+            netIdentity.AssignClientAuthority(otherIdentity.connectionToClient);
         }
     }
 
@@ -122,7 +126,7 @@ public class CollisionAuthorityHandler : NetworkBehaviour
 
     public override void OnStopAuthority()
     {
-        if (!NetworkClient.active) return;
+        if (!NetworkClient.active || !_swappingAuthority) return;
         base.OnStopAuthority();
         _collider.isTrigger = true; // Prevent physics collisions for clients without authority
         CmdRestoreVelocity(_rigidbody.linearVelocity, _rigidbody.angularVelocity); // Restore velocity on all clients to prevent rubberbanding

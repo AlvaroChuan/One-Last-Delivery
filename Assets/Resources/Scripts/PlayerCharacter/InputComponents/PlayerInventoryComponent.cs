@@ -6,10 +6,10 @@ using UnityEngine.InputSystem;
 
 public class PlayerInventoryComponent : InputComponent
 {
-    [System.Serializable]
+    [Serializable]
     struct ItemEntry
     {
-        public InventoryItemIDEnum itemID;
+        public ItemID itemID;
         public InventoryItem item;
     }
     [SerializeField] private int _inventorySize = 4;
@@ -22,17 +22,16 @@ public class PlayerInventoryComponent : InputComponent
     private InventoryItemData[] _inventory;
     private int _selectedInventoryIndex = -1; // Local copy of the selected index for instant responsiveness
 
-    private Camera _playerCamera;
+    [SerializeField] private GameObject _carriedPackage; // Reference to the currently carried package, if any
 
-    private PackageInteractionComponent _carriedPackage; // Reference to the currently carried package, if any
+    public GameObject CarriedPackage => _carriedPackage != null ? _carriedPackage.gameObject : null;
 
     void Awake()
     {
-        _playerCamera = GetComponentInChildren<Camera>();
         _inventory = new InventoryItemData[_inventorySize];
         for(int i = 0; i < _inventorySize; i++)
         {
-            _inventory[i] = new InventoryItemData { itemID = (int)InventoryItemIDEnum.None };
+            _inventory[i] = new InventoryItemData { itemID = (int)ItemID.None };
         }
     }
 
@@ -93,11 +92,11 @@ public class PlayerInventoryComponent : InputComponent
 
         if (_carriedPackage != null)
         {
-            _carriedPackage.DropFromPlayer(Vector3.zero);
-            _carriedPackage = null;
+            _carriedPackage.GetComponent<PackageInteractionComponent>()?.DropFromPlayer(Vector3.zero);
+            SetCarryingPackage(null);
         }
 
-        Debug.Log("Selected inventory index: " + _selectedInventoryIndex);
+        DevLogger.Log("Selected inventory index: " + _selectedInventoryIndex);
         SetInventorySelection(_selectedInventoryIndex);
     }
     private void OnSelectInput(InputAction.CallbackContext context)
@@ -114,8 +113,8 @@ public class PlayerInventoryComponent : InputComponent
         }
         if (_carriedPackage != null)
         {
-            _carriedPackage.DropFromPlayer(Vector3.zero);
-            _carriedPackage = null;
+            _carriedPackage.GetComponent<PackageInteractionComponent>()?.DropFromPlayer(Vector3.zero);
+            SetCarryingPackage(null);
         }
         SetInventorySelection(_selectedInventoryIndex);
     }
@@ -123,7 +122,7 @@ public class PlayerInventoryComponent : InputComponent
     void SetInventorySelection(int index)
     {
         _selectedInventoryIndex = index;
-        InventoryItemIDEnum itemID = InventoryItemIDEnum.None;
+        ItemID itemID = ItemID.None;
         if (index >= 0 && index < _inventorySize)
         {
             itemID = _inventory[index].itemID;
@@ -133,20 +132,20 @@ public class PlayerInventoryComponent : InputComponent
     }
 
     [Command]
-    void CmdUpdateVisualMesh(InventoryItemIDEnum itemID)
+    void CmdUpdateVisualMesh(ItemID itemID)
     {
         RpcUpdateVisualMesh(itemID);
     }
 
     [ClientRpc]
-    void RpcUpdateVisualMesh(InventoryItemIDEnum newItemID)
+    void RpcUpdateVisualMesh(ItemID newItemID)
     {
         if (isLocalPlayer) return; // Local player already updated their visuals in SetInventorySelection, so only update for remote clients
 
         UpdateVisualMesh(newItemID);
     }
 
-    void UpdateVisualMesh(InventoryItemIDEnum itemID)
+    void UpdateVisualMesh(ItemID itemID)
     {
         foreach (var entry in _itemEntryArray)
         {
@@ -168,7 +167,7 @@ public class PlayerInventoryComponent : InputComponent
 
     private void OnThrowInput(InputAction.CallbackContext context)
     {
-        DropItem(_selectedInventoryIndex, _playerCamera.transform.forward * _throwForce);
+        DropItem(_selectedInventoryIndex, Camera.main.transform.forward * _throwForce);
     }
 
     void DropItem(int slotIndex, Vector3 throwForce = default)
@@ -176,47 +175,36 @@ public class PlayerInventoryComponent : InputComponent
         InventoryItem heldItem = GetItem(slotIndex);
         if (heldItem != null)
         {
-            DroppedItem droppedItem = heldItem.GetDroppedItemPrefab();
-            if (droppedItem != null)
-            {
-                // Spawn the dropped item on the server
-                CmdSpawnDroppedItem(_inventory[slotIndex], transform.position + transform.forward, throwForce);
+            // Spawn the dropped item on the server
+            Vector3 forwardDirection = Camera.main.transform.forward;
+            forwardDirection.y = 0f; // Flatten the throw direction to the horizontal plane
+            CmdSpawnDroppedItem(_inventory[slotIndex], transform.position + forwardDirection, throwForce);
 
-                // Clear the inventory slot locally for instant feedback
-                _inventory[slotIndex] = new InventoryItemData { itemID = InventoryItemIDEnum.None };
-                if (_selectedInventoryIndex == slotIndex)
-                {
-                    SetInventorySelection(slotIndex); // This will also update visuals and sync the change to other clients
-                }
+            // Clear the inventory slot locally for instant feedback
+            _inventory[slotIndex] = new InventoryItemData { itemID = ItemID.None };
+            if (_selectedInventoryIndex == slotIndex)
+            {
+                SetInventorySelection(slotIndex); // This will also update visuals and sync the change to other clients
             }
         }
 
         if (_carriedPackage != null)
         {
-            _carriedPackage.DropFromPlayer(throwForce);
-            _carriedPackage = null;
+            _carriedPackage.GetComponent<PackageInteractionComponent>()?.DropFromPlayer(throwForce);
+            SetCarryingPackage(null);
         }
     }
 
-    // Mirror allows passing NetworkIdentity references of Registered Spawnable Prefabs inside Commands!
     [Command]
     private void CmdSpawnDroppedItem(InventoryItemData itemData, Vector3 dropPosition, Vector3 throwForce)
     {
-        GameObject droppedItemPrefab = null;
-        foreach (var entry in _itemEntryArray)
-        {
-            if (entry.itemID == itemData.itemID)
-            {
-                droppedItemPrefab = entry.item.GetDroppedItemPrefab().gameObject;
-                break;
-            }
-        }
+        DroppedItem droppedItemPrefab = ItemDataList.Instance.GetPrefabFromID(itemData.itemID);
 
         // Instantiate and spawn the object authoritatively on the server
-        GameObject droppedObject = Instantiate(droppedItemPrefab, dropPosition, Quaternion.identity);
-        droppedObject.GetComponent<DroppedItem>().SetInventoryItemData(itemData);
+        DroppedItem droppedObject = Instantiate(droppedItemPrefab, dropPosition, Quaternion.identity);
+        droppedObject.SetInventoryItemData(itemData);
         droppedObject.GetComponent<Rigidbody>().AddForce(throwForce, ForceMode.VelocityChange);
-        NetworkServer.Spawn(droppedObject);
+        NetworkServer.Spawn(droppedObject.gameObject);
     }
 
     [ClientRpc]
@@ -224,14 +212,14 @@ public class PlayerInventoryComponent : InputComponent
     {
         if (!isLocalPlayer) return;
 
-        Debug.Log($"Adding item {itemData.itemID} to inventory");
+        DevLogger.Log($"Adding item {itemData.itemID} to inventory");
 
         int affectedSlot = -1;
         if (affectedSlot == -1)
         {
             for (int i = 0; i < _inventorySize; i++)
             {
-                if (_inventory[i].itemID == (int)InventoryItemIDEnum.None)
+                if (_inventory[i].itemID == (int)ItemID.None)
                 {
                     affectedSlot = i;
                     break;
@@ -280,7 +268,7 @@ public class PlayerInventoryComponent : InputComponent
         {
             return _inventory[_selectedInventoryIndex];
         }
-        return new InventoryItemData { itemID = InventoryItemIDEnum.None };
+        return new InventoryItemData { itemID = ItemID.None };
     }
     public void UpdateHeldItemData(InventoryItemData newData)
     {
@@ -297,7 +285,17 @@ public class PlayerInventoryComponent : InputComponent
         SetInventorySelection(index);
     }
 
-    internal void SetCarryingPackage(PackageInteractionComponent package)
+    internal void SetCarryingPackage(GameObject package)
+    {
+        _carriedPackage = package;
+        if(!isServer)
+        {
+            CmdSetCarryingPackage(package);
+        }
+    }
+
+    [Command]
+    public void CmdSetCarryingPackage(GameObject package)
     {
         _carriedPackage = package;
     }

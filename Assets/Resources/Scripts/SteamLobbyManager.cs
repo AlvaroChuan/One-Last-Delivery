@@ -3,13 +3,13 @@ using UnityEngine;
 using Mirror;
 using Steamworks;
 using Adrenak.UniVoice.Samples;
+using UnityEngine.SceneManagement;
 
 public class SteamLobbyManager : MonoBehaviour
 {
-    [SerializeField] private GameObject _lobbyListItemPrefab;
-    [SerializeField] private Transform _lobbyListContent;
     [SerializeField] private UIManager _uiManager;
     [SerializeField] private LobbyVoiceChat _lobbyVoiceChat;
+    [SerializeField] private string _gameSceneName = "GameScene";
     protected Callback<LobbyCreated_t> lobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
     protected Callback<LobbyEnter_t> lobbyEntered;
@@ -19,15 +19,17 @@ public class SteamLobbyManager : MonoBehaviour
 
     private const string GAME_ID_KEY = "OneLastDeliveryID_145";
     private const string HOST_ADDRESS_KEY = "HostAddress";
-    private NetworkManager _networkManager;
+    private CustomNetworkManager _networkManager;
     private CSteamID _currentLobbyID;
     private Coroutine _autoRefreshCoroutine;
 
     public PlayerManager playerManager;
 
+    private Coroutine _startGameCoroutine;
+
     private void Start()
     {
-        _networkManager = GetComponent<NetworkManager>();
+        _networkManager = GetComponent<CustomNetworkManager>();
         if (!SteamManager.Initialized) return;
         SteamNetworkingUtils.InitRelayNetworkAccess();
         SteamNetworkingUtils.CheckPingDataUpToDate(60f);
@@ -43,7 +45,7 @@ public class SteamLobbyManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        StopNetworkConnections();
+        //StopNetworkConnections();
     }
 
     private void StopNetworkConnections()
@@ -61,7 +63,7 @@ public class SteamLobbyManager : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Error trying to shutdown Mirror: {e.Message}");
+            UnityEngine.Debug.LogError($"Error trying to shutdown Mirror: {e.Message}");
         }
     }
 
@@ -109,6 +111,48 @@ public class SteamLobbyManager : MonoBehaviour
         }
 
         _uiManager.SyncLobbyData(activePlayers, _currentLobbyID, maxPlayers);
+
+        bool allReady = true;
+        foreach (CSteamID steamID in activePlayers)
+        {
+            string readyStr = SteamMatchmaking.GetLobbyMemberData(_currentLobbyID, steamID, "ready");
+            if (readyStr != "true")
+            {
+                allReady = false;
+                break;
+            }
+        }
+        if (allReady)
+        {
+            SteamMatchmaking.SetLobbyJoinable(_currentLobbyID, false);
+            if(_startGameCoroutine != null)
+            {
+                StopCoroutine(_startGameCoroutine);
+            }
+            _startGameCoroutine = StartCoroutine(StartGameCountdown());
+        }
+        else
+        {
+            SteamMatchmaking.SetLobbyJoinable(_currentLobbyID, true);
+            if (_startGameCoroutine != null)
+            {
+                DevLogger.Log("Not all players are ready. Stopping game start countdown.");
+                StopCoroutine(_startGameCoroutine);
+                _uiManager.UpdateCountdown();
+            }
+        }
+    }
+
+    IEnumerator StartGameCountdown()
+    {
+        int countdown = 5;
+        while (countdown >= 0)
+        {
+            _uiManager.UpdateCountdown(Mathf.CeilToInt(countdown));
+            yield return new WaitForSeconds(1f);
+            countdown -= 1;
+        }
+        NetworkManager.singleton.ServerChangeScene(_gameSceneName);
     }
 
     private void OnLobbyChatUpdate(LobbyChatUpdate_t callback)
@@ -136,28 +180,16 @@ public class SteamLobbyManager : MonoBehaviour
 
         if (NetworkServer.active && NetworkClient.isConnected)
         {
-            StartCoroutine(HostExitRoutine());
+            LeaveAndCloseLobby();
+            _networkManager.StopHost();
+
+            _uiManager.OnLobbyExit();
         }
         else if (NetworkClient.isConnected)
         {
             LeaveLobbyOnly();
             _networkManager.StopClient();
         }
-        _uiManager.OnLobbyExit();
-    }
-
-    private IEnumerator HostExitRoutine()
-    {
-        if (playerManager != null)
-        {
-            playerManager.CmdForceLobbyExit();
-        }
-
-        yield return new WaitForSeconds(0.5f);
-
-        LeaveAndCloseLobby();
-        _networkManager.StopHost();
-
         _uiManager.OnLobbyExit();
     }
 

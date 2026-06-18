@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,6 +7,12 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerGroundCheckComponent))]
 public class PlayerJumpComponent : InputComponent
 {
+    public struct JumpInfo
+    {
+        public float jumpForce;
+        public bool isSuccessful;
+    }
+    public Action<JumpInfo> onJumpEvent;
     [SerializeField] private float _jumpForce = 5f;
     [SerializeField] private float _jumpStaminaCost = 10f;
     [SerializeField] private float _staminaLockoutDuration = 1f;
@@ -43,6 +50,19 @@ public class PlayerJumpComponent : InputComponent
             _rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
             _staminaComponent.ConsumeStamina(_jumpStaminaCost);
             _staminaComponent.DisableStaminaRegen(_staminaLockoutDuration);
+            onJumpEvent?.Invoke(new JumpInfo
+            {
+                jumpForce = _jumpForce,
+                isSuccessful = true
+            });
+        }
+        else
+        {
+            onJumpEvent?.Invoke(new JumpInfo
+            {
+                jumpForce = 0f,
+                isSuccessful = false
+            });
         }
     }
 }

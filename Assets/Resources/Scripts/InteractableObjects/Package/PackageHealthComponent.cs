@@ -1,14 +1,24 @@
+using System;
 using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PackageHealthComponent : NetworkBehaviour
 {
+    public struct HealthChangeInfo
+    {
+        public float oldHealth;
+        public float newHealth;
+    }
+    public Action<HealthChangeInfo> onHealthChangedEvent;
     [SerializeField] private float _maxHealth = 100f;
     [SerializeField] private float _minForceForDamage = 5f;
     [SerializeField] private float _damagePerUnitForce = 1f;
     private float _currentHealth;
     private Rigidbody _rigidbody;
+
+    public float MaxHealth => _maxHealth;
+    public float CurrentHealth => _currentHealth;
 
     void Awake()
     {
@@ -26,7 +36,7 @@ public class PackageHealthComponent : NetworkBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(!isServer || _rigidbody.isKinematic) return;
+        if(_rigidbody.isKinematic) return;
 
         float otherMass = (collision.rigidbody != null) ? collision.rigidbody.mass : _rigidbody.mass;
 
@@ -42,11 +52,18 @@ public class PackageHealthComponent : NetworkBehaviour
 
         float damage = (force - _minForceForDamage) * _damagePerUnitForce;
 
-        TakeDamage(damage);
+        if (isServer)
+        {
+            ServerTakeDamage(damage);
+        }
+        else
+        {
+            CmdTakeDamage(damage);
+        }
     }
 
     [Server]
-    public void TakeDamage(float damage)
+    public void ServerTakeDamage(float damage)
     {
         _currentHealth -= damage;
         if (_currentHealth <= 0f)
@@ -60,22 +77,21 @@ public class PackageHealthComponent : NetworkBehaviour
             RpcUpdateHealth(_currentHealth);
         }
     }
+    [Command]
+    public void CmdTakeDamage(float damage)
+    {
+        ServerTakeDamage(damage);
+    }
 
     [ClientRpc]
     public void RpcUpdateHealth(float newHealth)
     {
         _currentHealth = newHealth;
 
-        // Here you can add code to update health UI or play damage effects on clients
-    }
-
-    void OnDestroy()
-    {
-        // Here you can add code to play destruction effects on clients
-    }
-
-    public float GetCurrentHealth()
-    {
-        return _currentHealth;
+        onHealthChangedEvent?.Invoke(new HealthChangeInfo
+        {
+            oldHealth = _currentHealth,
+            newHealth = newHealth
+        });
     }
 }

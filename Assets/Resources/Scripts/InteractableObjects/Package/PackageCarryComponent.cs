@@ -25,7 +25,7 @@ public class PackageCarryComponent : MonoBehaviour
     {
         _rigidbody.useGravity = false;
 
-        _playerCamera = player.GetComponent<PlayerLookComponent>().PlayerCamera;
+        _playerCamera = Camera.main;
         _playerRigidbody = player.GetComponent<Rigidbody>();
 
         _offsetFromPlayer = _playerCamera.transform.InverseTransformPoint(transform.position);
