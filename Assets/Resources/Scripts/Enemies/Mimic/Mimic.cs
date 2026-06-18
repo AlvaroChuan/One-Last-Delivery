@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(PlayerDistanceDetector))]
 [RequireComponent(typeof(EnemyHitbox))]
+[RequireComponent(typeof(EnemyStunComponent))]
 public class Mimic : NetworkBehaviour
 {
     [Header("Settings")]
@@ -27,7 +29,7 @@ public class Mimic : NetworkBehaviour
     private PlayerDistanceDetector _playerDistanceDetector;
     private Rigidbody _rigidbody;
     private EnemyHitbox _hitbox;
-
+    private EnemyStunComponent _stunComponent;
     private GameObject _closestPlayer;
     private float _attackCooldownTimer = 0f;
     private float _playerCheckTimer = 0f;
@@ -38,11 +40,30 @@ public class Mimic : NetworkBehaviour
         _playerDistanceDetector = GetComponent<PlayerDistanceDetector>();
         _rigidbody = GetComponent<Rigidbody>();
         _hitbox = GetComponent<EnemyHitbox>();
+        _stunComponent = GetComponent<EnemyStunComponent>();
+    }
+
+    void OnEnable()
+    {
+        if (isServer)
+        {
+            _stunComponent.onStunChangedEvent += OnStunChanged;
+        }
+    }
+
+    void OnDisable()
+    {
+        if (isServer)
+        {
+            _stunComponent.onStunChangedEvent -= OnStunChanged;
+        }
     }
 
     void Update()
     {
         if (!isServer) return;
+
+        if (_stunComponent.IsStunned) return;
 
         if(_isTransformed && _closestPlayer != null)
         {
@@ -107,5 +128,23 @@ public class Mimic : NetworkBehaviour
         _isTransformed = false;
         _hitbox.enabled = false; // Disable the hitbox when not transformed
         _hitboxCollider.enabled = false; // Disable the hitbox collider when not transformed
+    }
+
+    private void OnStunChanged(EnemyStunComponent.StunChangeInfo info)
+    {
+        if (info.isStunned)
+        {
+            if (_isTransformed)
+            {
+                if (_resetTransformationCoroutine != null)
+                {
+                    StopCoroutine(_resetTransformationCoroutine);
+                    _resetTransformationCoroutine = null;
+                }
+                _isTransformed = false;
+                _hitbox.enabled = false; // Disable the hitbox when stunned
+                _hitboxCollider.enabled = false; // Disable the hitbox collider when stunned
+            }
+        }
     }
 }
