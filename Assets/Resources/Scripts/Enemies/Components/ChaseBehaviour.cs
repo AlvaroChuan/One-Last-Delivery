@@ -11,6 +11,7 @@ public class ChaseBehaviour : NetworkBehaviour
     public GameObject Target => _target;
     private NavMeshAgent _navMeshAgent;
     private bool _isChasing = false;
+    public bool IsChasing => _isChasing;
     public override void OnStartServer()
     {
         base.OnStartServer();

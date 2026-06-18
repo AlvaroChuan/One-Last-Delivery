@@ -7,14 +7,12 @@ using Mirror;
 [RequireComponent(typeof(EnemyStunComponent))]
 public class BasicEnemy : NetworkBehaviour
 {
-    [SerializeField] private float _attackRange = 2f; // Range within which the enemy can attack players
     [SerializeField] private float _playerRecheckInterval = 1f; // Interval to check for players
     private float _playerRecheckTimer = 0f;
-    private ChaseBehaviour _chaseBehaviour;
+    protected ChaseBehaviour _chaseBehaviour;
     private AttackComponent _attackComponent;
     private PlayerDistanceDetector _playerDistanceDetector;
     private EnemyStunComponent _enemyStunComponent;
-    private RaycastHit[] _raycastHitBuffer = new RaycastHit[10]; // Preallocate array for raycast hits
     private bool _isAttacking = false;
     private bool _isStunned = false;
     private GameObject _currentTarget;
@@ -49,7 +47,7 @@ public class BasicEnemy : NetworkBehaviour
         }
     }
 
-    void Update()
+    protected virtual void Update()
     {
         if (!isServer) return;
 
@@ -75,28 +73,11 @@ public class BasicEnemy : NetworkBehaviour
         }
         if (_currentTarget != null)
         {
-            TryAttackPlayer(_currentTarget);
+            _attackComponent.TryAttackIfInRange(_currentTarget);
         }
     }
 
-    void TryAttackPlayer(GameObject player)
-    {
-        if (player == null) return;
 
-        Vector3 directionToPlayer = player.transform.position - transform.position;
-        directionToPlayer.y = 0; // Ignore vertical difference for the raycast
-        directionToPlayer.Normalize();
-        int hitCount = Physics.RaycastNonAlloc(transform.position, directionToPlayer, _raycastHitBuffer, _attackRange);
-
-        for (int i = 0; i < hitCount; i++)
-        {
-            if (_raycastHitBuffer[i].collider.gameObject == player)
-            {
-                _attackComponent.TryAttack();
-                break;
-            }
-        }
-    }
 
     void OnAttackStarted()
     {

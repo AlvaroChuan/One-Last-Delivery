@@ -19,6 +19,11 @@ public class PlayerDistanceDetector : MonoBehaviour
         {
             if (player == null) continue; // Skip if the player reference is null
 
+            if (player.TryGetComponent<PlayerDeathComponent>(out var deathComponent) && deathComponent.IsDead)
+            {
+                continue; // Skip dead players
+            }
+
             float distance = Vector3.Distance(transform.position, player.transform.position);
             if (distance < closestDistance && distance <= _detectionRadius)
             {

@@ -9,8 +9,10 @@ public class AttackComponent : MonoBehaviour
     public Action onAttackStartedEvent;
     public Action onAttackEndedEvent;
     [SerializeField] private float _attackCooldown = 1f; // Time between attacks
+    [SerializeField] private float _attackRange = 2f; // Range within which the enemy can attack players
     private float _currentAttackCooldown = 0f;
     private Animator _animator;
+    private RaycastHit[] _raycastHitBuffer = new RaycastHit[10]; // Preallocate array for raycast hits
 
     void Awake()
     {
@@ -26,6 +28,25 @@ public class AttackComponent : MonoBehaviour
         if (_currentAttackCooldown > 0f)
         {
             _currentAttackCooldown -= Time.deltaTime;
+        }
+    }
+
+    public void TryAttackIfInRange(GameObject target)
+    {
+        if (target == null) return;
+
+        Vector3 directionToPlayer = target.transform.position - transform.position;
+        directionToPlayer.y = 0; // Ignore vertical difference for the raycast
+        directionToPlayer.Normalize();
+        int hitCount = Physics.RaycastNonAlloc(transform.position, directionToPlayer, _raycastHitBuffer, _attackRange);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            if (_raycastHitBuffer[i].collider.gameObject == target)
+            {
+                TryAttack();
+                break;
+            }
         }
     }
 
