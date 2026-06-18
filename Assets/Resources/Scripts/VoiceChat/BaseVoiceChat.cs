@@ -79,6 +79,9 @@ public class BaseVoiceChat : MonoBehaviour
     /// Whether the local microphone is currently muted.
     /// </summary>
     public bool IsMuted { get; private set; }
+    public bool PushToTalkEnabled => _pushToTalkEnabled;
+    public int CurrentMicrophoneIndex => _currentMicrophoneIndex;
+    public float MicrophoneVolume => _microphoneVolume;
 
     #endregion
 
@@ -116,6 +119,14 @@ public class BaseVoiceChat : MonoBehaviour
         _pushToTalkInput.action.canceled -= DeactivatePushToTalk;
     }
 
+    #endregion
+
+    #region Getters
+
+    /*public bool IsMuted()
+    {
+
+    }*/
     #endregion
 
     #region Public Voice Chat API
@@ -190,7 +201,7 @@ public class BaseVoiceChat : MonoBehaviour
             _voiceInputControlFilter.IsMuted = muted;
         }
 
-        UnityEngine.Debug.unityLogger.Log(
+        Debug.unityLogger.Log(
             LogType.Log,
             TAG,
             muted ? "Microphone muted" : "Microphone unmuted"
@@ -373,22 +384,22 @@ public class BaseVoiceChat : MonoBehaviour
 
         _client.OnJoined += (id, peerIds) =>
         {
-            UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, $"You are Peer ID {id}");
+            Debug.unityLogger.Log(LogType.Log, TAG, $"You are Peer ID {id}");
         };
 
         _client.OnLeft += () =>
         {
-            UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "You left the voice chatroom");
+            Debug.unityLogger.Log(LogType.Log, TAG, "You left the voice chatroom");
         };
 
         _client.OnPeerJoined += id =>
         {
-            UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, $"Peer {id} joined voice chat");
+            Debug.unityLogger.Log(LogType.Log, TAG, $"Peer {id} joined voice chat");
         };
 
         _client.OnPeerLeft += id =>
         {
-            UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, $"Peer {id} left voice chat");
+            Debug.unityLogger.Log(LogType.Log, TAG, $"Peer {id} left voice chat");
         };
 
         Debug.unityLogger.Log(LogType.Log, TAG, "Created MirrorClient object");
@@ -397,11 +408,11 @@ public class BaseVoiceChat : MonoBehaviour
 
         IAudioOutputFactory outputFactory = new StreamedAudioSourceOutput.Factory();
 
-        UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Using StreamedAudioSourceOutput.Factory as output factory");
+        Debug.unityLogger.Log(LogType.Log, TAG, "Using StreamedAudioSourceOutput.Factory as output factory");
 
         ClientSession = new ClientSession<int>(_client, input, outputFactory);
 
-        UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Created voice session");
+        Debug.unityLogger.Log(LogType.Log, TAG, "Created voice session");
 
         _voiceInputControlFilter = new VoiceInputControlFilter
         {
@@ -460,13 +471,13 @@ public class BaseVoiceChat : MonoBehaviour
 
         if (Mic.AvailableDevices.Count == 0)
         {
-            UnityEngine.Debug.unityLogger.Log(
+            Debug.unityLogger.Log(
                 LogType.Log,
                 TAG,
                 "Device has no microphones. Will only be able to hear other clients, cannot send any audio."
             );
 
-            UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Created EmptyAudioInput");
+            Debug.unityLogger.Log(LogType.Log, TAG, "Created EmptyAudioInput");
 
             _currentInput = new EmptyAudioInput();
             _currentMicrophoneIndex = -1;
@@ -482,7 +493,7 @@ public class BaseVoiceChat : MonoBehaviour
 
         _currentMicrophoneIndex = deviceIndex;
 
-        UnityEngine.Debug.unityLogger.Log(
+        Debug.unityLogger.Log(
             LogType.Log,
             TAG,
             "Started recording with Mic device named " +
@@ -492,7 +503,7 @@ public class BaseVoiceChat : MonoBehaviour
 
         _currentInput = new UniMicInput(mic);
 
-        UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Created UniMicInput");
+        Debug.unityLogger.Log(LogType.Log, TAG, "Created UniMicInput");
 
         return _currentInput;
     }

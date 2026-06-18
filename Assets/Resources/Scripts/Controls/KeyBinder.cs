@@ -34,7 +34,6 @@ public class KeyBinder : MonoBehaviour
 
         _rebindOperation = _action.PerformInteractiveRebinding()
             .WithBindingGroup("Keyboard&Mouse")
-            .WithControlsExcluding("Mouse")
             .WithCancelingThrough("<Keyboard>/escape")
             .OnComplete(x => FinishRebinding())
             .OnCancel(x => CancelRebinding())
@@ -65,7 +64,9 @@ public class KeyBinder : MonoBehaviour
 
     private void UpdateBindingDisplay()
     {
-        string displayString = _action.GetBindingDisplayString();
+        string displayString = _action.GetBindingDisplayString(
+            InputBinding.DisplayStringOptions.DontUseShortDisplayNames,
+            "Keyboard&Mouse");
         _bindingText.text = displayString;
     }
 

@@ -6107,9 +6107,6 @@ MonoBehaviour:
   _startMuted: 0
   _pushToTalkEnabled: 0
   _pushToTalkInput: {fileID: -1199959785099435234, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  _defaultMicrophoneIndex: 0
-  _microphoneVolumeSlider: {fileID: 0}
-  _microphoneVolumeText: {fileID: 0}
   _microphoneVolume: 1
 --- !u!114 &1794452871 stripped
 MonoBehaviour:
@@ -7459,6 +7456,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7516066471434123531, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7553553661941463319, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8193458464433808010, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}

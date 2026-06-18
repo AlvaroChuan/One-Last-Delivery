@@ -850,7 +850,7 @@ MonoBehaviour:
   - itemID: 4
     item: {fileID: 9137903591430432154}
   - itemID: 5
-    item: {fileID: 7536628629068665602}
+    item: {fileID: 6187166842188687155}
   _carriedPackage: {fileID: 0}
 --- !u!114 &5535736397123714588
 MonoBehaviour:
@@ -1210,7 +1210,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8805882298280181877}
-  - component: {fileID: 7536628629068665602}
+  - component: {fileID: 6187166842188687155}
   m_Layer: 0
   m_Name: WalkieTalkie
   m_TagString: Untagged
@@ -1234,7 +1234,7 @@ Transform:
   - {fileID: 8273341685121984630}
   m_Father: {fileID: 5573923244049570718}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7536628629068665602
+--- !u!114 &6187166842188687155
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1243,7 +1243,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7804391787279017990}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf0b558cd30d1f14894280fdf273a342, type: 3}
+  m_Script: {fileID: 11500000, guid: dc8d73e52efabe849b64711240f67c4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0

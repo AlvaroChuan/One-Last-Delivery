@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 6379415961260568488}
   - component: {fileID: 6727933770718964362}
   - component: {fileID: 8243692011557601798}
-  - component: {fileID: 8147823512279846051}
   m_Layer: 3
   m_Name: WalkieTalkie
   m_TagString: Untagged
@@ -59,7 +58,7 @@ MonoBehaviour:
     itemID: 5
     oneShot: 0
     infiniteDurability: 0
-    durability: 100
+    durability: 1000
     durabilityCost: 5
 --- !u!114 &8432997841342778207
 MonoBehaviour:
@@ -186,21 +185,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e51659ab504e364e84270c9bda4a34f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
---- !u!114 &8147823512279846051
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3626590714432623591}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc8d73e52efabe849b64711240f67c4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0

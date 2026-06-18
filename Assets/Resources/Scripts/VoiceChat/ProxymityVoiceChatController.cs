@@ -35,14 +35,23 @@ public class ProxymityVoiceChatController : BaseVoiceChat
 
     private IEnumerator ConfigureAudio(int id)
     {
-        yield return new WaitForEndOfFrame();
-
         if (ClientSession == null || !ClientSession.PeerOutputs.ContainsKey(id)) yield break;
 
         IAudioOutput peerOutput = ClientSession.PeerOutputs[id];
         StreamedAudioSourceOutput streamedAudioSourceOutput = peerOutput as StreamedAudioSourceOutput;
         AudioSource peerAudioSource = streamedAudioSourceOutput.Stream.UnityAudioSource;
-        Transform peerAvatar = GetAvatarForPeerID(id);
+        
+        Transform peerAvatar = null;
+        float timeout = 10f;
+        while (peerAvatar == null && timeout > 0f)
+        {
+            peerAvatar = GetAvatarForPeerID(id);
+            if (peerAvatar == null)
+            {
+                yield return new WaitForSeconds(0.5f);
+                timeout -= 0.5f;
+            }
+        }
 
         if (peerAvatar != null)
         {
