@@ -7,6 +7,7 @@ public class Specter : BasicEnemy
     private FieldOfViewDetector _fieldOfViewDetector;
     bool _isInFOV = false;
     int _inFOVCount = 0;
+    bool _checkedAfterLeavingFOV = false;
 
     private void Awake()
     {
@@ -20,11 +21,17 @@ public class Specter : BasicEnemy
 
         if (_inFOVCount > 0)
         {
+            _checkedAfterLeavingFOV = false;
             if (_chaseBehaviour.IsChasing)
             {
                 _chaseBehaviour.StopChasing();
             }
             return;
+        }
+        else if (_inFOVCount <= 0 && !_checkedAfterLeavingFOV)
+        {
+            _checkedAfterLeavingFOV = true;
+            CheckForPlayer();
         }
 
         base.Update();
@@ -58,6 +65,10 @@ public class Specter : BasicEnemy
 
     bool PlayerDead()
     {
+        if(NetworkClient.connection == null || NetworkClient.connection.identity == null)
+        {
+            return true; // Consider player dead if we can't find the player object
+        }
         GameObject player = NetworkClient.connection.identity?.gameObject;
         if (player == null)
         {

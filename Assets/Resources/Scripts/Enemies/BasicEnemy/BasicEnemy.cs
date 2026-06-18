@@ -59,17 +59,7 @@ public class BasicEnemy : NetworkBehaviour
         if (_playerRecheckTimer >= _playerRecheckInterval)
         {
             _playerRecheckTimer = 0f;
-            _currentTarget = _playerDistanceDetector.DetectClosestPlayer();
-
-            if (_currentTarget != null)
-            {
-                _chaseBehaviour.SetTarget(_currentTarget);
-                _chaseBehaviour.StartChasing();
-            }
-            else
-            {
-                _chaseBehaviour.StopChasing();
-            }
+            CheckForPlayer();
         }
         if (_currentTarget != null)
         {
@@ -77,7 +67,20 @@ public class BasicEnemy : NetworkBehaviour
         }
     }
 
+    protected void CheckForPlayer()
+    {
+        _currentTarget = _playerDistanceDetector.DetectClosestPlayer();
 
+        if (_currentTarget != null)
+        {
+            _chaseBehaviour.SetTarget(_currentTarget);
+            _chaseBehaviour.StartChasing();
+        }
+        else
+        {
+            _chaseBehaviour.StopChasing();
+        }
+    }
 
     void OnAttackStarted()
     {

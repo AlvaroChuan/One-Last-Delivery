@@ -5,8 +5,10 @@ public class FieldOfViewDetector : MonoBehaviour
     [SerializeField] float _maxViewDistance = 50f;
     [SerializeField] LayerMask _obstructionMask;
     [SerializeField] Vector2 _padding = new Vector2(0.1f, 0.1f); // Padding to avoid edge cases
+    [SerializeField] Transform[] _raycastOrigins; // Points from which to cast rays for FOV detection
     private bool _cachedIsInFOV;
     private bool _isCached;
+
     public bool IsInFOV()
     {
         if (!_isCached)
@@ -32,10 +34,20 @@ public class FieldOfViewDetector : MonoBehaviour
             return false;
         }
 
-        Vector3 directionToCamera = (Camera.main.transform.position - transform.position).normalized;
-        float distanceToCamera = Vector3.Distance(transform.position, Camera.main.transform.position);
+        Vector3 camPos = Camera.main.transform.position;
 
-        return !Physics.Raycast(transform.position, directionToCamera, distanceToCamera, _obstructionMask);
+        foreach (Transform origin in _raycastOrigins)
+        {
+            Vector3 directionToPoint = (origin.position - camPos).normalized;
+            float distanceToPoint = Vector3.Distance(camPos, origin.position);
+
+            if (!Physics.Raycast(camPos, directionToPoint, distanceToPoint, _obstructionMask, QueryTriggerInteraction.Ignore))
+            {
+                return true; // Found a clear sliver of sight! The object is NOT completely blocked.
+            }
+        }
+
+        return false;
     }
 
     void LateUpdate()
