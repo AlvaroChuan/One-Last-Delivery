@@ -60,10 +60,15 @@ public struct TrafficBatchMessage : NetworkMessage
     public byte[] lightStates;
 }
 
-public struct CrashCarMessage : NetworkMessage
+public struct ServerCarCrashCarMessage : NetworkMessage
 {
     public uint carId;
     public Vector3 position;
     public Quaternion rotation;
     public Vector3 impactVelocity;
+}
+
+public struct ClientCarCrashCarMessage : NetworkMessage
+{
+    public uint carId;
 }

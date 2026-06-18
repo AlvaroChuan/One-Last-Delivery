@@ -49,7 +49,7 @@ public struct CarSimulationJob : IJobParallelFor
             } while (vehicleMap.TryGetNextValue(out otherIndex, ref it));
         }
 
-        
+
         // Lane changing logic (MOBIL inspired) NOT WORKING CHECK IN THE FUTURE
         bool canEnterIntersection = true;
         float distanceToEnd = currentEdge.length - vehicle.distance;
@@ -131,7 +131,7 @@ public struct CarSimulationJob : IJobParallelFor
                 float lengthRatio = edges[bestTargetEdge].length / currentEdge.length;
                 vehicle.distance *= lengthRatio;
                 vehicle.lastLaneChangeTime = 0;
-                
+
                 currentEdge = edges[bestTargetEdge];
                 distanceToFront = bestTargetLaneDistToFront;
             }
@@ -168,7 +168,7 @@ public struct CarSimulationJob : IJobParallelFor
                 Random nextRandom = new Random(nextStableSeed);
                 int nextNextEdgeOffset = nextRandom.NextInt(0, nextEdge.connectionCount);
                 int nextNextEdgeId = connections[nextEdge.connectionStartIndex + nextNextEdgeOffset];
-                
+
                 if (vehicleMap.TryGetFirstValue(nextNextEdgeId, out int nextNextIdx, out NativeParallelMultiHashMapIterator<int> nextNextIt))
                 {
                     do
@@ -186,7 +186,7 @@ public struct CarSimulationJob : IJobParallelFor
             {
                 int* locksPtr = (int*)nodeLocks.GetUnsafePtr();
                 int myLockValue = (int)currentEdge.id + 1; // Use approach lane ID to share lock with vehicles behind
-                
+
                 int currentLock = Interlocked.CompareExchange(ref locksPtr[nextEdgeId], myLockValue, 0);
                 bool ownsLock = currentLock == 0 || currentLock == myLockValue;
 
@@ -196,7 +196,7 @@ public struct CarSimulationJob : IJobParallelFor
                     for (int i = 0; i < nextEdge.conflictCount; i++)
                     {
                         ushort conflictId = conflicts[nextEdge.conflictStartIndex + i];
-                        
+
                         int confLock = Interlocked.CompareExchange(ref locksPtr[conflictId], 0, 0);
                         if (confLock != 0 && confLock != myLockValue)
                         {
@@ -233,7 +233,7 @@ public struct CarSimulationJob : IJobParallelFor
         float dynamicSafeDistance = safeDistance + vehicle.speed * 1.0f;
         if (distanceToFront < dynamicSafeDistance || !canEnterIntersection)
         {
-            vehicle.speed -= acceleration * 2f * deltaTime; 
+            vehicle.speed -= acceleration * 2f * deltaTime;
             if (vehicle.speed < 0f) vehicle.speed = 0f;
         }
         else
@@ -242,7 +242,7 @@ public struct CarSimulationJob : IJobParallelFor
             if (vehicle.speed > maxSpeed) vehicle.speed = maxSpeed;
         }
         vehicle.distance += vehicle.speed * deltaTime;
-        
+
         // Check end of edge and decide next edge or stop if there aren't
         if (vehicle.distance >= currentEdge.length)
         {
@@ -253,13 +253,13 @@ public struct CarSimulationJob : IJobParallelFor
                 int nextEdgeOffset = random.NextInt(0, currentEdge.connectionCount);
                 int nextEdgeId = connections[currentEdge.connectionStartIndex + nextEdgeOffset];
 
-                vehicle.currentEdgeId = nextEdgeId; 
-                vehicle.distance = 0f; 
+                vehicle.currentEdgeId = nextEdgeId;
+                vehicle.distance = 0f;
             }
             else
             {
-                vehicle.distance = currentEdge.length; 
-                vehicle.speed = 0f; 
+                vehicle.distance = currentEdge.length;
+                vehicle.speed = 0f;
             }
         }
         vehicles[index] = vehicle;

@@ -1,24 +1,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System;
 
 public class TrafficClient : MonoBehaviour
 {
     [SerializeField] private TrafficGraph _trafficGraph;
-    [SerializeField] private GameObject _vehiclePrefab;
-    
+    [SerializeField] private GameObject[] _vehiclePrefabs;
+
     private Dictionary<uint, TrafficVehicleVisual> _vehicles = new Dictionary<uint, TrafficVehicleVisual>();
     [HideInInspector]
     public TrafficLightController[] trafficLights;
 
-    private void Start()
+    private void OnEnable()
     {
         NetworkClient.RegisterHandler<TrafficBatchMessage>(OnTrafficBatchReceived);
+        NetworkClient.RegisterHandler<ClientCarCrashCarMessage>(OnClientCarCrashCarReceived);
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         NetworkClient.UnregisterHandler<TrafficBatchMessage>();
+        NetworkClient.UnregisterHandler<ClientCarCrashCarMessage>();
     }
 
     private Dictionary<uint, float> _vehicleLastUpdate = new Dictionary<uint, float>();
@@ -47,6 +50,7 @@ public class TrafficClient : MonoBehaviour
         }
     }
 
+/*
     private void Update()
     {
         List<uint> toRemove = new List<uint>();
@@ -68,15 +72,26 @@ public class TrafficClient : MonoBehaviour
             _vehicleLastUpdate.Remove(id);
         }
     }
+*/
 
     private TrafficVehicleVisual SpawnVehicle(uint id)
     {
-        GameObject go = Instantiate(_vehiclePrefab);
+        GameObject go = Instantiate(_vehiclePrefabs[id % _vehiclePrefabs.Length], transform);
         TrafficVehicleVisual visual = go.GetComponent<TrafficVehicleVisual>();
         visual.CarId = id;
         visual.Initialize(_trafficGraph);
 
         _vehicles.Add(id, visual);
         return visual;
+    }
+
+    private void OnClientCarCrashCarReceived(ClientCarCrashCarMessage message)
+    {
+        if (_vehicles.TryGetValue(message.carId, out TrafficVehicleVisual visual))
+        {
+            if (visual != null) Destroy(visual.gameObject);
+            _vehicles.Remove(message.carId);
+        }
+        _vehicleLastUpdate.Remove(message.carId);
     }
 }

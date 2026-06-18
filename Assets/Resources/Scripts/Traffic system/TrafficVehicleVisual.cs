@@ -3,14 +3,15 @@ using UnityEngine;
 public class TrafficVehicleVisual : MonoBehaviour
 {
     public uint CarId { get; set; }
-    
+
     private TrafficGraph _graph;
     private int _targetEdgeIndex = -1;
     private float _logicalDistance;
     private float _networkSpeed;
+    public float NetworkSpeed => _networkSpeed;
     private Vector3 _targetPosition;
     private Quaternion _targetRotation;
-    
+
     [Header("Network Smoothing settings")]
     [SerializeField] private float _logicalCorrectionFactor = 0.1f;
     [SerializeField] private float _logicalDistanceThreshold = 10f;
@@ -44,16 +45,16 @@ public class TrafficVehicleVisual : MonoBehaviour
                 int indexA = Mathf.FloorToInt(floatIndex);
                 int indexB = Mathf.Min(indexA + 1, newEdge.points.Length - 1);
                 float t = floatIndex - indexA;
-                
+
                 Vector3 newTargetPos = Vector3.Lerp(newEdge.points[indexA].position, newEdge.points[indexB].position, t);
                 Vector3 newTargetDir = Vector3.Lerp(newEdge.points[indexA].tangent, newEdge.points[indexB].tangent, t);
-                
+
                 Vector3 toNewTarget = transform.position - newTargetPos;
                 Vector3 rightVec = Vector3.Cross(Vector3.up, newTargetDir).normalized;
                 float lateralDist = Vector3.Dot(toNewTarget, rightVec);
-                
+
                 // If it's a sideways jump (lane change), store the offset to smooth it out
-                if (Mathf.Abs(lateralDist) > 1.5f && Mathf.Abs(lateralDist) < 10.0f) 
+                if (Mathf.Abs(lateralDist) > 1.5f && Mathf.Abs(lateralDist) < 10.0f)
                 {
                     _currentLateralOffset = lateralDist;
                 }
@@ -65,8 +66,8 @@ public class TrafficVehicleVisual : MonoBehaviour
         else
         {
             float error = distance - _logicalDistance;
-            if (Mathf.Abs(error) > _logicalDistanceThreshold)  _logicalDistance = distance;  
-            else _logicalDistance += error * _logicalCorrectionFactor;  
+            if (Mathf.Abs(error) > _logicalDistanceThreshold)  _logicalDistance = distance;
+            else _logicalDistance += error * _logicalCorrectionFactor;
         }
         _networkSpeed = speed;
     }
@@ -78,11 +79,11 @@ public class TrafficVehicleVisual : MonoBehaviour
         _logicalDistance += _networkSpeed * Time.deltaTime;
 
         TrafficEdge edge = _graph.edges[_targetEdgeIndex];
-        
+
         // Clamp position to edge limits
         float clampedDistance = Mathf.Clamp(_logicalDistance, 0f, edge.length);
         float normalizedT = edge.length > 0 ? clampedDistance / edge.length : 0f;
-        
+
         float floatIndex = normalizedT * (edge.points.Length - 1);
         int indexA = Mathf.FloorToInt(floatIndex);
         int indexB = Mathf.Min(indexA + 1, edge.points.Length - 1);
@@ -90,7 +91,7 @@ public class TrafficVehicleVisual : MonoBehaviour
 
         _targetPosition = Vector3.Lerp(edge.points[indexA].position, edge.points[indexB].position, t);
         Vector3 dir = Vector3.Lerp(edge.points[indexA].tangent, edge.points[indexB].tangent, t);
-        
+
         if (dir != Vector3.zero) _targetRotation = Quaternion.LookRotation(dir);
 
         // Extrapolate when awaiting data and edge length is exceeded

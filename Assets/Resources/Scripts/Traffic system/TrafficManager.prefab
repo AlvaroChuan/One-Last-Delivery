@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 0
-  _assetId: 0
+  _assetId: 789457168
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
@@ -69,6 +69,8 @@ MonoBehaviour:
   - {fileID: 0}
   _pointsPerEdge: 20
   _connectionThreshold: 1
+  _trafficLightSearchRadius: 15
+  _laneDistanceThreshold: 5
 --- !u!114 &8227465571552678054
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,12 +87,21 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _trafficGraph: {fileID: 11400000, guid: 1b0685675873183488283ceb5109fce6, type: 2}
-  _totalVehicles: 50
+  _wreckPrefab: {fileID: 0}
+  _initialVehiclesToSpawn: 200
+  _maxVehicleCapacity: 2000
   _vehicleMaxSpeed: 20
   _vehicleAcceleration: 5
   _safeDistance: 5
+  _spawnSpacing: 15
   _networkTickRate: 0.1
   _maxBatchSize: 100
+  _greenTime: 10
+  _yellowTime: 3
+  _bothRedTime: 1
+  _spatialGridCellSize: 20
+  _obstacleSnapDistance: 5
+  trafficLights: []
 --- !u!114 &5234839964796977862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,3 +116,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _trafficGraph: {fileID: 11400000, guid: 1b0685675873183488283ceb5109fce6, type: 2}
   _vehiclePrefab: {fileID: 7680324919787913421, guid: 0e29eef36184a6549ba8bf7d5b20b8b9, type: 3}
+  trafficLights: []

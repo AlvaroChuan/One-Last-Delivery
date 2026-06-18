@@ -15,6 +15,7 @@ public class TrafficManager : NetworkBehaviour
     [SerializeField] private float _vehicleAcceleration = 5f;
     [SerializeField] private float _safeDistance = 5f;
     [SerializeField] private float _spawnSpacing = 15f;
+    [SerializeField] private int _respawnEdgeId = 0; // Default edge ID for respawning vehicles
 
     [Header("Network Settings")]
     [SerializeField] private float _networkTickRate = 0.1f;
@@ -38,34 +39,35 @@ public class TrafficManager : NetworkBehaviour
     private NativeArray<ushort> _edgeConflicts;
     private NativeArray<int> _nodeLocks;
     private NativeArray<byte> _edgeStopSignals;
-    
+
     // Traffic Light Data
     private NativeArray<NativeIntersection> _intersections;
     private NativeArray<int> _intersectionLightIds;
     private NativeArray<ushort> _lightToEdgeMapping;
     private NativeArray<byte> _lightStates;
-    
+
     // Spatial Grid for Dynamic Obstacles
     private NativeArray<EdgePoint> _allPoints;
     private NativeParallelMultiHashMap<int, int> _spatialGrid;
     private NativeArray<DynamicObstacleData> _dynamicObstacles;
     private NativeArray<NativeObstacle> _mappedObstacles;
-    
+
     [HideInInspector]
     public TrafficLightController[] trafficLights;
     private float _nextSyncTime;
 
-    private void Start()
+    public override void OnStartServer()
     {
-        if (!isServer) return; 
-        
-        NetworkServer.RegisterHandler<CrashCarMessage>(OnCrashCarMessage);
+        NetworkServer.RegisterHandler<ServerCarCrashCarMessage>(OnCrashCarMessage);
 
         InitializeGraph();
         InitializeVehicles();
     }
 
-
+    public override void OnStopServer()
+    {
+        NetworkServer.UnregisterHandler<ServerCarCrashCarMessage>();
+    }
 
     private void Update()
     {
@@ -160,7 +162,7 @@ public class TrafficManager : NetworkBehaviour
             safeDistance = _safeDistance,
             randomSeed = (uint) Random.Range(1, 100000)
         };
-        
+
         JobHandle combinedHandle = JobHandle.CombineDependencies(mapObstaclesHandle, lightHandle);
         JobHandle handle = simulationJob.Schedule(_vehicleStates.Length, 64, combinedHandle);
         handle.Complete();
@@ -231,12 +233,14 @@ public class TrafficManager : NetworkBehaviour
                 var v = _vehicleStates[i];
                 v.currentEdgeId = -1;
                 _vehicleStates[i] = v;
+
+                NetworkServer.SendToReady(new ClientCarCrashCarMessage { carId = vehicleId }, Channels.Reliable);
                 return;
             }
         }
     }
 
-    private void OnCrashCarMessage(NetworkConnectionToClient conn, CrashCarMessage msg)
+    private void OnCrashCarMessage(NetworkConnectionToClient conn, ServerCarCrashCarMessage msg)
     {
         // 1. Despawn from Job System
         DespawnVehicle(msg.carId);
@@ -251,20 +255,23 @@ public class TrafficManager : NetworkBehaviour
             if (rb != null)
             {
                 // Give it a rough tumbling force based on player impact
-                rb.AddForce(msg.impactVelocity * 1500f, ForceMode.Impulse);
-                rb.AddTorque(Random.insideUnitSphere * 5000f, ForceMode.Impulse);
+                rb.AddForce(msg.impactVelocity, ForceMode.Impulse);
+                rb.AddTorque(Random.insideUnitSphere * msg.impactVelocity.magnitude, ForceMode.Impulse);
             }
         }
+
+        // 3. Respawn a replacement vehicle
+        SpawnVehicle(_respawnEdgeId, 0f); // Respawn at the start of the designated edge
     }
 
     private void InitializeGraph()
     {
         _edgeStates = new NativeArray<NativeEdge>(_trafficGraph.edges.Count, Allocator.Persistent);
-        
+
         List<ushort> allConnections = new List<ushort>();
         List<ushort> allConflicts = new List<ushort>();
         List<EdgePoint> allPointsList = new List<EdgePoint>();
-        
+
         // Count total points for spatial hash estimation
         int totalPoints = 0;
         foreach (var e in _trafficGraph.edges) totalPoints += e.points.Length;
@@ -283,7 +290,7 @@ public class TrafficManager : NetworkBehaviour
 
             int pointsStart = allPointsList.Count;
             int pointsCount = _trafficGraph.edges[i].points.Length;
-            
+
             HashSet<int> edgeGridCells = new HashSet<int>();
 
             for (int p = 0; p < pointsCount; p++)
@@ -294,7 +301,7 @@ public class TrafficManager : NetworkBehaviour
                 int gridX = (int)Mathf.Floor(pt.position.x / _spatialGridCellSize);
                 int gridZ = (int)Mathf.Floor(pt.position.z / _spatialGridCellSize);
                 int gridKey = (gridX * 73856) ^ (gridZ * 19284);
-                
+
                 // Add to multi-hash map if not already added for this edge
                 if (edgeGridCells.Add(gridKey))
                 {
@@ -322,7 +329,7 @@ public class TrafficManager : NetworkBehaviour
         _allPoints = new NativeArray<EdgePoint>(allPointsList.ToArray(), Allocator.Persistent);
         _nodeLocks = new NativeArray<int>(_trafficGraph.edges.Count, Allocator.Persistent);
         _edgeStopSignals = new NativeArray<byte>(_trafficGraph.edges.Count, Allocator.Persistent);
-        
+
         // Initialize max 10 dynamic obstacles
         _dynamicObstacles = new NativeArray<DynamicObstacleData>(10, Allocator.Persistent);
         _mappedObstacles = new NativeArray<NativeObstacle>(10, Allocator.Persistent);
@@ -387,7 +394,7 @@ public class TrafficManager : NetworkBehaviour
         }
 
         int carsToSpawn = Mathf.Min(_initialVehiclesToSpawn, possibleSpawns.Count);
-        
+
         _vehicleStates = new NativeArray<NativeVehicle>(_maxVehicleCapacity, Allocator.Persistent);
         _previousVehicleStates = new NativeArray<NativeVehicle>(_maxVehicleCapacity, Allocator.Persistent);
         _edgeToVehiclesMap = new NativeParallelMultiHashMap<int, int>(_maxVehicleCapacity, Allocator.Persistent);
@@ -427,7 +434,7 @@ public class TrafficManager : NetworkBehaviour
 
     private void OnDestroy()
     {
-        if (isServer) NetworkServer.UnregisterHandler<CrashCarMessage>();
+        if (isServer) NetworkServer.UnregisterHandler<ServerCarCrashCarMessage>();
 
         if (_vehicleStates.IsCreated) _vehicleStates.Dispose();
         if (_edgeStates.IsCreated) _edgeStates.Dispose();
