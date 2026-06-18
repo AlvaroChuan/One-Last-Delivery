@@ -152,7 +152,10 @@ public class SteamLobbyManager : MonoBehaviour
             yield return new WaitForSeconds(1f);
             countdown -= 1;
         }
-        NetworkManager.singleton.ServerChangeScene(_gameSceneName);
+        if (NetworkServer.active)
+        {
+            NetworkManager.singleton.ServerChangeScene(_gameSceneName);
+        }
     }
 
     private void OnLobbyChatUpdate(LobbyChatUpdate_t callback)
