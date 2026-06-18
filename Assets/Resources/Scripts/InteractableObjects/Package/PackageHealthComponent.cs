@@ -56,7 +56,7 @@ public class PackageHealthComponent : NetworkBehaviour
         {
             ServerTakeDamage(damage);
         }
-        else
+        else if (isOwned)
         {
             CmdTakeDamage(damage);
         }
