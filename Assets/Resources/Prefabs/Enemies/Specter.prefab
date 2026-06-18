@@ -52,6 +52,7 @@ GameObject:
   - component: {fileID: 1508640075283171735}
   - component: {fileID: 4949009883274238217}
   - component: {fileID: 3791176424422493989}
+  - component: {fileID: 1745047085939644261}
   m_Layer: 6
   m_Name: Specter
   m_TagString: Untagged
@@ -312,6 +313,40 @@ MonoBehaviour:
   - {fileID: 4931446574599376401}
   - {fileID: 1979259440937316864}
   - {fileID: 8738928023522917928}
+--- !u!114 &1745047085939644261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2340398685216393081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 1020497355370737988}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  useFixedUpdate: 0
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
 --- !u!1 &5639984884656656329
 GameObject:
   m_ObjectHideFlags: 0
