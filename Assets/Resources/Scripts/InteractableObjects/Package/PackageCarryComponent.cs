@@ -12,7 +12,6 @@ public class PackageCarryComponent : MonoBehaviour
     Rigidbody _rigidbody;
 
     Rigidbody _playerRigidbody;
-    Camera _playerCamera;
 
     bool _isCarried = false;
 
@@ -25,10 +24,9 @@ public class PackageCarryComponent : MonoBehaviour
     {
         _rigidbody.useGravity = false;
 
-        _playerCamera = Camera.main;
         _playerRigidbody = player.GetComponent<Rigidbody>();
 
-        _offsetFromPlayer = _playerCamera.transform.InverseTransformPoint(transform.position);
+        _offsetFromPlayer = Camera.main.transform.InverseTransformPoint(transform.position);
         _offsetFromPlayer.x = 0; // Keep the package centered horizontally relative to the player
 
         _isCarried = true;
@@ -38,7 +36,6 @@ public class PackageCarryComponent : MonoBehaviour
     {
         _rigidbody.useGravity = true;
 
-        _playerCamera = null;
         _playerRigidbody = null;
 
         _isCarried = false;
@@ -54,7 +51,7 @@ public class PackageCarryComponent : MonoBehaviour
 
     void HandlePosition()
     {
-        Vector3 targetPosition = _playerCamera.transform.TransformPoint(_offsetFromPlayer);
+        Vector3 targetPosition = Camera.main.transform.TransformPoint(_offsetFromPlayer);
         Vector3 forceDirection = targetPosition - transform.position;
 
         _rigidbody.linearVelocity = Vector3.Lerp(_rigidbody.linearVelocity, _playerRigidbody.linearVelocity, _damping * Time.fixedDeltaTime); // Inherit player's velocity while being carried
@@ -63,7 +60,7 @@ public class PackageCarryComponent : MonoBehaviour
         _rigidbody.AddForce(forceDirection * _carryForce * (1 + forceDirection.magnitude * _distanceForceScaling), ForceMode.Acceleration);
 
         //Remove all velocity away from the player if package is too far
-        Vector3 vectorToPlayer = transform.position - _playerCamera.transform.position;
+        Vector3 vectorToPlayer = transform.position - Camera.main.transform.position;
         if(vectorToPlayer.magnitude > _offsetFromPlayer.magnitude * 1.2f)
         {
             Vector3 velocityAwayFromPlayer = Vector3.Project(_rigidbody.linearVelocity, vectorToPlayer);
@@ -74,12 +71,12 @@ public class PackageCarryComponent : MonoBehaviour
     void HandleRotation()
     {
         //Apply torque to face the package forward relative to the player
-        Quaternion targetRotation = _playerRigidbody.transform.rotation;
+        Quaternion targetRotation = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
         Quaternion currentRotation = transform.rotation;
         Quaternion rotationDifference = targetRotation * Quaternion.Inverse(currentRotation);
         rotationDifference.ToAngleAxis(out float angleInDegrees, out Vector3 rotationAxis);
         if (angleInDegrees > 180f) angleInDegrees -= 360f;
-        Vector3 torque = rotationAxis * angleInDegrees * Time.fixedDeltaTime;
+        Vector3 torque = angleInDegrees * Time.fixedDeltaTime * rotationAxis;
         _rigidbody.AddTorque(torque, ForceMode.VelocityChange);
 
         //Apply damping to angular velocity to prevent oscillations

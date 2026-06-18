@@ -54,7 +54,6 @@ public class AttackComponent : MonoBehaviour
     {
         if (_currentAttackCooldown <= 0f)
         {
-            DevLogger.Log("Attack initiated.");
             _currentAttackCooldown = _attackCooldown; // Reset cooldown
             onAttackStartedEvent?.Invoke(); // Notify that the attack has started
             _animator.SetTrigger(AttackHash); // Trigger the attack animation
@@ -65,7 +64,6 @@ public class AttackComponent : MonoBehaviour
 
     public void OnAttackAnimationEnd()
     {
-        DevLogger.Log("Attack animation ended.");
         onAttackEndedEvent?.Invoke();
     }
 }
