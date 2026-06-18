@@ -12,13 +12,13 @@ public class TrafficClient : MonoBehaviour
     [HideInInspector]
     public TrafficLightController[] trafficLights;
 
-    private void OnEnable()
+    private void Awake()
     {
         NetworkClient.RegisterHandler<TrafficBatchMessage>(OnTrafficBatchReceived);
         NetworkClient.RegisterHandler<ClientCarCrashCarMessage>(OnClientCarCrashCarReceived);
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         NetworkClient.UnregisterHandler<TrafficBatchMessage>();
         NetworkClient.UnregisterHandler<ClientCarCrashCarMessage>();
