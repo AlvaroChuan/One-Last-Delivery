@@ -273,4 +273,4 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _explosionDelay: 5
+  _explosionDelay: 20
