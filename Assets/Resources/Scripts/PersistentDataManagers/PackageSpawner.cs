@@ -37,6 +37,7 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
     [SerializeField] CoordinateOrder _coordinateOrder = CoordinateOrder.XZY;
     [SerializeField] float _packageSize = 1f;
     [SerializeField] float _corruptionChance = 0.1f; // 10% chance to corrupt a package
+    [SerializeField] int _maxCorruptedPackages = 2; // Maximum number of packages that can be corrupted at once
     public static List<AddressInfo> UsedAddresses = new List<AddressInfo>();
     [SyncVar] private int _packagesToSpawn;
     private List<GameObject> _spawnedPackages = new List<GameObject>();
@@ -238,17 +239,17 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
         }
     }
 
-    void TryCorruptPackage()
+    bool TryCorruptPackage()
     {
         if (Random.value > _corruptionChance)
         {
-            return;
+            return false;
         }
 
         if (!EnoughPackagesToCorrupt())
         {
             DevLogger.LogWarning("Not enough packages to corrupt. Skipping corruption process.");
-            return;
+            return false;
         }
 
         GameObject packageToCorrupt;
@@ -266,7 +267,7 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
         if (newAddress.streetName == null || newAddress.streetName == "") // Check for empty or null street name
         {
             DevLogger.LogError("Failed to find a valid unused address for corruption. This likely means there are not enough unique addresses available. Stopping corruption process to prevent infinite loop.");
-            return;
+            return false; // Exit the method to prevent further corruption
         }
 
         addressComponent.SetAddress(newAddress);
@@ -276,6 +277,15 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
         door.GetComponent<DoorController>().CorruptDoor();
 
         DevLogger.Log($"Package at {packageToCorrupt.transform.position} has been corrupted with a new address: {newAddress}");
+        return true;
+    }
+
+    void OnHourlyUpdate()
+    {
+        if (isServer)
+        {
+            TryCorruptPackage();
+        }
     }
 
     bool EnoughPackagesToCorrupt()
