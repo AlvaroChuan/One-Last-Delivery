@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -39,13 +40,12 @@ public class PlayerInteractComponent : InputComponent
         RaycastHit hitInfo;
         if (Physics.SphereCast(ray, _interactionSphereRadius, out hitInfo, _interactionRange, _interactableLayerMask))
         {
-            Interactable interactable = hitInfo.collider.GetComponent<Interactable>();
-            if (interactable == null)
+            Interactable[] interactables = hitInfo.collider.GetComponents<Interactable>();
+            interactables = interactables.Concat(hitInfo.collider.GetComponentsInParent<Interactable>()).Where(i => i != null).ToArray();
+            foreach (var interactable in interactables)
             {
-                interactable = hitInfo.collider.GetComponentInParent<Interactable>();
-            }
-            if (interactable != null)
-            {
+                if(!interactable.enabled) continue;
+
                 interactable.CmdInteract(GetComponent<NetworkIdentity>());
                 interactable.LocalInteract(gameObject);
                 onInteractEvent?.Invoke(new InteractInfo
@@ -54,7 +54,8 @@ public class PlayerInteractComponent : InputComponent
                     isSuccessful = true
                 });
             }
-            else
+
+            if (interactables.Length == 0)
             {
                 onInteractEvent?.Invoke(new InteractInfo
                 {

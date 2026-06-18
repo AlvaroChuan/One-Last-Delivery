@@ -14,7 +14,9 @@ public class PlayerHealthComponent : PlayerComponent
     public Action<HealthChangeInfo> onHealthChangedEvent;
     [SerializeField]
     float _maxHealth = 100f;
+    public float MaxHealth => _maxHealth;
     float _currentHealth;
+    public float CurrentHealth => _currentHealth;
     PlayerDeathComponent _playerDeathComponent;
 
     void Awake()
