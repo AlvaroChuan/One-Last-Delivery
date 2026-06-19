@@ -57,9 +57,9 @@ public class Specter : BasicEnemy
             return;
         }
 
-        if (_isInFOV != _fieldOfViewDetector.IsInFOV())
+        if (_isInFOV != _fieldOfViewDetector.IsInFOV(_playerDetectionRadius))
         {
-            _isInFOV = _fieldOfViewDetector.IsInFOV();
+            _isInFOV = _fieldOfViewDetector.IsInFOV(_playerDetectionRadius);
             if (_isInFOV)
             {
                 CmdEnteredFOV();

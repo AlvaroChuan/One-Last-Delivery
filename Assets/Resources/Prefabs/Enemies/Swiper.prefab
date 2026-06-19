@@ -176,7 +176,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _recalculationInterval: 0.5
+  _recalculationInterval: 0.25
 --- !u!114 &355838925789269005
 MonoBehaviour:
   m_ObjectHideFlags: 0

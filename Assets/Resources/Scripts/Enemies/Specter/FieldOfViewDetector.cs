@@ -2,26 +2,25 @@ using UnityEngine;
 
 public class FieldOfViewDetector : MonoBehaviour
 {
-    [SerializeField] float _maxViewDistance = 50f;
     [SerializeField] LayerMask _obstructionMask;
     [SerializeField] Vector2 _padding = new Vector2(0.1f, 0.1f); // Padding to avoid edge cases
     [SerializeField] Transform[] _raycastOrigins; // Points from which to cast rays for FOV detection
     private bool _cachedIsInFOV;
     private bool _isCached;
 
-    public bool IsInFOV()
+    public bool IsInFOV(float maxDistance)
     {
         if (!_isCached)
         {
-            _cachedIsInFOV = CalculateIsInFOV();
+            _cachedIsInFOV = CalculateIsInFOV(maxDistance);
             _isCached = true;
         }
         return _cachedIsInFOV;
     }
 
-    private bool CalculateIsInFOV()
+    private bool CalculateIsInFOV(float maxDistance)
     {
-        if (Vector3.Distance(transform.position, Camera.main.transform.position) > _maxViewDistance)
+        if (Vector3.Distance(transform.position, Camera.main.transform.position) > maxDistance)
         {
             return false;
         }

@@ -288,7 +288,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _playerRecheckInterval: 1
-  _playerDetectionRadius: 10
+  _playerDetectionRadius: 50
   _fovCheckInterval: 0.05
 --- !u!114 &3791176424422493989
 MonoBehaviour:
@@ -302,7 +302,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adf73dae204460a44be4d1255c5b83e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxViewDistance: 30
   _obstructionMask:
     serializedVersion: 2
     m_Bits: 1
