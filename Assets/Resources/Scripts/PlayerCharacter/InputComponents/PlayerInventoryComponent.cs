@@ -92,13 +92,8 @@ public class PlayerInventoryComponent : InputComponent
             _selectedInventoryIndex = _inventorySize - 1;
         }
 
-        if (_carriedPackage != null)
-        {
-            _carriedPackage.GetComponent<PackageInteractionComponent>()?.DropFromPlayer(Vector3.zero);
-            SetCarryingPackage(null);
-        }
+        DropPackage(Vector3.zero); // Drop the package if the player scrolls to a different inventory slot
 
-        DevLogger.Log("Selected inventory index: " + _selectedInventoryIndex);
         SetInventorySelection(_selectedInventoryIndex);
     }
     private void OnSelectInput(InputAction.CallbackContext context)
@@ -113,11 +108,7 @@ public class PlayerInventoryComponent : InputComponent
         {
             _selectedInventoryIndex = index;
         }
-        if (_carriedPackage != null)
-        {
-            _carriedPackage.GetComponent<PackageInteractionComponent>()?.DropFromPlayer(Vector3.zero);
-            SetCarryingPackage(null);
-        }
+        DropPackage(Vector3.zero); // Drop the package if the player selects a different inventory slot
         SetInventorySelection(_selectedInventoryIndex);
     }
 
@@ -192,8 +183,7 @@ public class PlayerInventoryComponent : InputComponent
 
         if (_carriedPackage != null)
         {
-            _carriedPackage.GetComponent<PackageInteractionComponent>()?.DropFromPlayer(throwForce);
-            SetCarryingPackage(null);
+            DropPackage(throwForce);
         }
     }
 
@@ -300,5 +290,19 @@ public class PlayerInventoryComponent : InputComponent
     public void CmdSetCarryingPackage(GameObject package)
     {
         _carriedPackage = package;
+    }
+
+    void DropPackage(Vector3 throwForce)
+    {
+        if (_carriedPackage != null)
+        {
+            DevLogger.Log("Dropping package from player: " + netIdentity.connectionToClient.connectionId);
+            PackageInteractionComponent packageInteraction = _carriedPackage.GetComponent<PackageInteractionComponent>();
+            if (packageInteraction != null)
+            {
+                packageInteraction.DropFromPlayer(throwForce);
+            }
+            SetCarryingPackage(null);
+        }
     }
 }

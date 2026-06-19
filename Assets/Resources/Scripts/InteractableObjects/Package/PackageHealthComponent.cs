@@ -12,9 +12,10 @@ public class PackageHealthComponent : NetworkBehaviour
     }
     public Action<HealthChangeInfo> onHealthChangedEvent;
     [SerializeField] private float _maxHealth = 100f;
+    [SerializeField] private LayerMask _damageLayerMask; // Layers that can cause damage to the package
     [SerializeField] private float _minForceForDamage = 5f;
     [SerializeField] private float _damagePerUnitForce = 1f;
-    private float _currentHealth;
+    [SerializeField] private float _currentHealth;
     private Rigidbody _rigidbody;
 
     public float MaxHealth => _maxHealth;
@@ -37,6 +38,7 @@ public class PackageHealthComponent : NetworkBehaviour
     void OnCollisionEnter(Collision collision)
     {
         if(_rigidbody.isKinematic) return;
+        if (((1 << collision.gameObject.layer) & _damageLayerMask) == 0) return; // Check if the collided object's layer is in the damage layer mask
 
         float otherMass = (collision.rigidbody != null) ? collision.rigidbody.mass : _rigidbody.mass;
 

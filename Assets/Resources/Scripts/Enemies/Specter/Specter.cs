@@ -4,10 +4,12 @@ using UnityEngine;
 [RequireComponent(typeof(FieldOfViewDetector))]
 public class Specter : BasicEnemy
 {
+    [SerializeField] float _fovCheckInterval = 0.05f;
     private FieldOfViewDetector _fieldOfViewDetector;
     bool _isInFOV = false;
     int _inFOVCount = 0;
     bool _checkedAfterLeavingFOV = false;
+    float _fovCheckTimer = 0f;
 
     private void Awake()
     {
@@ -16,7 +18,13 @@ public class Specter : BasicEnemy
 
     protected override void Update()
     {
-        CheckFOV();
+        _fovCheckTimer += Time.deltaTime;
+        if (_fovCheckTimer >= _fovCheckInterval)
+        {
+            _fovCheckTimer = 0f;
+            CheckFOV();
+        }
+
         if(!isServer) return;
 
         if (_inFOVCount > 0)

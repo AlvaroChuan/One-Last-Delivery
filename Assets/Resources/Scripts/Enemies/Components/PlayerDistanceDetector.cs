@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class PlayerDistanceDetector : MonoBehaviour
 {
-    [SerializeField] private float _detectionRadius = 10f; // Radius within which to detect players
-
-    public GameObject DetectClosestPlayer()
+    public GameObject DetectClosestPlayer(float detectionRadius)
     {
         List<GameObject> players = (NetworkManager.singleton as CustomNetworkManager)?.SpawnedPlayers;
         if (players == null || players.Count == 0)
@@ -24,8 +22,13 @@ public class PlayerDistanceDetector : MonoBehaviour
                 continue; // Skip dead players
             }
 
-            float distance = Vector3.Distance(transform.position, player.transform.position);
-            if (distance < closestDistance && distance <= _detectionRadius)
+            Vector3 playerPosition = player.transform.position;
+            Vector3 detectorPosition = transform.position;
+            playerPosition.y = 0f; // Ignore vertical distance
+            detectorPosition.y = 0f; // Ignore vertical distance
+
+            float distance = Vector3.Distance(detectorPosition, playerPosition);
+            if (distance < closestDistance && distance <= detectionRadius)
             {
                 closestDistance = distance;
                 closestPlayer = player;

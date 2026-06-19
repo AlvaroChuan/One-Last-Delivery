@@ -42,6 +42,8 @@ public class PlayerInteractComponent : InputComponent
         {
             Interactable[] interactables = hitInfo.collider.GetComponents<Interactable>();
             interactables = interactables.Concat(hitInfo.collider.GetComponentsInParent<Interactable>()).Where(i => i != null).ToArray();
+            interactables = interactables.Distinct().ToArray();
+
             foreach (var interactable in interactables)
             {
                 if(!interactable.enabled) continue;

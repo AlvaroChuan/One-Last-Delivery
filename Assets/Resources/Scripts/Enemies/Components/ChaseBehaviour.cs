@@ -12,6 +12,7 @@ public class ChaseBehaviour : NetworkBehaviour
     private NavMeshAgent _navMeshAgent;
     private bool _isChasing = false;
     public bool IsChasing => _isChasing;
+    Vector3 _targetPosition;
     public override void OnStartServer()
     {
         base.OnStartServer();
@@ -38,6 +39,21 @@ public class ChaseBehaviour : NetworkBehaviour
         }
     }
 
+    public void SetTarget(Vector3 targetPosition, float maxDistance, out bool success)
+    {
+        success = false;
+        _target = null; // Clear the GameObject target since we're using a position
+        if (NavMesh.SamplePosition(targetPosition, out NavMeshHit hit, maxDistance, NavMesh.AllAreas))
+        {
+            success = true;
+            _targetPosition = hit.position;
+            if (_isChasing)
+            {
+                _navMeshAgent.SetDestination(_targetPosition);
+            }
+        }
+    }
+
     public void StartChasing()
     {
         if (_isChasing) return; // Already chasing
@@ -46,6 +62,10 @@ public class ChaseBehaviour : NetworkBehaviour
         if (_target != null)
         {
             _navMeshAgent.SetDestination(_target.transform.position);
+        }
+        else if (_targetPosition != Vector3.zero)
+        {
+            _navMeshAgent.SetDestination(_targetPosition);
         }
     }
 
@@ -65,6 +85,28 @@ public class ChaseBehaviour : NetworkBehaviour
         {
             _navMeshAgent.SetDestination(_target.transform.position);
             _recalculationTimer = 0f;
+        }
+    }
+
+    public void SetSpeed(float speed)
+    {
+        if (_navMeshAgent != null)
+        {
+            _navMeshAgent.speed = speed;
+        }
+    }
+    public void SetAcceleration(float acceleration)
+    {
+        if (_navMeshAgent != null)
+        {
+            _navMeshAgent.acceleration = acceleration;
+        }
+    }
+    public void SetAngularSpeed(float angularSpeed)
+    {
+        if (_navMeshAgent != null)
+        {
+            _navMeshAgent.angularSpeed = angularSpeed;
         }
     }
 }

@@ -8,6 +8,7 @@ using Mirror;
 public class BasicEnemy : NetworkBehaviour
 {
     [SerializeField] private float _playerRecheckInterval = 1f; // Interval to check for players
+    [SerializeField] private float _playerDetectionRadius = 10f; // Radius within which to detect players
     private float _playerRecheckTimer = 0f;
     protected ChaseBehaviour _chaseBehaviour;
     private AttackComponent _attackComponent;
@@ -69,7 +70,7 @@ public class BasicEnemy : NetworkBehaviour
 
     protected void CheckForPlayer()
     {
-        _currentTarget = _playerDistanceDetector.DetectClosestPlayer();
+        _currentTarget = _playerDistanceDetector.DetectClosestPlayer(_playerDetectionRadius);
 
         if (_currentTarget != null)
         {

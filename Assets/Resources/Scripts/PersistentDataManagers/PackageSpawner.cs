@@ -41,7 +41,10 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
     public static List<AddressInfo> UsedAddresses = new List<AddressInfo>();
     [SyncVar] private int _packagesToSpawn;
     private List<GameObject> _spawnedPackages = new List<GameObject>();
+    public List<GameObject> SpawnedPackages => _spawnedPackages; // Public getter for spawned packages
     private AddressLibrary _addressLibrary;
+    private List<bool> _corruptedPackages = new List<bool>(); // Track which packages are corrupted
+    public List<bool> CorruptedPackages => _corruptedPackages; // Public getter for corrupted packages
 
     protected override void Awake()
     {
@@ -93,6 +96,7 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
             GameObject packageInstance = Instantiate(packagePrefab, spawnPosition, Quaternion.identity);
             NetworkServer.Spawn(packageInstance);
             _spawnedPackages.Add(packageInstance);
+            _corruptedPackages.Add(false); // Initially, no packages are corrupted
 
             NetworkAddressComponent addressComponent = packageInstance.GetComponent<NetworkAddressComponent>();
 
@@ -252,15 +256,15 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
             return false;
         }
 
-        GameObject packageToCorrupt;
+        int corruptedPackage;
         do
         {
-            packageToCorrupt = _spawnedPackages[Random.Range(0, _spawnedPackages.Count)];
-        } while (packageToCorrupt == null);
+            corruptedPackage = Random.Range(0, _spawnedPackages.Count);
+        } while (_spawnedPackages[corruptedPackage] == null || _corruptedPackages[corruptedPackage]);
 
-        _spawnedPackages.Remove(packageToCorrupt); // Remove the corrupted package from the list to avoid corrupting it again
+        _corruptedPackages[corruptedPackage] = true; // Mark this package as corrupted
 
-        NetworkAddressComponent addressComponent = packageToCorrupt.GetComponent<NetworkAddressComponent>();
+        NetworkAddressComponent addressComponent = _spawnedPackages[corruptedPackage].GetComponent<NetworkAddressComponent>();
 
         AddressInfo newAddress = GetUnusedAddress();
 
@@ -276,13 +280,13 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
         GameObject door = _addressLibrary.GetDoorForAddress(newAddress);
         door.GetComponent<DoorController>().CorruptDoor();
 
-        DevLogger.Log($"Package at {packageToCorrupt.transform.position} has been corrupted with a new address: {newAddress}");
+        DevLogger.Log($"Package at {_spawnedPackages[corruptedPackage].transform.position} has been corrupted with a new address: {newAddress}");
         return true;
     }
 
-    void OnHourlyUpdate()
+    void OnHourlyUpdate(int hour, bool isNightTime)
     {
-        if (isServer)
+        if (isServer && isNightTime)
         {
             TryCorruptPackage();
         }
@@ -290,15 +294,15 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
 
     bool EnoughPackagesToCorrupt()
     {
-        int nullPackageCount = 0;
-        foreach (var package in _spawnedPackages)
+        int invalidPackageCount = 0;
+        for (int i = 0; i < _spawnedPackages.Count; i++)
         {
-            if (package == null)
+            if (_spawnedPackages[i] == null || _corruptedPackages[i])
             {
-                nullPackageCount++;
+                invalidPackageCount++;
             }
         }
-        return nullPackageCount < _spawnedPackages.Count - 1; // Ensure at least one package remains uncorrupted
+        return invalidPackageCount < _spawnedPackages.Count - 1; // Ensure at least one package remains uncorrupted
     }
 
     AddressInfo GetUnusedAddress()

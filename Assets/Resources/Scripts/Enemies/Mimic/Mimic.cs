@@ -15,6 +15,7 @@ public class Mimic : NetworkBehaviour
     [SerializeField] private float _verticalLungeForce = 1f;
     [SerializeField] private float _transformDuration = 1f;
     [SerializeField] private float _playerCheckInterval = 1f;
+    [SerializeField] private float _playerDetectionRadius = 10f;
 
     [Header("References")]
     [SerializeField] private GameObject _packageModel;
@@ -77,7 +78,7 @@ public class Mimic : NetworkBehaviour
 
         _playerCheckTimer = _playerCheckInterval;
 
-        if ((_closestPlayer = _playerDistanceDetector.DetectClosestPlayer()) != null)
+        if ((_closestPlayer = _playerDistanceDetector.DetectClosestPlayer(_playerDetectionRadius)) != null)
         {
             if (!_isTransformed)
             {
