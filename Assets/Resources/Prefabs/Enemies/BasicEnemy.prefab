@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 7746241874804428128}
   - component: {fileID: 5564420950627877294}
   - component: {fileID: 1508640075283171735}
+  - component: {fileID: 3614797104802731765}
   m_Layer: 6
   m_Name: BasicEnemy
   m_TagString: Untagged
@@ -206,7 +207,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 477776e4773e5e9428c8c834f1030ba2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _detectionRadius: 10
 --- !u!114 &7746241874804428128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -238,6 +238,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _playerRecheckInterval: 1
+  _playerDetectionRadius: 10
 --- !u!114 &1508640075283171735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -255,6 +256,40 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
+--- !u!114 &3614797104802731765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2340398685216393081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 1020497355370737988}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  useFixedUpdate: 0
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
 --- !u!1 &5639984884656656329
 GameObject:
   m_ObjectHideFlags: 0

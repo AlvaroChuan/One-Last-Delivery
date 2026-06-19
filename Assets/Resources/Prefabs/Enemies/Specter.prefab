@@ -240,7 +240,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 477776e4773e5e9428c8c834f1030ba2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _detectionRadius: 30
 --- !u!114 &7746241874804428128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -289,6 +288,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _playerRecheckInterval: 1
+  _playerDetectionRadius: 10
+  _fovCheckInterval: 0.05
 --- !u!114 &3791176424422493989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,7 +326,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 1
+  syncDirection: 0
   syncMode: 0
   syncInterval: 0
   target: {fileID: 1020497355370737988}

@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 7097758446645397144}
   - component: {fileID: 2761674424042340578}
   - component: {fileID: 6222511251791297622}
+  - component: {fileID: 630939934634357880}
   m_Layer: 6
   m_Name: Mimic
   m_TagString: Untagged
@@ -81,7 +82,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 477776e4773e5e9428c8c834f1030ba2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _detectionRadius: 10
 --- !u!114 &226421741768906275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,6 +115,7 @@ MonoBehaviour:
   _verticalLungeForce: 3
   _transformDuration: 3.5
   _playerCheckInterval: 1
+  _playerDetectionRadius: 10
   _packageModel: {fileID: 3231715452896349506}
   _monsterModel: {fileID: 2007483391950349343}
   _transformationParticles: {fileID: 8443900611835161544}
@@ -190,7 +191,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 1
+  syncDirection: 0
   syncMode: 0
   syncInterval: 0
   target: {fileID: 8728810232144890551}
@@ -212,6 +213,21 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!114 &630939934634357880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 120020557967890478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74b1a856bf8a7b54285a032b2aaa6fdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &236103985556086795
 GameObject:
   m_ObjectHideFlags: 0
