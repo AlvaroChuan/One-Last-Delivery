@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -42,6 +41,8 @@ public class Mimic : NetworkBehaviour
         _rigidbody = GetComponent<Rigidbody>();
         _hitbox = GetComponent<EnemyHitbox>();
         _stunComponent = GetComponent<EnemyStunComponent>();
+
+        _playerCheckTimer = Random.Range(0f, _playerCheckInterval); // Randomize the initial timer to avoid all Mimics checking for players at the same time
     }
 
     void OnEnable()

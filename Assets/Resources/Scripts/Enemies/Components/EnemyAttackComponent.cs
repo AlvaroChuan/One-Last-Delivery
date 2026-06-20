@@ -3,16 +3,18 @@ using Mirror;
 using System;
 
 [RequireComponent(typeof(Animator))]
-public class AttackComponent : MonoBehaviour
+public class EnemyAttackComponent : MonoBehaviour
 {
+    public event Action onAttackStartedEvent;
+    public event Action onAttackEndedEvent;
     private static readonly int AttackHash = Animator.StringToHash("Attack");
-    public Action onAttackStartedEvent;
-    public Action onAttackEndedEvent;
     [SerializeField] private float _attackCooldown = 1f; // Time between attacks
     [SerializeField] private float _attackRange = 2f; // Range within which the enemy can attack players
     private float _currentAttackCooldown = 0f;
     private Animator _animator;
     private RaycastHit[] _raycastHitBuffer = new RaycastHit[10]; // Preallocate array for raycast hits
+    private bool _isAttacking = false;
+    public bool IsAttacking => _isAttacking;
 
     void Awake()
     {
@@ -55,8 +57,9 @@ public class AttackComponent : MonoBehaviour
         if (_currentAttackCooldown <= 0f)
         {
             _currentAttackCooldown = _attackCooldown; // Reset cooldown
-            onAttackStartedEvent?.Invoke(); // Notify that the attack has started
             _animator.SetTrigger(AttackHash); // Trigger the attack animation
+            _isAttacking = true;
+            onAttackStartedEvent?.Invoke();
             return true; // Attack initiated
         }
         return false; // Attack not initiated due to cooldown
@@ -64,6 +67,7 @@ public class AttackComponent : MonoBehaviour
 
     public void OnAttackAnimationEnd()
     {
+        _isAttacking = false;
         onAttackEndedEvent?.Invoke();
     }
 }

@@ -1,31 +1,31 @@
 using UnityEngine;
 using Mirror;
 
-[RequireComponent(typeof(ChaseBehaviour))]
-[RequireComponent(typeof(AttackComponent))]
-[RequireComponent(typeof(PlayerDistanceDetector))]
+[RequireComponent(typeof(NavMeshMovementComponent))]
+[RequireComponent(typeof(EnemyAttackComponent))]
 [RequireComponent(typeof(EnemyStunComponent))]
+[RequireComponent(typeof(WanderBehaviour))]
+[RequireComponent(typeof(PlayerChaseBehaviour))]
 public class BasicEnemy : NetworkBehaviour
 {
-    [SerializeField] private float _playerRecheckInterval = 1f; // Interval to check for players
-    [SerializeField] protected float _playerDetectionRadius = 10f; // Radius within which to detect players
-    private float _playerRecheckTimer = 0f;
-    protected ChaseBehaviour _chaseBehaviour;
-    private AttackComponent _attackComponent;
-    private PlayerDistanceDetector _playerDistanceDetector;
+    [SerializeField] private float _playerDetectionRadius = 10f; // Radius within which to detect players
+    private NavMeshMovementComponent _movementComponent;
+    private EnemyAttackComponent _attackComponent;
     private EnemyStunComponent _enemyStunComponent;
-    private bool _isAttacking = false;
-    private bool _isStunned = false;
     private GameObject _currentTarget;
+    private WanderBehaviour _wanderBehaviour;
+    private PlayerChaseBehaviour _playerChaseBehaviour;
 
     public override void OnStartServer()
     {
         base.OnStartServer();
-        _chaseBehaviour = GetComponent<ChaseBehaviour>();
-        _attackComponent = GetComponent<AttackComponent>();
-        _playerDistanceDetector = GetComponent<PlayerDistanceDetector>();
+        _movementComponent = GetComponent<NavMeshMovementComponent>();
+        _wanderBehaviour = GetComponent<WanderBehaviour>();
+        _attackComponent = GetComponent<EnemyAttackComponent>();
         _enemyStunComponent = GetComponent<EnemyStunComponent>();
-        _playerRecheckTimer = Random.Range(0f, _playerRecheckInterval); // Randomize initial timer to avoid synchronized checks
+        _playerChaseBehaviour = GetComponent<PlayerChaseBehaviour>();
+
+        _wanderBehaviour.StartWander(); // Start wandering when the enemy is spawned
     }
 
     void OnEnable()
@@ -48,64 +48,46 @@ public class BasicEnemy : NetworkBehaviour
         }
     }
 
-    protected virtual void Update()
+    void Update()
     {
         if (!isServer) return;
 
-        if (_isAttacking) return;
+        if (_attackComponent.IsAttacking) return;
 
         if (_enemyStunComponent.IsStunned) return;
 
-        _playerRecheckTimer += Time.deltaTime;
-        if (_playerRecheckTimer >= _playerRecheckInterval)
-        {
-            _playerRecheckTimer = 0f;
-            CheckForPlayer();
-        }
-        if (_currentTarget != null)
+        _playerChaseBehaviour.UpdateChase(Time.deltaTime, _playerDetectionRadius);
+
+        if (_playerChaseBehaviour.IsChasing)
         {
             _attackComponent.TryAttackIfInRange(_currentTarget);
         }
-    }
-
-    protected void CheckForPlayer()
-    {
-        _currentTarget = _playerDistanceDetector.DetectClosestPlayer(_playerDetectionRadius);
-
-        if (_currentTarget != null)
-        {
-            _chaseBehaviour.SetTarget(_currentTarget);
-            _chaseBehaviour.StartChasing();
-        }
         else
         {
-            _chaseBehaviour.StopChasing();
+            _wanderBehaviour.UpdateWander(Time.deltaTime);
         }
     }
 
     void OnAttackStarted()
     {
-        _isAttacking = true;
-        _playerRecheckTimer = 0f; // Reset the recheck timer to avoid chasing while attacking
-        _chaseBehaviour.StopChasing(); // Stop chasing when attacking
+        _movementComponent.CanMove = false; // Stop moving when attack starts
     }
     void OnAttackEnded()
     {
-        _isAttacking = false;
-        _chaseBehaviour.StartChasing(); // Resume chasing after attack ends
+        _movementComponent.CanMove = true; // Resume moving after attack ends
+        _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after attack
     }
 
     void OnStunChanged(EnemyStunComponent.StunChangeInfo stunInfo)
     {
-        _isStunned = stunInfo.isStunned;
-        if (_isStunned)
+        if (stunInfo.isStunned)
         {
-            _chaseBehaviour.StopChasing();
-            _isAttacking = false; // Stop attacking when stunned
+            _movementComponent.CanMove = false; // Stop moving when stunned
         }
         else
         {
-            _chaseBehaviour.StartChasing();
+            _movementComponent.CanMove = true; // Resume moving when not stunned
+            _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after stun ends
         }
     }
 }

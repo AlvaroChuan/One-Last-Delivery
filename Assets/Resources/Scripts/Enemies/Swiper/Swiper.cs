@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 
 [RequireComponent(typeof(PackageDistanceDetector))]
-[RequireComponent(typeof(ChaseBehaviour))]
+[RequireComponent(typeof(NavMeshMovementComponent))]
 [RequireComponent(typeof(EnemyStunComponent))]
+[RequireComponent(typeof(WanderBehaviour))]
 public class Swiper : NetworkBehaviour
 {
     private enum SwiperState
@@ -20,22 +21,16 @@ public class Swiper : NetworkBehaviour
     [SerializeField] private float _packageStealDistance = 1f; // Distance at which the Swiper can steal a package
     [SerializeField] private string _packageCarryLayer = "Enemies"; // Layer to assign to the package when carried
     [SerializeField] private Transform _packageCarryPoint; // Point where the package will be carried
-    [SerializeField] private float _wanderInterval = 5f; // Interval to wander when no package is detected
-    [SerializeField] private float _wanderSpeed = 3.5f;
-    [SerializeField] private float _wanderAcceleration = 8f;
-    [SerializeField] private float _wanderRadius = 50f; // Radius within which to wander
-    [SerializeField] private float _wanderNavMeshSampleDistance = 5f; // Distance to sample the NavMesh for wandering
-    [SerializeField] private int _wanderNavMeshSampleAttempts = 10; // Number of attempts to find a valid NavMesh position for wandering
     [SerializeField] private float _stealSpeed = 10f;
     [SerializeField] private float _stealAcceleration = 50f;
     [SerializeField] private GameObject _hideoutPrefab;
     [SerializeField] private float _hideoutRadius = 5f; // Radius around the hideout location to consider as "reached"
     private PackageDistanceDetector _packageDistanceDetector;
-    private ChaseBehaviour _chaseBehaviour;
+    private NavMeshMovementComponent _chaseBehaviour;
     private EnemyStunComponent _enemyStunComponent;
+    private WanderBehaviour _wanderBehaviour;
     private GameObject _targetPackage;
     float _packageDetectionTimer = 0f;
-    float _wanderTimer = 0f;
     HashSet<GameObject> _excludedPackages = new HashSet<GameObject>();
 
     private SwiperState _currentState = SwiperState.Wandering;
@@ -47,11 +42,14 @@ public class Swiper : NetworkBehaviour
     private void Awake()
     {
         _packageDistanceDetector = GetComponent<PackageDistanceDetector>();
-        _chaseBehaviour = GetComponent<ChaseBehaviour>();
+        _chaseBehaviour = GetComponent<NavMeshMovementComponent>();
         _enemyStunComponent = GetComponent<EnemyStunComponent>();
+        _wanderBehaviour = GetComponent<WanderBehaviour>();
 
         _packageStealDistanceSqr = _packageStealDistance * _packageStealDistance;
         _hideoutRadiusSqr = _hideoutRadius * _hideoutRadius;
+
+        _packageDetectionTimer = Random.Range(0f, _packageDetectionInterval); // Randomize the initial timer to avoid all Swipers checking for packages at the same time
     }
 
     public override void OnStartServer()
@@ -104,13 +102,7 @@ public class Swiper : NetworkBehaviour
                     return;
                 }
             }
-
-            _wanderTimer += Time.deltaTime;
-            if (_wanderTimer >= _wanderInterval)
-            {
-                _wanderTimer = 0f;
-                StartWander();
-            }
+            _wanderBehaviour.UpdateWander(Time.deltaTime);
         }
         else if (_currentState == SwiperState.ChasingPackage)
         {
@@ -137,7 +129,7 @@ public class Swiper : NetworkBehaviour
             _targetPackage.transform.position = _packageCarryPoint.position; // Keep the package at the carry point
             _targetPackage.transform.rotation = _packageCarryPoint.rotation; // Keep the package's rotation aligned with the carry point
             float distanceToHideoutSqr = (_hideout.transform.position - transform.position).sqrMagnitude;
-            if (distanceToHideoutSqr <= _hideoutRadiusSqr)
+            if (distanceToHideoutSqr <= _hideoutRadiusSqr * 0.5f)
             {
                 DropPackage();
                 StartWander();
@@ -145,16 +137,16 @@ public class Swiper : NetworkBehaviour
         }
     }
 
+#if UNITY_EDITOR
     void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, _packageDetectionRadius);
         if (_hideout != null)
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(_hideout.transform.position, _hideoutRadius);
         }
     }
+#endif
 
     void OnStunStateChanged(EnemyStunComponent.StunChangeInfo stunInfo)
     {
@@ -193,52 +185,22 @@ public class Swiper : NetworkBehaviour
         return false;
     }
 
-    void StartWander()
-    {
-        DevLogger.Log("Swiper is wandering.");
-        _chaseBehaviour.SetSpeed(_wanderSpeed);
-        _chaseBehaviour.SetAcceleration(_wanderAcceleration);
-        Vector2 randomDirection;
-        Vector3 wanderTarget;
-
-        bool isOnNavMesh;
-
-        int sampleAttempts = 0;
-        do
-        {
-            randomDirection = Random.insideUnitCircle * _wanderRadius;
-            wanderTarget = new Vector3(randomDirection.x, transform.position.y, randomDirection.y) + transform.position;
-            _chaseBehaviour.SetTarget(wanderTarget, _wanderNavMeshSampleDistance, out isOnNavMesh);
-            _chaseBehaviour.StartChasing();
-            sampleAttempts++;
-        } while (!isOnNavMesh && sampleAttempts < _wanderNavMeshSampleAttempts);
-
-        DevLogger.Log($"Swiper wander target: {wanderTarget}, isOnNavMesh: {isOnNavMesh}, sampleAttempts: {sampleAttempts}");
-
-        if (!isOnNavMesh)
-        {
-            _chaseBehaviour.StopChasing();
-        }
-
-        _currentState = SwiperState.Wandering;
-    }
-
     void StartSteal()
     {
-        DevLogger.Log($"Swiper is chasing package: {_targetPackage.name}");
+        //DevLogger.Log($"Swiper is chasing package: {_targetPackage.name}");
         _chaseBehaviour.SetSpeed(_stealSpeed);
         _chaseBehaviour.SetAcceleration(_stealAcceleration);
         _chaseBehaviour.SetTarget(_targetPackage);
-        _chaseBehaviour.StartChasing();
+        _chaseBehaviour.StartMoving();
         _currentState = SwiperState.ChasingPackage;
     }
 
     void StartRunToHideout()
     {
-        DevLogger.Log("Swiper is running to hideout.");
+        //DevLogger.Log("Swiper is running to hideout.");
         _chaseBehaviour.SetSpeed(_stealSpeed);
         _chaseBehaviour.SetTarget(_hideout);
-        _chaseBehaviour.StartChasing();
+        _chaseBehaviour.StartMoving();
         _currentState = SwiperState.RunningToHideout;
     }
 
@@ -257,13 +219,15 @@ public class Swiper : NetworkBehaviour
             return;
         }
 
-        _chaseBehaviour.StopChasing();
+        _chaseBehaviour.StopMoving();
 
         _targetPackage.layer = LayerMask.NameToLayer(_targetPackage.GetComponent<PackageInteractionComponent>().DroppedLayer);
         Rigidbody packageRigidbody = _targetPackage.GetComponent<Rigidbody>();
         packageRigidbody.isKinematic = false; // Make the package non-kinematic so it can be dropped
         _targetPackage.GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = true; // Re-enable authority swapping when dropped
         _targetPackage.GetComponent<NetRigidbodyController>().enableRigidbodyControl = true; // Re-enable Rigidbody control for the package when dropped
+
+        DevLogger.Log($"Swiper dropped package: {_targetPackage.name}");
     }
     void PickupPackage()
     {
@@ -287,5 +251,11 @@ public class Swiper : NetworkBehaviour
         _targetPackage.GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = false; // Disable authority swapping for the package while being carried
         _targetPackage.GetComponent<Rigidbody>().isKinematic = true; // Make the package kinematic so it can be carried
         _targetPackage.transform.position = _packageCarryPoint.position; // Move the package to the carry point
+    }
+
+    void StartWander()
+    {
+        _currentState = SwiperState.Wandering;
+        _wanderBehaviour.StartWander();
     }
 }

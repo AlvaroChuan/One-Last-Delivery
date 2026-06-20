@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: 8649947330946128346}
   - component: {fileID: 7350212409075489186}
   - component: {fileID: 6502467368067732429}
+  - component: {fileID: 6290688483008178164}
   m_Layer: 6
   m_Name: Swiper
   m_TagString: Untagged
@@ -212,12 +213,6 @@ MonoBehaviour:
   _packageStealDistance: 2
   _packageCarryLayer: Enemies
   _packageCarryPoint: {fileID: 5386364049622429258}
-  _wanderInterval: 5
-  _wanderSpeed: 3.5
-  _wanderAcceleration: 8
-  _wanderRadius: 50
-  _wanderNavMeshSampleDistance: 5
-  _wanderNavMeshSampleAttempts: 10
   _stealSpeed: 10
   _stealAcceleration: 50
   _hideoutPrefab: {fileID: 0}
@@ -296,6 +291,24 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!114 &6290688483008178164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5126083997327050711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b76cb62fa8487c448931e704ca9befad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _wanderInterval: 5
+  _wanderRadius: 50
+  _wanderNavMeshSampleDistance: 2
+  _wanderNavMeshSampleAttempts: 10
+  _wanderSpeed: 3.5
+  _wanderAcceleration: 5
 --- !u!1 &5195081575808246379
 GameObject:
   m_ObjectHideFlags: 0

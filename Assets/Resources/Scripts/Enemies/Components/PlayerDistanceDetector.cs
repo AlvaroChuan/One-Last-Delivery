@@ -4,8 +4,25 @@ using UnityEngine;
 
 public class PlayerDistanceDetector : MonoBehaviour
 {
+#if UNITY_EDITOR
+    private float _cachedDetectionRadius = -1f;
+    private void OnDrawGizmos()
+    {
+        if (_cachedDetectionRadius > 0f)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, _cachedDetectionRadius);
+        }
+    }
+#endif
+
     public GameObject DetectClosestPlayer(float detectionRadius)
     {
+
+#if UNITY_EDITOR
+        _cachedDetectionRadius = detectionRadius;
+#endif
+
         List<GameObject> players = (NetworkManager.singleton as CustomNetworkManager)?.SpawnedPlayers;
         if (players == null || players.Count == 0)
             return null;

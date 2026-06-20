@@ -3,20 +3,35 @@ using Mirror;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class ChaseBehaviour : NetworkBehaviour
+public class NavMeshMovementComponent : NetworkBehaviour
 {
     [SerializeField] float _recalculationInterval = 0.5f; // Time in seconds between path recalculations
     private float _recalculationTimer = 0f;
     private GameObject _target;
     public GameObject Target => _target;
     private NavMeshAgent _navMeshAgent;
-    private bool _isChasing = false;
-    public bool IsChasing => _isChasing;
-    Vector3 _targetPosition;
-    public override void OnStartServer()
+    private bool _isMoving = false;
+    public bool IsMoving => _isMoving;
+    private bool _canMove = true;
+    public bool CanMove
     {
-        base.OnStartServer();
+        get => _canMove;
+        set
+        {
+            _canMove = value;
+            if (!_canMove)
+            {
+                StopMoving();
+            }
+        }
+    }
+    Vector3 _targetPosition;
+
+    void Awake()
+    {
         _navMeshAgent = GetComponent<NavMeshAgent>();
+
+        _recalculationTimer = Random.Range(0f, _recalculationInterval); // Randomize the initial timer to avoid all enemies recalculating paths at the same time
     }
 
     public override void OnStartClient()
@@ -33,7 +48,7 @@ public class ChaseBehaviour : NetworkBehaviour
         if (_target == target) return; // No change in target
 
         _target = target;
-        if (_isChasing && _target != null)
+        if (_isMoving && _target != null)
         {
             _navMeshAgent.SetDestination(_target.transform.position);
         }
@@ -47,18 +62,18 @@ public class ChaseBehaviour : NetworkBehaviour
         {
             success = true;
             _targetPosition = hit.position;
-            if (_isChasing)
+            if (_isMoving)
             {
                 _navMeshAgent.SetDestination(_targetPosition);
             }
         }
     }
 
-    public void StartChasing()
+    public void StartMoving()
     {
-        if (_isChasing) return; // Already chasing
+        if (_isMoving) return; // Already moving
 
-        _isChasing = true;
+        _isMoving = true;
         if (_target != null)
         {
             _navMeshAgent.SetDestination(_target.transform.position);
@@ -69,16 +84,16 @@ public class ChaseBehaviour : NetworkBehaviour
         }
     }
 
-    public void StopChasing()
+    public void StopMoving()
     {
-        _isChasing = false;
+        _isMoving = false;
         _navMeshAgent.ResetPath();
         _navMeshAgent.velocity = Vector3.zero; // Stop any residual movement
     }
 
     void Update()
     {
-        if (!_isChasing || _target == null) return;
+        if (!_isMoving || _target == null || !_canMove) return;
 
         _recalculationTimer += Time.deltaTime;
         if (_recalculationTimer >= _recalculationInterval)
@@ -109,4 +124,20 @@ public class ChaseBehaviour : NetworkBehaviour
             _navMeshAgent.angularSpeed = angularSpeed;
         }
     }
+
+#if UNITY_EDITOR
+    void OnDrawGizmosSelected()
+    {
+        if (_target != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, _target.transform.position);
+        }
+        else if (_targetPosition != Vector3.zero)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, _targetPosition);
+        }
+    }
+#endif
 }

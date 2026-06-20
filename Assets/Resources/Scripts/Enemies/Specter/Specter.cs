@@ -2,21 +2,39 @@ using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(FieldOfViewDetector))]
-public class Specter : BasicEnemy
+[RequireComponent(typeof(NavMeshMovementComponent))]
+[RequireComponent(typeof(PlayerChaseBehaviour))]
+[RequireComponent(typeof(EnemyStunComponent))]
+[RequireComponent(typeof(EnemyAttackComponent))]
+public class Specter : NetworkBehaviour
 {
     [SerializeField] float _fovCheckInterval = 0.05f;
+    [SerializeField] float _playerDetectionRadius = 10f; // Radius within which to detect players
     private FieldOfViewDetector _fieldOfViewDetector;
-    bool _isInFOV = false;
+    private NavMeshMovementComponent _movementComponent;
+    private PlayerChaseBehaviour _playerChaseBehaviour;
+    private EnemyStunComponent _enemyStunComponent;
+    private EnemyAttackComponent _enemyAttackComponent;
     int _inFOVCount = 0;
-    bool _checkedAfterLeavingFOV = false;
     float _fovCheckTimer = 0f;
+    bool _isInFOV = false;
 
     private void Awake()
     {
         _fieldOfViewDetector = GetComponent<FieldOfViewDetector>();
+        _movementComponent = GetComponent<NavMeshMovementComponent>();
+        _playerChaseBehaviour = GetComponent<PlayerChaseBehaviour>();
+        _enemyStunComponent = GetComponent<EnemyStunComponent>();
+        _enemyAttackComponent = GetComponent<EnemyAttackComponent>();
+
+        _fovCheckTimer = Random.Range(0f, _fovCheckInterval); // Randomize the initial timer to avoid all Specters checking FOV at the same time
+
+        _enemyAttackComponent.onAttackEndedEvent += OnAttackEnded;
+        _enemyAttackComponent.onAttackStartedEvent += OnAttackStarted;
+        _enemyStunComponent.onStunChangedEvent += OnStunChanged;
     }
 
-    protected override void Update()
+    void Update()
     {
         _fovCheckTimer += Time.deltaTime;
         if (_fovCheckTimer >= _fovCheckInterval)
@@ -27,71 +45,40 @@ public class Specter : BasicEnemy
 
         if(!isServer) return;
 
+        if (_enemyAttackComponent.IsAttacking) return;
+        if (_enemyStunComponent.IsStunned) return;
+
         if (_inFOVCount > 0)
         {
-            _checkedAfterLeavingFOV = false;
-            if (_chaseBehaviour.IsChasing)
+            if (_movementComponent.CanMove)
             {
-                _chaseBehaviour.StopChasing();
+                _movementComponent.CanMove = false; // Stop moving when a player is in FOV
             }
             return;
         }
-        else if (_inFOVCount <= 0 && !_checkedAfterLeavingFOV)
+        else if (_inFOVCount <= 0)
         {
-            _checkedAfterLeavingFOV = true;
-            CheckForPlayer();
+            if (!_movementComponent.CanMove)
+            {
+                _movementComponent.CanMove = true; // Resume moving when no players are in FOV
+                _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after resuming movement
+            }
+            _playerChaseBehaviour.UpdateChase(Time.deltaTime, _playerDetectionRadius);
         }
-
-        base.Update();
     }
 
     void CheckFOV()
     {
-        if (PlayerDead())
+        bool oldIsInFOV = _isInFOV;
+        _isInFOV = _fieldOfViewDetector.IsInFOV(_playerDetectionRadius);
+        if (_isInFOV && !oldIsInFOV)
         {
-            if (_isInFOV)
-            {
-                _isInFOV = false;
-                CmdExitedFOV();
-            }
-            return;
+            CmdEnteredFOV();
         }
-
-        if (_isInFOV != _fieldOfViewDetector.IsInFOV(_playerDetectionRadius))
+        else if (!_isInFOV && oldIsInFOV)
         {
-            _isInFOV = _fieldOfViewDetector.IsInFOV(_playerDetectionRadius);
-            if (_isInFOV)
-            {
-                CmdEnteredFOV();
-            }
-            else
-            {
-                CmdExitedFOV();
-            }
+            CmdExitedFOV();
         }
-    }
-
-    bool PlayerDead()
-    {
-        if(NetworkClient.connection == null || NetworkClient.connection.identity == null)
-        {
-            return true; // Consider player dead if we can't find the player object
-        }
-        GameObject player = NetworkClient.connection.identity?.gameObject;
-        if (player == null)
-        {
-            DevLogger.LogError("Player object is null. Ensure the player is connected and has a valid NetworkIdentity.");
-            return true; // Consider player dead if we can't find the player object
-        }
-
-        PlayerDeathComponent playerDeathComponent = player.GetComponent<PlayerDeathComponent>();
-        if (playerDeathComponent == null)
-        {
-            DevLogger.LogError("PlayerDeathComponent is missing on the player object.");
-            return true; // Consider player dead if the component is missing
-        }
-
-        return playerDeathComponent.IsDead;
     }
 
     [Command(requiresAuthority = false)]
@@ -103,5 +90,25 @@ public class Specter : BasicEnemy
     void CmdExitedFOV()
     {
         _inFOVCount--;
+    }
+
+    void OnAttackStarted()
+    {
+        _movementComponent.CanMove = false; // Stop moving when attack starts
+    }
+
+    void OnAttackEnded()
+    {
+        _movementComponent.CanMove = true; // Resume moving after attack ends
+        _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after attack
+    }
+
+    void OnStunChanged(EnemyStunComponent.StunChangeInfo stunInfo)
+    {
+        _movementComponent.CanMove = !stunInfo.isStunned; // Stop moving when stunned, resume when not stunned
+        if (!stunInfo.isStunned)
+        {
+            _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after stun ends
+        }
     }
 }

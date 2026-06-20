@@ -1,9 +1,22 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PackageDistanceDetector : MonoBehaviour
 {
     PackageSpawner _packageSpawner;
+#if UNITY_EDITOR
+    private float _cachedDetectionRadius = -1f;
+    private void OnDrawGizmos()
+    {
+        if (_cachedDetectionRadius > 0f)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, _cachedDetectionRadius);
+        }
+    }
+#endif
+
 
     void Awake()
     {
@@ -11,6 +24,12 @@ public class PackageDistanceDetector : MonoBehaviour
     }
     public GameObject DetectClosestNonCorruptedPackage(float detectionRadius, HashSet<GameObject> excludedPackages = null)
     {
+
+#if UNITY_EDITOR
+        _cachedDetectionRadius = detectionRadius;
+#endif
+
+
         List<GameObject> packages = _packageSpawner?.SpawnedPackages;
         List<bool> corruptedPackages = _packageSpawner?.CorruptedPackages;
         if (packages == null || packages.Count == 0)

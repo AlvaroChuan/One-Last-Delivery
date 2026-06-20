@@ -53,6 +53,8 @@ GameObject:
   - component: {fileID: 4949009883274238217}
   - component: {fileID: 3791176424422493989}
   - component: {fileID: 1745047085939644261}
+  - component: {fileID: 323288940460479977}
+  - component: {fileID: 6029575805551709561}
   m_Layer: 6
   m_Name: Specter
   m_TagString: Untagged
@@ -287,9 +289,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _playerRecheckInterval: 1
-  _playerDetectionRadius: 50
   _fovCheckInterval: 0.05
+  _playerDetectionRadius: 50
 --- !u!114 &3791176424422493989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -347,6 +348,39 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!114 &323288940460479977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2340398685216393081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b76cb62fa8487c448931e704ca9befad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _wanderInterval: 5
+  _wanderRadius: 50
+  _wanderNavMeshSampleDistance: 2
+  _wanderNavMeshSampleAttempts: 10
+  _wanderSpeed: 3.5
+  _wanderAcceleration: 5
+--- !u!114 &6029575805551709561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2340398685216393081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b98e2d26c99440140ab69e393073e82c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _chaseSpeed: 10
+  _chaseAcceleration: 500
+  _playerRecheckInterval: 1
 --- !u!1 &5639984884656656329
 GameObject:
   m_ObjectHideFlags: 0

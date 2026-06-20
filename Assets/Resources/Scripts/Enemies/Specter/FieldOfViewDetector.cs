@@ -1,3 +1,4 @@
+using Mirror;
 using UnityEngine;
 
 public class FieldOfViewDetector : MonoBehaviour
@@ -20,6 +21,11 @@ public class FieldOfViewDetector : MonoBehaviour
 
     private bool CalculateIsInFOV(float maxDistance)
     {
+        if (PlayerDead())
+        {
+            return false; // If the player is dead, consider them out of FOV
+        }
+
         if (Vector3.Distance(transform.position, Camera.main.transform.position) > maxDistance)
         {
             return false;
@@ -47,6 +53,30 @@ public class FieldOfViewDetector : MonoBehaviour
         }
 
         return false;
+    }
+
+
+    bool PlayerDead()
+    {
+        if(NetworkClient.connection == null || NetworkClient.connection.identity == null)
+        {
+            return true; // Consider player dead if we can't find the player object
+        }
+        GameObject player = NetworkClient.connection.identity?.gameObject;
+        if (player == null)
+        {
+            DevLogger.LogError("Player object is null. Ensure the player is connected and has a valid NetworkIdentity.");
+            return true; // Consider player dead if we can't find the player object
+        }
+
+        PlayerDeathComponent playerDeathComponent = player.GetComponent<PlayerDeathComponent>();
+        if (playerDeathComponent == null)
+        {
+            DevLogger.LogError("PlayerDeathComponent is missing on the player object.");
+            return true; // Consider player dead if the component is missing
+        }
+
+        return playerDeathComponent.IsDead;
     }
 
     void LateUpdate()
