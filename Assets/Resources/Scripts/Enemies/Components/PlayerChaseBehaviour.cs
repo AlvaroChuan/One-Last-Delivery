@@ -12,6 +12,8 @@ public class PlayerChaseBehaviour : MonoBehaviour
     private float _playerRecheckTimer = 0f;
     private NavMeshMovementComponent _navMeshMovementComponent;
     private PlayerDistanceDetector _playerDistanceDetector;
+    private GameObject _currentTarget;
+    public GameObject CurrentTarget => _currentTarget;
 
     void Awake()
     {
@@ -41,10 +43,12 @@ public class PlayerChaseBehaviour : MonoBehaviour
             _navMeshMovementComponent.SetTarget(closestPlayer);
             _navMeshMovementComponent.StartMoving();
             _isChasing = true;
+            _currentTarget = closestPlayer;
         }
         else if (_isChasing)
         {
             _isChasing = false;
+            _currentTarget = null;
             _navMeshMovementComponent.StopMoving();
         }
     }

@@ -12,7 +12,6 @@ public class BasicEnemy : NetworkBehaviour
     private NavMeshMovementComponent _movementComponent;
     private EnemyAttackComponent _attackComponent;
     private EnemyStunComponent _enemyStunComponent;
-    private GameObject _currentTarget;
     private WanderBehaviour _wanderBehaviour;
     private PlayerChaseBehaviour _playerChaseBehaviour;
 
@@ -60,7 +59,7 @@ public class BasicEnemy : NetworkBehaviour
 
         if (_playerChaseBehaviour.IsChasing)
         {
-            _attackComponent.TryAttackIfInRange(_currentTarget);
+            _attackComponent.TryAttackIfInRange(_playerChaseBehaviour.CurrentTarget);
         }
         else
         {

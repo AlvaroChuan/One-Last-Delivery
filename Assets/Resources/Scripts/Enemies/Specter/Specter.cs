@@ -64,6 +64,11 @@ public class Specter : NetworkBehaviour
                 _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after resuming movement
             }
             _playerChaseBehaviour.UpdateChase(Time.deltaTime, _playerDetectionRadius);
+
+            if (_playerChaseBehaviour.IsChasing)
+            {
+                _enemyAttackComponent.TryAttackIfInRange(_playerChaseBehaviour.CurrentTarget);
+            }
         }
     }
 
