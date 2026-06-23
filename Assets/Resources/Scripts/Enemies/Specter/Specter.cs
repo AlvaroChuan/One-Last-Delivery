@@ -32,14 +32,12 @@ public class Specter : NetworkBehaviour
 
     void OnEnable()
     {
-        _enemyAttackComponent.onAttackEndedEvent += OnAttackEnded;
         _enemyAttackComponent.onAttackStartedEvent += OnAttackStarted;
         _enemyStunComponent.onStunChangedEvent += OnStunChanged;
     }
 
     void OnDisable()
     {
-        _enemyAttackComponent.onAttackEndedEvent -= OnAttackEnded;
         _enemyAttackComponent.onAttackStartedEvent -= OnAttackStarted;
         _enemyStunComponent.onStunChangedEvent -= OnStunChanged;
     }
@@ -112,13 +110,6 @@ public class Specter : NetworkBehaviour
         _movementComponent.SetTarget(null); // Clear target when attack starts
     }
 
-    void OnAttackEnded()
-    {
-        if (!isServer) return;
-
-        _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after attack
-    }
-
     void OnStunChanged(EnemyStunComponent.StunChangeInfo stunInfo)
     {
         if (!isServer) return;
@@ -126,10 +117,6 @@ public class Specter : NetworkBehaviour
         if (stunInfo.isStunned)
         {
             _movementComponent.SetTarget(null); // Clear target when stunned
-        }
-        else
-        {
-            _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after stun ends
         }
     }
 }

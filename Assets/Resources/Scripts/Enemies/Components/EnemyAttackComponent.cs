@@ -6,7 +6,6 @@ using System;
 public class EnemyAttackComponent : MonoBehaviour
 {
     public event Action onAttackStartedEvent;
-    public event Action onAttackEndedEvent;
     private static readonly int AttackHash = Animator.StringToHash("Attack");
     [SerializeField] private float _playerDetectionInterval = 0.05f; // Interval for checking player detection
     [SerializeField] private float _attackCooldown = 1f; // Time between attacks
@@ -76,7 +75,6 @@ public class EnemyAttackComponent : MonoBehaviour
     public void OnAttackAnimationEnd()
     {
         _isAttacking = false;
-        onAttackEndedEvent?.Invoke();
     }
 
 #if UNITY_EDITOR

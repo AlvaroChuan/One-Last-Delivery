@@ -28,7 +28,6 @@ public class BasicEnemy : NetworkBehaviour
     {
         base.OnStartServer();
 
-        _attackComponent.onAttackEndedEvent += OnAttackEnded;
         _attackComponent.onAttackStartedEvent += OnAttackStarted;
         _enemyStunComponent.onStunChangedEvent += OnStunChanged;
 
@@ -37,14 +36,12 @@ public class BasicEnemy : NetworkBehaviour
 
     void OnEnable()
     {
-        _attackComponent.onAttackEndedEvent += OnAttackEnded;
         _attackComponent.onAttackStartedEvent += OnAttackStarted;
         _enemyStunComponent.onStunChangedEvent += OnStunChanged;
     }
 
     void OnDisable()
     {
-        _attackComponent.onAttackEndedEvent -= OnAttackEnded;
         _attackComponent.onAttackStartedEvent -= OnAttackStarted;
         _enemyStunComponent.onStunChangedEvent -= OnStunChanged;
     }
@@ -75,12 +72,6 @@ public class BasicEnemy : NetworkBehaviour
 
         _movementComponent.SetTarget(null); // Clear target when attack starts
     }
-    void OnAttackEnded()
-    {
-        if (!isServer) return;
-
-        _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after attack
-    }
 
     void OnStunChanged(EnemyStunComponent.StunChangeInfo stunInfo)
     {
@@ -89,10 +80,6 @@ public class BasicEnemy : NetworkBehaviour
         if (stunInfo.isStunned)
         {
             _movementComponent.SetTarget(null); // Clear target when stunned
-        }
-        else
-        {
-            _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after stun ends
         }
     }
 }
