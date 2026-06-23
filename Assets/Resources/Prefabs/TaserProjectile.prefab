@@ -166,7 +166,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _speed: 10
+  _speed: 50
   _lifetime: -1
   _range: 10
   _gravityEnabled: 0

@@ -16,10 +16,20 @@ public class PackageHealthComponent : NetworkBehaviour
     [SerializeField] private float _minForceForDamage = 5f;
     [SerializeField] private float _damagePerUnitForce = 1f;
     [SerializeField] private float _currentHealth;
+    [SerializeField] private float _damageCooldown = 0.5f; // Time in seconds before the package can take damage again
     private Rigidbody _rigidbody;
 
     public float MaxHealth => _maxHealth;
     public float CurrentHealth => _currentHealth;
+
+    float _timeSinceLastDamage = 0f;
+
+    private bool _canTakeDamage = true;
+    public bool CanTakeDamage
+    {
+        get => _canTakeDamage;
+        set => _canTakeDamage = value;
+    }
 
     void Awake()
     {
@@ -33,6 +43,16 @@ public class PackageHealthComponent : NetworkBehaviour
             enabled = false;
         }
         _currentHealth = _maxHealth;
+    }
+
+    void Update()
+    {
+        if (!isServer) return;
+
+        if (_timeSinceLastDamage < _damageCooldown)
+        {
+            _timeSinceLastDamage += Time.deltaTime;
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -67,6 +87,10 @@ public class PackageHealthComponent : NetworkBehaviour
     [Server]
     public void ServerTakeDamage(float damage)
     {
+        DevLogger.Log($"Package trying to take damage: {damage}. Current health: {_currentHealth}. Time since last damage: {_timeSinceLastDamage}/{_damageCooldown}. Can take damage: {_canTakeDamage}");
+        if (_timeSinceLastDamage < _damageCooldown) return; // Ignore damage if within cooldown period
+        if (!_canTakeDamage) return; // Ignore damage if the package cannot take damage
+
         _currentHealth -= damage;
         if (_currentHealth <= 0f)
         {
@@ -88,11 +112,12 @@ public class PackageHealthComponent : NetworkBehaviour
     [ClientRpc]
     public void RpcUpdateHealth(float newHealth)
     {
+        float oldHealth = _currentHealth;
         _currentHealth = newHealth;
 
         onHealthChangedEvent?.Invoke(new HealthChangeInfo
         {
-            oldHealth = _currentHealth,
+            oldHealth = oldHealth,
             newHealth = newHealth
         });
     }

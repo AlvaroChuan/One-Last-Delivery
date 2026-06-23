@@ -3,6 +3,7 @@ using Mirror;
 using UnityEngine.AI;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using System.Collections;
 
 [RequireComponent(typeof(PackageDistanceDetector))]
 [RequireComponent(typeof(NavMeshMovementComponent))]
@@ -148,10 +149,12 @@ public class Swiper : NetworkBehaviour
 
         if (stunInfo.isStunned)
         {
+            _chaseBehaviour.CanMove = false; // Stop moving when stunned
             DropPackage();
         }
         else
         {
+            _chaseBehaviour.CanMove = true; // Resume moving after stun ends
             StartWander();
         }
     }
@@ -223,6 +226,14 @@ public class Swiper : NetworkBehaviour
         _targetPackage.GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = true; // Re-enable authority swapping when dropped
         _targetPackage.GetComponent<NetRigidbodyController>().enableRigidbodyControl = true; // Re-enable Rigidbody control for the package when dropped
 
+        Collider[] packageColliders = _targetPackage.GetComponentsInChildren<Collider>();
+        foreach (var collider in packageColliders)
+        {
+            collider.enabled = true; // Re-enable colliders for the package when dropped
+        }
+
+        StartCoroutine(ReenablePackageDamage(_targetPackage.GetComponent<PackageHealthComponent>(), 0.5f)); // Re-enable package damage after a short delay
+
         DevLogger.Log($"Swiper dropped package: {_targetPackage.name}");
     }
     void PickupPackage()
@@ -247,11 +258,28 @@ public class Swiper : NetworkBehaviour
         _targetPackage.GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = false; // Disable authority swapping for the package while being carried
         _targetPackage.GetComponent<Rigidbody>().isKinematic = true; // Make the package kinematic so it can be carried
         _targetPackage.transform.position = _packageCarryPoint.position; // Move the package to the carry point
+
+        Collider[] packageColliders = _targetPackage.GetComponentsInChildren<Collider>();
+        foreach (var collider in packageColliders)
+        {
+            collider.enabled = false; // Disable colliders for the package while being carried
+        }
+
+        _targetPackage.GetComponent<PackageHealthComponent>().CanTakeDamage = false; // Prevent the package from taking damage while being carried
     }
 
     void StartWander()
     {
         _currentState = SwiperState.Wandering;
         _wanderBehaviour.StartWander();
+    }
+
+    IEnumerator ReenablePackageDamage(PackageHealthComponent packageHealthComponent, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (packageHealthComponent != null)
+        {
+            packageHealthComponent.CanTakeDamage = true; // Re-enable package damage after the delay
+        }
     }
 }
