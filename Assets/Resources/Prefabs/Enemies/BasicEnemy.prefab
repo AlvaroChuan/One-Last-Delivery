@@ -195,6 +195,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a97f79ff126754140815dc2ddf63b1e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerDetectionInterval: 0.05
   _attackCooldown: 1
   _attackRange: 1.5
 --- !u!114 &9080684298942681700
@@ -442,9 +443,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2698105771777470959}
   - component: {fileID: 2007497164060383089}
+  - component: {fileID: 8967435739352776531}
   - component: {fileID: 9111727470786816179}
   m_Layer: 6
-  m_Name: GameObject
+  m_Name: Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -475,6 +477,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 915110e93edc5c44c8e872e7ee9204c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8967435739352776531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9003643908784781482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe65ecd4d97b48443b1fc3f9663ed5b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _damage: 10

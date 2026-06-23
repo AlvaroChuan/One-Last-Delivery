@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(PlayerDistanceDetector))]
-[RequireComponent(typeof(EnemyHitbox))]
+[RequireComponent(typeof(EnemyAttack))]
 [RequireComponent(typeof(EnemyStunComponent))]
 public class Mimic : NetworkBehaviour
 {
@@ -28,7 +28,6 @@ public class Mimic : NetworkBehaviour
 
     private PlayerDistanceDetector _playerDistanceDetector;
     private Rigidbody _rigidbody;
-    private EnemyHitbox _hitbox;
     private EnemyStunComponent _stunComponent;
     private GameObject _closestPlayer;
     private float _attackCooldownTimer = 0f;
@@ -39,7 +38,6 @@ public class Mimic : NetworkBehaviour
     {
         _playerDistanceDetector = GetComponent<PlayerDistanceDetector>();
         _rigidbody = GetComponent<Rigidbody>();
-        _hitbox = GetComponent<EnemyHitbox>();
         _stunComponent = GetComponent<EnemyStunComponent>();
 
         _playerCheckTimer = Random.Range(0f, _playerCheckInterval); // Randomize the initial timer to avoid all Mimics checking for players at the same time
@@ -78,7 +76,6 @@ public class Mimic : NetworkBehaviour
             if (!_isTransformed)
             {
                 TransformIntoMonster();
-                _hitbox.enabled = true; // Enable the hitbox when transformed
                 _hitboxCollider.enabled = true; // Enable the hitbox collider when transformed
             }
             LungeAtPlayer();
@@ -103,6 +100,10 @@ public class Mimic : NetworkBehaviour
     {
         if (_closestPlayer == null) return;
 
+        // Reset the hitbox collider to ensure it detects the player during the lunge
+        _hitboxCollider.enabled = false;
+        _hitboxCollider.enabled = true;
+
         Vector3 direction = _closestPlayer.transform.position - transform.position;
         direction.y = 0;
         direction.Normalize();
@@ -122,7 +123,6 @@ public class Mimic : NetworkBehaviour
     {
         yield return new WaitForSeconds(_transformDuration);
         _isTransformed = false;
-        _hitbox.enabled = false; // Disable the hitbox when not transformed
         _hitboxCollider.enabled = false; // Disable the hitbox collider when not transformed
     }
 
@@ -140,7 +140,6 @@ public class Mimic : NetworkBehaviour
                     _resetTransformationCoroutine = null;
                 }
                 _isTransformed = false;
-                _hitbox.enabled = false; // Disable the hitbox when stunned
                 _hitboxCollider.enabled = false; // Disable the hitbox collider when stunned
             }
         }
