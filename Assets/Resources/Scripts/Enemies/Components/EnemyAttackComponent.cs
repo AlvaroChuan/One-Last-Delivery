@@ -8,6 +8,7 @@ public class EnemyAttackComponent : MonoBehaviour
     public event Action onAttackStartedEvent;
     public event Action onAttackEndedEvent;
     private static readonly int AttackHash = Animator.StringToHash("Attack");
+    [SerializeField] private float _playerDetectionInterval = 0.05f; // Interval for checking player detection
     [SerializeField] private float _attackCooldown = 1f; // Time between attacks
     [SerializeField] private float _attackRange = 2f; // Range within which the enemy can attack players
     private float _currentAttackCooldown = 0f;
@@ -15,6 +16,7 @@ public class EnemyAttackComponent : MonoBehaviour
     private RaycastHit[] _raycastHitBuffer = new RaycastHit[10]; // Preallocate array for raycast hits
     private bool _isAttacking = false;
     public bool IsAttacking => _isAttacking;
+    private float _playerDetectionTimer = 0f; // Timer for player detection checks
 
     void Awake()
     {
@@ -31,11 +33,17 @@ public class EnemyAttackComponent : MonoBehaviour
         {
             _currentAttackCooldown -= Time.deltaTime;
         }
+        if (_playerDetectionTimer > 0f)
+        {
+            _playerDetectionTimer -= Time.deltaTime;
+        }
     }
 
     public void TryAttackIfInRange(GameObject target)
     {
-        if (target == null) return;
+        if (target == null || _playerDetectionTimer > 0f) return;
+
+        _playerDetectionTimer = _playerDetectionInterval; // Reset the detection timer
 
         Vector3 directionToPlayer = target.transform.position - transform.position;
         directionToPlayer.y = 0; // Ignore vertical difference for the raycast
@@ -70,4 +78,13 @@ public class EnemyAttackComponent : MonoBehaviour
         _isAttacking = false;
         onAttackEndedEvent?.Invoke();
     }
+
+#if UNITY_EDITOR
+    void OnDrawGizmos()
+    {
+        // Draw a line to visualize the attack range
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * _attackRange);
+    }
+#endif
 }

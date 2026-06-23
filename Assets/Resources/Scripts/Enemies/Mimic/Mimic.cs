@@ -47,18 +47,12 @@ public class Mimic : NetworkBehaviour
 
     void OnEnable()
     {
-        if (isServer)
-        {
-            _stunComponent.onStunChangedEvent += OnStunChanged;
-        }
+        _stunComponent.onStunChangedEvent += OnStunChanged;
     }
 
     void OnDisable()
     {
-        if (isServer)
-        {
-            _stunComponent.onStunChangedEvent -= OnStunChanged;
-        }
+        _stunComponent.onStunChangedEvent -= OnStunChanged;
     }
 
     void Update()
@@ -134,6 +128,8 @@ public class Mimic : NetworkBehaviour
 
     private void OnStunChanged(EnemyStunComponent.StunChangeInfo info)
     {
+        if (!isServer) return;
+
         if (info.isStunned)
         {
             if (_isTransformed)

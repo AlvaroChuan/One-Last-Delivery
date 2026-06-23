@@ -71,17 +71,11 @@ public class Swiper : NetworkBehaviour
 
     void OnEnable()
     {
-        if (isServer)
-        {
-            _enemyStunComponent.onStunChangedEvent += OnStunStateChanged;
-        }
+        _enemyStunComponent.onStunChangedEvent += OnStunStateChanged;
     }
     void OnDisable()
     {
-        if (isServer)
-        {
-            _enemyStunComponent.onStunChangedEvent -= OnStunStateChanged;
-        }
+        _enemyStunComponent.onStunChangedEvent -= OnStunStateChanged;
     }
 
     void Update()
@@ -150,6 +144,8 @@ public class Swiper : NetworkBehaviour
 
     void OnStunStateChanged(EnemyStunComponent.StunChangeInfo stunInfo)
     {
+        if (!isServer) return;
+
         if (stunInfo.isStunned)
         {
             DropPackage();

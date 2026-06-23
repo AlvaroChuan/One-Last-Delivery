@@ -35,11 +35,11 @@ public class EnemyStunComponent : NetworkBehaviour
     [Command(requiresAuthority = false)]
     void CmdStun(float duration)
     {
+        _stunDuration += duration;
         if (!_isStunned)
         {
             ServerStartStun();
         }
-        _stunDuration += duration;
     }
     [Command(requiresAuthority = false)]
     void CmdUnstun()
@@ -66,6 +66,8 @@ public class EnemyStunComponent : NetworkBehaviour
     {
         if (_isStunned || !enabled) return;
 
+        DevLogger.Log($"Enemy {name} stunned for {_stunDuration} seconds.");
+
         _isStunned = true;
         onStunChangedEvent?.Invoke(new StunChangeInfo
         {
@@ -77,6 +79,8 @@ public class EnemyStunComponent : NetworkBehaviour
     void ServerStopStun()
     {
         if (!_isStunned) return;
+
+        DevLogger.Log($"Enemy {name} is no longer stunned.");
 
         _isStunned = false;
         onStunChangedEvent?.Invoke(new StunChangeInfo

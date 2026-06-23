@@ -28,12 +28,21 @@ public class Specter : NetworkBehaviour
         _enemyAttackComponent = GetComponent<EnemyAttackComponent>();
 
         _fovCheckTimer = Random.Range(0f, _fovCheckInterval); // Randomize the initial timer to avoid all Specters checking FOV at the same time
+    }
 
+    void OnEnable()
+    {
         _enemyAttackComponent.onAttackEndedEvent += OnAttackEnded;
         _enemyAttackComponent.onAttackStartedEvent += OnAttackStarted;
         _enemyStunComponent.onStunChangedEvent += OnStunChanged;
     }
 
+    void OnDisable()
+    {
+        _enemyAttackComponent.onAttackEndedEvent -= OnAttackEnded;
+        _enemyAttackComponent.onAttackStartedEvent -= OnAttackStarted;
+        _enemyStunComponent.onStunChangedEvent -= OnStunChanged;
+    }
     void Update()
     {
         _fovCheckTimer += Time.deltaTime;
@@ -99,17 +108,23 @@ public class Specter : NetworkBehaviour
 
     void OnAttackStarted()
     {
+        if (!isServer) return;
+
         _movementComponent.CanMove = false; // Stop moving when attack starts
     }
 
     void OnAttackEnded()
     {
+        if (!isServer) return;
+
         _movementComponent.CanMove = true; // Resume moving after attack ends
         _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after attack
     }
 
     void OnStunChanged(EnemyStunComponent.StunChangeInfo stunInfo)
     {
+        if (!isServer) return;
+
         _movementComponent.CanMove = !stunInfo.isStunned; // Stop moving when stunned, resume when not stunned
         if (!stunInfo.isStunned)
         {

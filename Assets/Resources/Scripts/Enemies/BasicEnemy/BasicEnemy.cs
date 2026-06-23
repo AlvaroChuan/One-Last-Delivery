@@ -15,36 +15,38 @@ public class BasicEnemy : NetworkBehaviour
     private WanderBehaviour _wanderBehaviour;
     private PlayerChaseBehaviour _playerChaseBehaviour;
 
-    public override void OnStartServer()
+    void Awake()
     {
-        base.OnStartServer();
         _movementComponent = GetComponent<NavMeshMovementComponent>();
         _wanderBehaviour = GetComponent<WanderBehaviour>();
         _attackComponent = GetComponent<EnemyAttackComponent>();
         _enemyStunComponent = GetComponent<EnemyStunComponent>();
         _playerChaseBehaviour = GetComponent<PlayerChaseBehaviour>();
+    }
+
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+
+        _attackComponent.onAttackEndedEvent += OnAttackEnded;
+        _attackComponent.onAttackStartedEvent += OnAttackStarted;
+        _enemyStunComponent.onStunChangedEvent += OnStunChanged;
 
         _wanderBehaviour.StartWander(); // Start wandering when the enemy is spawned
     }
 
     void OnEnable()
     {
-        if (isServer)
-        {
-            _attackComponent.onAttackEndedEvent += OnAttackEnded;
-            _attackComponent.onAttackStartedEvent += OnAttackStarted;
-            _enemyStunComponent.onStunChangedEvent += OnStunChanged;
-        }
+        _attackComponent.onAttackEndedEvent += OnAttackEnded;
+        _attackComponent.onAttackStartedEvent += OnAttackStarted;
+        _enemyStunComponent.onStunChangedEvent += OnStunChanged;
     }
 
     void OnDisable()
     {
-        if (isServer)
-        {
-            _attackComponent.onAttackEndedEvent -= OnAttackEnded;
-            _attackComponent.onAttackStartedEvent -= OnAttackStarted;
-            _enemyStunComponent.onStunChangedEvent -= OnStunChanged;
-        }
+        _attackComponent.onAttackEndedEvent -= OnAttackEnded;
+        _attackComponent.onAttackStartedEvent -= OnAttackStarted;
+        _enemyStunComponent.onStunChangedEvent -= OnStunChanged;
     }
 
     void Update()
@@ -69,16 +71,22 @@ public class BasicEnemy : NetworkBehaviour
 
     void OnAttackStarted()
     {
+        if (!isServer) return;
+
         _movementComponent.CanMove = false; // Stop moving when attack starts
     }
     void OnAttackEnded()
     {
+        if (!isServer) return;
+
         _movementComponent.CanMove = true; // Resume moving after attack ends
         _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after attack
     }
 
     void OnStunChanged(EnemyStunComponent.StunChangeInfo stunInfo)
     {
+        if (!isServer) return;
+
         if (stunInfo.isStunned)
         {
             _movementComponent.CanMove = false; // Stop moving when stunned

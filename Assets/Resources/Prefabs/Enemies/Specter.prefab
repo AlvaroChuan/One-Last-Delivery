@@ -229,7 +229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _attackCooldown: 1
-  _attackRange: 2
+  _attackRange: 1.5
 --- !u!114 &9080684298942681700
 MonoBehaviour:
   m_ObjectHideFlags: 0
