@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerInventoryComponent : InputComponent
 {
+    public Action<ItemID> onInventorySlotChanged; // Event to notify when the inventory slot changes
     [Serializable]
     struct ItemEntry
     {
@@ -120,8 +121,10 @@ public class PlayerInventoryComponent : InputComponent
         {
             itemID = _inventoryManager.GetInventorySlot(index).itemID;
         }
+
         UpdateVisualMesh(itemID);
         CmdUpdateVisualMesh(itemID);
+        onInventorySlotChanged?.Invoke(itemID); // Notify listeners about the inventory slot change
     }
 
     [Command]

@@ -9,9 +9,7 @@ public class PlayerMovementComponent : InputComponent
     [SerializeField] private float _maxMoveSpeed = 5f;
     [SerializeField] private float _acceleration = 10f;
     [SerializeField] private float _deceleration = 15f;
-    [SerializeField] private float _rotationSpeed = 10f;
     [SerializeField] private InputActionReference _movementInput;
-    [SerializeField] private GameObject _model;
 
     public float MaxMoveSpeed {
         get => _maxMoveSpeed;
@@ -83,7 +81,6 @@ public class PlayerMovementComponent : InputComponent
             return;
 
         HandleMovement();
-        HandleRotation();
     }
     private void HandleMovement()
     {
@@ -101,17 +98,5 @@ public class PlayerMovementComponent : InputComponent
         newVelocity.y = currentVelocity.y; // Preserve vertical velocity (gravity/falling)
 
         _rigidbody.linearVelocity = newVelocity;
-    }
-
-    private void HandleRotation()
-    {
-        Vector3 forward = Camera.main.transform.forward;
-        forward.y = 0f;
-
-        if (forward.sqrMagnitude > 0.001f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(forward);
-            _model.transform.rotation = Quaternion.Slerp(_model.transform.rotation, targetRotation, _rotationSpeed * Time.fixedDeltaTime);
-        }
     }
 }

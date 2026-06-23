@@ -4,7 +4,10 @@ using Unity.Cinemachine;
 
 public class PlayerLookComponent : PlayerComponent
 {
+    [SerializeField] private GameObject _model;
+    [SerializeField] private GameObject _head;
     [SerializeField] private Transform _eyes;
+    [SerializeField] private float _rotationSpeed = 10f;
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -20,6 +23,31 @@ public class PlayerLookComponent : PlayerComponent
                 cinemachineCamera.LookAt = _eyes;
             }
         }
+        else
+        {
+            enabled = false; // Disable this component for non-local players
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (!isLocalPlayer) return; // Only allow local player to process look input
+
+        HandleRotation();
+    }
+
+    private void HandleRotation()
+    {
+        Vector3 forward = Camera.main.transform.forward;
+        Vector3 flatForward = new Vector3(forward.x, 0f, forward.z).normalized;
+
+        if (flatForward.sqrMagnitude > 0.001f)
+        {
+            Quaternion modelTargetRotation = Quaternion.LookRotation(flatForward);
+            _model.transform.rotation = Quaternion.Slerp(_model.transform.rotation, modelTargetRotation, _rotationSpeed * Time.fixedDeltaTime);
+        }
+        Quaternion headTargetRotation = Quaternion.LookRotation(forward);
+        _head.transform.rotation = Quaternion.Slerp(_head.transform.rotation, headTargetRotation, _rotationSpeed * Time.fixedDeltaTime);
     }
 }
 
