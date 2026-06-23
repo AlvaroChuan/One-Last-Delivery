@@ -41,7 +41,6 @@ public class PlayerChaseBehaviour : MonoBehaviour
             _navMeshMovementComponent.SetSpeed(_chaseSpeed);
             _navMeshMovementComponent.SetAcceleration(_chaseAcceleration);
             _navMeshMovementComponent.SetTarget(closestPlayer);
-            _navMeshMovementComponent.StartMoving();
             _isChasing = true;
             _currentTarget = closestPlayer;
         }
@@ -49,7 +48,7 @@ public class PlayerChaseBehaviour : MonoBehaviour
         {
             _isChasing = false;
             _currentTarget = null;
-            _navMeshMovementComponent.StopMoving();
+            _navMeshMovementComponent.SetTarget(null);
         }
     }
 }

@@ -73,13 +73,12 @@ public class BasicEnemy : NetworkBehaviour
     {
         if (!isServer) return;
 
-        _movementComponent.CanMove = false; // Stop moving when attack starts
+        _movementComponent.SetTarget(null); // Clear target when attack starts
     }
     void OnAttackEnded()
     {
         if (!isServer) return;
 
-        _movementComponent.CanMove = true; // Resume moving after attack ends
         _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after attack
     }
 
@@ -89,11 +88,10 @@ public class BasicEnemy : NetworkBehaviour
 
         if (stunInfo.isStunned)
         {
-            _movementComponent.CanMove = false; // Stop moving when stunned
+            _movementComponent.SetTarget(null); // Clear target when stunned
         }
         else
         {
-            _movementComponent.CanMove = true; // Resume moving when not stunned
             _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after stun ends
         }
     }

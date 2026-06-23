@@ -9,23 +9,8 @@ public class NavMeshMovementComponent : NetworkBehaviour
     private float _recalculationTimer = 0f;
     private GameObject _target;
     public GameObject Target => _target;
+    private Vector3? _targetPosition = null; // Nullable Vector3 to store the target position when using a position instead of a GameObject
     private NavMeshAgent _navMeshAgent;
-    private bool _isMoving = false;
-    public bool IsMoving => _isMoving;
-    private bool _canMove = true;
-    public bool CanMove
-    {
-        get => _canMove;
-        set
-        {
-            _canMove = value;
-            if (!_canMove)
-            {
-                StopMoving();
-            }
-        }
-    }
-    Vector3 _targetPosition;
 
     void Awake()
     {
@@ -48,9 +33,14 @@ public class NavMeshMovementComponent : NetworkBehaviour
         if (_target == target) return; // No change in target
 
         _target = target;
-        if (_isMoving && _target != null)
+        _targetPosition = null; // Clear the position target since we're using a GameObject now
+        if (_target != null)
         {
             _navMeshAgent.SetDestination(_target.transform.position);
+        }
+        else
+        {
+            _navMeshAgent.ResetPath();
         }
     }
 
@@ -62,38 +52,13 @@ public class NavMeshMovementComponent : NetworkBehaviour
         {
             success = true;
             _targetPosition = hit.position;
-            if (_isMoving)
-            {
-                _navMeshAgent.SetDestination(_targetPosition);
-            }
+            _navMeshAgent.SetDestination(_targetPosition.Value);
         }
-    }
-
-    public void StartMoving()
-    {
-        if (_isMoving) return; // Already moving
-
-        _isMoving = true;
-        if (_target != null)
-        {
-            _navMeshAgent.SetDestination(_target.transform.position);
-        }
-        else if (_targetPosition != Vector3.zero)
-        {
-            _navMeshAgent.SetDestination(_targetPosition);
-        }
-    }
-
-    public void StopMoving()
-    {
-        _isMoving = false;
-        _navMeshAgent.ResetPath();
-        _navMeshAgent.velocity = Vector3.zero; // Stop any residual movement
     }
 
     void Update()
     {
-        if (!_isMoving || _target == null || !_canMove) return;
+        if (_target == null) return;
 
         _recalculationTimer += Time.deltaTime;
         if (_recalculationTimer >= _recalculationInterval)
@@ -133,10 +98,10 @@ public class NavMeshMovementComponent : NetworkBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawLine(transform.position, _target.transform.position);
         }
-        else if (_targetPosition != Vector3.zero)
+        else if (_targetPosition.HasValue)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawLine(transform.position, _targetPosition);
+            Gizmos.DrawLine(transform.position, _targetPosition.Value);
         }
     }
 #endif

@@ -149,12 +149,11 @@ public class Swiper : NetworkBehaviour
 
         if (stunInfo.isStunned)
         {
-            _chaseBehaviour.CanMove = false; // Stop moving when stunned
+            _chaseBehaviour.SetTarget(null); // Clear target when stunned
             DropPackage();
         }
         else
         {
-            _chaseBehaviour.CanMove = true; // Resume moving after stun ends
             StartWander();
         }
     }
@@ -190,7 +189,6 @@ public class Swiper : NetworkBehaviour
         _chaseBehaviour.SetSpeed(_stealSpeed);
         _chaseBehaviour.SetAcceleration(_stealAcceleration);
         _chaseBehaviour.SetTarget(_targetPackage);
-        _chaseBehaviour.StartMoving();
         _currentState = SwiperState.ChasingPackage;
     }
 
@@ -199,7 +197,6 @@ public class Swiper : NetworkBehaviour
         //DevLogger.Log("Swiper is running to hideout.");
         _chaseBehaviour.SetSpeed(_stealSpeed);
         _chaseBehaviour.SetTarget(_hideout);
-        _chaseBehaviour.StartMoving();
         _currentState = SwiperState.RunningToHideout;
     }
 
@@ -218,7 +215,7 @@ public class Swiper : NetworkBehaviour
             return;
         }
 
-        _chaseBehaviour.StopMoving();
+        _chaseBehaviour.SetTarget(null);
 
         _targetPackage.layer = LayerMask.NameToLayer(_targetPackage.GetComponent<PackageInteractionComponent>().DroppedLayer);
         Rigidbody packageRigidbody = _targetPackage.GetComponent<Rigidbody>();

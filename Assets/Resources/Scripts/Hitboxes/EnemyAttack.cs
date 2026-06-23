@@ -1,3 +1,4 @@
+using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(Hitbox))]
@@ -23,6 +24,8 @@ public class EnemyAttack : MonoBehaviour
 
     void HandleHit(GameObject hitObject)
     {
+        if (!NetworkServer.active) return; // Ensure this runs only on the server
+
         DevLogger.Log($"EnemyAttack hit: {hitObject.name}");
         var healthComponent = hitObject.GetComponent<PlayerHealthComponent>();
         if (healthComponent != null)

@@ -59,17 +59,16 @@ public class Specter : NetworkBehaviour
 
         if (_inFOVCount > 0)
         {
-            if (_movementComponent.CanMove)
+            if (_movementComponent.Target != null)
             {
-                _movementComponent.CanMove = false; // Stop moving when a player is in FOV
+                _movementComponent.SetTarget(null); // Clear target when a player is in FOV
             }
             return;
         }
         else if (_inFOVCount <= 0)
         {
-            if (!_movementComponent.CanMove)
+            if (_movementComponent.Target == null)
             {
-                _movementComponent.CanMove = true; // Resume moving when no players are in FOV
                 _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after resuming movement
             }
             _playerChaseBehaviour.UpdateChase(Time.deltaTime, _playerDetectionRadius);
@@ -110,14 +109,13 @@ public class Specter : NetworkBehaviour
     {
         if (!isServer) return;
 
-        _movementComponent.CanMove = false; // Stop moving when attack starts
+        _movementComponent.SetTarget(null); // Clear target when attack starts
     }
 
     void OnAttackEnded()
     {
         if (!isServer) return;
 
-        _movementComponent.CanMove = true; // Resume moving after attack ends
         _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after attack
     }
 
@@ -125,8 +123,11 @@ public class Specter : NetworkBehaviour
     {
         if (!isServer) return;
 
-        _movementComponent.CanMove = !stunInfo.isStunned; // Stop moving when stunned, resume when not stunned
-        if (!stunInfo.isStunned)
+        if (stunInfo.isStunned)
+        {
+            _movementComponent.SetTarget(null); // Clear target when stunned
+        }
+        else
         {
             _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after stun ends
         }
