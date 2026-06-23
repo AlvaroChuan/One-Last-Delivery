@@ -43,13 +43,12 @@ public class WanderBehaviour : MonoBehaviour
             randomDirection = Random.insideUnitCircle * _wanderRadius;
             wanderTarget = new Vector3(randomDirection.x, transform.position.y, randomDirection.y) + transform.position;
             _chaseBehaviour.SetTarget(wanderTarget, _wanderNavMeshSampleDistance, out isOnNavMesh);
-            _chaseBehaviour.StartMoving();
             sampleAttempts++;
         } while (!isOnNavMesh && sampleAttempts < _wanderNavMeshSampleAttempts);
 
         if (!isOnNavMesh)
         {
-            _chaseBehaviour.StopMoving();
+            _chaseBehaviour.SetTarget(null);
         }
     }
 }
