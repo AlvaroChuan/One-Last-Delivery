@@ -102,7 +102,7 @@ Material:
     - _CellNormal: 0.02
     - _CellOffsetIntensity: 0.92
     - _CellOffsetNoise: 18.06
-    - _Cull: 0
+    - _Cull: 2
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _FPS: 12
