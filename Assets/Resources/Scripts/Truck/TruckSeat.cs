@@ -1,9 +1,6 @@
 using UnityEngine;
 using Mirror;
 using UnityEngine.InputSystem;
-using Unity.VisualScripting;
-using System.Collections.Generic;
-using System;
 
 public class TruckSeat : Interactable
 {
@@ -32,7 +29,7 @@ public class TruckSeat : Interactable
 
         if (oldOccupant != null)
         {
-            if(NetworkClient.connection.identity != null && oldOccupant == NetworkClient.connection.identity.gameObject)
+            if(NetworkClient.connection.identity != null && oldOccupant == NetworkClient.localPlayer)
             {
                 // If the old occupant is the local player, re-enable their input and colliders
                 SetPlayerInput(oldOccupant, false);
@@ -52,7 +49,7 @@ public class TruckSeat : Interactable
         }
         if (newOccupant != null)
         {
-            if(NetworkClient.connection.identity != null && newOccupant == NetworkClient.connection.identity.gameObject)
+            if(NetworkClient.connection.identity != null && newOccupant == NetworkClient.localPlayer)
             {
                 // If the new occupant is the local player, disable their input and colliders
                 SetPlayerInput(newOccupant, true);
@@ -72,18 +69,18 @@ public class TruckSeat : Interactable
     {
         if (info.interactable is TruckSeat && info.interactable != this)
         {
-            GetUp(); // If the player interacts with another seat, get up from the current seat
+            CmdGetUp(); // If the player interacts with another seat, get up from the current seat
         }
     }
 
     void Update()
     {
-        if (_occupant != null && NetworkClient.connection.identity != null && _occupant == NetworkClient.connection.identity.gameObject)
+        if (_occupant != null && NetworkClient.connection.identity != null && _occupant == NetworkClient.localPlayer)
         {
             _occupant.transform.position = _occupantPosition.position;
-            Vector3 rotationDelta = transform.rotation.eulerAngles - _lastRotation.eulerAngles;
+            Quaternion rotationDelta = transform.rotation * Quaternion.Inverse(_lastRotation);
             GameObject model = _occupant.GetComponent<PlayerLookComponent>().Model;
-            model.transform.Rotate(rotationDelta, Space.World); // Apply the rotation difference of the seat to the occupant
+            model.transform.rotation = rotationDelta * model.transform.rotation;
             model.transform.rotation = Quaternion.LookRotation(_occupant.transform.forward, transform.up);
         }
         _lastRotation = transform.rotation;
@@ -144,11 +141,21 @@ public class TruckSeat : Interactable
     {
         if (_occupant == null) return; // No occupant to get up
 
-        GetUp();
+        CmdGetUp();
     }
 
-    void GetUp()
+    [Command(requiresAuthority = false)]
+    void CmdGetUp()
     {
         _occupant = null;
+    }
+
+    void OnDestroy()
+    {
+        if (_occupant != null && NetworkClient.connection.identity != null && _occupant == NetworkClient.localPlayer)
+        {
+            SetPlayerInput(_occupant, false);
+            SetPlayerCollidersEnabled(_occupant, false);
+        }
     }
 }
