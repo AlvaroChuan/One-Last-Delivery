@@ -80,8 +80,9 @@ public class TruckSeat : Interactable
         {
             _occupant.transform.position = _occupantPosition.position;
             Vector3 rotationDelta = transform.rotation.eulerAngles - _lastRotation.eulerAngles;
-            _occupant.transform.Rotate(rotationDelta, Space.World); // Apply the rotation difference of the seat to the occupant
-            _occupant.transform.rotation = Quaternion.LookRotation(_occupant.transform.forward, transform.up);
+            GameObject model = _occupant.GetComponent<PlayerLookComponent>().Model;
+            model.transform.Rotate(rotationDelta, Space.World); // Apply the rotation difference of the seat to the occupant
+            model.transform.rotation = Quaternion.LookRotation(_occupant.transform.forward, transform.up);
         }
         _lastRotation = transform.rotation;
     }
