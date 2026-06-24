@@ -44,11 +44,11 @@ public class TruckSeat : Interactable
                     DevLogger.Log($"No ground found below exit position for player {oldOccupant.name}, moving to exit position");
                     oldOccupant.transform.position = _exitPosition.position; // Move the player to the exit position if no ground is found
                 }
+                oldOccupant.GetComponent<Rigidbody>().isKinematic = false; // Re-enable physics for the old occupant
             }
             SetPlayerCollidersEnabled(oldOccupant, false); // Re-enable colliders for the old occupant
             oldOccupant.GetComponent<NetworkTransformReliable>().enabled = true; // Re-enable NetworkTransform for the old occupant
             oldOccupant.transform.SetParent(null); // Unparent the old occupant from the seat position
-            oldOccupant.GetComponent<Rigidbody>().isKinematic = false; // Re-enable physics for the old occupant
         }
         if (newOccupant != null)
         {
@@ -56,13 +56,13 @@ public class TruckSeat : Interactable
             {
                 // If the new occupant is the local player, disable their input and colliders
                 SetPlayerInput(newOccupant, true);
+                newOccupant.GetComponent<Rigidbody>().isKinematic = true; // Disable physics for the new occupant while seated
             }
             SetPlayerCollidersEnabled(newOccupant, true); // Disable colliders for the new occupant
             newOccupant.GetComponent<NetworkTransformReliable>().enabled = false; // Disable NetworkTransform for the new occupant
             newOccupant.transform.position = _occupantPosition.position; // Move the new occupant to the seat position
             newOccupant.transform.rotation = transform.rotation; // Align the new occupant's rotation with the seat's rotation
             newOccupant.transform.SetParent(_occupantPosition); // Parent the new occupant to the seat position for movement synchronization
-            newOccupant.GetComponent<Rigidbody>().isKinematic = true; // Disable physics for the new occupant while seated
         }
     }
 
