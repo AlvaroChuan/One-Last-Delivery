@@ -36,8 +36,15 @@ public class TruckSeat : Interactable
             {
                 // If the old occupant is the local player, re-enable their input and colliders
                 SetPlayerInput(oldOccupant, false);
-                oldOccupant.transform.position = _exitPosition.position; // Move the player to the exit position
-                oldOccupant.transform.up = Vector3.up; // Reset the player's up direction to world up
+                RaycastHit hit;
+                if (Physics.Raycast(oldOccupant.transform.position + Vector3.up * 10f, Vector3.down, out hit, 10f))
+                {
+                    oldOccupant.transform.position = hit.point; // Move the player to the ground below them
+                }
+                else
+                {
+                    oldOccupant.transform.position = _exitPosition.position; // Move the player to the exit position if no ground is found
+                }
             }
             SetPlayerCollidersEnabled(oldOccupant, false); // Re-enable colliders for the old occupant
         }
