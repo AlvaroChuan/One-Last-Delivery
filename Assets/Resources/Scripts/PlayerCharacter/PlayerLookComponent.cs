@@ -9,6 +9,7 @@ public class PlayerLookComponent : PlayerComponent
     [SerializeField] private Transform _eyes;
     [SerializeField] private float _rotationSpeed = 10f;
     public GameObject Model => _model;
+    public Transform Eyes => _eyes;
     public override void OnStartClient()
     {
         base.OnStartClient();

@@ -46,6 +46,7 @@ public class TruckSeat : Interactable
             SetPlayerCollidersEnabled(oldOccupant, false); // Re-enable colliders for the old occupant
             oldOccupant.GetComponent<Rigidbody>().isKinematic = false; // Make the old occupant's Rigidbody non-kinematic to allow physics interactions
             oldOccupant.transform.parent = null; // Unparent the old occupant from the seat
+            oldOccupant.transform.rotation = Quaternion.identity; // Reset rotation to ensure correct orientation
         }
         if (newOccupant != null)
         {
