@@ -28,6 +28,7 @@ public abstract class InputComponent : PlayerComponent
     {
         if (!isLocalPlayer) return;
 
+        DevLogger.Log($"Binding inputs for {GetType().Name} on {gameObject.name}");
         BindInputs();
         _inputsBound = true;
     }

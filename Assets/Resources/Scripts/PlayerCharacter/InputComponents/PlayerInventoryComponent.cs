@@ -308,4 +308,11 @@ public class PlayerInventoryComponent : InputComponent
             SetCarryingPackage(null);
         }
     }
+
+    public void SetInventorySlot(int slotIndex)
+    {
+        if (!isLocalPlayer) return;
+
+        SetInventorySelection(slotIndex);
+    }
 }
