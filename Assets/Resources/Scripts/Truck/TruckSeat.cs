@@ -81,6 +81,7 @@ public class TruckSeat : Interactable
 
     void Update()
     {
+        /*
         if (_occupant != null && NetworkClient.connection.identity != null && _occupant == NetworkClient.localPlayer)
         {
             _occupant.transform.position = _occupantPosition.position;
@@ -89,7 +90,7 @@ public class TruckSeat : Interactable
             model.transform.rotation = rotationDelta * model.transform.rotation;
             model.transform.rotation = Quaternion.LookRotation(_occupant.transform.forward, transform.up);
         }
-        _lastRotation = transform.rotation;
+        _lastRotation = transform.rotation;*/
     }
 
     void SetPlayerInput(GameObject player, bool isOnTruck)
