@@ -1,12 +1,16 @@
 using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(CollisionAuthorityHandler))]
 [RequireComponent(typeof(Rigidbody))]
 public class PackageInteractionComponent : Interactable
 {
     [SerializeField] private string _carriedLayer = "Default";
     [SerializeField] private string _droppedLayer = "Interactables";
+    public string CarriedLayer => _carriedLayer;
+    public string DroppedLayer => _droppedLayer;
     PackageCarryComponent _carryComponent;
+    CollisionAuthorityHandler _collisionAuthorityHandler;
     Rigidbody _rigidbody;
     bool _interacted = false;
     bool _isCarried = false;
@@ -14,6 +18,7 @@ public class PackageInteractionComponent : Interactable
     void Awake()
     {
         _carryComponent = GetComponent<PackageCarryComponent>();
+        _collisionAuthorityHandler = GetComponent<CollisionAuthorityHandler>();
         _rigidbody = GetComponent<Rigidbody>();
     }
 
@@ -31,10 +36,12 @@ public class PackageInteractionComponent : Interactable
     {
         NetworkIdentity interactorIdentity = interactor.GetComponent<NetworkIdentity>();
 
-        ServerSetCarriedLayer();
+        ServerSetLayer(_carriedLayer);
 
         netIdentity.RemoveClientAuthority();
         netIdentity.AssignClientAuthority(interactorIdentity.connectionToClient);
+
+        _collisionAuthorityHandler.enableAuthoritySwap = false; // Disable authority swapping while being carried
     }
 
     public override void ClientInteraction(GameObject interactor)
@@ -74,34 +81,44 @@ public class PackageInteractionComponent : Interactable
 
     public void DropFromPlayer(Vector3 throwForce)
     {
+        if (isServer)
+        {
+            ServerSetLayer(_droppedLayer);
+        }
+        else
+        {
+            CmdSetLayer(_droppedLayer);
+        }
+
         _isCarried = false;
 
         _carryComponent.StopCarrying();
         _rigidbody.AddForce(throwForce, ForceMode.Impulse);
-
-        CmdSetDroppedLayer();
     }
 
     [Server]
-    void ServerSetCarriedLayer()
+    void ServerSetLayer(string layerName)
     {
-        gameObject.layer = LayerMask.NameToLayer(_carriedLayer);
-        RpcSetCarriedLayer();
-    }
-    [ClientRpc]
-    void RpcSetCarriedLayer()
-    {
-        gameObject.layer = LayerMask.NameToLayer(_carriedLayer);
+        if (layerName == _droppedLayer)
+        {
+            if (gameObject.layer != LayerMask.NameToLayer(_carriedLayer))
+            {
+                return; // Prevent dropping logic from running if the package is not currently being carried
+            }
+            _collisionAuthorityHandler.enableAuthoritySwap = true; // Re-enable authority swapping when dropped
+        }
+        gameObject.layer = LayerMask.NameToLayer(layerName);
+        RpcSetLayer(layerName);
     }
     [Command(requiresAuthority = false)]
-    void CmdSetDroppedLayer()
+    void CmdSetLayer(string layerName)
     {
-        gameObject.layer = LayerMask.NameToLayer(_droppedLayer);
-        RpcSetDroppedLayer();
+        ServerSetLayer(layerName);
+        RpcSetLayer(layerName);
     }
     [ClientRpc]
-    void RpcSetDroppedLayer()
+    void RpcSetLayer(string layerName)
     {
-        gameObject.layer = LayerMask.NameToLayer(_droppedLayer);
+        gameObject.layer = LayerMask.NameToLayer(layerName);
     }
 }

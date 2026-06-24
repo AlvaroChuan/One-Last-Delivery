@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerInventoryComponent : InputComponent
 {
+    public Action<ItemID> onInventorySlotChanged; // Event to notify when the inventory slot changes
     [Serializable]
     struct ItemEntry
     {
@@ -19,22 +20,21 @@ public class PlayerInventoryComponent : InputComponent
     [SerializeField] private InputActionReference _throwInput;
     [SerializeField] private float _throwForce = 10f;
     [SerializeField] private ItemEntry[] _itemEntryArray;
-    private InventoryItemData[] _inventory;
+    private PlayerInventoryManager _inventoryManager;
     private int _selectedInventoryIndex = -1; // Local copy of the selected index for instant responsiveness
-
-    private Camera _playerCamera;
 
     [SerializeField] private GameObject _carriedPackage; // Reference to the currently carried package, if any
 
     public GameObject CarriedPackage => _carriedPackage != null ? _carriedPackage.gameObject : null;
 
-    void Awake()
+    public override void OnStartLocalPlayer()
     {
-        _playerCamera = GetComponentInChildren<Camera>();
-        _inventory = new InventoryItemData[_inventorySize];
-        for(int i = 0; i < _inventorySize; i++)
+        base.OnStartLocalPlayer();
+        _inventoryManager = FindAnyObjectByType<PlayerInventoryManager>();
+        if (_inventoryManager == null)
         {
-            _inventory[i] = new InventoryItemData { itemID = (int)ItemID.None };
+            Debug.LogError("PlayerInventoryManager not found in the scene.");
+            return;
         }
     }
 
@@ -93,13 +93,8 @@ public class PlayerInventoryComponent : InputComponent
             _selectedInventoryIndex = _inventorySize - 1;
         }
 
-        if (_carriedPackage != null)
-        {
-            _carriedPackage.GetComponent<PackageInteractionComponent>()?.DropFromPlayer(Vector3.zero);
-            SetCarryingPackage(null);
-        }
+        DropPackage(Vector3.zero); // Drop the package if the player scrolls to a different inventory slot
 
-        DevLogger.Log("Selected inventory index: " + _selectedInventoryIndex);
         SetInventorySelection(_selectedInventoryIndex);
     }
     private void OnSelectInput(InputAction.CallbackContext context)
@@ -114,11 +109,7 @@ public class PlayerInventoryComponent : InputComponent
         {
             _selectedInventoryIndex = index;
         }
-        if (_carriedPackage != null)
-        {
-            _carriedPackage.GetComponent<PackageInteractionComponent>()?.DropFromPlayer(Vector3.zero);
-            SetCarryingPackage(null);
-        }
+        DropPackage(Vector3.zero); // Drop the package if the player selects a different inventory slot
         SetInventorySelection(_selectedInventoryIndex);
     }
 
@@ -128,10 +119,12 @@ public class PlayerInventoryComponent : InputComponent
         ItemID itemID = ItemID.None;
         if (index >= 0 && index < _inventorySize)
         {
-            itemID = _inventory[index].itemID;
+            itemID = _inventoryManager.GetInventorySlot(index).itemID;
         }
+
         UpdateVisualMesh(itemID);
         CmdUpdateVisualMesh(itemID);
+        onInventorySlotChanged?.Invoke(itemID); // Notify listeners about the inventory slot change
     }
 
     [Command]
@@ -170,7 +163,7 @@ public class PlayerInventoryComponent : InputComponent
 
     private void OnThrowInput(InputAction.CallbackContext context)
     {
-        DropItem(_selectedInventoryIndex, _playerCamera.transform.forward * _throwForce);
+        DropItem(_selectedInventoryIndex, Camera.main.transform.forward * _throwForce);
     }
 
     void DropItem(int slotIndex, Vector3 throwForce = default)
@@ -179,10 +172,12 @@ public class PlayerInventoryComponent : InputComponent
         if (heldItem != null)
         {
             // Spawn the dropped item on the server
-            CmdSpawnDroppedItem(_inventory[slotIndex], transform.position + transform.forward, throwForce);
+            Vector3 forwardDirection = Camera.main.transform.forward;
+            forwardDirection.y = 0f; // Flatten the throw direction to the horizontal plane
+            CmdSpawnDroppedItem(_inventoryManager.GetInventorySlot(slotIndex), transform.position + forwardDirection, throwForce);
 
             // Clear the inventory slot locally for instant feedback
-            _inventory[slotIndex] = new InventoryItemData { itemID = ItemID.None };
+            _inventoryManager.SetInventorySlot(slotIndex, new InventoryItemData { itemID = ItemID.None });
             if (_selectedInventoryIndex == slotIndex)
             {
                 SetInventorySelection(slotIndex); // This will also update visuals and sync the change to other clients
@@ -191,8 +186,7 @@ public class PlayerInventoryComponent : InputComponent
 
         if (_carriedPackage != null)
         {
-            _carriedPackage.GetComponent<PackageInteractionComponent>()?.DropFromPlayer(throwForce);
-            SetCarryingPackage(null);
+            DropPackage(throwForce);
         }
     }
 
@@ -220,7 +214,7 @@ public class PlayerInventoryComponent : InputComponent
         {
             for (int i = 0; i < _inventorySize; i++)
             {
-                if (_inventory[i].itemID == (int)ItemID.None)
+                if (_inventoryManager.GetInventorySlot(i).itemID == (int)ItemID.None)
                 {
                     affectedSlot = i;
                     break;
@@ -238,7 +232,7 @@ public class PlayerInventoryComponent : InputComponent
 
         DropItem(affectedSlot); // Drop currently held item if there is one, to free up the slot for the new item
 
-        _inventory[affectedSlot] = itemData;
+        _inventoryManager.SetInventorySlot(affectedSlot, itemData);
 
         SetInventorySelection(affectedSlot); // This will also update visuals and sync the change to other clients
     }
@@ -247,7 +241,7 @@ public class PlayerInventoryComponent : InputComponent
     {
         if(slotIndex >= 0 && slotIndex < _inventorySize)
         {
-            InventoryItemData itemData = _inventory[slotIndex];
+            InventoryItemData itemData = _inventoryManager.GetInventorySlot(slotIndex);
             foreach (var entry in _itemEntryArray)
             {
                 if (entry.itemID == itemData.itemID)
@@ -267,7 +261,7 @@ public class PlayerInventoryComponent : InputComponent
     {
         if (_selectedInventoryIndex >= 0 && _selectedInventoryIndex < _inventorySize)
         {
-            return _inventory[_selectedInventoryIndex];
+            return _inventoryManager.GetInventorySlot(_selectedInventoryIndex);
         }
         return new InventoryItemData { itemID = ItemID.None };
     }
@@ -275,7 +269,7 @@ public class PlayerInventoryComponent : InputComponent
     {
         if (_selectedInventoryIndex >= 0 && _selectedInventoryIndex < _inventorySize)
         {
-            _inventory[_selectedInventoryIndex] = newData;
+            _inventoryManager.SetInventorySlot(_selectedInventoryIndex, newData);
         }
     }
 
@@ -299,5 +293,19 @@ public class PlayerInventoryComponent : InputComponent
     public void CmdSetCarryingPackage(GameObject package)
     {
         _carriedPackage = package;
+    }
+
+    void DropPackage(Vector3 throwForce)
+    {
+        if (_carriedPackage != null)
+        {
+            DevLogger.Log("Dropping package from player: " + netIdentity.connectionToClient.connectionId);
+            PackageInteractionComponent packageInteraction = _carriedPackage.GetComponent<PackageInteractionComponent>();
+            if (packageInteraction != null)
+            {
+                packageInteraction.DropFromPlayer(throwForce);
+            }
+            SetCarryingPackage(null);
+        }
     }
 }

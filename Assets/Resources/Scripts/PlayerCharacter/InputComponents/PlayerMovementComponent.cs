@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(PlayerStaminaComponent))]
@@ -84,8 +85,11 @@ public class PlayerMovementComponent : InputComponent
     private void HandleMovement()
     {
         Vector3 currentVelocity = _rigidbody.linearVelocity;
-        Vector3 targetFoward = transform.forward * _movementDirection.z;
-        Vector3 targetRight = transform.right * _movementDirection.x;
+        Vector3 cameraForward = Camera.main.transform.forward;
+        cameraForward.y = 0f; // Flatten the camera forward vector to the horizontal plane
+        cameraForward.Normalize();
+        Vector3 targetFoward = cameraForward * _movementDirection.z;
+        Vector3 targetRight = Camera.main.transform.right * _movementDirection.x;
         Vector3 targetVelocity = (targetFoward + targetRight) * _maxMoveSpeed;
 
         float accelerationToUse = Vector3.Dot(currentVelocity, targetVelocity) <= 0f ? _deceleration : _acceleration;

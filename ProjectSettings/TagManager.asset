@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Package
+  - WreckedCar
+  - Truck
   layers:
   - Default
   - TransparentFX
@@ -12,10 +14,10 @@ TagManager:
   - Interactables
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
+  - Enemies
+  - Players
+  - CarriedPackage
+  - PlayerProjectiles
   - 
   - 
   - 

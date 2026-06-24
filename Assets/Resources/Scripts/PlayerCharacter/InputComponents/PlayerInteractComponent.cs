@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,13 +16,6 @@ public class PlayerInteractComponent : InputComponent
     [SerializeField] private float _interactionRange = 3f;
     [SerializeField] private float _interactionSphereRadius = 0.1f;
     [SerializeField] private LayerMask _interactableLayerMask;
-    private Camera _playerCamera;
-
-    void Awake()
-    {
-        _playerCamera = GetComponentInChildren<Camera>();
-    }
-
     protected override void BindInputs()
     {
         if (!isLocalPlayer) return;
@@ -42,17 +36,18 @@ public class PlayerInteractComponent : InputComponent
     {
         if (!isLocalPlayer) return;
 
-        Ray ray = new Ray(_playerCamera.transform.position, _playerCamera.transform.forward);
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         RaycastHit hitInfo;
         if (Physics.SphereCast(ray, _interactionSphereRadius, out hitInfo, _interactionRange, _interactableLayerMask))
         {
-            Interactable interactable = hitInfo.collider.GetComponent<Interactable>();
-            if (interactable == null)
+            Interactable[] interactables = hitInfo.collider.GetComponents<Interactable>();
+            interactables = interactables.Concat(hitInfo.collider.GetComponentsInParent<Interactable>()).Where(i => i != null).ToArray();
+            interactables = interactables.Distinct().ToArray();
+
+            foreach (var interactable in interactables)
             {
-                interactable = hitInfo.collider.GetComponentInParent<Interactable>();
-            }
-            if (interactable != null)
-            {
+                if(!interactable.enabled) continue;
+
                 interactable.CmdInteract(GetComponent<NetworkIdentity>());
                 interactable.LocalInteract(gameObject);
                 onInteractEvent?.Invoke(new InteractInfo
@@ -61,7 +56,8 @@ public class PlayerInteractComponent : InputComponent
                     isSuccessful = true
                 });
             }
-            else
+
+            if (interactables.Length == 0)
             {
                 onInteractEvent?.Invoke(new InteractInfo
                 {

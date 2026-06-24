@@ -59,7 +59,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _carriedLayer: Default
+  _carriedLayer: CarriedPackage
   _droppedLayer: Interactables
 --- !u!114 &2924977971945211490
 MonoBehaviour:
@@ -77,6 +77,9 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _maxHealth: 100
+  _damageLayerMask:
+    serializedVersion: 2
+    m_Bits: 129
   _minForceForDamage: 5
   _damagePerUnitForce: 1
 --- !u!114 &3370239276120578303
@@ -108,7 +111,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxValue: 100
   _minValue: 50
-  _knockPenalty: 0.1
 --- !u!114 &220673056872517727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,6 +127,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _priority: 10
+  enableAuthoritySwap: 1
 --- !u!114 &5050711468161410030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,6 +143,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  enableRigidbodyControl: 1
 --- !u!54 &3608739865664877126
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -275,6 +279,9 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _address:
+    streetName: 
+    number: 0
 --- !u!1 &8221240416261841595
 GameObject:
   m_ObjectHideFlags: 0

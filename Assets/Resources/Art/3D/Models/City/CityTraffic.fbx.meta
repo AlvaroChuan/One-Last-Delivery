@@ -1,0 +1,292 @@
+fileFormatVersion: 2
+guid: cafccd72321ea3f4aac2ae400d80c091
+ModelImporter:
+  serializedVersion: 22200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Border
+    second: {fileID: 2100000, guid: 2db9730632613144faf9c9ad7b38bd7f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Green
+    second: {fileID: 2100000, guid: be3c5bb2f1aa67740982a09e87385696, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MetallicSign
+    second: {fileID: 2100000, guid: 22b21116f1c551240a93f228b52ebb53, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: PedestrianCrossBackground
+    second: {fileID: 2100000, guid: 750a744b73aa4324b90e2f01470f06af, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: PedestrianCrossTex
+    second: {fileID: 2100000, guid: 6300a57fa11532a4884d13a882b48418, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Red
+    second: {fileID: 2100000, guid: 43bdbf8167995e44b8624ea914064d33, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: SpeedSign25
+    second: {fileID: 2100000, guid: aeba2d7aa7c7d8b49b017e6de63c06ff, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: SpeedSign35
+    second: {fileID: 2100000, guid: 59428ebc650c35041a7f33a5873d692c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: SpeedSign45
+    second: {fileID: 2100000, guid: deca446833e08b747a43d8034d7de878, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: SpeedSign65
+    second: {fileID: 2100000, guid: 786b6453077c68d438cd3d3be72f1ff6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: SpeedSignBackground
+    second: {fileID: 2100000, guid: 42566fe2b0035954fa57f593d528ca87, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: StopRed
+    second: {fileID: 2100000, guid: d967ba26f00f9ef4ebbc60eb0bd6f124, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TurnSignBackground
+    second: {fileID: 2100000, guid: 298e29e6fcc48c14099d2435ce48e8ff, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TurnSignTex
+    second: {fileID: 2100000, guid: 99376f66ac9c47946a5b1c3cf1fa93fc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Yellow
+    second: {fileID: 2100000, guid: d8bb9bf84535cba43911cdb8a3d8737d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_asphault.001
+    second: {fileID: 2100000, guid: 7fc8ede914d82f044b7e8f10b0e566ae, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_asphault.003
+    second: {fileID: 2100000, guid: 7fc8ede914d82f044b7e8f10b0e566ae, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_asphault.005
+    second: {fileID: 2100000, guid: 7fc8ede914d82f044b7e8f10b0e566ae, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_asphault.007
+    second: {fileID: 2100000, guid: 7fc8ede914d82f044b7e8f10b0e566ae, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_asphault.008
+    second: {fileID: 2100000, guid: 7fc8ede914d82f044b7e8f10b0e566ae, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_asphault.009
+    second: {fileID: 2100000, guid: 7fc8ede914d82f044b7e8f10b0e566ae, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_concrete.001
+    second: {fileID: 2100000, guid: 8740d22cb3869b34ebb42e864c2c0518, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_concrete.009
+    second: {fileID: 2100000, guid: 8740d22cb3869b34ebb42e864c2c0518, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_concrete.016
+    second: {fileID: 2100000, guid: 8740d22cb3869b34ebb42e864c2c0518, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_concrete.018
+    second: {fileID: 2100000, guid: 8740d22cb3869b34ebb42e864c2c0518, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_concrete.019
+    second: {fileID: 2100000, guid: 8740d22cb3869b34ebb42e864c2c0518, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_concrete.020
+    second: {fileID: 2100000, guid: 8740d22cb3869b34ebb42e864c2c0518, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_glass-emit
+    second: {fileID: 2100000, guid: 7daad1ce17f3c554c81daa6660b42db3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_metal.005
+    second: {fileID: 2100000, guid: 22b21116f1c551240a93f228b52ebb53, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_painted
+    second: {fileID: 2100000, guid: 6d989b276957dea45938a5c11a5ae3ab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_painted.007
+    second: {fileID: 2100000, guid: 6d989b276957dea45938a5c11a5ae3ab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_painted.009
+    second: {fileID: 2100000, guid: 6d989b276957dea45938a5c11a5ae3ab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_painted.011
+    second: {fileID: 2100000, guid: 6d989b276957dea45938a5c11a5ae3ab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_painted.013
+    second: {fileID: 2100000, guid: 6d989b276957dea45938a5c11a5ae3ab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_painted.014
+    second: {fileID: 2100000, guid: 6d989b276957dea45938a5c11a5ae3ab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_painted.015
+    second: {fileID: 2100000, guid: 6d989b276957dea45938a5c11a5ae3ab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cubicity_painted.020
+    second: {fileID: 2100000, guid: 6d989b276957dea45938a5c11a5ae3ab, type: 2}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

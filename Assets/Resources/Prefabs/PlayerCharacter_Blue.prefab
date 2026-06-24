@@ -60,6 +60,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerCharacter_Blue
       objectReference: {fileID: 0}
+    - target: {fileID: 8348344201888219740, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
+      propertyPath: _assetId
+      value: 715249769
+      objectReference: {fileID: 0}
+    - target: {fileID: 8649445039396641772, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
+      propertyPath: _assetId
+      value: 715249769
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

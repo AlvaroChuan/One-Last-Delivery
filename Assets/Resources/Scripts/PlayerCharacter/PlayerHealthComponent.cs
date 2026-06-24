@@ -14,12 +14,14 @@ public class PlayerHealthComponent : PlayerComponent
     public Action<HealthChangeInfo> onHealthChangedEvent;
     [SerializeField]
     float _maxHealth = 100f;
+    public float MaxHealth => _maxHealth;
     float _currentHealth;
-    PlayerDeathComponent _controller;
+    public float CurrentHealth => _currentHealth;
+    PlayerDeathComponent _playerDeathComponent;
 
     void Awake()
     {
-        _controller = GetComponent<PlayerDeathComponent>();
+        _playerDeathComponent = GetComponent<PlayerDeathComponent>();
     }
 
     public override void OnStartClient()
@@ -44,7 +46,6 @@ public class PlayerHealthComponent : PlayerComponent
     [ClientRpc]
     public void RpcTakeDamage(float damage)
     {
-        DevLogger.Log($"RpcTakeDamage called with damage: {damage}");
         if (!isLocalPlayer) return;
 
         if (_currentHealth <= 0)
@@ -52,8 +53,9 @@ public class PlayerHealthComponent : PlayerComponent
 
         float oldHealth = _currentHealth;
 
-        DevLogger.Log($"Taking {damage} damage");
         _currentHealth -= damage;
+
+        DevLogger.Log($"Player took {damage} damage. Health: {_currentHealth}/{_maxHealth}");
 
         onHealthChangedEvent?.Invoke(new HealthChangeInfo
         {
@@ -88,6 +90,6 @@ public class PlayerHealthComponent : PlayerComponent
 
     void Die()
     {
-        _controller.Die();
+        _playerDeathComponent.Die();
     }
 }

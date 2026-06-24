@@ -3,13 +3,13 @@ using UnityEngine;
 using Mirror;
 using Steamworks;
 using Adrenak.UniVoice.Samples;
+using UnityEngine.SceneManagement;
 
 public class SteamLobbyManager : MonoBehaviour
 {
-    [SerializeField] private GameObject _lobbyListItemPrefab;
-    [SerializeField] private Transform _lobbyListContent;
     [SerializeField] private UIManager _uiManager;
     [SerializeField] private BaseVoiceChat _lobbyVoiceChat;
+    [SerializeField] private string _gameSceneName = "GameScene";
     protected Callback<LobbyCreated_t> lobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
     protected Callback<LobbyEnter_t> lobbyEntered;
@@ -24,6 +24,8 @@ public class SteamLobbyManager : MonoBehaviour
     private Coroutine _autoRefreshCoroutine;
 
     public PlayerManager playerManager;
+
+    private Coroutine _startGameCoroutine;
 
     private void Start()
     {
@@ -43,7 +45,7 @@ public class SteamLobbyManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        StopNetworkConnections();
+        //StopNetworkConnections();
     }
 
     private void StopNetworkConnections()
@@ -109,6 +111,51 @@ public class SteamLobbyManager : MonoBehaviour
         }
 
         _uiManager.SyncLobbyData(activePlayers, _currentLobbyID, maxPlayers);
+
+        bool allReady = true;
+        foreach (CSteamID steamID in activePlayers)
+        {
+            string readyStr = SteamMatchmaking.GetLobbyMemberData(_currentLobbyID, steamID, "ready");
+            if (readyStr != "true")
+            {
+                allReady = false;
+                break;
+            }
+        }
+        if (allReady)
+        {
+            SteamMatchmaking.SetLobbyJoinable(_currentLobbyID, false);
+            if(_startGameCoroutine != null)
+            {
+                StopCoroutine(_startGameCoroutine);
+            }
+            _startGameCoroutine = StartCoroutine(StartGameCountdown());
+        }
+        else
+        {
+            SteamMatchmaking.SetLobbyJoinable(_currentLobbyID, true);
+            if (_startGameCoroutine != null)
+            {
+                DevLogger.Log("Not all players are ready. Stopping game start countdown.");
+                StopCoroutine(_startGameCoroutine);
+                _uiManager.UpdateCountdown();
+            }
+        }
+    }
+
+    IEnumerator StartGameCountdown()
+    {
+        int countdown = 5;
+        while (countdown >= 0)
+        {
+            _uiManager.UpdateCountdown(Mathf.CeilToInt(countdown));
+            yield return new WaitForSeconds(1f);
+            countdown -= 1;
+        }
+        if (NetworkServer.active)
+        {
+            NetworkManager.singleton.ServerChangeScene(_gameSceneName);
+        }
     }
 
     private void OnLobbyChatUpdate(LobbyChatUpdate_t callback)

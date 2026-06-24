@@ -4382,8 +4382,8 @@
     "m_ObjectId": "18129761bead40c9aa10f4f1fbce3023",
     "m_Title": "Wind Sway",
     "m_Position": {
-        "x": -1717.0,
-        "y": -1263.0
+        "x": -1717.333251953125,
+        "y": -1263.333251953125
     }
 }
 
@@ -12030,8 +12030,8 @@
     "m_ObjectId": "7a2cdbc64b4042acab319837d0fe4359",
     "m_Title": "Near-Far View Color",
     "m_Position": {
-        "x": -2124.0,
-        "y": 305.0
+        "x": -2124.66650390625,
+        "y": 304.666748046875
     }
 }
 
@@ -13847,7 +13847,7 @@
     "m_ObjectId": "9b35c5b00145458ca63c115944c223d0",
     "m_Title": "Paint Voronoi Noise",
     "m_Position": {
-        "x": -1106.0,
+        "x": -1106.666748046875,
         "y": 1826.0
     }
 }
@@ -15585,8 +15585,8 @@
     "m_ObjectId": "b3c9d050e912449f90c40d09c3100aee",
     "m_Title": "Player Interaction",
     "m_Position": {
-        "x": -2938.0,
-        "y": -5328.0
+        "x": -2938.66650390625,
+        "y": -5328.00048828125
     }
 }
 
@@ -17428,8 +17428,8 @@
     "m_ObjectId": "d09365660fa747a9845bc1efddce0064",
     "m_Title": "Grass Heightmap",
     "m_Position": {
-        "x": -1840.0,
-        "y": -2979.0
+        "x": -1840.666748046875,
+        "y": -2979.33349609375
     }
 }
 

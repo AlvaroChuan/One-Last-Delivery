@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,11 +9,16 @@ public class CustomNetworkManager : NetworkManager
     [SerializeField] private GameObject[] _playerPrefabs;
     [SerializeField] private string _gameScene = "GameScene";
 
-    [Header("Lobby Settings")]
-    [SerializeField] private SteamLobbyManager _lobbyManager;
-
     // Track how many characters we have spawned in the game scene
     private int _numberOfPlayers = 0;
+    public List<GameObject> SpawnedPlayers { get; private set; } = new List<GameObject>();
+
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+
+        DevLogger.Log("CustomNetworkManager started on server.");
+    }
 
     public override void OnServerReady(NetworkConnectionToClient conn)
     {
@@ -22,6 +28,7 @@ public class CustomNetworkManager : NetworkManager
         // (Make sure this matches your actual Game scene name exactly)
         if (SceneManager.GetActiveScene().name == _gameScene)
         {
+            DevLogger.Log("Player " + conn.connectionId + " has identity: " + (conn.identity != null) + " when joining active game scene.");
             // Only spawn if this connection doesn't already have an assigned character
             if (conn.identity == null)
             {
@@ -47,6 +54,7 @@ public class CustomNetworkManager : NetworkManager
             // Spawn it on the network and link it to the client
             NetworkServer.AddPlayerForConnection(conn, playerInstance);
 
+            SpawnedPlayers.Add(playerInstance);
             _numberOfPlayers++;
             DevLogger.Log($"Game Scene Loaded: Spawned character index {_numberOfPlayers - 1} for Connection {conn.connectionId}");
         }
@@ -60,25 +68,7 @@ public class CustomNetworkManager : NetworkManager
     {
         base.OnServerChangeScene(newSceneName);
 
-        if (newSceneName != _gameScene)
-        {
-            _numberOfPlayers = 0;
-
-            foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values)
-            {
-                if (conn.identity != null)
-                {
-                    NetworkServer.RemovePlayerForConnection(conn, RemovePlayerOptions.Destroy);
-                }
-            }
-        }
-    }
-
-    public override void OnClientDisconnect()
-    {
-        base.OnClientDisconnect();
-
-        Debug.Log("Disconnected");
-        _lobbyManager.ExitLobby();
+        _numberOfPlayers = 0;
+        SpawnedPlayers.Clear();
     }
 }
