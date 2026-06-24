@@ -46,6 +46,8 @@ public class TruckSeat : Interactable
                 }
             }
             SetPlayerCollidersEnabled(oldOccupant, false); // Re-enable colliders for the old occupant
+            oldOccupant.GetComponent<NetworkTransformReliable>().enabled = true; // Re-enable NetworkTransform for the old occupant
+            oldOccupant.transform.SetParent(null); // Unparent the old occupant from the seat position
         }
         if (newOccupant != null)
         {
@@ -55,6 +57,10 @@ public class TruckSeat : Interactable
                 SetPlayerInput(newOccupant, true);
             }
             SetPlayerCollidersEnabled(newOccupant, true); // Disable colliders for the new occupant
+            newOccupant.GetComponent<NetworkTransformReliable>().enabled = false; // Disable NetworkTransform for the new occupant
+            newOccupant.transform.position = _occupantPosition.position; // Move the new occupant to the seat position
+            newOccupant.transform.rotation = transform.rotation; // Align the new occupant's rotation with the seat's rotation
+            newOccupant.transform.SetParent(_occupantPosition); // Parent the new occupant to the seat position for movement synchronization
         }
     }
 
