@@ -52,7 +52,7 @@ public class TruckSeat : Interactable
 
     public override void ServerInteract(GameObject interactor)
     {
-        if (!_isDriverSeat) return; // Seat is already occupied
+        if (_occupant != null) return;
 
         _occupant = interactor;
     }
