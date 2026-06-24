@@ -17,7 +17,7 @@ public class TruckSeat : Interactable
 
     private void OnOccupantChanged(GameObject oldOccupant, GameObject newOccupant)
     {
-        if (isServer)
+        if (isServer && _isDriverSeat)
         {
             if (newOccupant != null)
             {
