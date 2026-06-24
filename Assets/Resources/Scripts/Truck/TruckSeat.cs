@@ -36,6 +36,8 @@ public class TruckSeat : Interactable
             {
                 // If the old occupant is the local player, re-enable their input and colliders
                 SetPlayerInput(oldOccupant, false);
+                oldOccupant.transform.position = _exitPosition.position; // Move the player to the exit position
+                oldOccupant.transform.up = Vector3.up; // Reset the player's up direction to world up
             }
             SetPlayerCollidersEnabled(oldOccupant, false); // Re-enable colliders for the old occupant
         }
