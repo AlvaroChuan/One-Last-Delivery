@@ -1,6 +1,8 @@
 using UnityEngine;
 using Mirror;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
+using Mirror.Examples.Basic;
 
 public class TruckSeat : Interactable
 {
@@ -10,7 +12,7 @@ public class TruckSeat : Interactable
     [SerializeField] InputActionReference _getUpInputActionReference;
     [SyncVar(hook = nameof(OnOccupantChanged))]
     GameObject _occupant;
-    Quaternion _lastRotation;
+    static List<GameObject> PlayersInTruck = new List<GameObject>();
 
     private void OnOccupantChanged(GameObject oldOccupant, GameObject newOccupant)
     {
@@ -29,6 +31,7 @@ public class TruckSeat : Interactable
 
         if (oldOccupant != null)
         {
+            PlayersInTruck.Remove(oldOccupant);
             if(NetworkClient.connection.identity != null && oldOccupant == NetworkClient.connection.identity.gameObject)
             {
                 // If the old occupant is the local player, re-enable their input and colliders
@@ -50,6 +53,7 @@ public class TruckSeat : Interactable
         }
         if (newOccupant != null)
         {
+            PlayersInTruck.Add(newOccupant);
             if(NetworkClient.connection.identity != null && newOccupant == NetworkClient.connection.identity.gameObject)
             {
                 // If the new occupant is the local player, disable their input and colliders
@@ -67,29 +71,13 @@ public class TruckSeat : Interactable
     {
         if (_occupant != null) return;
 
+        if (PlayersInTruck.Contains(interactor))
+        {
+            DevLogger.Log($"Player {interactor.name} is already in a truck. Cannot occupy another seat.");
+            return; // Prevent occupying another seat if the player is already in a truck
+        }
+
         _occupant = interactor;
-    }
-
-    private void OnPlayerInteract(PlayerInteractComponent.InteractInfo info)
-    {
-        if (info.interactable is TruckSeat && info.interactable != this)
-        {
-            CmdGetUp(); // If the player interacts with another seat, get up from the current seat
-        }
-    }
-
-    void Update()
-    {
-        /*
-        if (_occupant != null)
-        {
-            _occupant.transform.position = _occupantPosition.position;
-            Quaternion rotationDelta = transform.rotation * Quaternion.Inverse(_lastRotation);
-            GameObject model = _occupant.GetComponent<PlayerLookComponent>().Model;
-            model.transform.rotation = rotationDelta * model.transform.rotation;
-            model.transform.rotation = Quaternion.LookRotation(_occupant.transform.forward, transform.up);
-        }
-        _lastRotation = transform.rotation;*/
     }
 
     void SetPlayerInput(GameObject player, bool isOnTruck)
@@ -114,23 +102,11 @@ public class TruckSeat : Interactable
         {
             _getUpInputActionReference.action.performed += OnGetUpPerformed;
             _getUpInputActionReference.action.Enable();
-
-            PlayerInteractComponent playerInteractComponent = player.GetComponent<PlayerInteractComponent>();
-            if (playerInteractComponent != null)
-            {
-                playerInteractComponent.onInteractEvent += OnPlayerInteract;
-            }
         }
         else
         {
             _getUpInputActionReference.action.performed -= OnGetUpPerformed;
             _getUpInputActionReference.action.Disable();
-
-            PlayerInteractComponent playerInteractComponent = player.GetComponent<PlayerInteractComponent>();
-            if (playerInteractComponent != null)
-            {
-                playerInteractComponent.onInteractEvent -= OnPlayerInteract;
-            }
         }
     }
 
@@ -163,5 +139,6 @@ public class TruckSeat : Interactable
             SetPlayerInput(_occupant, false);
             SetPlayerCollidersEnabled(_occupant, false);
         }
+        PlayersInTruck.Clear(); // Clear the static list when the seat is destroyed to prevent stale references
     }
 }
