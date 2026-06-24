@@ -228,20 +228,28 @@ MonoBehaviour:
   autoCreatePlayer: 0
   playerSpawnMethod: 0
   spawnPrefabs:
+  - {fileID: 2340398685216393081, guid: 0f6e0e673570db44dbdd63b38e2742ab, type: 3}
   - {fileID: 3626590714432623591, guid: 2ac8c80f493bb6a4ea408a722cfd7ae7, type: 3}
   - {fileID: 1865245426965013292, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
+  - {fileID: 1865245426965013292, guid: 6c383464f1f458c4e8669c514ac20265, type: 3}
   - {fileID: 3626590714432623591, guid: 0a2c088a476b6bf4caa4345510dff9bd, type: 3}
+  - {fileID: 120020557967890478, guid: 7ddf106ef0bbd2b4f91b47aeff564e3a, type: 3}
   - {fileID: 1369721123284713815, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
-  - {fileID: 5790735039350433110, guid: e4347fafbd9749544af2b07e894a0ce9, type: 3}
   - {fileID: 6383342393515265997, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
   - {fileID: 6030126412903574998, guid: 06abfd84628dfa34d9189742b95fa994, type: 3}
   - {fileID: 6030126412903574998, guid: c3b69f3eef5b3d840a67bcf25e613c57, type: 3}
   - {fileID: 6030126412903574998, guid: c17bd1a966515634d8c868af5345f378, type: 3}
   - {fileID: 6030126412903574998, guid: e7d8b0890447ccf4ba52ba7d4efb6ac4, type: 3}
   - {fileID: 5188595553858114656, guid: ce4c0afbb40426f49af333d9a6e30c4b, type: 3}
+  - {fileID: 2340398685216393081, guid: 7df7fa529d3550e409a97e6cb91eedcb, type: 3}
+  - {fileID: 5126083997327050711, guid: bc5b8f0335182b34ab516dca7eee3fcb, type: 3}
+  - {fileID: 184020480669936351, guid: 2355eb6e53a0e5045835a9d3d3c01dcc, type: 3}
   - {fileID: 3626590714432623591, guid: 9629c2b8feda0e546ac06e52a9403220, type: 3}
+  - {fileID: 1300053835908922374, guid: e284b2e6e1136664490d5755f374c21e, type: 3}
+  - {fileID: 2176228484997862400, guid: 56852d3379beb024b94053e6c3d6c2c1, type: 3}
   - {fileID: 3626590714432623591, guid: febbd443ff10c4b4ca8c901c070e8726, type: 3}
   - {fileID: 1191736457431806603, guid: c83cc04405645d548bd9901bbb35f6a1, type: 3}
+  - {fileID: 2692446500960853747, guid: 90491ed7141952944949f1e59e280f59, type: 3}
   - {fileID: 3626590714432623591, guid: aa05df3845a55b347956092d92ce91d4, type: 3}
   - {fileID: 7680324919787913421, guid: bb39f32f4cf7d5a478d17ecad2320608, type: 3}
   exceptionsDisconnect: 1
