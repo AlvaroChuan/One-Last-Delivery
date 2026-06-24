@@ -39,10 +39,12 @@ public class TruckSeat : Interactable
                 RaycastHit hit;
                 if (Physics.Raycast(_exitPosition.position + Vector3.up * 10f, Vector3.down, out hit, 20f))
                 {
+                    DevLogger.Log($"Moving player {oldOccupant.name} to ground at {hit.point}");
                     oldOccupant.transform.position = hit.point + Vector3.up; // Move the player to the ground below them
                 }
                 else
                 {
+                    DevLogger.Log($"No ground found below exit position for player {oldOccupant.name}, moving to exit position");
                     oldOccupant.transform.position = _exitPosition.position; // Move the player to the exit position if no ground is found
                 }
             }
