@@ -69,7 +69,7 @@ public class TruckSeat : Interactable
 
     void Update()
     {
-        if (_occupant != null)
+        if (_occupant != null && NetworkClient.connection.identity != null && _occupant == NetworkClient.connection.identity.gameObject)
         {
             _occupant.transform.position = _occupantPosition.position;
             Vector3 rotationDelta = transform.rotation.eulerAngles - _lastRotation.eulerAngles;
