@@ -47,7 +47,6 @@ public class TruckSeat : Interactable
                 SetPlayerInput(newOccupant, true);
             }
             SetPlayerCollidersEnabled(newOccupant, true); // Disable colliders for the new occupant
-            netIdentity.AssignClientAuthority(newOccupant.GetComponent<NetworkIdentity>().connectionToClient);
         }
     }
 
