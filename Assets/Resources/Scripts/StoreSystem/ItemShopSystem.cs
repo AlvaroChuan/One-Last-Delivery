@@ -13,37 +13,54 @@ public class ItemShopSystem : NetworkBehaviour
     public Action<ItemPurchaseInfo> onItemPurchasedEvent;
     public static ItemShopSystem Instance { get; private set; }
 
+    [SerializeField] Transform _itemSpawnPoint;
+
     void Awake()
     {
         Instance = this;
     }
 
     [Command]
-    public void CmdRequestBuyItem(InventoryItemData itemData, int price, NetworkConnectionToClient conn = null)
+    public void CmdRequestBuyTruckUpgrade(TruckStatsStruct upgradeStats, float price, NetworkConnectionToClient conn = null)
     {
         if (MoneyManager.ServerSubtractMoney(price))
         {
-            ServerSpawnItem(conn.identity.gameObject, itemData); // Spawn the item for the buyer
-            TargetBuyItemSuccess(conn); // Notify the buyer of successful purchase
+            TruckUpgradeManager.AddUpgradeStats(upgradeStats); // Apply the truck upgrade for the buyer
+            TargetNotifyPurchaseSuccess(conn); // Notify the buyer of successful purchase
         }
         else
         {
             // Notify clients of failed purchase
-            TargetBuyItemFailure(conn);
+            TargetNotifyPurchaseFailure(conn);
+        }
+    }
+
+    [Command]
+    public void CmdRequestBuyItem(InventoryItemData itemData, float price, NetworkConnectionToClient conn = null)
+    {
+        if (MoneyManager.ServerSubtractMoney(price))
+        {
+            ServerSpawnItem(itemData); // Spawn the item for the buyer
+            TargetNotifyPurchaseSuccess(conn); // Notify the buyer of successful purchase
+        }
+        else
+        {
+            // Notify clients of failed purchase
+            TargetNotifyPurchaseFailure(conn);
         }
     }
 
     [Server]
-    public void ServerSpawnItem(GameObject buyer, InventoryItemData itemData)
+    public void ServerSpawnItem(InventoryItemData itemData)
     {
         DroppedItem itemPrefab = ItemDataList.Instance.GetPrefabFromID(itemData.itemID);
-        DroppedItem item = Instantiate(itemPrefab, buyer.transform.position + buyer.transform.forward, buyer.transform.rotation);
+        DroppedItem item = Instantiate(itemPrefab, _itemSpawnPoint.position, _itemSpawnPoint.rotation);
         item.SetInventoryItemData(itemData);
         NetworkServer.Spawn(item.gameObject);
     }
 
     [TargetRpc]
-    public void TargetBuyItemSuccess(NetworkConnectionToClient conn)
+    public void TargetNotifyPurchaseSuccess(NetworkConnectionToClient conn)
     {
         // Handle UI on clients for successful purchase
         onItemPurchasedEvent?.Invoke(new ItemPurchaseInfo
@@ -54,7 +71,7 @@ public class ItemShopSystem : NetworkBehaviour
     }
 
     [TargetRpc]
-    public void TargetBuyItemFailure(NetworkConnectionToClient conn)
+    public void TargetNotifyPurchaseFailure(NetworkConnectionToClient conn)
     {
         // Handle UI on clients for failed purchase
         onItemPurchasedEvent?.Invoke(new ItemPurchaseInfo

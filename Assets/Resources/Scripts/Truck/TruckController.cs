@@ -48,6 +48,8 @@ public class TruckController : NetworkBehaviour
     Vector2 _movementInput;
     RaycastHit[] _rayCastHitBuffer = new RaycastHit[3];
 
+    [SyncVar(hook = nameof(OnUpgradeStatsChanged))] private TruckStatsStruct _currentUpgradeStats;
+
     void Awake()
     {
         _vehicleRigidbody = GetComponent<Rigidbody>();
@@ -212,5 +214,47 @@ public class TruckController : NetworkBehaviour
             //Ray debugRay4 = new Ray(wheel.position, breakingDirection * actualBrakeTorque);
             //Debug.DrawRay(debugRay4.origin, debugRay4.direction * actualBrakeTorque * 0.1f, Color.yellow);
         }
+    }
+
+    void OnUpgradeStatsChanged(TruckStatsStruct oldStats, TruckStatsStruct newStats)
+    {
+        _suspensionRestLength -= oldStats.suspensionRestLength;
+        _suspensionRestLength += newStats.suspensionRestLength;
+
+        _springStrength -= oldStats.springStrength;
+        _springStrength += newStats.springStrength;
+
+        _springDamping -= oldStats.springDamping;
+        _springDamping += newStats.springDamping;
+
+        _maxSteeringAngle -= oldStats.maxSteeringAngle;
+        _maxSteeringAngle += newStats.maxSteeringAngle;
+
+        _steeringSpeed -= oldStats.steeringSpeed;
+        _steeringSpeed += newStats.steeringSpeed;
+
+        _wheelGripFactor -= oldStats.wheelGripFactor;
+        _wheelGripFactor += newStats.wheelGripFactor;
+
+        _wheelMass -= oldStats.wheelMass;
+        _wheelMass += newStats.wheelMass;
+
+        _carMaxSpeed -= oldStats.carMaxSpeed;
+        _carMaxSpeed += newStats.carMaxSpeed;
+
+        _maxEngineTorque -= oldStats.maxEngineTorque;
+        _maxEngineTorque += newStats.maxEngineTorque;
+
+        _engineBrakeTorque -= oldStats.engineBrakeTorque;
+        _engineBrakeTorque += newStats.engineBrakeTorque;
+
+        _brakeTorque -= oldStats.brakeTorque;
+        _brakeTorque += newStats.brakeTorque;
+    }
+
+    [Server]
+    public void SetUpgradeStats(TruckStatsStruct upgradeStats)
+    {
+        _currentUpgradeStats = upgradeStats;
     }
 }
