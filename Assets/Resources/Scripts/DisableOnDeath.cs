@@ -20,7 +20,6 @@ public class DisableOnDeath : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Cached PlayerDeathComponent is null. Attempting to find it.");
             GameObject player = NetworkClient.connection.identity.gameObject;
 
             if (player == null)

@@ -16,25 +16,39 @@ public class TruckController : NetworkBehaviour
     [SerializeField] private InputActionReference _movementInputActionReference;
 
     [Header("Suspension")]
+    [Tooltip("Rest position of the suspension springs (height of the vehicle)")]
     [SerializeField] private float _suspensionRestLength; //rest position of the suspension springs (height of the vehicle)
+    [Tooltip("How stiff the springs are")]
     [SerializeField] private float _springStrength; //how stiff the springs are
+    [Tooltip("How much the springs resist oscillation")]
     [SerializeField] private float _springDamping; //how much the springs resist oscillation
 
     [Header("Steering")]
+    [Tooltip("Maximum angle the front wheels can turn")]
     [SerializeField] private float _maxSteeringAngle; //maximum angle the front wheels can turn
+    [Tooltip("How fast the wheels turn to the target angle")]
     [SerializeField] private float _steeringSpeed; //how fast the wheels turn to the target angle
+    [Tooltip("How much the wheels resist lateral sliding")]
     [SerializeField] private float _wheelGripFactor; //how much the wheels resist lateral sliding WIP must implement a curve for grip vs speed
+    [Tooltip("Mass of each wheel, affects how much force is needed to change its velocity")]
     [SerializeField] private float _wheelMass; //mass of each wheel, affects how much force is needed to change its velocity
 
     [Header("Powertrain")]
+    [Tooltip("Type of drivetrain")]
     [SerializeField] private TrainShaftType _trainShaftType; //type of drivetrain
+    [Tooltip("Maximum speed of the car")]
     [SerializeField] private float _carMaxSpeed; //maximum speed of the car
+    [Tooltip("Maximum torque output of the engine")]
     [SerializeField] private float _maxEngineTorque; //maximum torque output of the engine
+    [Tooltip("Power output of the engine based on current speed")]
     [SerializeField] private AnimationCurve _engineTorqueCurve; //% power output of the engine based on current speed (x = normalized speed, y = % torque)
 
     [Header("Braking")]
+    [Tooltip("Torque applied when not accelerating")]
     [SerializeField] private float _engineBrakeTorque; //torque applied when not accelerating
+    [Tooltip("Torque applied by the brakes")]
     [SerializeField] private float _brakeTorque; //torque applied by the brakes
+    [Tooltip("Distribution of braking force between front and rear wheels (0 = all front, 1 = all rear)")]
     [SerializeField, Range(0f, 1f)] private float _brakeBias; //distribution of braking force between front and rear wheels (0 = all front, 1 = all rear)
 
     [Header("Wheels")]
@@ -87,7 +101,7 @@ public class TruckController : NetworkBehaviour
 
         if (_movementInput.x != 0)
         {
-            float steeringAngle = _maxSteeringAngle * _movementInput.x;
+            float steeringAngle = _maxSteeringAngle * Mathf.Sign(_movementInput.x);
             _frontLeftWheel.localRotation = Quaternion.Slerp(_frontLeftWheel.localRotation, Quaternion.Euler(0f, steeringAngle, 0f), Time.deltaTime * _steeringSpeed);
             _frontRightWheel.localRotation = Quaternion.Slerp(_frontRightWheel.localRotation, Quaternion.Euler(0f, steeringAngle, 0f), Time.deltaTime * _steeringSpeed);
         }
@@ -230,6 +244,8 @@ public class TruckController : NetworkBehaviour
 
         _maxSteeringAngle -= oldStats.maxSteeringAngle;
         _maxSteeringAngle += newStats.maxSteeringAngle;
+
+        _maxSteeringAngle = Mathf.Clamp(_maxSteeringAngle, 0f, 70f);
 
         _steeringSpeed -= oldStats.steeringSpeed;
         _steeringSpeed += newStats.steeringSpeed;

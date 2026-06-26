@@ -281,7 +281,7 @@ MonoBehaviour:
   _suspensionRestLength: 0.75
   _springStrength: 300
   _springDamping: 20
-  _maxSteeringAngle: 45
+  _maxSteeringAngle: 30
   _steeringSpeed: 5
   _wheelGripFactor: 0.1
   _wheelMass: 1.5

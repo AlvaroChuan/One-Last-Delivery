@@ -131,14 +131,4 @@ public class TruckSeat : Interactable
     {
         _occupant = null;
     }
-
-    void OnDestroy()
-    {
-        if (_occupant != null && NetworkClient.connection.identity != null && _occupant == NetworkClient.connection.identity.gameObject)
-        {
-            SetPlayerInput(_occupant, false);
-            SetPlayerCollidersEnabled(_occupant, false);
-        }
-        PlayersInTruck.Clear(); // Clear the static list when the seat is destroyed to prevent stale references
-    }
 }

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2f7ac22f8ec5d0b4189d8acf88823cfb, type: 3}
-  m_Name: SpeedUpgrade
+  m_Name: AccelerationUpgrade
   m_EditorClassIdentifier: 
   _stats:
     suspensionRestLength: 0
@@ -20,10 +20,10 @@ MonoBehaviour:
     steeringSpeed: 0
     wheelGripFactor: 0
     wheelMass: 0
-    carMaxSpeed: 5
-    maxEngineTorque: 0
+    carMaxSpeed: 0
+    maxEngineTorque: 10
     engineBrakeTorque: 0
-    brakeTorque: 0
+    brakeTorque: 20
   _price: 50
-  _upgradeName: Speed
+  _upgradeName: Acceleration
   _upgradeIcon: {fileID: 0}

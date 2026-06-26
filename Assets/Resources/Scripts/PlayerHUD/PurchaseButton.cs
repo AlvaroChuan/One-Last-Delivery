@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -56,7 +57,7 @@ public class PurchaseButton : MonoBehaviour
     public void SetListing(TruckUpgrade truckUpgrade)
     {
         _truckUpgradeStats = truckUpgrade.Stats;
-        _price.text = truckUpgrade.Price.ToString("F2");
+        _price.text = Mathf.RoundToInt(truckUpgrade.Price).ToString();
         _name.text = truckUpgrade.UpgradeName;
         _icon.sprite = truckUpgrade.UpgradeIcon?.sprite;
         _priceValue = truckUpgrade.Price;
@@ -70,7 +71,7 @@ public class PurchaseButton : MonoBehaviour
     public void SetListing(ItemListing itemListing)
     {
         _itemData = itemListing.ItemData;
-        _price.text = itemListing.Price.ToString("F2");
+        _price.text = Mathf.RoundToInt(itemListing.Price).ToString();
         _name.text = itemListing.ItemName;
         _icon.sprite = itemListing.ItemIcon?.sprite;
         _priceValue = itemListing.Price;

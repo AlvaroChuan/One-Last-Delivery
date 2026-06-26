@@ -10,8 +10,8 @@ public class PlayerMenuManager : MonoBehaviour
     {
         public GameObject menuPanel;
         public InputActionReference toggleAction;
-        public bool canOpenWhileDead;
         public bool canOpenWhileAlive;
+        public bool canOpenWhileDead;
     }
 
     [SerializeField] private MenuEntry[] _menuEntries;
