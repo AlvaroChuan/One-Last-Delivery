@@ -54,7 +54,6 @@ public struct TruckStatsStruct
         springDamping += other.springDamping;
 
         maxSteeringAngle += other.maxSteeringAngle;
-        maxSteeringAngle = Mathf.Clamp(maxSteeringAngle, 0f, 70f);
         steeringSpeed += other.steeringSpeed;
         wheelGripFactor += other.wheelGripFactor;
         wheelMass += other.wheelMass;
