@@ -132,6 +132,7 @@ Material:
     - _FarColor: {r: 0.3647059, g: 0.5764706, b: 0.34901962, a: 0}
     - _GrassBotomColor: {r: 0.24285717, g: 0.34, b: 0.22204082, a: 0}
     - _GrassColor: {r: 0.07716268, g: 0.3207547, b: 0.25147197, a: 0}
+    - _GrassTiling: {r: 0.6, g: 0.6, b: 0, a: 0}
     - _GrassTopColor: {r: 0.5457013, g: 0.7647059, b: 0.5019608, a: 0}
     - _NearColor: {r: 0.35428575, g: 0.56, b: 0.3390476, a: 0}
     - _NearFarRange: {r: 6, g: 10, b: 0, a: 0}

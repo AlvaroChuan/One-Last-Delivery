@@ -125,6 +125,9 @@
         },
         {
             "m_Id": "67170740493f414081bcdf19df16686b"
+        },
+        {
+            "m_Id": "c8b8e16b89f442d2b4342eefc925984e"
         }
     ],
     "m_Keywords": [],
@@ -602,6 +605,9 @@
         },
         {
             "m_Id": "906384b9a9894e458df28a046e71116a"
+        },
+        {
+            "m_Id": "68755323a73245ceac86a503c34dcf54"
         }
     ],
     "m_GroupDatas": [
@@ -1685,6 +1691,20 @@
                     "m_Id": "116f9ccf2fbc41668473ea45c6369a34"
                 },
                 "m_SlotId": 0
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "68755323a73245ceac86a503c34dcf54"
+                },
+                "m_SlotId": 0
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "44d84fb5216847e397a5484349fa424a"
+                },
+                "m_SlotId": 1
             }
         },
         {
@@ -4418,6 +4438,27 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector2MaterialSlot",
+    "m_ObjectId": "17ceade7efcb4dd7a7e9bc37a97caa03",
+    "m_Id": 0,
+    "m_DisplayName": "GrassTiling",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Out",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0
+    },
+    "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
     "m_ObjectId": "17ef2e8ac54e4ccda15f592b70d1f994",
     "m_Group": {
@@ -6587,6 +6628,9 @@
         },
         {
             "m_Id": "67170740493f414081bcdf19df16686b"
+        },
+        {
+            "m_Id": "c8b8e16b89f442d2b4342eefc925984e"
         }
     ]
 }
@@ -7299,10 +7343,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": 127.99999237060547,
-            "y": 1009.9999389648438,
-            "width": 134.0,
-            "height": 33.99993896484375
+            "x": 133.00001525878907,
+            "y": 949.0,
+            "width": 133.00001525878907,
+            "height": 34.00006103515625
         }
     },
     "m_Slots": [
@@ -10856,6 +10900,42 @@
         "e31": 0.0,
         "e32": 0.0,
         "e33": 1.0
+    }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
+    "m_ObjectId": "68755323a73245ceac86a503c34dcf54",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "Property",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": 336.55816650390627,
+            "y": 1305.04541015625,
+            "width": 0.0,
+            "height": 0.0
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "17ceade7efcb4dd7a7e9bc37a97caa03"
+        }
+    ],
+    "synonyms": [],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_DismissedVersion": 0,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_Property": {
+        "m_Id": "c8b8e16b89f442d2b4342eefc925984e"
     }
 }
 
@@ -17361,6 +17441,34 @@
         "e31": 0.0,
         "e32": 0.0,
         "e33": 1.0
+    }
+}
+
+{
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector2ShaderProperty",
+    "m_ObjectId": "c8b8e16b89f442d2b4342eefc925984e",
+    "m_Guid": {
+        "m_GuidSerialized": "be90bde3-d7ba-4afd-be67-1ca7065c6a72"
+    },
+    "m_Name": "GrassTiling",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "GrassTiling",
+    "m_DefaultReferenceName": "_GrassTiling",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_DismissedVersion": 0,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 0.0,
+        "w": 0.0
     }
 }
 

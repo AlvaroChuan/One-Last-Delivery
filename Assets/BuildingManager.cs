@@ -10,7 +10,7 @@ public class HierarchyFlattener : MonoBehaviour
     void Awake()
     {
         // Se ejecuta al instante al cargar la escena, antes del Start()
-        FlattenHierarchies();
+        //FlattenHierarchies();
     }
 
     public void FlattenHierarchies()
