@@ -1,0 +1,121 @@
+#pragma kernel CSMain
+
+// En lugar de arrays estaticos, usamos un AppendStructuredBuffer
+AppendStructuredBuffer<float4x4> resultMatrices;
+
+int pointBufferLength;
+float3 terrainSize;
+int terrainGridSizeX;
+int terrainGridSizeZ;
+float3 terrainPosition;
+float maxSlopeCos;
+float3 baseScale;
+
+Texture2D<float4> heightmap;
+
+float Hash(float seed)
+{
+    return frac(sin(seed) * 43758.5453123);
+}
+float Random(uint id, float offset)
+{
+    return Hash(id + offset);
+}
+
+float Halton(int index, int base)
+{
+    float result = 0.0;
+    float f = 1.0 / (float) base;
+    int i = index;
+    while (i > 0)
+    {
+        result += f * (float) (i % base);
+        i = i / base;
+        f = f / (float) base;
+    }
+    return result;
+}
+
+float3 ComputeNormal(float normalizedX, float normalizedZ)
+{
+    int hx = clamp((int) (normalizedX * (terrainGridSizeX - 1)), 0, terrainGridSizeX - 1);
+    int hz = clamp((int) (normalizedZ * (terrainGridSizeZ - 1)), 0, terrainGridSizeZ - 1);
+
+    int hxL = max(hx - 1, 0);
+    int hxR = min(hx + 1, terrainGridSizeX - 1);
+    int hzD = max(hz - 1, 0);
+    int hzU = min(hz + 1, terrainGridSizeZ - 1);
+
+    float heightU = heightmap.Load(int3(hx, hzU, 0)).r;
+    float heightD = heightmap.Load(int3(hx, hzD, 0)).r;
+    float heightL = heightmap.Load(int3(hxL, hz, 0)).r;
+    float heightR = heightmap.Load(int3(hxR, hz, 0)).r;
+
+    float3 tangentX = float3(2.0 * terrainSize.x / (terrainGridSizeX - 1), (heightR - heightL) * terrainSize.y, 0.0);
+    float3 tangentZ = float3(0.0, (heightU - heightD) * terrainSize.y, 2.0 * terrainSize.z / (terrainGridSizeZ - 1));
+
+    float3 n = cross(tangentZ, tangentX);
+    float len2 = dot(n, n);
+    return (len2 < 1e-12) ? float3(0, 1, 0) : normalize(n);
+}
+
+// Funcion para construir una Matriz 4x4 de Transformacion (TRS)
+float4x4 ConstructTRSMatrix(float3 pos, float3 up, float3 scale)
+{
+    // Construimos los vectores base para la rotacion 
+    float3 right = cross(up, float3(0, 0, 1));
+    if (dot(right, right) < 1e-6)
+        right = cross(up, float3(1, 0, 0));
+    right = normalize(right);
+    
+    float3 forward = normalize(cross(right, up));
+
+    // Ensamblamos la matriz (Column-major para Unity)
+    return float4x4(
+        right.x * scale.x, up.x * scale.y, forward.x * scale.z, pos.x,
+        right.y * scale.x, up.y * scale.y, forward.y * scale.z, pos.y,
+        right.z * scale.x, up.z * scale.y, forward.z * scale.z, pos.z,
+        0, 0, 0, 1
+    );
+}
+
+[numthreads(256, 1, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    uint index = id.x;
+    if (index >= (uint) pointBufferLength)
+        return;
+
+    float u = saturate(Halton(index, 2));
+    float v = saturate(Halton(index, 3));
+
+    int hx = clamp((int) (u * (terrainGridSizeX - 1)), 0, terrainGridSizeX - 1);
+    int hz = clamp((int) (v * (terrainGridSizeZ - 1)), 0, terrainGridSizeZ - 1);
+    float height = heightmap.Load(int3(hx, hz, 0)).r;
+
+    float3 worldPos = float3(u * terrainSize.x, height * terrainSize.y, v * terrainSize.z) + terrainPosition;
+    float3 normal = ComputeNormal(u, v);
+
+    // FILTRO DE INCLINACION (Slope Culling) directo en GPU
+    // Evitamos trigonometria costosa
+    if (dot(normal, float3(0, 1, 0)) < maxSlopeCos)
+        return;
+
+    // Escala aleatoria
+    float randomScaleY = baseScale.y + Random(index, 0.1f) * 0.6f - 0.2f;
+    float3 finalScale = float3(baseScale.x, randomScaleY, baseScale.z);
+
+    // Pequeno offset aleatorio a la normal para variedad
+    float3 normalOffset = float3(
+        Random(index, 0.3f) * 0.1f,
+        Random(index, 0.4f) * 0.1f,
+        Random(index, 0.5f) * 0.1f
+    );
+    float3 finalNormal = normalize(normal + normalOffset);
+
+    // Construimos la matriz final
+    float4x4 instanceMatrix = ConstructTRSMatrix(worldPos, finalNormal, finalScale);
+
+    // Solo la hierba que ha pasado el culling se anade al buffer
+    resultMatrices.Append(instanceMatrix);
+}

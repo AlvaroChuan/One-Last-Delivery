@@ -81,23 +81,24 @@ Material:
     - _AlphaClip: 0.45
     - _BrushIntensity: 1
     - _Float: 0.1
+    - _FogMultiplier: 1
     - _GrassInteractionStrength: 0.1
     - _GrassLightFactor: 0.92
     - _GrassNoise: 3.49
-    - _GrassPatchFalloff: 1.72
-    - _GrassPatchIntensity: 0.85
+    - _GrassPatchFalloff: 1.18
+    - _GrassPatchIntensity: 2.53
     - _GrassPatchStep: 0.15
-    - _GrassPatchsNoise: 100
-    - _HeightOffset: 0.4
+    - _GrassPatchsNoise: 3000
+    - _HeightOffset: 3.92
     - _HeightmapIntensity: 0.25
     - _HeightmapPower: 3
     - _InteractionHeight: -0.3
     - _LightColorIntensity: 0
     - _MainNoiseMultiplier: 0.07
-    - _MainNoiseScale: 100
+    - _MainNoiseScale: 130
     - _MaxGrass: 0.12
     - _MinGrass: 0.05
-    - _NearFarIntensity: 0.1
+    - _NearFarIntensity: 1.5
     - _NoiseFalloff: 1
     - _NoiseIntensity: 0.36
     - _NoiseMultiplier: 0.05
@@ -114,8 +115,8 @@ Material:
     - _TerrainBotIntensity: 0.63
     - _TerrainBotomIntensity: 1
     - _TerrainIntensity: 1.5
-    - _TerrainSize: 100
-    - _TerrainTopIntensity: 1.5
+    - _TerrainSize: 3000
+    - _TerrainTopIntensity: 0.4
     - _Test: 0
     - _WindHeight: -0.2
     - _WindIntensity: 0.04
@@ -128,12 +129,12 @@ Material:
     m_Colors:
     - _BrushColor: {r: 0.8254558, g: 0, b: 0.9245283, a: 0}
     - _BrushTiling: {r: 1, g: 1, b: 0, a: 0}
-    - _FarColor: {r: 0, g: 0, b: 0, a: 0}
-    - _GrassBotomColor: {r: 0, g: 0, b: 0, a: 0}
+    - _FarColor: {r: 0.3647059, g: 0.5764706, b: 0.34901962, a: 0}
+    - _GrassBotomColor: {r: 0.24285717, g: 0.34, b: 0.22204082, a: 0}
     - _GrassColor: {r: 0.07716268, g: 0.3207547, b: 0.25147197, a: 0}
     - _GrassTopColor: {r: 0.5457013, g: 0.7647059, b: 0.5019608, a: 0}
-    - _NearColor: {r: 0.36442873, g: 0.5754717, b: 0.3501691, a: 0}
-    - _NearFarRange: {r: 6, g: 1.79, b: 0, a: 0}
+    - _NearColor: {r: 0.35428575, g: 0.56, b: 0.3390476, a: 0}
+    - _NearFarRange: {r: 6, g: 10, b: 0, a: 0}
     - _Player: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 0}
     - _WindContrast: {r: 0.3, g: 0.6, b: 0, a: 0}

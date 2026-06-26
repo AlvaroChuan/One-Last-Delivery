@@ -850,6 +850,14 @@ MonoBehaviour:
   _cloudsColorNight: {r: 0.38039216, g: 0.42745098, b: 0.48235294, a: 1}
   _cloudsPosterizePropertyName: _CloudsPosterize
   _cloudsPosterizeNight: 8
+  _fogDensityDay: 0.016
+  _fogDensityNight: 0.033
+  _fogHeightPropertyName: _FogHeight
+  _fogHeightDay: 14
+  _fogHeightNight: 6
+  _globalVolume: {fileID: 0}
+  _vignetteIntensityDay: 0.29
+  _vignetteIntensityNight: 0.44
   _heightOffsetPropertyName: _HeightOffset
   _heightOffsetLow: 0.2
   _heightOffsetHigh: 0.85
@@ -2512,6 +2520,10 @@ PrefabInstance:
     - target: {fileID: 5366820975264366592, guid: 827db4f7fcb415f4ab7205902c8c28c1, type: 3}
       propertyPath: m_Name
       value: GrassPref2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5366820975264366592, guid: 827db4f7fcb415f4ab7205902c8c28c1, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7967689452399332373, guid: 827db4f7fcb415f4ab7205902c8c28c1, type: 3}
       propertyPath: m_LocalPosition.x
