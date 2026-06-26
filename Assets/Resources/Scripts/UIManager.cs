@@ -7,6 +7,9 @@ using Steamworks;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine.InputSystem;
+using Object = UnityEngine.Object;
 
 public class UIManager : MonoBehaviour
 {
@@ -37,7 +40,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform _playersListContent;
     [SerializeField] private Button _confirmPasswordButton;
     [SerializeField] private TextMeshProUGUI _lobbyPlayerCountText;
+    [SerializeField] private Transform _optionsContent;
     [SerializeField] private TextMeshProUGUI _countdownText;
+
 
     [Header("3D Elements")]
     [SerializeField] private GameObject _clipboardModel;
@@ -61,6 +66,11 @@ public class UIManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private SteamLobbyManager _steamLobbyManager;
+    [SerializeField] private BaseVoiceChat _lobbyVoiceChat;
+    [SerializeField] private KeyBinder _keyBindPrefab;
+
+    [Header("Controls")]
+    [SerializeField] private InputActionReference[] _inputReferences;
 
     private int _currentPaperSheetIndex = 0;
     private int _targetPanelIndex = 0;
@@ -402,6 +412,12 @@ public class UIManager : MonoBehaviour
             _pushToTalkDropdown.value = _pushToTalkEnabled ? 1 : 0;
             _pushToTalkDropdown.RefreshShownValue();
         }
+
+        foreach (InputActionReference action in _inputReferences)
+        {
+            KeyBinder keyBinder = Instantiate(_keyBindPrefab, _optionsContent);
+            keyBinder.OnCreate(action.action);
+        }
     }
 
     public void SetResolution(int resolutionIndex)
@@ -447,21 +463,21 @@ public class UIManager : MonoBehaviour
 
     public void SetInputDevice(int deviceIndex)
     {
-        // TODO: Integrate with audio manager to set the actual volume
         PlayerPrefs.SetInt("InputDeviceIndex", deviceIndex);
+        _lobbyVoiceChat.ChangeMicrophone(deviceIndex);
     }
 
     public void SetInputVolume(float volume)
     {
-        // TODO: Integrate with audio manager to set the actual volume
         PlayerPrefs.SetFloat("InputVolume", volume);
+        _lobbyVoiceChat.SetMicrophoneVolume(volume);
     }
 
     public void SetPushToTalk(int pushToTalkIndex)
     {
-        // TODO: Integrate with audio manager to set the actual volume
         _pushToTalkEnabled = pushToTalkIndex == 1;
         PlayerPrefs.SetInt("PushToTalkEnabled", pushToTalkIndex);
+        _lobbyVoiceChat.SetPushToTalk(_pushToTalkEnabled);
     }
 
     private IEnumerator PassPanelsAndSheets(int objectivePanelIndex)

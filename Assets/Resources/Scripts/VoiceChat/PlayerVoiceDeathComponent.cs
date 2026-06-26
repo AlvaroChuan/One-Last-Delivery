@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerDeathComponent))]
 public class PlayerVoiceDeathComponent : PlayerComponent
 {
-    PlayerVoiceProxyComponent _playerVoiceProxyComponent;
+    ProxymityVoiceChatController _playerVoiceProxyComponent;
     PlayerDeathComponent _deathComponent;
 
     [SyncVar]
@@ -29,7 +29,7 @@ public class PlayerVoiceDeathComponent : PlayerComponent
 
     private void Start()
     {
-        _playerVoiceProxyComponent = FindAnyObjectByType<PlayerVoiceProxyComponent>();
+        _playerVoiceProxyComponent = FindAnyObjectByType<ProxymityVoiceChatController>();
     }
 
     void OnEnable()

@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class SteamLobbyManager : MonoBehaviour
 {
     [SerializeField] private UIManager _uiManager;
-    [SerializeField] private LobbyVoiceChat _lobbyVoiceChat;
+    [SerializeField] private BaseVoiceChat _lobbyVoiceChat;
     [SerializeField] private string _gameSceneName = "GameScene";
     protected Callback<LobbyCreated_t> lobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
@@ -40,7 +40,7 @@ public class SteamLobbyManager : MonoBehaviour
         lobbyList = Callback<LobbyMatchList_t>.Create(OnLobbyList);
         lobbyChatUpdate = Callback<LobbyChatUpdate_t>.Create(OnLobbyChatUpdate);
         lobbyDataUpdate = Callback<LobbyDataUpdate_t>.Create(OnLobbyDataUpdate);
-        if(_lobbyVoiceChat == null) _lobbyVoiceChat = _networkManager.GetComponent<LobbyVoiceChat>();
+        if(_lobbyVoiceChat == null) _lobbyVoiceChat = _networkManager.GetComponent<BaseVoiceChat>();
     }
 
     private void OnDestroy()

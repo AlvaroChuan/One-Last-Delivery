@@ -119,6 +119,67 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &87366516
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1948751702525492139, guid: aa05df3845a55b347956092d92ce91d4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.9124689
+      objectReference: {fileID: 0}
+    - target: {fileID: 1948751702525492139, guid: aa05df3845a55b347956092d92ce91d4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1948751702525492139, guid: aa05df3845a55b347956092d92ce91d4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 27.31
+      objectReference: {fileID: 0}
+    - target: {fileID: 1948751702525492139, guid: aa05df3845a55b347956092d92ce91d4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1948751702525492139, guid: aa05df3845a55b347956092d92ce91d4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1948751702525492139, guid: aa05df3845a55b347956092d92ce91d4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1948751702525492139, guid: aa05df3845a55b347956092d92ce91d4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1948751702525492139, guid: aa05df3845a55b347956092d92ce91d4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1948751702525492139, guid: aa05df3845a55b347956092d92ce91d4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1948751702525492139, guid: aa05df3845a55b347956092d92ce91d4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3626590714432623591, guid: aa05df3845a55b347956092d92ce91d4, type: 3}
+      propertyPath: m_Name
+      value: WalkieTalkie (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8432997841342778207, guid: aa05df3845a55b347956092d92ce91d4, type: 3}
+      propertyPath: sceneId
+      value: 3577327729
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: aa05df3845a55b347956092d92ce91d4, type: 3}
 --- !u!1001 &108114543
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1228,10 +1289,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2848897f5cf42e14599ed82e958db6b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useRNNoise4UnityIfAvailable: 1
-  useConcentusEncodeAndDecode: 1
-  useVad: 1
-  distanceProximityChat: 10
+  _useRNNoise4UnityIfAvailable: 1
+  _useConcentusEncodeAndDecode: 1
+  _useVad: 1
+  _muteInput: {fileID: -6059103604277978334, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _startMuted: 0
+  _pushToTalkEnabled: 0
+  _pushToTalkInput: {fileID: -1199959785099435234, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _microphoneVolume: 1
+  _distanceProximityChat: 10
 --- !u!4 &691435008
 Transform:
   m_ObjectHideFlags: 0
@@ -2151,6 +2217,7 @@ SceneRoots:
   - {fileID: 237521549}
   - {fileID: 1532551206}
   - {fileID: 779436736}
+  - {fileID: 87366516}
   - {fileID: 108114543}
   - {fileID: 1817670615}
   - {fileID: 1384868047}
