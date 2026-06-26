@@ -32,6 +32,8 @@ public class TruckController : NetworkBehaviour
     [SerializeField] private float _wheelGripFactor; //how much the wheels resist lateral sliding WIP must implement a curve for grip vs speed
     [Tooltip("Mass of each wheel, affects how much force is needed to change its velocity")]
     [SerializeField] private float _wheelMass; //mass of each wheel, affects how much force is needed to change its velocity
+    [Tooltip("Maximum tilt angle of the vehicle before it starts to flip over")]
+    [SerializeField] private float _maxTiltAngle; //maximum tilt angle of the vehicle before it starts to flip over
 
     [Header("Powertrain")]
     [Tooltip("Type of drivetrain")]
@@ -228,6 +230,16 @@ public class TruckController : NetworkBehaviour
             //Ray debugRay4 = new Ray(wheel.position, breakingDirection * actualBrakeTorque);
             //Debug.DrawRay(debugRay4.origin, debugRay4.direction * actualBrakeTorque * 0.1f, Color.yellow);
         }
+
+        //Clamp the vehicle's rotation to prevent flipping over
+        Vector3 currentEuler = _vehicleRigidbody.rotation.eulerAngles;
+
+        // 2. Normalize the angles to -180 to 180, then clamp them to your max allowed tilt
+        float clampedX = Mathf.Clamp(Mathf.DeltaAngle(0, currentEuler.x), -_maxTiltAngle, _maxTiltAngle);
+        float clampedZ = Mathf.Clamp(Mathf.DeltaAngle(0, currentEuler.z), -_maxTiltAngle, _maxTiltAngle);
+
+        // 3. Apply the clamped rotation, preserving the Y (steering) axis
+        _vehicleRigidbody.rotation = Quaternion.Euler(clampedX, currentEuler.y, clampedZ);
     }
 
     void OnUpgradeStatsChanged(TruckStatsStruct oldStats, TruckStatsStruct newStats)
