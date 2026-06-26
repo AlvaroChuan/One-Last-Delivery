@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Bat
   m_EditorClassIdentifier: 
   _itemData:
-    itemID: 0
-    oneShot: 0
-    infiniteDurability: 0
+    itemID: 1
+    oneShot: 1
+    infiniteDurability: 1
     durability: 0
     durabilityCost: 0
-  _price: 0
-  _itemName: 
+  _price: 20
+  _itemName: Bat
   _itemIcon: {fileID: 0}

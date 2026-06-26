@@ -20,10 +20,10 @@ MonoBehaviour:
     steeringSpeed: 0
     wheelGripFactor: 0
     wheelMass: 0
-    carMaxSpeed: 0
+    carMaxSpeed: 10
     maxEngineTorque: 0
     engineBrakeTorque: 0
     brakeTorque: 0
-  _price: 0
-  _upgradeName: 
+  _price: 50
+  _upgradeName: Speed
   _upgradeIcon: {fileID: 0}

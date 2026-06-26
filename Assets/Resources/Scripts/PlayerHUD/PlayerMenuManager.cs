@@ -10,6 +10,8 @@ public class PlayerMenuManager : MonoBehaviour
     {
         public GameObject menuPanel;
         public InputActionReference toggleAction;
+        public bool canOpenWhileDead;
+        public bool canOpenWhileAlive;
     }
 
     [SerializeField] private MenuEntry[] _menuEntries;
@@ -38,32 +40,62 @@ public class PlayerMenuManager : MonoBehaviour
 
     private void OnMenuInput(InputAction.CallbackContext context)
     {
-        GameObject menuPanel = null;
+        MenuEntry menuEntry = default;
         foreach (var entry in _menuEntries)
         {
             if (context.action == entry.toggleAction.action)
             {
-                menuPanel = entry.menuPanel;
+                menuEntry = entry;
             }
             else if (entry.menuPanel.activeSelf)
             {
-                ToggleMenuPanel(entry.menuPanel, false); // Close other menus
+                ToggleMenuPanel(entry, false); // Close other menus
             }
         }
-        ToggleMenuPanel(menuPanel, !menuPanel.activeSelf); // Toggle the selected menu
+        ToggleMenuPanel(menuEntry, !menuEntry.menuPanel.activeSelf); // Toggle the selected menu
     }
 
-    void ToggleMenuPanel(GameObject menuPanel, bool open)
+    void ToggleMenuPanel(MenuEntry menuEntry, bool open)
     {
+        GameObject menuPanel = menuEntry.menuPanel;
+
         if (menuPanel == null)
         {
             Debug.LogError("Menu panel is null.");
             return;
         }
-        menuPanel.SetActive(open);
+
+        if (NetworkClient.connection == null || NetworkClient.connection.identity == null)
+        {
+            Debug.LogError("No local player found.");
+            return;
+        }
+
+        GameObject player = NetworkClient.connection.identity.gameObject;
+
+        if (player == null)
+        {
+            Debug.LogError("Local player identity is null.");
+            return;
+        }
+
+        if (player.TryGetComponent(out PlayerDeathComponent deathComponent))
+        {
+            if (deathComponent.IsDead && !menuEntry.canOpenWhileDead)
+            {
+                Debug.Log("Cannot open this menu while dead.");
+                return;
+            }
+            else if (!deathComponent.IsDead && !menuEntry.canOpenWhileAlive)
+            {
+                Debug.Log("Cannot open this menu while alive.");
+                return;
+            }
+        }
+
+        menuEntry.menuPanel.SetActive(open);
         Cursor.lockState = open ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = open;
-        GameObject player = NetworkClient.connection.identity.gameObject;
         if (player != null)
         {
             PlayerItemUseComponent itemUseComponent = player.GetComponent<PlayerItemUseComponent>();
