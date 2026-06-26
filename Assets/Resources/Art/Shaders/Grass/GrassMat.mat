@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: GrassMat
-  m_Shader: {fileID: -6465566751694194690, guid: 0d76b11c95f396f4ca8bf0987ea88f9d, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: b781d9d3f7c869e45be272c797bc9902, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -78,7 +78,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaClip: 0.45
+    - _AlphaClip: 0.1
     - _BrushIntensity: 1
     - _Float: 0.1
     - _FogMultiplier: 1
@@ -89,7 +89,7 @@ Material:
     - _GrassPatchIntensity: 2.53
     - _GrassPatchStep: 0.15
     - _GrassPatchsNoise: 3000
-    - _HeightOffset: 3.92
+    - _HeightOffset: 2.73
     - _HeightmapIntensity: 0.25
     - _HeightmapPower: 3
     - _InteractionHeight: -0.3
@@ -132,6 +132,7 @@ Material:
     - _FarColor: {r: 0.3647059, g: 0.5764706, b: 0.34901962, a: 0}
     - _GrassBotomColor: {r: 0.24285717, g: 0.34, b: 0.22204082, a: 0}
     - _GrassColor: {r: 0.07716268, g: 0.3207547, b: 0.25147197, a: 0}
+    - _GrassTexTiling: {r: 1, g: 0.61, b: 0, a: 0}
     - _GrassTopColor: {r: 0.5457013, g: 0.7647059, b: 0.5019608, a: 0}
     - _NearColor: {r: 0.35428575, g: 0.56, b: 0.3390476, a: 0}
     - _NearFarRange: {r: 6, g: 10, b: 0, a: 0}

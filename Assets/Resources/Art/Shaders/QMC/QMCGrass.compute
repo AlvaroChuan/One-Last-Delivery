@@ -1,6 +1,14 @@
-#pragma kernel CSMain
+#pragma kernel CSGenerate
+#pragma kernel CSCull
 
-// En lugar de arrays estaticos, usamos un AppendStructuredBuffer
+struct GrassData
+{
+    float3 position;
+    float3 normal;
+    float3 baseScale;
+};
+
+RWStructuredBuffer<GrassData> allGrassBuffer;
 AppendStructuredBuffer<float4x4> resultMatrices;
 
 int pointBufferLength;
@@ -10,6 +18,10 @@ int terrainGridSizeZ;
 float3 terrainPosition;
 float maxSlopeCos;
 float3 baseScale;
+
+float3 cameraPosition;
+float3 cameraForward;
+float maxDistance;
 
 Texture2D<float4> heightmap;
 
@@ -59,18 +71,14 @@ float3 ComputeNormal(float normalizedX, float normalizedZ)
     return (len2 < 1e-12) ? float3(0, 1, 0) : normalize(n);
 }
 
-// Funcion para construir una Matriz 4x4 de Transformacion (TRS)
 float4x4 ConstructTRSMatrix(float3 pos, float3 up, float3 scale)
 {
-    // Construimos los vectores base para la rotacion 
     float3 right = cross(up, float3(0, 0, 1));
     if (dot(right, right) < 1e-6)
         right = cross(up, float3(1, 0, 0));
     right = normalize(right);
-    
     float3 forward = normalize(cross(right, up));
 
-    // Ensamblamos la matriz (Column-major para Unity)
     return float4x4(
         right.x * scale.x, up.x * scale.y, forward.x * scale.z, pos.x,
         right.y * scale.x, up.y * scale.y, forward.y * scale.z, pos.y,
@@ -80,15 +88,17 @@ float4x4 ConstructTRSMatrix(float3 pos, float3 up, float3 scale)
 }
 
 [numthreads(256, 1, 1)]
-void CSMain(uint3 id : SV_DispatchThreadID)
+void CSGenerate(uint3 id : SV_DispatchThreadID)
 {
     uint index = id.x;
     if (index >= (uint) pointBufferLength)
         return;
 
+    GrassData grass;
+
     float u = saturate(Halton(index, 2));
     float v = saturate(Halton(index, 3));
-
+    
     int hx = clamp((int) (u * (terrainGridSizeX - 1)), 0, terrainGridSizeX - 1);
     int hz = clamp((int) (v * (terrainGridSizeZ - 1)), 0, terrainGridSizeZ - 1);
     float height = heightmap.Load(int3(hx, hz, 0)).r;
@@ -96,26 +106,52 @@ void CSMain(uint3 id : SV_DispatchThreadID)
     float3 worldPos = float3(u * terrainSize.x, height * terrainSize.y, v * terrainSize.z) + terrainPosition;
     float3 normal = ComputeNormal(u, v);
 
-    // FILTRO DE INCLINACION (Slope Culling) directo en GPU
-    // Evitamos trigonometria costosa
     if (dot(normal, float3(0, 1, 0)) < maxSlopeCos)
+    {
+        grass.baseScale = float3(0, -1, 0);
+    }
+    else
+    {
+        float randomScaleY = baseScale.y + Random(index, 0.1f) * 0.6f - 0.2f;
+        float3 normalOffset = float3(Random(index, 0.3f) * 0.1f, Random(index, 0.4f) * 0.1f, Random(index, 0.5f) * 0.1f);
+        
+        grass.position = worldPos;
+        grass.normal = normalize(normal + normalOffset);
+        grass.baseScale = float3(baseScale.x, randomScaleY, baseScale.z);
+    }
+
+    allGrassBuffer[index] = grass;
+}
+
+[numthreads(256, 1, 1)]
+void CSCull(uint3 id : SV_DispatchThreadID)
+{
+    uint index = id.x;
+    if (index >= (uint) pointBufferLength)
         return;
 
-    // Escala aleatoria
-    float randomScaleY = baseScale.y + Random(index, 0.1f) * 0.6f - 0.2f;
-    float3 finalScale = float3(baseScale.x, randomScaleY, baseScale.z);
+    GrassData grass = allGrassBuffer[index];
 
-    // Pequeno offset aleatorio a la normal para variedad
-    float3 normalOffset = float3(
-        Random(index, 0.3f) * 0.1f,
-        Random(index, 0.4f) * 0.1f,
-        Random(index, 0.5f) * 0.1f
-    );
-    float3 finalNormal = normalize(normal + normalOffset);
+    if (grass.baseScale.y < 0.0f)
+        return;
 
-    // Construimos la matriz final
-    float4x4 instanceMatrix = ConstructTRSMatrix(worldPos, finalNormal, finalScale);
+    float distToCamera = distance(grass.position, cameraPosition);
+    if (distToCamera > maxDistance)
+        return;
 
-    // Solo la hierba que ha pasado el culling se anade al buffer
+    float3 dirFromCamera = normalize(grass.position - cameraPosition);
+    if (dot(dirFromCamera, cameraForward) < -0.2f)
+        return;
+
+    float fadeDistance = 20.0f;
+    float startFade = maxDistance - fadeDistance;
+    float3 finalScale = grass.baseScale;
+    if (distToCamera > startFade)
+    {
+        float fadeFactor = 1.0f - saturate((distToCamera - startFade) / fadeDistance);
+        finalScale *= fadeFactor;
+    }
+
+    float4x4 instanceMatrix = ConstructTRSMatrix(grass.position, grass.normal, finalScale);
     resultMatrices.Append(instanceMatrix);
 }
