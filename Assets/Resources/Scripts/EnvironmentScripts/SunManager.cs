@@ -39,6 +39,9 @@ public class SunManager : MonoBehaviour
     [Header("Fog Settings")]
     [SerializeField] private float _fogDensityDay = 0.016f;
     [SerializeField] private float _fogDensityNight = 0.033f;
+    [SerializeField] private string _fogHeightPropertyName = "_FogHeight";
+    [SerializeField] private float _fogHeightDay = 14f;
+    [SerializeField] private float _fogHeightNight = 6f;
 
     [Header("Post Processing Settings")]
     [SerializeField] private Volume _globalVolume;
@@ -231,11 +234,13 @@ public class SunManager : MonoBehaviour
             _skyboxMaterial.SetFloat(_hdriBlendPropertyName, currentBlend);
             _skyboxMaterial.SetFloat(_hdriExposurePropertyName, currentExposure);
             _skyboxMaterial.SetColor(_cloudsColorPropertyName, currentClouds);
+
+            // Aquí actualizamos la altura del fog en el material del Skybox (o donde esté definida la variable)
+            _skyboxMaterial.SetFloat(_fogHeightPropertyName, Mathf.Lerp(_fogHeightDay, _fogHeightNight, smoothProgress));
         }
 
         RenderSettings.fogDensity = Mathf.Lerp(_fogDensityDay, _fogDensityNight, smoothProgress);
 
-        // Actualizamos el Vignette de forma limpia usando .Override()
         if (_vignette != null)
         {
             float targetVignette = Mathf.Lerp(_vignetteIntensityDay, _vignetteIntensityNight, smoothProgress);

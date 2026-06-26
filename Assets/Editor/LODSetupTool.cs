@@ -3,32 +3,23 @@ using UnityEditor;
 
 public class LODSetupTool
 {
-    [MenuItem("Tools/Generar LOD Groups Automáticos (Street1)")]
-    public static void SetupLODGroupsByString()
+    [MenuItem("Tools/Generar LOD Groups (Self + Cull)")]
+    public static void SetupLODGroupsSimple()
     {
         GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
         int processedCount = 0;
 
         foreach (GameObject obj in allObjects)
         {
-            if (obj.name.Contains("Street1"))
+            // Filtro por nombre
+            if (obj.name.Contains("lamp"))
             {
-                if (obj.transform.parent != null && obj.transform.parent.name.Contains("Street1"))
-                {
-                    continue;
-                }
+                Renderer renderer = obj.GetComponent<Renderer>();
 
-                Renderer parentRenderer = obj.GetComponent<Renderer>();
-                if (parentRenderer == null) continue;
+                // Si el objeto no tiene Renderer, no tiene sentido ponerle LODGroup
+                if (renderer == null) continue;
 
-                if (obj.transform.childCount == 0) continue;
-
-                Transform childTransform = obj.transform.GetChild(0);
-                Renderer childRenderer = childTransform.GetComponent<Renderer>();
-
-                if (childRenderer == null) continue;
-
-                Undo.RecordObject(obj, "Setup LOD Group");
+                Undo.RecordObject(obj, "Setup LOD Group Simple");
 
                 LODGroup lodGroup = obj.GetComponent<LODGroup>();
                 if (lodGroup == null)
@@ -36,14 +27,13 @@ public class LODSetupTool
                     lodGroup = Undo.AddComponent<LODGroup>(obj);
                 }
 
-                // Configuración de los niveles de LOD ajustada
+                // Definimos los dos niveles:
+                // LOD 0: El objeto mismo (visible hasta el 16%)
+                // LOD 1: Vacío (culling)
                 LOD[] lods = new LOD[2];
 
-                // LOD 0: Malla del padre. Visible desde 100% hasta 16% de la pantalla.
-                lods[0] = new LOD(0.16f, new Renderer[] { parentRenderer });
-
-                // LOD 1: Malla del hijo. Visible desde 16% hasta 0% de la pantalla (Nunca hace culling).
-                lods[1] = new LOD(0.0f, new Renderer[] { childRenderer });
+                lods[0] = new LOD(0.16f, new Renderer[] { renderer });
+                lods[1] = new LOD(0.0f, new Renderer[] { }); // Array vacío = Culling
 
                 lodGroup.SetLODs(lods);
                 lodGroup.RecalculateBounds();
@@ -53,6 +43,6 @@ public class LODSetupTool
             }
         }
 
-        Debug.Log($"Proceso completado. Se han configurado los LODGroups en {processedCount} objetos. LOD1 al 16% y sin Culling.");
+        Debug.Log($"Configuración completada: {processedCount} objetos configurados con LOD0 propio y Culling.");
     }
 }
