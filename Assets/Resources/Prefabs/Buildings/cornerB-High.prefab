@@ -16,7 +16,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 123
   m_IsActive: 1
 --- !u!4 &7567171399831116493
 Transform:
@@ -67,7 +67,7 @@ MeshRenderer:
   m_Materials:
   - {fileID: 2100000, guid: 235457a3cff176d4c952def2f379c11f, type: 2}
   - {fileID: 2100000, guid: 01001edcbaad4b14ca3bbfc5fdc95154, type: 2}
-  - {fileID: 7034673307361388041, guid: ac4da2a52a6e8164ba5aaa182f546702, type: 3}
+  - {fileID: 2100000, guid: 1766fa590b012b846a8079b2288060ed, type: 2}
   - {fileID: 2100000, guid: 13846d1299d85234584e88b019a3d676, type: 2}
   - {fileID: 2100000, guid: 31ba2ea0b81d3b74b814e68aa591a655, type: 2}
   m_StaticBatchInfo:
@@ -102,6 +102,10 @@ PrefabInstance:
     - target: {fileID: 1796997523566128808, guid: fc47718555fd4d44bafcb3bdf0f17760, type: 3}
       propertyPath: m_Name
       value: AddressNumber
+      objectReference: {fileID: 0}
+    - target: {fileID: 1796997523566128808, guid: fc47718555fd4d44bafcb3bdf0f17760, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1926627655036961629, guid: fc47718555fd4d44bafcb3bdf0f17760, type: 3}
       propertyPath: m_LocalScale.x
@@ -159,6 +163,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: e4391a07fe9e6ae4da37aa2e6a0fe992, type: 2}
+    - target: {fileID: 7197552623476152188, guid: fc47718555fd4d44bafcb3bdf0f17760, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -177,9 +185,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7567171399831116493}
     m_Modifications:
+    - target: {fileID: 63224043925179873, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1865245426965013292, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
       propertyPath: m_Name
       value: DoorA
+      objectReference: {fileID: 0}
+    - target: {fileID: 1865245426965013292, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3416847164955091308, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
       propertyPath: _assetId
@@ -256,6 +272,10 @@ PrefabInstance:
     - target: {fileID: 8331062712882997040, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.005
+      objectReference: {fileID: 0}
+    - target: {fileID: 8707201670407585162, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
