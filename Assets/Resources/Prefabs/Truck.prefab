@@ -285,7 +285,7 @@ MonoBehaviour:
   _steeringSpeed: 5
   _wheelGripFactor: 0.1
   _wheelMass: 1.5
-  _maxTiltAngle: 45
+  _maxTiltAngle: 30
   _trainShaftType: 0
   _carMaxSpeed: 20
   _maxEngineTorque: 50
