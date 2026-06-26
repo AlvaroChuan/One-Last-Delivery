@@ -218,6 +218,7 @@ public class TruckController : NetworkBehaviour
 
     void OnUpgradeStatsChanged(TruckStatsStruct oldStats, TruckStatsStruct newStats)
     {
+        Debug.Log($"Upgrade stats changed from {oldStats} to {newStats}");
         _suspensionRestLength -= oldStats.suspensionRestLength;
         _suspensionRestLength += newStats.suspensionRestLength;
 

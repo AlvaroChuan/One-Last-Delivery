@@ -1431,6 +1431,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Menus",
+            "id": "3c5adf8d-9e05-411f-9985-8e0392e6cac1",
+            "actions": [
+                {
+                    "name": "Store",
+                    "type": "Button",
+                    "id": "48be0ea6-d384-429c-8f01-36267707d9a1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "860da073-63de-40b0-a10b-eca5ec651a32",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Store",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

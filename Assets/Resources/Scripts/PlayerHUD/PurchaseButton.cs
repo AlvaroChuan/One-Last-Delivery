@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,13 +9,26 @@ public class PurchaseButton : MonoBehaviour
         TruckUpgrade,
         Item
     }
-    [SerializeField] private Text _name;
-    [SerializeField] private Text _price;
+    [SerializeField] private TextMeshProUGUI _name;
+    [SerializeField] private TextMeshProUGUI _price;
     [SerializeField] private Image _icon;
     private InventoryItemData _itemData;
     private TruckStatsStruct _truckUpgradeStats;
     private float _priceValue;
     private PurchaseType _purchaseType;
+
+    void Start()
+    {
+        Button button = GetComponent<Button>();
+        if (button != null)
+        {
+            button.onClick.AddListener(OnBuyButtonClicked);
+        }
+        else
+        {
+            Debug.LogError("PurchaseButton requires a Button component.");
+        }
+    }
 
     public void OnBuyButtonClicked()
     {
@@ -27,29 +41,38 @@ public class PurchaseButton : MonoBehaviour
 
         if (_purchaseType == PurchaseType.TruckUpgrade)
         {
-            shopSystem.CmdRequestBuyTruckUpgrade(_truckUpgradeStats, _priceValue);
+            shopSystem.CmdRequestBuy(_truckUpgradeStats, _priceValue);
         }
         else if (_purchaseType == PurchaseType.Item)
         {
-            shopSystem.CmdRequestBuyItem(_itemData, _priceValue);
+            shopSystem.CmdRequestBuy(_itemData, _priceValue);
         }
     }
 
-    public void SetTruckUpgrade(TruckUpgrade truckUpgrade)
+    /// <summary>
+    /// Sets the listing for the purchase button based on the provided TruckUpgrade or ItemListing. Updates the UI elements (name, price, icon) and stores the relevant data for purchase.
+    /// </summary>
+    /// <param name="truckUpgrade"></param>
+    public void SetListing(TruckUpgrade truckUpgrade)
     {
         _truckUpgradeStats = truckUpgrade.Stats;
         _price.text = truckUpgrade.Price.ToString("F2");
         _name.text = truckUpgrade.UpgradeName;
-        _icon.sprite = truckUpgrade.UpgradeIcon.sprite;
+        _icon.sprite = truckUpgrade.UpgradeIcon?.sprite;
         _priceValue = truckUpgrade.Price;
         _purchaseType = PurchaseType.TruckUpgrade;
     }
-    public void SetItemListing(ItemListing itemListing)
+
+    /// <summary>
+    /// Sets the listing for the purchase button based on the provided ItemListing. Updates the UI elements (name, price, icon) and stores the relevant data for purchase.
+    /// </summary>
+    /// <param name="itemListing"></param>
+    public void SetListing(ItemListing itemListing)
     {
         _itemData = itemListing.ItemData;
         _price.text = itemListing.Price.ToString("F2");
         _name.text = itemListing.ItemName;
-        _icon.sprite = itemListing.ItemIcon.sprite;
+        _icon.sprite = itemListing.ItemIcon?.sprite;
         _priceValue = itemListing.Price;
         _purchaseType = PurchaseType.Item;
     }

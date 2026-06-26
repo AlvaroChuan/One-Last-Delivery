@@ -20,8 +20,14 @@ public class ItemShopSystem : NetworkBehaviour
         Instance = this;
     }
 
-    [Command]
-    public void CmdRequestBuyTruckUpgrade(TruckStatsStruct upgradeStats, float price, NetworkConnectionToClient conn = null)
+    /// <summary>
+    /// Handles the purchase request from a client. If the player has enough money, it deducts the amount and applies the upgrade or spawns the item. Otherwise, it notifies the client of the failed purchase.
+    /// </summary>
+    /// <param name="upgradeStats"></param>
+    /// <param name="price"></param>
+    /// <param name="conn"></param>
+    [Command(requiresAuthority = false)]
+    public void CmdRequestBuy(TruckStatsStruct upgradeStats, float price, NetworkConnectionToClient conn = null)
     {
         if (MoneyManager.ServerSubtractMoney(price))
         {
@@ -35,8 +41,14 @@ public class ItemShopSystem : NetworkBehaviour
         }
     }
 
-    [Command]
-    public void CmdRequestBuyItem(InventoryItemData itemData, float price, NetworkConnectionToClient conn = null)
+    /// <summary>
+    /// Handles the purchase request from a client for an inventory item. If the player has enough money, it deducts the amount and spawns the item. Otherwise, it notifies the client of the failed purchase.
+    /// </summary>
+    /// <param name="itemData"></param>
+    /// <param name="price"></param>
+    /// <param name="conn"></param>
+    [Command(requiresAuthority = false)]
+    public void CmdRequestBuy(InventoryItemData itemData, float price, NetworkConnectionToClient conn = null)
     {
         if (MoneyManager.ServerSubtractMoney(price))
         {
