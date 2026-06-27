@@ -6,6 +6,7 @@ public class AddressLibrary : ScriptableObject
 {
     public int AddressCount => _addresses.Count;
     [SerializeField] private List<AddressInfo> _addresses = new List<AddressInfo>();
+    Dictionary<AddressInfo, GameObject> _addressToDoorMap = new Dictionary<AddressInfo, GameObject>();
 
     public static string GetPath()
     {
@@ -29,6 +30,22 @@ public class AddressLibrary : ScriptableObject
         if (!_addresses.Contains(newAddress))
         {
             _addresses.Add(newAddress);
+        }
+    }
+    public GameObject GetDoorForAddress(AddressInfo address)
+    {
+        if (_addressToDoorMap.TryGetValue(address, out GameObject door))
+        {
+            return door;
+        }
+        return null; // Return null if no door is associated with the address
+    }
+
+    public void RegisterDoorForAddress(AddressInfo address, GameObject door)
+    {
+        if (!_addressToDoorMap.ContainsKey(address))
+        {
+            _addressToDoorMap[address] = door;
         }
     }
 }

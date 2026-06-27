@@ -3,7 +3,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MoneyManager : PersistentDataManager<MoneyManager, MoneyManager.MoneyStaticState, float>
+public class MoneyManager : NetPersistentDataManager<MoneyManager, MoneyManager.MoneyStaticState, float>
 {
     public class MoneyStaticState : StaticStateBase
     {
@@ -48,6 +48,7 @@ public class MoneyManager : PersistentDataManager<MoneyManager, MoneyManager.Mon
     [Server]
     public static bool ServerSubtractMoney(float amount)
     {
+        DevLogger.Log($"Attempting to subtract {amount} from money. Current money: {StaticDataState.StaticData}");
         if (StaticDataState.StaticData >= amount)
         {
             StaticDataState.StaticData -= amount;

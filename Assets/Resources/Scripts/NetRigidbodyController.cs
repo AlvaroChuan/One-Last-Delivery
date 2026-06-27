@@ -5,6 +5,7 @@ using UnityEngine;
 public class NetRigidbodyController : NetworkBehaviour
 {
     Rigidbody _rigidbody;
+    public bool enableRigidbodyControl = true;
 
     void Awake()
     {
@@ -30,12 +31,16 @@ public class NetRigidbodyController : NetworkBehaviour
     {
         base.OnStartAuthority();
 
+        if (!enableRigidbodyControl) return;
+
         _rigidbody.isKinematic = false; // Enable physics for the owning client
     }
 
     public override void OnStopAuthority()
     {
         base.OnStopAuthority();
+
+        if (!enableRigidbodyControl) return;
 
         _rigidbody.isKinematic = true; // Disable physics when losing authority
     }

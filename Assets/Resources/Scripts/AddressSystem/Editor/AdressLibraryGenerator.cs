@@ -29,6 +29,7 @@ public class AddressLibraryGenerator
         foreach (var addressComponent in validAddresses)
         {
             addressLibrary.AddAddress(addressComponent.Address);
+            addressLibrary.RegisterDoorForAddress(addressComponent.Address, addressComponent.gameObject);
         }
         AssetDatabase.CreateAsset(addressLibrary, assetPath);
         EditorUtility.SetDirty(addressLibrary);

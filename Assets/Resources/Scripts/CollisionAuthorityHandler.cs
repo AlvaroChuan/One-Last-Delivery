@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Mirror;
 using Unity.VisualScripting;
@@ -15,6 +16,8 @@ public class CollisionAuthorityHandler : NetworkBehaviour
     float _timeBetweenRequests = 0.5f; // Minimum time between authority requests to prevent spamming
     bool _canRequestAuthority = true;
     bool _swappingAuthority = false;
+
+    [SyncVar] public bool enableAuthoritySwap = true;
 
     void Awake()
     {
@@ -39,6 +42,8 @@ public class CollisionAuthorityHandler : NetworkBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        if (!enableAuthoritySwap) return;
+
         if(!_canRequestAuthority) return;
 
         if(other.TryGetComponent(out CollisionAuthorityHandler otherHandler))

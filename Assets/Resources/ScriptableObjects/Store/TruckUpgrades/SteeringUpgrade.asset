@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f7ac22f8ec5d0b4189d8acf88823cfb, type: 3}
+  m_Name: SteeringUpgrade
+  m_EditorClassIdentifier: 
+  _stats:
+    suspensionRestLength: 0
+    springStrength: 0
+    springDamping: 0
+    maxSteeringAngle: 9
+    steeringSpeed: 1
+    wheelGripFactor: 0.02
+    wheelMass: 0.3
+    carMaxSpeed: 0
+    maxEngineTorque: 0
+    engineBrakeTorque: 0
+    brakeTorque: 0
+  _price: 50
+  _upgradeName: Steering
+  _upgradeIcon: {fileID: 0}

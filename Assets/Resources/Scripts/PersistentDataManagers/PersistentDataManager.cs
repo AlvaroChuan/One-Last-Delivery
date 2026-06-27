@@ -21,10 +21,9 @@ internal static class PersistentDataSceneRegistry
     }
 }
 
-public abstract class PersistentDataManager<T, TStaticState, TDataType> : NetworkBehaviour
+public abstract class PersistentDataManager<T, TStaticState, TDataType> : MonoBehaviour
     where T : PersistentDataManager<T, TStaticState, TDataType>
     where TStaticState : PersistentDataManager<T, TStaticState, TDataType>.StaticStateBase, new()
-    where TDataType : struct
 {
     public struct DataChangeInfo
     {
@@ -42,13 +41,15 @@ public abstract class PersistentDataManager<T, TStaticState, TDataType> : Networ
             get => _staticData;
             set
             {
+                TDataType oldValue = _staticData;
                 _staticData = value;
-                if (_managerInstance != null && NetworkServer.active)
+                if (_managerInstance != null)
                 {
-                    _managerInstance.ServerUpdateInstanceData();
+                    _managerInstance.onDataChangedEvent?.Invoke(new DataChangeInfo { oldValue = oldValue, newValue = value });
                 }
             }
         }
+        public abstract void Reset();
         public void SetManagerInstance(PersistentDataManager<T, TStaticState, TDataType> manager)
         {
             _managerInstance = manager;
@@ -57,7 +58,6 @@ public abstract class PersistentDataManager<T, TStaticState, TDataType> : Networ
         {
             return _managerInstance;
         }
-        public abstract void Reset();
     }
     [SerializeField] protected string[] _activeSceneNames;
     private static string[] StaticActiveSceneNames;
@@ -68,21 +68,11 @@ public abstract class PersistentDataManager<T, TStaticState, TDataType> : Networ
 
     protected virtual void Awake()
     {
-        StaticDataState.SetManagerInstance(this);
         PersistentDataSceneRegistry.CentralOnSceneLoaded -= OnSceneChange;
         PersistentDataSceneRegistry.CentralOnSceneLoaded += OnSceneChange;
         StaticActiveSceneNames = _activeSceneNames;
+        StaticDataState.SetManagerInstance(this);
     }
-
-    public override void OnStartServer()
-    {
-        base.OnStartServer();
-        ServerInitializeStaticData();
-    }
-
-    protected abstract void ServerInitializeStaticData();
-
-    abstract protected void ServerUpdateInstanceData();
 
     void OnDestroy()
     {

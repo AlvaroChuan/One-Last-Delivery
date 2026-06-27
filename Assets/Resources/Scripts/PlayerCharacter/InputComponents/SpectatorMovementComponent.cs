@@ -102,8 +102,6 @@ public class SpectatorMovementComponent : InputComponent
 
     void FixedUpdate()
     {
-        DevLogger.Log("Movement Action enabled: " + _movementInput.action.enabled);
-
         if(_rigidbody == null || !_canMove || !isLocalPlayer)
             return;
 

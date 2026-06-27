@@ -3,7 +3,7 @@ using Mirror;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PackageSpawner : PersistentDataManager<PackageSpawner, PackageSpawner.PackageSpawnerStaticState, int>
+public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSpawner.PackageSpawnerStaticState, int>
 {
     public class PackageSpawnerStaticState : StaticStateBase
     {
@@ -36,8 +36,25 @@ public class PackageSpawner : PersistentDataManager<PackageSpawner, PackageSpawn
     [SerializeField] Vector3Int _spawnBounds;
     [SerializeField] CoordinateOrder _coordinateOrder = CoordinateOrder.XZY;
     [SerializeField] float _packageSize = 1f;
+    [SerializeField] float _corruptionChance = 0.1f; // 10% chance to corrupt a package
+    [SerializeField] int _maxCorruptedPackages = 2; // Maximum number of packages that can be corrupted at once
     public static List<AddressInfo> UsedAddresses = new List<AddressInfo>();
     [SyncVar] private int _packagesToSpawn;
+    private List<GameObject> _spawnedPackages = new List<GameObject>();
+    public List<GameObject> SpawnedPackages => _spawnedPackages; // Public getter for spawned packages
+    private AddressLibrary _addressLibrary;
+    private List<bool> _corruptedPackages = new List<bool>(); // Track which packages are corrupted
+    public List<bool> CorruptedPackages => _corruptedPackages; // Public getter for corrupted packages
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _addressLibrary = Resources.Load<AddressLibrary>(AddressLibrary.GetResourcePath());
+        if (_addressLibrary == null)
+        {
+            DevLogger.LogError("Address library is missing. Please generate the address library before spawning packages.");
+        }
+    }
 
     protected override void ServerInitializeStaticData()
     {
@@ -64,17 +81,13 @@ public class PackageSpawner : PersistentDataManager<PackageSpawner, PackageSpawn
         NormalizeProbabilities();
         UsedAddresses.Clear();
         Vector3Int currentPosition = Vector3Int.zero;
-        AddressLibrary addressLibrary = Resources.Load<AddressLibrary>(AddressLibrary.GetResourcePath());
-        if (addressLibrary == null || addressLibrary.AddressCount == 0)
+
+        if (_packagesToSpawn > _addressLibrary.AddressCount)
         {
-            DevLogger.LogError("Address library is missing or empty. Please generate the address library before spawning packages.");
-            return;
+            DevLogger.LogWarning("Not enough valid addresses to assign unique addresses to all packages. Only spawning " + _addressLibrary.AddressCount + " packages. Tried to spawn " + _packagesToSpawn + " packages.");
+            _packagesToSpawn = _addressLibrary.AddressCount; // Adjust the number of packages to spawn to match the number of available addresses
         }
-        if (_packagesToSpawn > addressLibrary.AddressCount)
-        {
-            DevLogger.LogWarning("Not enough valid addresses to assign unique addresses to all packages. Only spawning " + addressLibrary.AddressCount + " packages. Tried to spawn " + _packagesToSpawn + " packages.");
-            _packagesToSpawn = addressLibrary.AddressCount; // Adjust the number of packages to spawn to match the number of available addresses
-        }
+
         for (int i = 0; i < _packagesToSpawn; i++)
         {
             GameObject packagePrefab = GetRandomPackagePrefab();
@@ -82,21 +95,19 @@ public class PackageSpawner : PersistentDataManager<PackageSpawner, PackageSpawn
             Vector3 spawnPosition = transform.position + new Vector3(currentPosition.x * _packageSize, currentPosition.y * _packageSize, currentPosition.z * _packageSize);
             GameObject packageInstance = Instantiate(packagePrefab, spawnPosition, Quaternion.identity);
             NetworkServer.Spawn(packageInstance);
+            _spawnedPackages.Add(packageInstance);
+            _corruptedPackages.Add(false); // Initially, no packages are corrupted
 
             NetworkAddressComponent addressComponent = packageInstance.GetComponent<NetworkAddressComponent>();
-            AddressInfo newAddress;
-            int attempts = 0;
-            do
+
+            AddressInfo newAddress = GetUnusedAddress();
+
+            if (newAddress.streetName == null || newAddress.streetName == "") // Check for empty or null street name
             {
-                newAddress = addressLibrary.GetRandomAddress();
-                attempts++;
-                if (attempts > 100)
-                {
-                    DevLogger.LogError("Failed to find a unique address for package after 100 attempts. This likely means there are not enough unique addresses available. Stopping spawn process to prevent infinite loop.");
-                    NetworkServer.Destroy(packageInstance);
-                    return;
-                }
-            } while (UsedAddresses.Contains(newAddress));
+                NetworkServer.Destroy(packageInstance); // Destroy the package instance to avoid having a package without a valid address
+                DevLogger.LogError("Failed to find a valid unused address for package spawning. This likely means there are not enough unique addresses available. Stopping spawning process to prevent infinite loop.");
+                break; // Exit the loop to prevent further spawning
+            }
 
             addressComponent.SetAddress(newAddress);
             UsedAddresses.Add(newAddress);
@@ -230,5 +241,84 @@ public class PackageSpawner : PersistentDataManager<PackageSpawner, PackageSpawn
                 }
                 break;
         }
+    }
+
+    bool TryCorruptPackage()
+    {
+        if (Random.value > _corruptionChance)
+        {
+            return false;
+        }
+
+        if (!EnoughPackagesToCorrupt())
+        {
+            DevLogger.LogWarning("Not enough packages to corrupt. Skipping corruption process.");
+            return false;
+        }
+
+        int corruptedPackage;
+        do
+        {
+            corruptedPackage = Random.Range(0, _spawnedPackages.Count);
+        } while (_spawnedPackages[corruptedPackage] == null || _corruptedPackages[corruptedPackage]);
+
+        _corruptedPackages[corruptedPackage] = true; // Mark this package as corrupted
+
+        NetworkAddressComponent addressComponent = _spawnedPackages[corruptedPackage].GetComponent<NetworkAddressComponent>();
+
+        AddressInfo newAddress = GetUnusedAddress();
+
+        if (newAddress.streetName == null || newAddress.streetName == "") // Check for empty or null street name
+        {
+            DevLogger.LogError("Failed to find a valid unused address for corruption. This likely means there are not enough unique addresses available. Stopping corruption process to prevent infinite loop.");
+            return false; // Exit the method to prevent further corruption
+        }
+
+        addressComponent.SetAddress(newAddress);
+        UsedAddresses.Add(newAddress);
+
+        GameObject door = _addressLibrary.GetDoorForAddress(newAddress);
+        door.GetComponent<DoorController>().CorruptDoor();
+
+        DevLogger.Log($"Package at {_spawnedPackages[corruptedPackage].transform.position} has been corrupted with a new address: {newAddress}");
+        return true;
+    }
+
+    void OnHourlyUpdate(int hour, bool isNightTime)
+    {
+        if (isServer && isNightTime)
+        {
+            TryCorruptPackage();
+        }
+    }
+
+    bool EnoughPackagesToCorrupt()
+    {
+        int invalidPackageCount = 0;
+        for (int i = 0; i < _spawnedPackages.Count; i++)
+        {
+            if (_spawnedPackages[i] == null || _corruptedPackages[i])
+            {
+                invalidPackageCount++;
+            }
+        }
+        return invalidPackageCount < _spawnedPackages.Count - 1; // Ensure at least one package remains uncorrupted
+    }
+
+    AddressInfo GetUnusedAddress()
+    {
+        AddressInfo newAddress;
+        int attempts = 0;
+        do
+        {
+            newAddress = _addressLibrary.GetRandomAddress();
+            attempts++;
+            if (attempts > 100)
+            {
+                DevLogger.LogError("Failed to find a unique address after 100 attempts. This likely means there are not enough unique addresses available. Stopping process to prevent infinite loop.");
+                return new AddressInfo(); // Return an empty address info to avoid null reference exceptions
+            }
+        } while (UsedAddresses.Contains(newAddress));
+        return newAddress;
     }
 }
