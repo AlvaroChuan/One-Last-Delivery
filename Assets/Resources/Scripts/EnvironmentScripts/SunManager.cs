@@ -8,7 +8,7 @@ public class SunManager : MonoBehaviour
 {
     public static Action OnNightfall;
     [Header("Time Settings")]
-    [SerializeField] private float _cycleDurationMinutes = 20f;
+    [SerializeField] private float _cycleDurationMinutes = 10f;
     [SerializeField, Range(0f, 1f)] private float _currentTimeOfDay = 0.05f;
     [SerializeField, Range(0f, 1f)] private float _cycleStopTime = 0.75f;
 

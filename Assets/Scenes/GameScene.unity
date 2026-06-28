@@ -2605,6 +2605,8 @@ GameObject:
   - component: {fileID: 1116074234}
   - component: {fileID: 1116074235}
   - component: {fileID: 1116074236}
+  - component: {fileID: 1116074237}
+  - component: {fileID: 1116074238}
   - component: {fileID: 1116074232}
   m_Layer: 0
   m_Name: GameManager
@@ -2630,6 +2632,7 @@ MonoBehaviour:
   syncInterval: 0
   _activeSceneNames:
   - GameScene
+  - BalanceScene
   _initialQuota: 100
   _quotaIncreasePerDay: 10
 --- !u!114 &1116074230
@@ -2649,6 +2652,7 @@ MonoBehaviour:
   syncInterval: 0
   _activeSceneNames:
   - GameScene
+  - BalanceScene
   _initialMoney: 100
 --- !u!4 &1116074231
 Transform:
@@ -2696,6 +2700,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _activeSceneNames:
   - GameScene
+  - BalanceScene
 --- !u!114 &1116074234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2713,6 +2718,7 @@ MonoBehaviour:
   syncInterval: 0
   _activeSceneNames:
   - GameScene
+  - BalanceScene
 --- !u!114 &1116074235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2746,6 +2752,32 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _itemSpawnPoint: {fileID: 1116074231}
+--- !u!114 &1116074237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1116074228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b5cb5a3723740f469465570c9af7dd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sceneToLoadAfterWorkday: BalanceScene
+  _workdayDurationMinutes: 15
+--- !u!114 &1116074238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1116074228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d4d941d11993d34ca68786ab5f26209, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1383048542
 GameObject:
   m_ObjectHideFlags: 0

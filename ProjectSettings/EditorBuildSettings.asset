@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/VoiceChatLobby.unity
     guid: 216a2d2b9452fac48a7126508e61362d
+  - enabled: 1
+    path: Assets/Scenes/BalanceScene.unity
+    guid: f4edb11549b6f8d42802ddd885bbf84c
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

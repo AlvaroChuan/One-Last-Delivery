@@ -35,7 +35,7 @@ public class DoorInteractionComponent : Interactable
 
         if (packageAddressComponent.MatchesAddress(_localAddressComponent.Address))
         {
-            MoneyManager.ServerAddMoney(package.GetComponent<PackageValueComponent>()?.GetValue() ?? 0);
+            BalanceManager.RegisterTransaction("Package Delivered", package.GetComponent<PackageValueComponent>()?.GetValue() ?? 0f);
             NetworkServer.Destroy(package);
         }
     }
