@@ -5,18 +5,21 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/GameScene.unity
     guid: a9f2b09a7c8f7c34c8372390065a3a4d
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/TrafficTest.unity
     guid: 2c10fb5d012b1cc4897a505320c7d8d9
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/GraphicsMainMenu.unity
     guid: 0e8bd7bfb75f3354dab056ca538f7386
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/VoiceChatLobby.unity
     guid: 216a2d2b9452fac48a7126508e61362d
+  - enabled: 1
+    path: Assets/Scenes/CityTest.unity
+    guid: cb24d83ca2b96e044b226b64211a8125
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
