@@ -36,7 +36,6 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
     [SerializeField] Vector3Int _spawnBounds;
     [SerializeField] CoordinateOrder _coordinateOrder = CoordinateOrder.XZY;
     [SerializeField] float _packageSize = 1f;
-    [SerializeField] float _corruptionChance = 0.1f; // 10% chance to corrupt a package
     [SerializeField] int _maxCorruptedPackages = 2; // Maximum number of packages that can be corrupted at once
     public static List<AddressInfo> UsedAddresses = new List<AddressInfo>();
     [SyncVar] private int _packagesToSpawn;
@@ -243,13 +242,8 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
         }
     }
 
-    bool TryCorruptPackage()
+    public bool TryCorruptPackage()
     {
-        if (Random.value > _corruptionChance)
-        {
-            return false;
-        }
-
         if (!EnoughPackagesToCorrupt())
         {
             DevLogger.LogWarning("Not enough packages to corrupt. Skipping corruption process.");
@@ -282,14 +276,6 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
 
         DevLogger.Log($"Package at {_spawnedPackages[corruptedPackage].transform.position} has been corrupted with a new address: {newAddress}");
         return true;
-    }
-
-    void OnHourlyUpdate(int hour, bool isNightTime)
-    {
-        if (isServer && isNightTime)
-        {
-            TryCorruptPackage();
-        }
     }
 
     bool EnoughPackagesToCorrupt()
