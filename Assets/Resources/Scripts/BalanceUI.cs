@@ -3,25 +3,34 @@ using System.Collections.Generic;
 using Mirror;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class BalanceUI : NetworkBehaviour
 {
+    [SerializeField] private string _mainMenuSceneName = "GraphicsMainMenu";
+    [SerializeField] private int _countdownTime = 5;
+    [SerializeField] private TextMeshProUGUI _countdownText;
     [SerializeField] private string _workdaySceneName = "GameScene";
     [SerializeField] private TransactionUIEntry _transactionPrefab;
     [SerializeField] private Transform _transactionContainer;
-    [SerializeField] private Button _continueButton;
+    [SerializeField] private Button _readyButton;
     [SerializeField] private Button _exitButton;
+    [SerializeField] private TextMeshProUGUI _readyText;
     [SerializeField] private TextMeshProUGUI _totalMoneyText;
     [SerializeField] private TextMeshProUGUI _resultsText;
     [SerializeField] private TextMeshProUGUI _previousMoneyText;
     [SerializeField] private float _animationDuration = 1f;
     [SyncVar(hook = nameof(OnBalanceChanged))] private List<Transaction> _balance;
     [SyncVar(hook = nameof(OnPreviousMoneyChanged))] private float _previousMoney = -1;
+    [SyncVar(hook = nameof(OnReadyChanged))] private int _readyCount = 0;
+    [SyncVar] private int _playerCount = 0;
     WaitForSeconds _waitForAnimationDelay;
     float _totalBalance;
     bool _balanceUpdated = false;
     bool _previousMoneyUpdated = false;
+    bool _ready = false;
+    private Coroutine _countdownCoroutine;
 
     public override void OnStartServer()
     {
@@ -30,6 +39,8 @@ public class BalanceUI : NetworkBehaviour
         string balanceString = string.Join(", ", _balance.ConvertAll(t => $"{t.reason}: {t.amount:F2}"));
         DevLogger.Log($"Balance for the day: {balanceString}");
         DevLogger.Log($"Previous money: {_previousMoney:F2}");
+
+        _playerCount = NetworkServer.connections.Count;
     }
 
     void OnBalanceChanged(List<Transaction> oldBalance, List<Transaction> newBalance)
@@ -99,19 +110,51 @@ public class BalanceUI : NetworkBehaviour
 
         if (MoneyManager.ServerSubtractMoney(-_totalBalance))
         {
-            _continueButton.gameObject.SetActive(true);
+            DevLogger.Log($"Money updated successfully. New balance: {MoneyManager.CurrentMoney:F2}");
+            RpcShowButtons(true);
+            ServerShowButtons(true);
         }
         else
         {
-            _exitButton.gameObject.SetActive(true);
+            RpcShowButtons(false);
         }
+    }
+
+    [ClientRpc]
+    void RpcShowButtons(bool showReady)
+    {
+        if (isServer) return; // Server already handles button visibility
+
+        DevLogger.Log($"RpcShowButtons called with showReady: {showReady}");
+        _readyButton.gameObject.SetActive(showReady);
+        _exitButton.gameObject.SetActive(!showReady);
+        _readyText.gameObject.SetActive(showReady);
+        _readyText.text = $"Players Ready: {_readyCount}/{_playerCount}";
+    }
+
+    [Server]
+    void ServerShowButtons(bool showReady)
+    {
+        DevLogger.Log($"ServerShowButtons called with showReady: {showReady}");
+        _readyButton.gameObject.SetActive(showReady);
+        _exitButton.gameObject.SetActive(!showReady);
+        _readyText.gameObject.SetActive(showReady);
+        _readyText.text = $"Players Ready: {_readyCount}/{_playerCount}";
     }
 
     public void OnContinueButtonClicked()
     {
-        if (isServer)
+        if (_ready)
         {
-            NetworkManager.singleton.ServerChangeScene(_workdaySceneName);
+            CmdNotReady();
+            _ready = false;
+            _readyButton.GetComponentInChildren<TextMeshProUGUI>().text = "Ready";
+        }
+        else
+        {
+            CmdReady();
+            _ready = true;
+            _readyButton.GetComponentInChildren<TextMeshProUGUI>().text = "Cancel";
         }
     }
 
@@ -120,6 +163,58 @@ public class BalanceUI : NetworkBehaviour
         if (isServer)
         {
             NetworkManager.singleton.StopHost();
+            SceneManager.LoadScene(_mainMenuSceneName);
+        }
+        else
+        {
+            NetworkManager.singleton.StopClient();
+            SceneManager.LoadScene(_mainMenuSceneName);
+        }
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdReady()
+    {
+        _readyCount++;
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdNotReady()
+    {
+        _readyCount--;
+    }
+
+    void OnReadyChanged(int oldCount, int newCount)
+    {
+        _readyText.text = $"Players Ready: {newCount}/{_playerCount}";
+
+        if (_countdownCoroutine != null)
+        {
+            StopCoroutine(_countdownCoroutine);
+            _countdownCoroutine = null;
+            _countdownText.gameObject.SetActive(false);
+        }
+
+        if (newCount >= _playerCount)
+        {
+            _countdownCoroutine = StartCoroutine(CountdownAndLoadScene());
+        }
+    }
+
+    IEnumerator CountdownAndLoadScene()
+    {
+        _countdownText.gameObject.SetActive(true);
+        int countdown = _countdownTime;
+        while (countdown > 0)
+        {
+            _countdownText.text = countdown.ToString();
+            yield return new WaitForSeconds(1);
+            countdown--;
+        }
+
+        if (isServer)
+        {
+            NetworkManager.singleton.ServerChangeScene(_workdaySceneName);
         }
     }
 }

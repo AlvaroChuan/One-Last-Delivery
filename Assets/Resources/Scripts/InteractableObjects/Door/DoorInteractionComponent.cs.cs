@@ -35,7 +35,12 @@ public class DoorInteractionComponent : Interactable
 
         if (packageAddressComponent.MatchesAddress(_localAddressComponent.Address))
         {
-            BalanceManager.RegisterTransaction("Package Delivered", package.GetComponent<PackageValueComponent>()?.GetValue() ?? 0f);
+            BalanceManager.RegisterTransaction("Package delivered", package.GetComponent<PackageValueComponent>()?.GetValue() ?? 0f);
+            float penalty = package.GetComponent<PackageValueComponent>()?.GetPenalty() ?? 0f;
+            if (penalty > 0f)
+            {
+                BalanceManager.RegisterTransaction("Package was damaged", -penalty);
+            }
             NetworkServer.Destroy(package);
         }
     }

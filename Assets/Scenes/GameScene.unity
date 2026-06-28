@@ -3844,6 +3844,7 @@ MonoBehaviour:
   syncInterval: 0
   _activeSceneNames:
   - GameScene
+  - BalanceScene
   _initialPackagesToSpawn: 1
   _extraPackagesToSpawnPerDay: 1
   _packageEntries:
