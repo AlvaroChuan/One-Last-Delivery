@@ -130,7 +130,7 @@ public class SunManager : MonoBehaviour
             _currentTimeOfDay += Time.deltaTime / _cycleDurationSeconds;
             if (_currentTimeOfDay > _cycleStopTime)
             {
-                _currentTimeOfDay == _cycleStopTime;
+                _currentTimeOfDay = _cycleStopTime;
             }
         }
         if (_currentTimeOfDay >= 1f)
@@ -214,7 +214,7 @@ public class SunManager : MonoBehaviour
                     _isWaitingExposure = false;
                     _exposureTimer = 0f;
                     _exposureStartValue = _dynamicDayExposure;
-                    _exposureTargetValue = Random.Range(_dayExposureMin, _dayExposureMax);
+                    _exposureTargetValue = UnityEngine.Random.Range(_dayExposureMin, _dayExposureMax);
                 }
             }
             else
