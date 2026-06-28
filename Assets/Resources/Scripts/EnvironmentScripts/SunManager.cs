@@ -121,6 +121,10 @@ public class SunManager : MonoBehaviour
             OnNightfall?.Invoke();
             _sentNightfallEvent = true;
         }
+        else
+        {
+            _sentNightfallEvent = false;
+        }
     }
 
     private void UpdateTime()
