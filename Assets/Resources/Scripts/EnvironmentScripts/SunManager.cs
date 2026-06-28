@@ -114,12 +114,13 @@ public class SunManager : MonoBehaviour
 
     private void CheckNightfall()
     {
-        if(_sentNightfallEvent) return;
-
         if(IsNight())
         {
-            OnNightfall?.Invoke();
-            _sentNightfallEvent = true;
+            if(!_sentNightfallEvent)
+            {
+                OnNightfall?.Invoke();
+                _sentNightfallEvent = true;
+            }
         }
         else
         {
