@@ -132,7 +132,7 @@ public class SunManager : MonoBehaviour
     {
         if (_currentTimeOfDay < _cycleStopTime)
         {
-            _currentTimeOfDay += Time.deltaTime / _cycleDurationSeconds;
+            _currentTimeOfDay += Time.deltaTime / _cycleDurationSeconds * _cycleStopTime;
             if (_currentTimeOfDay > _cycleStopTime)
             {
                 _currentTimeOfDay = _cycleStopTime;
