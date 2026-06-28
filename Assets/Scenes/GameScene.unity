@@ -3801,6 +3801,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1814521908}
   - component: {fileID: 1814521907}
+  - component: {fileID: 1814521909}
   - component: {fileID: 1814521906}
   m_Layer: 0
   m_Name: PackageSpawner
@@ -3851,7 +3852,6 @@ MonoBehaviour:
   _spawnBounds: {x: 5, y: 5, z: 5}
   _coordinateOrder: 1
   _packageSize: 1
-  _corruptionChance: 0.1
   _maxCorruptedPackages: 2
 --- !u!4 &1814521908
 Transform:
@@ -3868,6 +3868,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1814521909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1814521905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82cf8afc7e5762641a545e487296dc71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _corruptionInterval: 180
+  _corruptionChance: 0.5
 --- !u!1001 &1817670615
 PrefabInstance:
   m_ObjectHideFlags: 0
