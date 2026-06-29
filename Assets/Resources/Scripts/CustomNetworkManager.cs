@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Mirror;
+using Telepathy;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,6 +12,7 @@ public class CustomNetworkManager : NetworkManager
     [SerializeField] private string _gameScene = "GameScene";
     [SerializeField] private string _balanceScene = "BalanceScene";
     [SerializeField] private GameObject _balanceScenePlayerPrefab;
+    [SerializeField] private float _allPackagesDeliveredReward = 100f; // Reward for delivering all packages
 
     // Track how many characters we have spawned in the game scene
     private int _numberOfPlayers = 0;
@@ -107,5 +110,11 @@ public class CustomNetworkManager : NetworkManager
             BalanceManager.RegisterTransaction("You all died!", -nines);
             ServerChangeScene(_balanceScene);
         }
+    }
+
+    public void NotifyAllPackagesDelivered()
+    {
+        BalanceManager.RegisterTransaction("All packages delivered!", _allPackagesDeliveredReward);
+        ServerChangeScene(_balanceScene);
     }
 }

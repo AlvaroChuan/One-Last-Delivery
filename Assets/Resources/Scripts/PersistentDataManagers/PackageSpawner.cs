@@ -44,6 +44,7 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
     private AddressLibrary _addressLibrary;
     private List<bool> _corruptedPackages = new List<bool>(); // Track which packages are corrupted
     public List<bool> CorruptedPackages => _corruptedPackages; // Public getter for corrupted packages
+    bool _allPackagesDeliveredNotified = false; // Flag to ensure the notification is sent only once
 
     protected override void Awake()
     {
@@ -52,6 +53,18 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
         if (_addressLibrary == null)
         {
             DevLogger.LogError("Address library is missing. Please generate the address library before spawning packages.");
+        }
+    }
+
+    void Update()
+    {
+        if (!isServer) return; // Only the server should handle package corruption
+
+        if (FreePackageCount() <= 0 && !_allPackagesDeliveredNotified)
+        {
+            _allPackagesDeliveredNotified = true; // Set the flag to true to prevent further notifications
+            DevLogger.Log("Delivered all packages.");
+            (NetworkManager.singleton as CustomNetworkManager).NotifyAllPackagesDelivered();
         }
     }
 
@@ -280,15 +293,26 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
 
     bool EnoughPackagesToCorrupt()
     {
-        int invalidPackageCount = 0;
+        int freePackages = FreePackageCount();
+        if (freePackages <= _maxCorruptedPackages)
+        {
+            DevLogger.LogWarning($"Not enough free packages to corrupt. Free packages: {freePackages}, Max corrupted packages allowed: {_maxCorruptedPackages}");
+            return false;
+        }
+        return true;
+    }
+
+    int FreePackageCount()
+    {
+        int count = 0;
         for (int i = 0; i < _spawnedPackages.Count; i++)
         {
-            if (_spawnedPackages[i] == null || _corruptedPackages[i])
+            if (_spawnedPackages[i] != null && !_corruptedPackages[i])
             {
-                invalidPackageCount++;
+                count++;
             }
         }
-        return invalidPackageCount < _spawnedPackages.Count - 1; // Ensure at least one package remains uncorrupted
+        return count;
     }
 
     AddressInfo GetUnusedAddress()
