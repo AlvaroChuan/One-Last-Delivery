@@ -10,5 +10,6 @@ public class TransactionUIEntry : MonoBehaviour
     {
         _reasonText.text = transaction.reason;
         _amountText.text = transaction.amount >= 0 ? $"+{transaction.amount:F2}" : $"{transaction.amount:F2}";
+        _amountText.color = transaction.amount >= 0 ? Color.green : Color.red;
     }
 }

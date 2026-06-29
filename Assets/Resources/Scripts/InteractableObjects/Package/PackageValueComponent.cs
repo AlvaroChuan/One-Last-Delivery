@@ -22,7 +22,7 @@ public class PackageValueComponent : MonoBehaviour
     public float GetPenalty()
     {
         float healthPercentage = _packageHealthComponent.CurrentHealth / _packageHealthComponent.MaxHealth;
-        float penalty = Mathf.Lerp(_maxValue, _minValue, 1 - healthPercentage);
+        float penalty = Mathf.Lerp(0, _maxValue - _minValue, 1 - healthPercentage);
         return penalty;
     }
 }

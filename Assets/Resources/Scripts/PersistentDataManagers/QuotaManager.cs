@@ -32,6 +32,7 @@ public class QuotaManager : NetPersistentDataManager<QuotaManager, QuotaManager.
         {
             StaticDataState.StaticData += _quotaIncreasePerDay;
         }
+        BalanceManager.RegisterTransaction("Daily quota", -StaticDataState.StaticData);
     }
 
     protected override void ServerUpdateInstanceData()

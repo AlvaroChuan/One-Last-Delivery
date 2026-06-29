@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Mirror;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class BalanceUI : NetworkBehaviour
@@ -108,8 +107,9 @@ public class BalanceUI : NetworkBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        if (MoneyManager.ServerSubtractMoney(-_totalBalance))
+        if (MoneyManager.CurrentMoney >= -_totalBalance)
         {
+            MoneyManager.ServerSubtractMoney(-_totalBalance);
             DevLogger.Log($"Money updated successfully. New balance: {MoneyManager.CurrentMoney:F2}");
             RpcShowButtons(true);
             ServerShowButtons(true);
@@ -117,6 +117,7 @@ public class BalanceUI : NetworkBehaviour
         else
         {
             RpcShowButtons(false);
+            ServerShowButtons(false);
         }
     }
 
@@ -160,16 +161,13 @@ public class BalanceUI : NetworkBehaviour
 
     public void OnExitButtonClicked()
     {
-        if (isServer)
-        {
-            NetworkManager.singleton.StopHost();
-            SceneManager.LoadScene(_mainMenuSceneName);
-        }
-        else
-        {
-            NetworkManager.singleton.StopClient();
-            SceneManager.LoadScene(_mainMenuSceneName);
-        }
+        CmdQuitGame();
+    }
+
+    [Command(requiresAuthority = false)]
+    void CmdQuitGame()
+    {
+        NetworkManager.singleton.StopHost();
     }
 
     [Command(requiresAuthority = false)]
