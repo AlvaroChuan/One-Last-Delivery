@@ -1811,6 +1811,7 @@ MonoBehaviour:
   autoCreatePlayer: 0
   playerSpawnMethod: 0
   spawnPrefabs:
+  - {fileID: 4994518011696477468, guid: c72ae7dc10d53514bb25cfc53429e16b, type: 3}
   - {fileID: 2340398685216393081, guid: 0f6e0e673570db44dbdd63b38e2742ab, type: 3}
   - {fileID: 3626590714432623591, guid: 2ac8c80f493bb6a4ea408a722cfd7ae7, type: 3}
   - {fileID: 1865245426965013292, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
@@ -1856,6 +1857,8 @@ MonoBehaviour:
   - {fileID: 6030126412903574998, guid: c17bd1a966515634d8c868af5345f378, type: 3}
   - {fileID: 6030126412903574998, guid: e7d8b0890447ccf4ba52ba7d4efb6ac4, type: 3}
   _gameScene: GameScene
+  _balanceScene: BalanceScene
+  _balanceScenePlayerPrefab: {fileID: 4994518011696477468, guid: c72ae7dc10d53514bb25cfc53429e16b, type: 3}
 --- !u!114 &465940433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3293,6 +3296,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b5cb5a3723740f469465570c9af7dd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _sceneToLoadAfterWorkday: BalanceScene
   _workdayDurationMinutes: 15
 --- !u!114 &1116074238

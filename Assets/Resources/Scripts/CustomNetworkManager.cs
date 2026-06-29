@@ -8,6 +8,8 @@ public class CustomNetworkManager : NetworkManager
     [Header("Custom Spawner Settings")]
     [SerializeField] private GameObject[] _playerPrefabs;
     [SerializeField] private string _gameScene = "GameScene";
+    [SerializeField] private string _balanceScene = "BalanceScene";
+    [SerializeField] private GameObject _balanceScenePlayerPrefab;
 
     // Track how many characters we have spawned in the game scene
     private int _numberOfPlayers = 0;
@@ -33,6 +35,18 @@ public class CustomNetworkManager : NetworkManager
             if (conn.identity == null)
             {
                 SpawnPlayerForConnection(conn);
+            }
+        }
+        else if (SceneManager.GetActiveScene().name == _balanceScene)
+        {
+            DevLogger.Log("Player " + conn.connectionId + " has identity: " + (conn.identity != null) + " when joining balance scene.");
+            // Only spawn if this connection doesn't already have an assigned character
+            if (conn.identity == null)
+            {
+                // Spawn the balance scene player prefab for this connection
+                GameObject balancePlayerInstance = Instantiate(_balanceScenePlayerPrefab);
+                NetworkServer.AddPlayerForConnection(conn, balancePlayerInstance);
+                DevLogger.Log($"Balance Scene Loaded: Spawned balance scene player for Connection {conn.connectionId}");
             }
         }
     }

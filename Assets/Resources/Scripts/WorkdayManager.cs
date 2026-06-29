@@ -1,7 +1,7 @@
 using UnityEngine;
 using Mirror;
 
-public class WorkdayManager : MonoBehaviour
+public class WorkdayManager : NetworkBehaviour
 {
     [SerializeField] private string _sceneToLoadAfterWorkday = "BalanceScene";
     [SerializeField] private float _workdayDurationMinutes = 15f;
@@ -23,13 +23,19 @@ public class WorkdayManager : MonoBehaviour
         }
     }
 
-#if UNITY_EDITOR
-    [ContextMenu("End Workday (Simulate Workday Progression)")]
-#endif
     void EndWorkday()
     {
         if (!NetworkServer.active) return;
 
         NetworkManager.singleton.ServerChangeScene(_sceneToLoadAfterWorkday);
+    }
+
+#if UNITY_EDITOR
+    [ContextMenu("End Workday (Simulate Workday Progression)")]
+#endif
+    [Command(requiresAuthority = false)]
+    void CmdEndWorkday()
+    {
+        EndWorkday();
     }
 }

@@ -42,6 +42,11 @@ public class BalanceUI : NetworkBehaviour
         _playerCount = NetworkServer.connections.Count;
     }
 
+    public override void OnStartClient()
+    {
+        DevLogger.Log($"BalanceUI started on client. Player count: {_playerCount}, Ready count: {_readyCount}");
+    }
+
     void OnBalanceChanged(List<Transaction> oldBalance, List<Transaction> newBalance)
     {
         _balanceUpdated = true;

@@ -22,6 +22,7 @@ public class BalanceManager : MonoBehaviour
         return Balance;
     }
 }
+[System.Serializable]
 public struct Transaction
 {
     public string reason;
