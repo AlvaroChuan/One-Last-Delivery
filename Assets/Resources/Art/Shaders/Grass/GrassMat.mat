@@ -116,7 +116,7 @@ Material:
     - _TerrainBotIntensity: 0.63
     - _TerrainBotomIntensity: 1
     - _TerrainIntensity: 1.5
-    - _TerrainSize: 2200
+    - _TerrainSize: 3000
     - _TerrainTopIntensity: 3
     - _Test: 0
     - _WindHeight: -0.2
