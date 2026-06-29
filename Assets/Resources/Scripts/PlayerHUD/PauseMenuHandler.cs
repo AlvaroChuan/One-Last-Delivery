@@ -49,4 +49,11 @@ public class PauseMenuHandler : NetworkBehaviour
     {
         NetworkManager.singleton.StopHost();
     }
+
+    void OnDestroy()
+    {
+        Time.timeScale = 1f; // Ensure the game is unpaused when the object is destroyed
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
 }
