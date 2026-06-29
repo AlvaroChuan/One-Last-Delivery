@@ -100,7 +100,7 @@ public class CustomNetworkManager : NetworkManager
             {
                 totalBalance += transaction.amount;
             }
-            float minimumPenalty = totalBalance + MoneyManager.CurrentMoney;
+            float minimumPenalty = totalBalance + MoneyManager.CurrentMoney + 1;
             int digits = Mathf.FloorToInt(Mathf.Log10(Mathf.Abs(minimumPenalty))) + 1;
             digits = Mathf.Max(digits, 4); // Ensure at least 4 digits
             float nines = Mathf.Pow(10, digits) - 1;
