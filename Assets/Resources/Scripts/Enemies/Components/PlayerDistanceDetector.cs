@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
 public class PlayerDistanceDetector : MonoBehaviour
 {
+    public Action onTargetDeathEvent;
+    GameObject _closestPlayer;
 #if UNITY_EDITOR
     private float _cachedDetectionRadius = -1f;
     private void OnDrawGizmos()
@@ -52,6 +55,27 @@ public class PlayerDistanceDetector : MonoBehaviour
             }
         }
 
+        if (closestPlayer != _closestPlayer)
+        {
+            if (_closestPlayer != null && _closestPlayer.TryGetComponent<PlayerDeathComponent>(out var previousDeathComponent))
+            {
+                previousDeathComponent.onPlayerDeathEvent -= OnTargetDeath;
+            }
+
+            _closestPlayer = closestPlayer;
+
+            if (_closestPlayer != null && _closestPlayer.TryGetComponent<PlayerDeathComponent>(out var newDeathComponent))
+            {
+                newDeathComponent.onPlayerDeathEvent += OnTargetDeath;
+            }
+        }
+
         return closestPlayer;
+    }
+
+    void OnTargetDeath()
+    {
+        _closestPlayer = null;
+        onTargetDeathEvent?.Invoke();
     }
 }
