@@ -23,9 +23,11 @@ public class TrafficLightController : MonoBehaviour
 
 
     [Header("Visuals")]
-    public GameObject greenLight;
-    public GameObject yellowLight;
-    public GameObject redLight;
+    public GameObject[] lights;
+    public Material greenMaterial;
+    public Material yellowMaterial;
+    public Material redMaterial;
+    public Material blackMaterial;
 
     public TrafficLightState CurrentState { get; private set; } = TrafficLightState.Red;
 
@@ -37,8 +39,15 @@ public class TrafficLightController : MonoBehaviour
 
     private void UpdateVisuals()
     {
-        if (greenLight) greenLight.SetActive(CurrentState == TrafficLightState.Green);
-        if (yellowLight) yellowLight.SetActive(CurrentState == TrafficLightState.Yellow);
-        if (redLight) redLight.SetActive(CurrentState == TrafficLightState.Red);
+        foreach (GameObject light in lights)
+        {
+            Renderer renderer = light.GetComponent<Renderer>();
+            if(renderer != null)
+            {
+                renderer.materials[1] = CurrentState == TrafficLightState.Green ? greenMaterial : blackMaterial;
+                renderer.materials[2] = CurrentState == TrafficLightState.Red ? redMaterial : blackMaterial;
+                renderer.materials[3] = CurrentState == TrafficLightState.Yellow ? yellowMaterial : blackMaterial;
+            }
+        }
     }
 }
