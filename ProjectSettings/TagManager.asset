@@ -7,6 +7,8 @@ TagManager:
   - Package
   - WreckedCar
   - Truck
+  - SpectatorCamera
+  - PlayerCamera
   layers:
   - Default
   - TransparentFX

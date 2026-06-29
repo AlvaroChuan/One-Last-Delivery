@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Mirror;
 using UnityEngine;
 
@@ -26,7 +27,7 @@ public class PlayerDistanceDetector : MonoBehaviour
         _cachedDetectionRadius = detectionRadius;
 #endif
 
-        List<GameObject> players = (NetworkManager.singleton as CustomNetworkManager)?.SpawnedPlayers;
+        List<GameObject> players = PlayerRegistry.SpawnedPlayers.ToList();
         if (players == null || players.Count == 0)
             return null;
 

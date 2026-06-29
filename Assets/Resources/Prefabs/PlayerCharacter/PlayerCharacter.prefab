@@ -875,12 +875,12 @@ GameObject:
   - component: {fileID: 1102343553806290523}
   - component: {fileID: 5535736397123714588}
   - component: {fileID: 7676228899557061715}
-  - component: {fileID: 7416369358453493259}
   - component: {fileID: 5617894696755801156}
   - component: {fileID: 3225894332428466817}
   - component: {fileID: 4208426610961486441}
   - component: {fileID: 8789046611575733091}
   - component: {fileID: 2615629803135551852}
+  - component: {fileID: 8613117895025778054}
   - component: {fileID: 3735697329787270073}
   - component: {fileID: -1360730053089287495}
   m_Layer: 7
@@ -1008,6 +1008,10 @@ MonoBehaviour:
   _head: {fileID: 3867277735240298516}
   _eyes: {fileID: 3780214070391194180}
   _rotationSpeed: 10
+  _cameraTags:
+  - PlayerCamera
+  - SpectatorCamera
+  _mainCameraTag: PlayerCamera
 --- !u!114 &2171320601092882896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1023,6 +1027,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _bindInputsOnStart: 1
   _maxMoveSpeed: 5
   _acceleration: 20
   _deceleration: 35
@@ -1042,6 +1047,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _bindInputsOnStart: 1
   _sprintSpeedMultiplier: 3
   _sprintStaminaRequirement: 20
   _sprintStaminaCostPerSecond: 10
@@ -1062,6 +1068,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _bindInputsOnStart: 1
   _jumpForce: 5
   _jumpStaminaCost: 10
   _staminaLockoutDuration: 1
@@ -1081,6 +1088,7 @@ MonoBehaviour:
   syncDirection: 1
   syncMode: 0
   syncInterval: 0
+  _bindInputsOnStart: 1
   _inventorySize: 4
   _scrollInput: {fileID: 2411907206095950430, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   _selectInput: {fileID: -7012204015104566737, guid: 052faaac586de48259a63d0c4782560b, type: 3}
@@ -1114,6 +1122,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _bindInputsOnStart: 1
   _useInput: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &7676228899557061715
 MonoBehaviour:
@@ -1130,33 +1139,13 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _bindInputsOnStart: 1
   _interactInput: {fileID: -1688946743975941878, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   _interactionRange: 3
   _interactionSphereRadius: 0.1
   _interactableLayerMask:
     serializedVersion: 2
     m_Bits: 8
---- !u!114 &7416369358453493259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6383342393515265997}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77022ff279b93b84a81f51b407d2730e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _maxMoveSpeed: 5
-  _acceleration: 10
-  _deceleration: 15
-  _movementInput: {fileID: -950825363430247312, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  _ascendInput: {fileID: -3129913102884145057, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  _descendInput: {fileID: -5869905737747982350, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &5617894696755801156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1241,6 +1230,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3813a50745e3f84383a2ed6999f9ef5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8613117895025778054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6383342393515265997}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e2cc771bdb0a3846a88716125982a59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _bindInputsOnStart: 0
+  _spectateActionReference: {fileID: -4406750398017170519, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!95 &3735697329787270073
 Animator:
   serializedVersion: 7
