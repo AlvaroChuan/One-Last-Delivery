@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: TerrainUnlit
-  m_Shader: {fileID: -6465566751694194690, guid: 3c1fcfd1056c0084ca053a49ababb3bc, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: bc48246eacc5f7041ad29e06c0222660, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
@@ -118,7 +118,7 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _AmbientColorFactor: 1
+    - _AmbientColorFactor: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BlendOp: 0
@@ -136,7 +136,9 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _HeightFalloff: 1
     - _HeightMapIntensity: 1
+    - _HeightOffset: 3.7
     - _LightFactor: 0.15
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
@@ -148,7 +150,7 @@ Material:
     - _NormalStrength: 0.01
     - _OcclusionStrength: 1
     - _PaintIntensity: 0.17
-    - _PaintScale: 0.05
+    - _PaintScale: 0.005
     - _Parallax: 0.005
     - _PencilThreshold1: 0
     - _PencilThreshold2: 0.25
@@ -166,7 +168,7 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _TextureTiling: 1
-    - _ThresholdA: 112.5
+    - _ThresholdA: 0
     - _WaveNoise: 10
     - _WaveOffset: 0
     - _WorkflowMode: 1
@@ -176,10 +178,10 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0.27450982, g: 0.38431373, b: 0.2509804, a: 1}
     - _Color: {r: 0.2745098, g: 0.3843137, b: 0.25098038, a: 1}
-    - _ColorA: {r: 0.08503916, g: 0.3679245, b: 0.25037596, a: 0}
-    - _ColorB: {r: 0.08627451, g: 0.36862746, b: 0.2509804, a: 0}
+    - _ColorA: {r: 0.20399998, g: 0.51, b: 0.3275596, a: 0}
+    - _ColorB: {r: 0.6037736, g: 0.48092055, b: 0.23638305, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _PaintColor: {r: 0.27091837, g: 0.5849056, b: 0.23451404, a: 0}
+    - _PaintColor: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor: {r: 0.08627451, g: 0.36862746, b: 0.2509804, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
