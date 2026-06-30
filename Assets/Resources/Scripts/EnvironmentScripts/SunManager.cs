@@ -1,13 +1,16 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using System;
 
 [RequireComponent(typeof(Light))]
 public class SunManager : MonoBehaviour
 {
+    public static Action OnNightfall;
     [Header("Time Settings")]
-    [SerializeField] private float _cycleDurationMinutes = 20f;
+    [SerializeField] private float _cycleDurationMinutes = 10f;
     [SerializeField, Range(0f, 1f)] private float _currentTimeOfDay = 0.05f;
+    [SerializeField, Range(0f, 1f)] private float _cycleStopTime = 0.75f;
 
     [Header("Skybox Shader")]
     [SerializeField] private Material _skyboxMaterial;
@@ -78,7 +81,7 @@ public class SunManager : MonoBehaviour
     private float _exposureStartValue;
     private float _exposureTargetValue;
     private bool _isFirstMorning = true;
-
+    private bool _sentNightfallEvent = false;
     // Variable para guardar la referencia al Vignette
     private Vignette _vignette;
 
@@ -99,6 +102,7 @@ public class SunManager : MonoBehaviour
     private void Update()
     {
         UpdateTime();
+        CheckNightfall();
         UpdateSunRotation();
         UpdateSkyboxColors();
         UpdateStarsIntensity();
@@ -108,9 +112,32 @@ public class SunManager : MonoBehaviour
         UpdateDirectionalLightColor();
     }
 
+    private void CheckNightfall()
+    {
+        if(IsNight())
+        {
+            if(!_sentNightfallEvent)
+            {
+                OnNightfall?.Invoke();
+                _sentNightfallEvent = true;
+            }
+        }
+        else
+        {
+            _sentNightfallEvent = false;
+        }
+    }
+
     private void UpdateTime()
     {
-        _currentTimeOfDay += Time.deltaTime / _cycleDurationSeconds;
+        if (_currentTimeOfDay < _cycleStopTime)
+        {
+            _currentTimeOfDay += Time.deltaTime / _cycleDurationSeconds * _cycleStopTime;
+            if (_currentTimeOfDay > _cycleStopTime)
+            {
+                _currentTimeOfDay = _cycleStopTime;
+            }
+        }
         if (_currentTimeOfDay >= 1f)
         {
             _currentTimeOfDay -= 1f;
@@ -192,7 +219,7 @@ public class SunManager : MonoBehaviour
                     _isWaitingExposure = false;
                     _exposureTimer = 0f;
                     _exposureStartValue = _dynamicDayExposure;
-                    _exposureTargetValue = Random.Range(_dayExposureMin, _dayExposureMax);
+                    _exposureTargetValue = UnityEngine.Random.Range(_dayExposureMin, _dayExposureMax);
                 }
             }
             else

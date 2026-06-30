@@ -23,6 +23,15 @@ public class PlayerChaseBehaviour : MonoBehaviour
         _playerRecheckTimer = Random.Range(0f, _playerRecheckInterval); // Randomize the initial timer to avoid all enemies checking for players at the same time
     }
 
+    void OnEnable()
+    {
+        _playerDistanceDetector.onTargetDeathEvent += OnTargetDeath;
+    }
+    void OnDisable()
+    {
+        _playerDistanceDetector.onTargetDeathEvent -= OnTargetDeath;
+    }
+
     public void UpdateChase(float deltaTime, float detectionRadius)
     {
         _playerRecheckTimer += deltaTime;
@@ -50,5 +59,12 @@ public class PlayerChaseBehaviour : MonoBehaviour
             _currentTarget = null;
             _navMeshMovementComponent.SetTarget(null);
         }
+    }
+
+    void OnTargetDeath()
+    {
+        _isChasing = false;
+        _currentTarget = null;
+        _navMeshMovementComponent.SetTarget(null);
     }
 }

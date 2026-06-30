@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Mirror;
+using Telepathy;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,10 +10,13 @@ public class CustomNetworkManager : NetworkManager
     [Header("Custom Spawner Settings")]
     [SerializeField] private GameObject[] _playerPrefabs;
     [SerializeField] private string _gameScene = "GameScene";
+    [SerializeField] private string _balanceScene = "BalanceScene";
+    [SerializeField] private GameObject _balanceScenePlayerPrefab;
+    [SerializeField] private float _allPackagesDeliveredReward = 100f; // Reward for delivering all packages
 
     // Track how many characters we have spawned in the game scene
     private int _numberOfPlayers = 0;
-    public List<GameObject> SpawnedPlayers { get; private set; } = new List<GameObject>();
+    private int _deadPlayers = 0;
 
     public override void OnStartServer()
     {
@@ -35,6 +40,18 @@ public class CustomNetworkManager : NetworkManager
                 SpawnPlayerForConnection(conn);
             }
         }
+        else if (SceneManager.GetActiveScene().name == _balanceScene)
+        {
+            DevLogger.Log("Player " + conn.connectionId + " has identity: " + (conn.identity != null) + " when joining balance scene.");
+            // Only spawn if this connection doesn't already have an assigned character
+            if (conn.identity == null)
+            {
+                // Spawn the balance scene player prefab for this connection
+                GameObject balancePlayerInstance = Instantiate(_balanceScenePlayerPrefab);
+                NetworkServer.AddPlayerForConnection(conn, balancePlayerInstance);
+                DevLogger.Log($"Balance Scene Loaded: Spawned balance scene player for Connection {conn.connectionId}");
+            }
+        }
     }
 
     private void SpawnPlayerForConnection(NetworkConnectionToClient conn)
@@ -54,7 +71,7 @@ public class CustomNetworkManager : NetworkManager
             // Spawn it on the network and link it to the client
             NetworkServer.AddPlayerForConnection(conn, playerInstance);
 
-            SpawnedPlayers.Add(playerInstance);
+            PlayerRegistry.RegisterPlayer(playerInstance);
             _numberOfPlayers++;
             DevLogger.Log($"Game Scene Loaded: Spawned character index {_numberOfPlayers - 1} for Connection {conn.connectionId}");
         }
@@ -69,6 +86,35 @@ public class CustomNetworkManager : NetworkManager
         base.OnServerChangeScene(newSceneName);
 
         _numberOfPlayers = 0;
-        SpawnedPlayers.Clear();
+        _deadPlayers = 0;
+    }
+
+    public void NotifyPlayerDeath()
+    {
+        _deadPlayers++;
+        DevLogger.Log($"Player died. Total dead players: {_deadPlayers}/{_numberOfPlayers}");
+
+        if (_deadPlayers >= _numberOfPlayers)
+        {
+            DevLogger.Log("All players are dead. Transitioning to balance scene.");
+            List<Transaction> transactions = BalanceManager.GetBalance();
+            float totalBalance = 0f;
+            foreach (var transaction in transactions)
+            {
+                totalBalance += transaction.amount;
+            }
+            float minimumPenalty = totalBalance + MoneyManager.CurrentMoney + 1;
+            int digits = Mathf.FloorToInt(Mathf.Log10(Mathf.Abs(minimumPenalty))) + 1;
+            digits = Mathf.Max(digits, 4); // Ensure at least 4 digits
+            float nines = Mathf.Pow(10, digits) - 1;
+            BalanceManager.RegisterTransaction("You all died!", -nines);
+            ServerChangeScene(_balanceScene);
+        }
+    }
+
+    public void NotifyAllPackagesDelivered()
+    {
+        BalanceManager.RegisterTransaction("All packages delivered!", _allPackagesDeliveredReward);
+        ServerChangeScene(_balanceScene);
     }
 }
