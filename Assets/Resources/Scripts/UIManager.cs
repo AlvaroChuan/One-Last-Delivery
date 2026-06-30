@@ -9,7 +9,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine.InputSystem;
-using Object = UnityEngine.Object;
 
 public class UIManager : MonoBehaviour
 {
