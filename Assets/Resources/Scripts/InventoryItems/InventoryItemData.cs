@@ -7,7 +7,8 @@ public struct InventoryItemData
     [Tooltip("If true, the item is used instantly on use input and doesn't require holding down the use button.")]
     public bool oneShot;
     public bool infiniteDurability;
-    public float durability;
+    public float maxDurability;
+    public float currentDurability;
     [Tooltip("For one-shot items, how much durability to consume on use. For hold items, how much durability to consume per second while using.")]
     public float durabilityCost;
 

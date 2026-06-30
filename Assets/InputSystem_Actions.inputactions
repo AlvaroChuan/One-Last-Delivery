@@ -359,7 +359,7 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "negative",
+                    "name": "Positive",
                     "id": "f963eb93-b237-451a-b635-43880882166e",
                     "path": "<Mouse>/scroll/down",
                     "interactions": "",
@@ -370,7 +370,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "positive",
+                    "name": "Negative",
                     "id": "bd77f912-eb8d-4b20-9f2d-381dc74051b3",
                     "path": "<Mouse>/scroll/up",
                     "interactions": "",

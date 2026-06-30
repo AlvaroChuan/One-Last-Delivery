@@ -58,7 +58,8 @@ MonoBehaviour:
     itemID: 5
     oneShot: 0
     infiniteDurability: 0
-    durability: 1000
+    maxDurability: 100
+    currentDurability: 100
     durabilityCost: 5
 --- !u!114 &8432997841342778207
 MonoBehaviour:
@@ -175,6 +176,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _priority: 0
+  enableAuthoritySwap: 1
 --- !u!114 &8243692011557601798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,6 +192,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  enableRigidbodyControl: 1
 --- !u!1 &5293105283390693252
 GameObject:
   m_ObjectHideFlags: 0
