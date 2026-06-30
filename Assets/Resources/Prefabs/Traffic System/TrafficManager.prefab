@@ -64,12 +64,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ea008637dfc7f342b042854860faf5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _outputGraph: {fileID: 11400000, guid: a649ba78569b6bd41aaf33c543d5c268, type: 2}
+  _outputGraph: {fileID: 11400000, guid: 1b0685675873183488283ceb5109fce6, type: 2}
   _splineContainers:
   - {fileID: 0}
-  _pointsPerEdge: 100
+  _pointsPerEdge: 20
   _connectionThreshold: 1
-  _trafficLightSearchRadius: 5
+  _trafficLightSearchRadius: 15
   _laneDistanceThreshold: 5
 --- !u!114 &8227465571552678054
 MonoBehaviour:
@@ -86,22 +86,21 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _trafficGraph: {fileID: 11400000, guid: a649ba78569b6bd41aaf33c543d5c268, type: 2}
-  _wreckPrefab: {fileID: 7680324919787913421, guid: bb39f32f4cf7d5a478d17ecad2320608, type: 3}
-  _initialVehiclesToSpawn: 20
+  _trafficGraph: {fileID: 11400000, guid: 1b0685675873183488283ceb5109fce6, type: 2}
+  _wreckPrefab: {fileID: 0}
+  _initialVehiclesToSpawn: 200
   _maxVehicleCapacity: 2000
-  _vehicleMaxSpeed: 10
-  _vehicleAcceleration: 2
+  _vehicleMaxSpeed: 20
+  _vehicleAcceleration: 5
   _safeDistance: 5
-  _spawnSpacing: 4
-  _respawnEdgeId: 0
+  _spawnSpacing: 15
   _networkTickRate: 0.1
   _maxBatchSize: 100
   _greenTime: 10
   _yellowTime: 3
   _bothRedTime: 1
-  _spatialGridCellSize: 5
-  _obstacleSnapDistance: 3
+  _spatialGridCellSize: 20
+  _obstacleSnapDistance: 5
   trafficLights: []
 --- !u!114 &5234839964796977862
 MonoBehaviour:
@@ -115,6 +114,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c4f2b350cb6474680bb9df9742964b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _trafficGraph: {fileID: 11400000, guid: a649ba78569b6bd41aaf33c543d5c268, type: 2}
-  _vehiclePrefabs: []
+  _trafficGraph: {fileID: 11400000, guid: 1b0685675873183488283ceb5109fce6, type: 2}
+  _vehiclePrefab: {fileID: 7680324919787913421, guid: 0e29eef36184a6549ba8bf7d5b20b8b9, type: 3}
   trafficLights: []
