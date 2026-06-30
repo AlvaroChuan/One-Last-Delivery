@@ -7,33 +7,25 @@ public class FPSCounter : MonoBehaviour
     public TextMeshProUGUI fpsText;
 
     [Header("Settings")]
-    public float updateInterval = 0.5f; // Cada cuánto tiempo se actualiza el texto
+    public float updateInterval = 0.5f;
 
-    private float timer;
-    private int frameCount;
+    private float _timer;
+    private int _frameCount;
 
     private void Awake()
     {
-        Application.targetFrameRate = 200;
+        Application.targetFrameRate = -1;
     }
     void Update()
     {
-        // Sumamos el tiempo real que ha pasado (independiente del Time.timeScale)
-        timer += Time.unscaledDeltaTime;
-        frameCount++;
-
-        // Actualizamos el texto cuando se cumple el intervalo
-        if (timer >= updateInterval)
+        _timer += Time.unscaledDeltaTime;
+        _frameCount++;
+        if (_timer >= updateInterval)
         {
-            // Calculamos el promedio de FPS en este medio segundo
-            int fps = Mathf.RoundToInt(frameCount / timer);
-
-            // Actualizamos la UI
+            int fps = Mathf.RoundToInt(_frameCount / _timer);
             fpsText.text = fps.ToString() + " FPS";
-
-            // Reiniciamos los contadores para el siguiente bloque
-            timer = 0f;
-            frameCount = 0;
+            _timer = 0f;
+            _frameCount = 0;
         }
     }
 }
