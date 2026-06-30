@@ -2,8 +2,6 @@ using System.Collections;
 using UnityEngine;
 using Mirror;
 using Steamworks;
-using Adrenak.UniVoice.Samples;
-using UnityEngine.SceneManagement;
 
 public class SteamLobbyManager : MonoBehaviour
 {
@@ -23,8 +21,6 @@ public class SteamLobbyManager : MonoBehaviour
     private CSteamID _currentLobbyID;
     private Coroutine _autoRefreshCoroutine;
 
-    public PlayerManager playerManager;
-
     private Coroutine _startGameCoroutine;
 
     private void Start()
@@ -41,30 +37,6 @@ public class SteamLobbyManager : MonoBehaviour
         lobbyChatUpdate = Callback<LobbyChatUpdate_t>.Create(OnLobbyChatUpdate);
         lobbyDataUpdate = Callback<LobbyDataUpdate_t>.Create(OnLobbyDataUpdate);
         if(_lobbyVoiceChat == null) _lobbyVoiceChat = _networkManager.GetComponent<BaseVoiceChat>();
-    }
-
-    private void OnDestroy()
-    {
-        //StopNetworkConnections();
-    }
-
-    private void StopNetworkConnections()
-    {
-        try
-        {
-            if (NetworkServer.active && NetworkClient.isConnected)
-            {
-                NetworkManager.singleton.StopHost();
-            }
-            else if (NetworkClient.isConnected)
-            {
-                NetworkManager.singleton.StopClient();
-            }
-        }
-        catch (System.Exception e)
-        {
-            UnityEngine.Debug.LogError($"Error trying to shutdown Mirror: {e.Message}");
-        }
     }
 
     public void HostLobby(string lobbyName, string password)
@@ -234,7 +206,6 @@ public class SteamLobbyManager : MonoBehaviour
         if (NetworkServer.active)
         {
             SteamMatchmaking.SetLobbyMemberData(_currentLobbyID, "ping", "0");
-            //_uiManager.OnJoinedLobby();
             UpdatePlayerList();
             return;
         }

@@ -54,6 +54,28 @@ public class CustomNetworkManager : NetworkManager
         }
     }
 
+    public override void OnServerDisconnect(NetworkConnectionToClient conn)
+    {
+        base.OnServerDisconnect(conn);
+
+        // Changes the scene for everyone else if a client disconnects
+        if (SceneManager.GetActiveScene().name != "GraphicsMainMenu")
+        {
+            ServerChangeScene("GraphicsMainMenu");
+        }
+    }
+
+    public override void OnClientDisconnect()
+    {
+        base.OnClientDisconnect();
+
+        // Changes the scene locally for a client if they lose connection or if the host leaves
+        if (SceneManager.GetActiveScene().name != "GraphicsMainMenu")
+        {
+            SceneManager.LoadScene("GraphicsMainMenu");
+        }
+    }
+
     private void SpawnPlayerForConnection(NetworkConnectionToClient conn)
     {
         if (_numberOfPlayers < _playerPrefabs.Length)

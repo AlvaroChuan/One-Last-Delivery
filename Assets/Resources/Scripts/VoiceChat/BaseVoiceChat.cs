@@ -44,8 +44,8 @@ public class BaseVoiceChat : MonoBehaviour
     #region Inspector Fields
 
     [Header("Filters")]
-    [Tooltip("Uses RNNoise4Unity if the dependency and scripting define are available.")]
-    [SerializeField] private bool _useRNNoise4UnityIfAvailable = true;
+    /*[Tooltip("Uses RNNoise4Unity if the dependency and scripting define are available.")]
+    [SerializeField] private bool _useRNNoise4UnityIfAvailable = true;*/
 
     [Tooltip("Encodes outgoing audio and decodes incoming audio using Concentus / Opus.")]
     [SerializeField] private bool _useConcentusEncodeAndDecode = true;
@@ -212,10 +212,10 @@ public class BaseVoiceChat : MonoBehaviour
     /// Sets whether push to talk is enabled.
     /// When enabled, local voice is only sent while the push to talk key is held.
     /// </summary>
-    /// <param name="enabled">True to enable push to talk, false to disable it.</param>
-    public void SetPushToTalk(bool enabled)
+    /// <param name="isEnabled">True to enable push to talk, false to disable it.</param>
+    public void SetPushToTalk(bool isEnabled)
     {
-        _pushToTalkEnabled = enabled;
+        _pushToTalkEnabled = isEnabled;
 
         if (_voiceInputControlFilter != null)
         {
@@ -423,34 +423,25 @@ public class BaseVoiceChat : MonoBehaviour
         };
 
         ClientSession.InputFilters.Add(_voiceInputControlFilter);
-        UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Registered VoiceInputControlFilter as an input filter");
-
-#if UNIVOICE_FILTER_RNNOISE4UNITY
-        if (_useRNNoise4UnityIfAvailable)
-        {
-            ClientSession.InputFilters.Add(new RNNoiseFilter());
-            Debug.unityLogger.Log(LogType.Log, TAG, "Registered RNNoiseFilter as an input filter");
-        }
-#endif
+        Debug.unityLogger.Log(LogType.Log, TAG, "Registered VoiceInputControlFilter as an input filter");
 
         if (_useVad)
         {
             ClientSession.InputFilters.Add(new SimpleVadFilter(new SimpleVad()));
-            UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Registered SimpleVadFilter as an input filter");
+            Debug.unityLogger.Log(LogType.Log, TAG, "Registered SimpleVadFilter as an input filter");
         }
 
         if (_useConcentusEncodeAndDecode)
         {
             ClientSession.InputFilters.Add(new ConcentusEncodeFilter());
-            UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Registered ConcentusEncodeFilter as an input filter");
+            Debug.unityLogger.Log(LogType.Log, TAG, "Registered ConcentusEncodeFilter as an input filter");
 
             ClientSession.AddOutputFilter<ConcentusDecodeFilter>(() => new ConcentusDecodeFilter());
-            UnityEngine.Debug.unityLogger.Log(LogType.Log, TAG, "Registered ConcentusDecodeFilter as an output filter");
+            Debug.unityLogger.Log(LogType.Log, TAG, "Registered ConcentusDecodeFilter as an output filter");
         }
 
         return true;
 #else
-        Debug.unityLogger.Log(LogType.Error, TAG, "MirrorClient implementation not found!");
         return false;
 #endif
     }

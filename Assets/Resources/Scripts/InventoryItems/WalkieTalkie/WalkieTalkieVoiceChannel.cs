@@ -11,7 +11,7 @@ public class WalkieTalkieVoiceChannel : MonoBehaviour
     public static WalkieTalkieVoiceChannel Instance {
         get {
             if (_instance == null) {
-                var go = new GameObject("WalkieTalkieVoiceChannel");
+                GameObject go = new GameObject("WalkieTalkieVoiceChannel");
                 _instance = go.AddComponent<WalkieTalkieVoiceChannel>();
             }
             return _instance;
@@ -23,8 +23,8 @@ public class WalkieTalkieVoiceChannel : MonoBehaviour
 
     public bool IsLocalPlayerHoldingWalkieTalkie()
     {
-        PlayerInventoryComponent[] inventories = FindObjectsOfType<PlayerInventoryComponent>();
-        foreach (var inv in inventories)
+        PlayerInventoryComponent[] inventories = FindObjectsByType<PlayerInventoryComponent>(FindObjectsSortMode.None);
+        foreach (PlayerInventoryComponent inv in inventories)
         {
             if (inv.isLocalPlayer)
             {

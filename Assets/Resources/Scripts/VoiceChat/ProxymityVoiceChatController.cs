@@ -40,7 +40,7 @@ public class ProxymityVoiceChatController : BaseVoiceChat
         IAudioOutput peerOutput = ClientSession.PeerOutputs[id];
         StreamedAudioSourceOutput streamedAudioSourceOutput = peerOutput as StreamedAudioSourceOutput;
         AudioSource peerAudioSource = streamedAudioSourceOutput.Stream.UnityAudioSource;
-        
+
         Transform peerAvatar = null;
         float timeout = 10f;
         while (peerAvatar == null && timeout > 0f)
@@ -106,7 +106,7 @@ public class ProxymityVoiceChatController : BaseVoiceChat
 
     private PlayerVoiceDeathComponent GetLocalPlayerDeathComponent()
     {
-        var players = FindObjectsOfType<PlayerVoiceDeathComponent>();
+        PlayerVoiceDeathComponent[] players = FindObjectsByType<PlayerVoiceDeathComponent>(FindObjectsSortMode.None);
         foreach (PlayerVoiceDeathComponent p in players)
         {
             if (p.isLocalPlayer) return p;
@@ -116,7 +116,7 @@ public class ProxymityVoiceChatController : BaseVoiceChat
 
     private Transform GetAvatarForPeerID(int id)
     {
-        PlayerVoiceDeathComponent[] players = FindObjectsOfType<PlayerVoiceDeathComponent>();
+        PlayerVoiceDeathComponent[] players = FindObjectsByType<PlayerVoiceDeathComponent>(FindObjectsSortMode.None);
         foreach (PlayerVoiceDeathComponent p in players)
         {
             if (p.voiceId == id) return p.transform;

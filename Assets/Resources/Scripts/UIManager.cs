@@ -253,28 +253,28 @@ public class UIManager : MonoBehaviour
 
     private void ShowMainMenu()
     {
-        _title.transform.DOMoveX(75, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.1f);
-        _playButton.transform.DOMoveX(75, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.1f);
-        _optionsButton.transform.DOMoveX(75, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.2f);
-        _quitButton.transform.DOMoveX(75, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.3f);
+        _title.transform.DOMoveX(75, 1f).SetEase(Ease.InOutBack);
+        _playButton.transform.DOMoveX(75, 1f).SetEase(Ease.InOutBack).SetDelay(0.15f);
+        _optionsButton.transform.DOMoveX(75, 1f).SetEase(Ease.InOutBack).SetDelay(0.3f);
+        _quitButton.transform.DOMoveX(75, 1f).SetEase(Ease.InOutBack).SetDelay(0.45f);
     }
 
     private void HideMainMenu()
     {
-        _quitButton.transform.DOMoveX(-500, 0.5f).SetEase(Ease.InOutCubic);
-        _optionsButton.transform.DOMoveX(-500, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.1f);
-        _playButton.transform.DOMoveX(-500, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.2f);
-        _title.transform.DOMoveX(-500, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.3f);
+        _title.transform.DOMoveX(-900, 0.5f).SetEase(Ease.InOutCubic);
+        _playButton.transform.DOMoveX(-500, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.1f);
+        _optionsButton.transform.DOMoveX(-500, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.2f);
+        _quitButton.transform.DOMoveX(-500, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.3f);
     }
 
     private void ShowClipboard()
     {
-        _clipboardModel.transform.DOMoveY(0, 0.5f).SetEase(Ease.InOutCubic);
+        _clipboardModel.transform.DOMoveY(0.96f, 0.5f).SetEase(Ease.InOutCubic);
     }
 
     private void HideClipboard()
     {
-        _clipboardModel.transform.DOMoveY(-30, 0.5f).SetEase(Ease.InOutCubic);
+        _clipboardModel.transform.DOMoveY(-0.96f, 0.5f).SetEase(Ease.InOutCubic);
     }
 
     private void AddListeners()

@@ -52,7 +52,7 @@ public class WalkieTalkie : InventoryItem
         if (!ShouldTransmitAudio()) return;
 
         float volume = 1f;
-        BaseVoiceChat voiceChat = FindObjectOfType<BaseVoiceChat>();
+        BaseVoiceChat voiceChat = FindAnyObjectByType<BaseVoiceChat>();
         if (voiceChat != null) {
             volume = voiceChat.MicrophoneVolume;
         }
@@ -82,7 +82,7 @@ public class WalkieTalkie : InventoryItem
 
     private int GetMicrophoneIndex()
     {
-        BaseVoiceChat voiceChat = FindObjectOfType<BaseVoiceChat>();
+        BaseVoiceChat voiceChat = FindAnyObjectByType<BaseVoiceChat>();
         if (voiceChat != null)
         {
             int index = voiceChat.CurrentMicrophoneIndex;
@@ -93,7 +93,7 @@ public class WalkieTalkie : InventoryItem
 
     private bool ShouldTransmitAudio()
     {
-        BaseVoiceChat voiceChat = FindObjectOfType<BaseVoiceChat>();
+        BaseVoiceChat voiceChat = FindAnyObjectByType<BaseVoiceChat>();
         if (voiceChat == null) return true;
 
         if (voiceChat.IsMuted) return false;
