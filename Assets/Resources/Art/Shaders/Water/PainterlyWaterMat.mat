@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WaterMatOverworld
+  m_Name: PainterlyWaterMat
   m_Shader: {fileID: -6465566751694194690, guid: 0d1c910f18298c241ab26bd24363e2cf, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
