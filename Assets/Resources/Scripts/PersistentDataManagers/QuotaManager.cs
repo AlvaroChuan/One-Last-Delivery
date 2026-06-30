@@ -30,9 +30,9 @@ public class QuotaManager : NetPersistentDataManager<QuotaManager, QuotaManager.
         }
         else
         {
-            SubtractQuotaFromMoney();
             StaticDataState.StaticData += _quotaIncreasePerDay;
         }
+        BalanceManager.RegisterTransaction("Daily quota", -StaticDataState.StaticData);
     }
 
     protected override void ServerUpdateInstanceData()
@@ -48,28 +48,4 @@ public class QuotaManager : NetPersistentDataManager<QuotaManager, QuotaManager.
             newValue = newQuota
         });
     }
-
-    void SubtractQuotaFromMoney()
-    {
-        if (!MoneyManager.ServerSubtractMoney(StaticDataState.StaticData))
-        {
-            Defeat();
-        }
-    }
-
-    void Defeat()
-    {
-        DevLogger.Log("Quota reached zero. Triggering defeat.");
-    }
-
-    #if UNITY_EDITOR
-    [ContextMenu("Reload Scene (Simulate Day Progression)")]
-    private void ReloadScene()
-    {
-        if (NetworkServer.active)
-        {
-            NetworkManager.singleton.ServerChangeScene(SceneManager.GetActiveScene().name);
-        }
-    }
-    #endif
 }

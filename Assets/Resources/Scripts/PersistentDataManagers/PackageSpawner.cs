@@ -36,7 +36,6 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
     [SerializeField] Vector3Int _spawnBounds;
     [SerializeField] CoordinateOrder _coordinateOrder = CoordinateOrder.XZY;
     [SerializeField] float _packageSize = 1f;
-    [SerializeField] float _corruptionChance = 0.1f; // 10% chance to corrupt a package
     [SerializeField] int _maxCorruptedPackages = 2; // Maximum number of packages that can be corrupted at once
     public static List<AddressInfo> UsedAddresses = new List<AddressInfo>();
     [SyncVar] private int _packagesToSpawn;
@@ -45,6 +44,7 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
     private AddressLibrary _addressLibrary;
     private List<bool> _corruptedPackages = new List<bool>(); // Track which packages are corrupted
     public List<bool> CorruptedPackages => _corruptedPackages; // Public getter for corrupted packages
+    bool _allPackagesDeliveredNotified = false; // Flag to ensure the notification is sent only once
 
     protected override void Awake()
     {
@@ -53,6 +53,18 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
         if (_addressLibrary == null)
         {
             DevLogger.LogError("Address library is missing. Please generate the address library before spawning packages.");
+        }
+    }
+
+    void Update()
+    {
+        if (!isServer) return; // Only the server should handle package corruption
+
+        if (FreePackageCount() <= 0 && !_allPackagesDeliveredNotified)
+        {
+            _allPackagesDeliveredNotified = true; // Set the flag to true to prevent further notifications
+            DevLogger.Log("Delivered all packages.");
+            (NetworkManager.singleton as CustomNetworkManager).NotifyAllPackagesDelivered();
         }
     }
 
@@ -243,13 +255,8 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
         }
     }
 
-    bool TryCorruptPackage()
+    public bool TryCorruptPackage()
     {
-        if (Random.value > _corruptionChance)
-        {
-            return false;
-        }
-
         if (!EnoughPackagesToCorrupt())
         {
             DevLogger.LogWarning("Not enough packages to corrupt. Skipping corruption process.");
@@ -284,25 +291,28 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
         return true;
     }
 
-    void OnHourlyUpdate(int hour, bool isNightTime)
-    {
-        if (isServer && isNightTime)
-        {
-            TryCorruptPackage();
-        }
-    }
-
     bool EnoughPackagesToCorrupt()
     {
-        int invalidPackageCount = 0;
+        int freePackages = FreePackageCount();
+        if (freePackages <= _maxCorruptedPackages)
+        {
+            DevLogger.LogWarning($"Not enough free packages to corrupt. Free packages: {freePackages}, Max corrupted packages allowed: {_maxCorruptedPackages}");
+            return false;
+        }
+        return true;
+    }
+
+    int FreePackageCount()
+    {
+        int count = 0;
         for (int i = 0; i < _spawnedPackages.Count; i++)
         {
-            if (_spawnedPackages[i] == null || _corruptedPackages[i])
+            if (_spawnedPackages[i] != null && !_corruptedPackages[i])
             {
-                invalidPackageCount++;
+                count++;
             }
         }
-        return invalidPackageCount < _spawnedPackages.Count - 1; // Ensure at least one package remains uncorrupted
+        return count;
     }
 
     AddressInfo GetUnusedAddress()

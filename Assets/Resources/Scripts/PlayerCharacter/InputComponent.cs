@@ -2,15 +2,21 @@ using UnityEngine;
 
 public abstract class InputComponent : PlayerComponent
 {
+    [SerializeField] private bool _bindInputsOnStart = true;
     bool _inputsBound = false;
     public override void OnStartLocalPlayer()
     {
+        DevLogger.Log($"OnStartLocalPlayer called for {GetType().Name} on {gameObject.name}");
         base.OnStartLocalPlayer();
-        BindInputsInternal();
+        if (_bindInputsOnStart)
+        {
+            BindInputsInternal();
+        }
     }
 
     protected virtual void OnEnable()
     {
+        DevLogger.Log($"OnEnable called for {GetType().Name} on {gameObject.name}");
         if (isLocalPlayer && !_inputsBound)
         {
             BindInputsInternal();
@@ -37,6 +43,7 @@ public abstract class InputComponent : PlayerComponent
     {
         if (!isLocalPlayer) return;
 
+        DevLogger.Log($"Unbinding inputs for {GetType().Name} on {gameObject.name}");
         UnbindInputs();
         _inputsBound = false;
     }

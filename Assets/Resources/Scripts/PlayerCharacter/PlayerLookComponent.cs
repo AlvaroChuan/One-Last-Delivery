@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Cinemachine;
+using System.Collections.Generic;
 
 
 public class PlayerLookComponent : PlayerComponent
@@ -8,26 +9,85 @@ public class PlayerLookComponent : PlayerComponent
     [SerializeField] private GameObject _head;
     [SerializeField] private Transform _eyes;
     [SerializeField] private float _rotationSpeed = 10f;
+    [SerializeField] private string[] _cameraTags = new string[] { "PlayerCamera", "SpectatorCamera" };
+    [SerializeField] private string _mainCameraTag = "PlayerCamera";
+    private List<CinemachineCamera> _cinemachineCameras = new List<CinemachineCamera>();
+    CinemachineCamera _currentCamera;
     public GameObject Model => _model;
     public Transform Eyes => _eyes;
     public override void OnStartClient()
     {
         base.OnStartClient();
-        if (isLocalPlayer)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            CinemachineCamera cinemachineCamera = FindAnyObjectByType<CinemachineCamera>();
-
-            if (cinemachineCamera != null)
-            {
-                cinemachineCamera.Follow = _eyes;
-                cinemachineCamera.LookAt = _eyes;
-            }
-        }
-        else
+        if (!isLocalPlayer)
         {
             enabled = false; // Disable this component for non-local players
+            return;
+        }
+
+        CinemachineCamera[] cameras = FindObjectsByType<CinemachineCamera>(FindObjectsSortMode.None);
+        foreach (var camera in cameras)
+        {
+            if (System.Array.Exists(_cameraTags, tag => camera.CompareTag(tag)))
+            {
+                _cinemachineCameras.Add(camera);
+            }
+        }
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        SwitchCamera(_mainCameraTag); // Set the main camera as the active camera
+    }
+
+    void OnEnable()
+    {
+        if (!isLocalPlayer) return;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        if (_currentCamera != null)
+        {
+            _currentCamera.enabled = true;
+            _currentCamera.Follow = _eyes;
+            _currentCamera.LookAt = _eyes;
+        }
+    }
+
+    void OnDisable()
+    {
+        if (!isLocalPlayer) return;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        if (_currentCamera != null)
+        {
+            _currentCamera.enabled = false;
+            _currentCamera.Follow = null;
+            _currentCamera.LookAt = null;
+        }
+    }
+
+    public void SwitchCamera(string cameraTag)
+    {
+        if (!isLocalPlayer) return;
+
+        foreach (var camera in _cinemachineCameras)
+        {
+            if (camera.CompareTag(cameraTag))
+            {
+                _currentCamera = camera;
+                camera.enabled = true;
+                camera.Follow = _eyes;
+                camera.LookAt = _eyes;
+            }
+            else
+            {
+                camera.enabled = false;
+                camera.Follow = null;
+                camera.LookAt = null;
+            }
         }
     }
 

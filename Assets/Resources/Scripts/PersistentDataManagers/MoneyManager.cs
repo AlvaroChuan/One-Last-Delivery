@@ -1,7 +1,5 @@
-using System;
 using Mirror;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class MoneyManager : NetPersistentDataManager<MoneyManager, MoneyManager.MoneyStaticState, float>
 {
@@ -20,7 +18,7 @@ public class MoneyManager : NetPersistentDataManager<MoneyManager, MoneyManager.
 
     [SyncVar(hook = nameof(OnMoneyChanged))] private float _currentMoney;
 
-    public float CurrentMoney => StaticDataState.StaticData;
+    public static float CurrentMoney => StaticDataState.StaticData;
 
     protected override void ServerInitializeStaticData()
     {
