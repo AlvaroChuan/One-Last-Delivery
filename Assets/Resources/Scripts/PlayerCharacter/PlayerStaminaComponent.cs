@@ -7,6 +7,7 @@ public class PlayerStaminaComponent : PlayerComponent
     {
         public float oldStamina;
         public float newStamina;
+        public float maxStamina;
     }
     public Action<StaminaChangeInfo> onStaminaChangedEvent;
     [SerializeField] private float _maxStamina = 100f;
@@ -82,7 +83,8 @@ public class PlayerStaminaComponent : PlayerComponent
         onStaminaChangedEvent?.Invoke(new StaminaChangeInfo
         {
             oldStamina = oldStamina,
-            newStamina = _currentStamina
+            newStamina = _currentStamina,
+            maxStamina = _maxStamina
         });
     }
 
@@ -101,7 +103,8 @@ public class PlayerStaminaComponent : PlayerComponent
         onStaminaChangedEvent?.Invoke(new StaminaChangeInfo
         {
             oldStamina = oldStamina,
-            newStamina = _currentStamina
+            newStamina = _currentStamina,
+            maxStamina = _maxStamina
         });
     }
 

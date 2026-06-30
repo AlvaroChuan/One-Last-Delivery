@@ -9,6 +9,7 @@ public class PlayerHealthComponent : PlayerComponent
     {
         public float oldHealth;
         public float newHealth;
+        public float maxHealth;
     }
 
     public Action<HealthChangeInfo> onHealthChangedEvent;
@@ -60,7 +61,8 @@ public class PlayerHealthComponent : PlayerComponent
         onHealthChangedEvent?.Invoke(new HealthChangeInfo
         {
             oldHealth = oldHealth,
-            newHealth = _currentHealth
+            newHealth = _currentHealth,
+            maxHealth = _maxHealth
         });
 
         if (_currentHealth <= 0)
@@ -84,7 +86,8 @@ public class PlayerHealthComponent : PlayerComponent
         onHealthChangedEvent?.Invoke(new HealthChangeInfo
         {
             oldHealth = oldHealth,
-            newHealth = _currentHealth
+            newHealth = _currentHealth,
+            maxHealth = _maxHealth
         });
     }
 
