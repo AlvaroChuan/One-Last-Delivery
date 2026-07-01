@@ -12,7 +12,229 @@ public class TrafficGraphBaker : MonoBehaviour
     [SerializeField] int _pointsPerEdge = 20;
     [SerializeField] float _connectionThreshold = 1.0f;
     [SerializeField] float _trafficLightSearchRadius = 15.0f;
+    [SerializeField] float _intersectionClusterRadius = 50.0f;
     [SerializeField] float _laneDistanceThreshold = 5.0f;
+    [SerializeField] float _knotMergeRadius = 1.0f;
+
+    private struct EndpointData
+    {
+        public SplineContainer container;
+        public Spline spline;
+        public int knotIndex;
+        public Vector3 worldPos;
+    }
+
+    private struct SplineRef
+    {
+        public SplineContainer container;
+        public Spline spline;
+    }
+
+    [ContextMenu("Merge Spline Knots (Heal Graph)")]
+    public void MergeSplineKnots()
+    {
+#if UNITY_EDITOR
+        if (_splineContainers == null || _splineContainers.Length == 0) return;
+
+        Undo.RecordObjects(_splineContainers, "Merge Spline Knots");
+
+        // 0. Remove Duplicate Splines
+        List<SplineRef> allSplines = new List<SplineRef>();
+        foreach (var container in _splineContainers)
+        {
+            if (container == null) continue;
+            foreach (var spline in container.Splines)
+            {
+                allSplines.Add(new SplineRef { container = container, spline = spline });
+            }
+        }
+
+        HashSet<Spline> splinesToDelete = new HashSet<Spline>();
+
+        for (int i = 0; i < allSplines.Count; i++)
+        {
+            var refA = allSplines[i];
+            if (splinesToDelete.Contains(refA.spline)) continue;
+
+            for (int j = i + 1; j < allSplines.Count; j++)
+            {
+                var refB = allSplines[j];
+                if (splinesToDelete.Contains(refB.spline)) continue;
+
+                if (refA.spline.Count != refB.spline.Count) continue;
+
+                bool isDuplicate = true;
+                for (int k = 0; k < refA.spline.Count; k++)
+                {
+                    Vector3 posA = refA.container.transform.TransformPoint(refA.spline[k].Position);
+                    Vector3 posB = refB.container.transform.TransformPoint(refB.spline[k].Position);
+                    
+                    if (Vector3.Distance(posA, posB) > 0.1f) // 10cm threshold for identical knots
+                    {
+                        isDuplicate = false;
+                        break;
+                    }
+                }
+
+                if (isDuplicate)
+                {
+                    splinesToDelete.Add(refB.spline);
+                }
+            }
+        }
+
+        int duplicatesRemoved = 0;
+        foreach (var container in _splineContainers)
+        {
+            if (container == null) continue;
+            // Iterate backwards to safely remove from the container
+            for (int i = container.Splines.Count - 1; i >= 0; i--)
+            {
+                if (splinesToDelete.Contains(container.Splines[i]))
+                {
+                    container.RemoveSpline(container.Splines[i]);
+                    EditorUtility.SetDirty(container);
+                    duplicatesRemoved++;
+                }
+            }
+        }
+
+        List<EndpointData> endpoints = new List<EndpointData>();
+
+        // 1. Collect all start and end knots
+        foreach (var container in _splineContainers)
+        {
+            if (container == null) continue;
+            foreach (var spline in container.Splines)
+            {
+                if (spline.Count < 2) continue;
+
+                // Start knot
+                var startKnot = spline[0];
+                endpoints.Add(new EndpointData
+                {
+                    container = container,
+                    spline = spline,
+                    knotIndex = 0,
+                    worldPos = container.transform.TransformPoint(startKnot.Position)
+                });
+
+                // End knot
+                var endKnot = spline[spline.Count - 1];
+                endpoints.Add(new EndpointData
+                {
+                    container = container,
+                    spline = spline,
+                    knotIndex = spline.Count - 1,
+                    worldPos = container.transform.TransformPoint(endKnot.Position)
+                });
+            }
+        }
+
+        // 2. Cluster them by distance
+        List<List<EndpointData>> clusters = new List<List<EndpointData>>();
+        bool[] processed = new bool[endpoints.Count];
+
+        for (int i = 0; i < endpoints.Count; i++)
+        {
+            if (processed[i]) continue;
+
+            List<EndpointData> currentCluster = new List<EndpointData>();
+            currentCluster.Add(endpoints[i]);
+            processed[i] = true;
+
+            for (int j = i + 1; j < endpoints.Count; j++)
+            {
+                if (processed[j]) continue;
+
+                if (Vector3.Distance(endpoints[i].worldPos, endpoints[j].worldPos) <= _knotMergeRadius)
+                {
+                    currentCluster.Add(endpoints[j]);
+                    processed[j] = true;
+                }
+            }
+
+            if (currentCluster.Count > 1)
+            {
+                clusters.Add(currentCluster);
+            }
+        }
+
+        // 3. Apply the average position to all knots in the cluster
+        int mergedCount = 0;
+        foreach (var cluster in clusters)
+        {
+            Vector3 averagePos = Vector3.zero;
+            foreach (var ep in cluster)
+            {
+                averagePos += ep.worldPos;
+            }
+            averagePos /= cluster.Count;
+
+            foreach (var ep in cluster)
+            {
+                var knot = ep.spline[ep.knotIndex];
+                knot.Position = (Unity.Mathematics.float3)ep.container.transform.InverseTransformPoint(averagePos);
+                ep.spline.SetKnot(ep.knotIndex, knot);
+                EditorUtility.SetDirty(ep.container);
+            }
+            mergedCount++;
+        }
+
+        AssetDatabase.SaveAssets();
+        Debug.Log($"Heal Graph completed: Removed {duplicatesRemoved} duplicate splines. Merged {mergedCount} knot clusters.");
+#endif
+    }
+
+    [ContextMenu("Fix Traffic Light Pivot Offsets")]
+    public void FixTrafficLightPivots()
+    {
+#if UNITY_EDITOR
+        TrafficLightController[] allLights = FindObjectsByType<TrafficLightController>(FindObjectsSortMode.None);
+        int fixedCount = 0;
+
+        foreach (var light in allLights)
+        {
+            if (light.transform.childCount == 0) continue;
+
+            // Collect all children and their world positions
+            Transform[] children = new Transform[light.transform.childCount];
+            Vector3[] childWorldPos = new Vector3[light.transform.childCount];
+            Quaternion[] childWorldRot = new Quaternion[light.transform.childCount];
+
+            Vector3 centerPos = Vector3.zero;
+            for (int i = 0; i < light.transform.childCount; i++)
+            {
+                children[i] = light.transform.GetChild(i);
+                childWorldPos[i] = children[i].position;
+                childWorldRot[i] = children[i].rotation;
+                centerPos += children[i].position;
+            }
+            centerPos /= light.transform.childCount;
+
+            // If the parent is already at the center, skip
+            if (Vector3.Distance(light.transform.position, centerPos) < 0.1f) continue;
+
+            Undo.RecordObject(light.transform, "Fix Traffic Light Pivots");
+            for (int i = 0; i < children.Length; i++) Undo.RecordObject(children[i], "Fix Traffic Light Pivots");
+
+            // Move parent to the center of its children
+            light.transform.position = centerPos;
+
+            // Restore children to their original world positions
+            for (int i = 0; i < children.Length; i++)
+            {
+                children[i].position = childWorldPos[i];
+                children[i].rotation = childWorldRot[i];
+            }
+
+            EditorUtility.SetDirty(light.gameObject);
+            fixedCount++;
+        }
+
+        Debug.Log($"[TrafficGraphBaker] Fixed pivot offsets for {fixedCount} traffic lights! Parent pivots are now perfectly centered on their visual meshes.");
+#endif
+    }
 
     [ContextMenu("Bake Splines to Graph")]
     public void BakeGraph()
@@ -170,9 +392,11 @@ public class TrafficGraphBaker : MonoBehaviour
             
             if (closestEdge != 0xFFFF)
             {
+                Undo.RecordObject(light, "Assign Traffic Light ID");
                 light.lightId = lightIdCounter++;
                 light.edgeId = closestEdge;
                 EditorUtility.SetDirty(light);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(light);
                 validLights.Add(light);
             }
         }
@@ -190,7 +414,7 @@ public class TrafficGraphBaker : MonoBehaviour
             
             for (int i = unassignedLights.Count - 1; i >= 0; i--)
             {
-                if (Vector3.Distance(centerLight.transform.position, unassignedLights[i].transform.position) <= 25f)
+                if (Vector3.Distance(centerLight.transform.position, unassignedLights[i].transform.position) <= _intersectionClusterRadius)
                 {
                     cluster.Add(unassignedLights[i]);
                     unassignedLights.RemoveAt(i);
@@ -267,4 +491,22 @@ public class TrafficGraphBaker : MonoBehaviour
 
         return false;
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        TrafficLightController[] allLights = FindObjectsByType<TrafficLightController>(FindObjectsSortMode.None);
+        
+        foreach (var light in allLights)
+        {
+            // Draw the Search Radius (How far it looks for a lane)
+            Handles.color = new Color(1f, 1f, 0f, 0.5f); // Semi-transparent yellow
+            Handles.DrawWireDisc(light.transform.position, Vector3.up, _trafficLightSearchRadius);
+
+            // Draw the Cluster Radius (How far it looks for other lights)
+            Handles.color = new Color(0f, 1f, 1f, 0.2f); // Semi-transparent cyan
+            Handles.DrawWireDisc(light.transform.position, Vector3.up, _intersectionClusterRadius);
+        }
+    }
+#endif
 }
