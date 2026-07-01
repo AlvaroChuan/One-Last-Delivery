@@ -93,7 +93,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _AmbientColorFactor: 1
+    - _AmbientColorFactor: 0.266
     - _Blend: 0
     - _CastShadows: 1
     - _CellAngle: 2

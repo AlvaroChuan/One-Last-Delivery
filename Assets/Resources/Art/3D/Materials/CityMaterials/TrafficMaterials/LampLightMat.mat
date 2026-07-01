@@ -24,10 +24,7 @@ Material:
   m_Shader: {fileID: -6465566751694194690, guid: e5ae0720a1b32bc4d9b10393e3dd58ac, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _MAIN_LIGHT_SHADOWS
-  - _MAIN_LIGHT_SHADOWS_CASCADE
-  - _SHADOWS_SOFT
+  m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 1
@@ -110,6 +107,7 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
+    - _AmbientFactorColor: 0.145
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -127,8 +125,8 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _LightFactor: 0
-    - _MAIN_LIGHT_SHADOWS: 1
-    - _MAIN_LIGHT_SHADOWS_CASCADE: 1
+    - _MAIN_LIGHT_SHADOWS: 0
+    - _MAIN_LIGHT_SHADOWS_CASCADE: 0
     - _Metallic: 0
     - _MetallicFactor: 0
     - _Mode: 0
@@ -144,7 +142,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _SHADOWS_SOFT: 1
+    - _SHADOWS_SOFT: 0
     - _Smoothness: 0
     - _SmoothnessFactor: 0
     - _SmoothnessTextureChannel: 0
@@ -164,7 +162,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorA: {r: 0, g: 0, b: 0, a: 0}
-    - _EmissionColor: {r: 2.6082375, g: 0.8841305, b: 0.28296924, a: 0}
+    - _EmissionColor: {r: 2.433572, g: 0.82492304, b: 0.26401967, a: 0}
     - _PaintColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
