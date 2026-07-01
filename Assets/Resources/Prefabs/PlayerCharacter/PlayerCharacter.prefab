@@ -208,7 +208,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6975627077292954180
 Transform:
   m_ObjectHideFlags: 0
@@ -1012,6 +1012,12 @@ MonoBehaviour:
   - PlayerCamera
   - SpectatorCamera
   _mainCameraTag: PlayerCamera
+  _bobFrequency: 12
+  _sprintBobFrequency: 18
+  _bobAmplitude: 0.05
+  _sprintBobAmplitude: 0.1
+  _bobReturnSpeed: 5
+  _bobTransitionSpeed: 10
 --- !u!114 &2171320601092882896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1032,6 +1038,14 @@ MonoBehaviour:
   _acceleration: 20
   _deceleration: 35
   _movementInput: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _maxStepHeight: 0.3
+  _stepSearchDistance: 0.5
+  _stepSmooth: 15
+  _playerRadius: 0.3
+  _centerToFeetOffset: 0.5
+  _stepLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!114 &8358508418812949759
 MonoBehaviour:
   m_ObjectHideFlags: 0
