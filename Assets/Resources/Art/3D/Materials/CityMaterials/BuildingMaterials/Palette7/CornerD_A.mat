@@ -143,7 +143,7 @@ Material:
     - _ThresholdB: 0.25
     - _ThresholdC: 0.5
     - _WaveNoise: 0
-    - _WaveOffset: 10
+    - _WaveOffset: 0
     - _ZTest: 4
     - _ZWrite: 1
     - _ZWriteControl: 0
