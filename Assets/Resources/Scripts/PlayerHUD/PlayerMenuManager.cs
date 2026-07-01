@@ -16,6 +16,7 @@ public class PlayerMenuManager : MonoBehaviour
 
     [SerializeField] private MenuEntry[] _menuEntries;
     CinemachineInputAxisController _playerCamera;
+    GameObject _currentlyOpenMenu;
 
     void Awake()
     {
@@ -35,6 +36,29 @@ public class PlayerMenuManager : MonoBehaviour
         foreach (var entry in _menuEntries)
         {
             entry.toggleAction.action.performed -= OnMenuInput;
+        }
+    }
+
+    void Update()
+    {
+        if (_currentlyOpenMenu != null && _currentlyOpenMenu.activeSelf == false)
+        {
+            GameObject player = NetworkClient.connection.identity.gameObject;
+            if (player != null)
+            {
+                PlayerItemUseComponent itemUseComponent = player.GetComponent<PlayerItemUseComponent>();
+                if (itemUseComponent != null)
+                {
+                    itemUseComponent.enabled = true;
+                }
+                if (_playerCamera != null)
+                {
+                    _playerCamera.enabled = true;
+                }
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+            _currentlyOpenMenu = null;
         }
     }
 
@@ -107,6 +131,15 @@ public class PlayerMenuManager : MonoBehaviour
         if (_playerCamera != null)
         {
             _playerCamera.enabled = !open;
+        }
+
+        if (open)
+        {
+            _currentlyOpenMenu = menuPanel;
+        }
+        else if (_currentlyOpenMenu == menuPanel)
+        {
+            _currentlyOpenMenu = null;
         }
     }
 }
