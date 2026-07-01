@@ -22,6 +22,7 @@ public class PlayerSprintComponent : InputComponent
     private bool _isTryingToSprint = false;
     private bool _isSprinting = false;
     private bool _consumingStamina = false;
+    public bool IsSprinting => _isSprinting;
 
     void Awake()
     {

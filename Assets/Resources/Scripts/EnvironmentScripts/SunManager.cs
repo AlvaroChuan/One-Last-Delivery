@@ -7,10 +7,14 @@ using System;
 public class SunManager : MonoBehaviour
 {
     public static Action OnNightfall;
+
     [Header("Time Settings")]
     [SerializeField] private float _cycleDurationMinutes = 10f;
     [SerializeField, Range(0f, 1f)] private float _currentTimeOfDay = 0.05f;
     [SerializeField, Range(0f, 1f)] private float _cycleStopTime = 0.75f;
+
+    [Header("Optimization")]
+    [SerializeField, Min(1)] private int _framesBetweenSunUpdates = 10;
 
     [Header("Skybox Shader")]
     [SerializeField] private Material _skyboxMaterial;
@@ -24,18 +28,14 @@ public class SunManager : MonoBehaviour
 
     [Header("Environment Transitions (HDRI & Clouds)")]
     [SerializeField] private float _environmentTransitionDurationSeconds = 5f;
-
     [SerializeField] private string _hdriBlendPropertyName = "_HDRIBlend";
     [SerializeField] private float _hdriBlendDay = 0.32f;
     [SerializeField] private float _hdriBlendNight = 0.57f;
-
     [SerializeField] private string _hdriExposurePropertyName = "_HDRIExposure";
     [SerializeField] private float _hdriExposureNight = 2.2f;
-
     [SerializeField] private string _cloudsColorPropertyName = "_CloudsColor";
     [SerializeField] private Color _cloudsColorDay = new Color(0.596f, 0.596f, 0.596f);
     [SerializeField] private Color _cloudsColorNight = new Color(0.380f, 0.427f, 0.482f);
-
     [SerializeField] private string _cloudsPosterizePropertyName = "_CloudsPosterize";
     [SerializeField] private float _cloudsPosterizeNight = 8f;
 
@@ -82,21 +82,20 @@ public class SunManager : MonoBehaviour
     private float _exposureTargetValue;
     private bool _isFirstMorning = true;
     private bool _sentNightfallEvent = false;
-    // Variable para guardar la referencia al Vignette
     private Vignette _vignette;
+    private int _sunUpdateFrameCounter = 0;
 
     private void Start()
     {
         _directionalLight = GetComponent<Light>();
-        Shader.SetGlobalVector("_SunDirection", transform.forward);
         _cycleDurationSeconds = _cycleDurationMinutes * 60f;
         _dynamicDayExposure = _dayExposureDefault;
 
-        // Buscamos el efecto Vignette dentro de tu Volume al darle al Play
         if (_globalVolume != null && _globalVolume.profile.TryGet(out _vignette))
         {
-            // Encontrado y listo para usarse
         }
+
+        UpdateSunRotation(true);
     }
 
     private void Update()
@@ -114,9 +113,9 @@ public class SunManager : MonoBehaviour
 
     private void CheckNightfall()
     {
-        if(IsNight())
+        if (IsNight())
         {
-            if(!_sentNightfallEvent)
+            if (!_sentNightfallEvent)
             {
                 OnNightfall?.Invoke();
                 _sentNightfallEvent = true;
@@ -161,10 +160,22 @@ public class SunManager : MonoBehaviour
         return _currentTimeOfDay >= 0.58f || _currentTimeOfDay < 0.08f;
     }
 
-    private void UpdateSunRotation()
+    private void UpdateSunRotation(bool forceUpdate = false)
     {
+        if (!forceUpdate)
+        {
+            _sunUpdateFrameCounter++;
+            if (_sunUpdateFrameCounter < _framesBetweenSunUpdates)
+            {
+                return;
+            }
+        }
+
+        _sunUpdateFrameCounter = 0;
+
         float sunAngle = (_currentTimeOfDay * 360f) - 30f;
         float lightAngle = sunAngle;
+
         if (IsNight())
         {
             lightAngle -= 180f;
@@ -261,8 +272,6 @@ public class SunManager : MonoBehaviour
             _skyboxMaterial.SetFloat(_hdriBlendPropertyName, currentBlend);
             _skyboxMaterial.SetFloat(_hdriExposurePropertyName, currentExposure);
             _skyboxMaterial.SetColor(_cloudsColorPropertyName, currentClouds);
-
-            // Aquí actualizamos la altura del fog en el material del Skybox (o donde esté definida la variable)
             _skyboxMaterial.SetFloat(_fogHeightPropertyName, Mathf.Lerp(_fogHeightDay, _fogHeightNight, smoothProgress));
         }
 

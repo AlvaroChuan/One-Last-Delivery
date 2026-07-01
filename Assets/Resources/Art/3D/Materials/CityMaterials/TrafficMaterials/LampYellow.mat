@@ -165,7 +165,7 @@ Material:
     - _BaseColor: {r: 0.9063396, g: 0.7753081, b: 0.1780509, a: 1}
     - _Color: {r: 0.9063396, g: 0.7753081, b: 0.17805088, a: 1}
     - _ColorA: {r: 0, g: 0, b: 0, a: 0}
-    - _EmissionColor: {r: 2.9632857, g: 2.4187808, b: 0.38235945, a: 0}
+    - _EmissionColor: {r: 8.47419, g: 6.917054, b: 1.0934439, a: 0}
     - _PaintColor: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

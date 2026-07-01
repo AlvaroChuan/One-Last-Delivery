@@ -13,6 +13,20 @@ public class PlayerLookComponent : PlayerComponent
     [SerializeField] private string _mainCameraTag = "PlayerCamera";
     private List<CinemachineCamera> _cinemachineCameras = new List<CinemachineCamera>();
     CinemachineCamera _currentCamera;
+    private Vector3 _eyesInitialLocalPosition;
+    private float _bobTimer = 0f;
+    private float _currentAmplitude = 0f;
+    private PlayerMovementComponent _movementComponent;
+    private PlayerGroundCheckComponent _groundCheckComponent;
+    private PlayerSprintComponent _sprintComponent;
+
+    [Header("Head Bobbing")]
+    [SerializeField] private float _bobFrequency = 12f;
+    [SerializeField] private float _sprintBobFrequency = 18f;
+    [SerializeField] private float _bobAmplitude = 0.05f;
+    [SerializeField] private float _sprintBobAmplitude = 0.1f;
+    [SerializeField] private float _bobReturnSpeed = 5f;
+    [SerializeField] private float _bobTransitionSpeed = 10f; //Transition between walking-running
     public GameObject Model => _model;
     public Transform Eyes => _eyes;
     public override void OnStartClient()
@@ -23,7 +37,11 @@ public class PlayerLookComponent : PlayerComponent
             enabled = false; // Disable this component for non-local players
             return;
         }
-
+        _eyesInitialLocalPosition = _eyes.localPosition;
+        _currentAmplitude = _bobAmplitude;
+        _movementComponent = GetComponent<PlayerMovementComponent>();
+        _groundCheckComponent = GetComponent<PlayerGroundCheckComponent>();
+        _sprintComponent = GetComponent<PlayerSprintComponent>();
         CinemachineCamera[] cameras = FindObjectsByType<CinemachineCamera>(FindObjectsSortMode.None);
         foreach (var camera in cameras)
         {
@@ -96,6 +114,7 @@ public class PlayerLookComponent : PlayerComponent
         if (!isLocalPlayer) return; // Only allow local player to process look input
 
         HandleRotation();
+        HandleHeadBob();
     }
 
     private void HandleRotation()
@@ -110,6 +129,28 @@ public class PlayerLookComponent : PlayerComponent
         }
         Quaternion headTargetRotation = Quaternion.LookRotation(forward);
         _head.transform.rotation = Quaternion.Slerp(_head.transform.rotation, headTargetRotation, _rotationSpeed * Time.fixedDeltaTime);
+    }
+
+    private void HandleHeadBob()
+    {
+        if (_movementComponent == null || _groundCheckComponent == null) return;
+        bool isSprinting = _sprintComponent != null && _sprintComponent.IsSprinting;
+        if (_movementComponent.IsMoving && _groundCheckComponent.IsGrounded())
+        {
+            float targetFrequency = isSprinting ? _sprintBobFrequency : _bobFrequency;
+            float targetAmplitude = isSprinting ? _sprintBobAmplitude : _bobAmplitude;
+            _currentAmplitude = Mathf.Lerp(_currentAmplitude, targetAmplitude, Time.fixedDeltaTime * _bobTransitionSpeed);
+            _bobTimer += Time.fixedDeltaTime * targetFrequency;
+            float verticalOffset = Mathf.Sin(_bobTimer) * _currentAmplitude;
+            Vector3 targetPosition = _eyesInitialLocalPosition + new Vector3(0f, verticalOffset, 0f);
+            _eyes.localPosition = Vector3.Lerp(_eyes.localPosition, targetPosition, Time.fixedDeltaTime * 15f);
+        }
+        else
+        {
+            _bobTimer = 0f;
+            _currentAmplitude = _bobAmplitude;
+            _eyes.localPosition = Vector3.Lerp(_eyes.localPosition, _eyesInitialLocalPosition, Time.fixedDeltaTime * _bobReturnSpeed);
+        }
     }
 }
 
