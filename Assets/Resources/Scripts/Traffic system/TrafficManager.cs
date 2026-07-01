@@ -266,6 +266,18 @@ public class TrafficManager : NetworkBehaviour
 
     private void InitializeGraph()
     {
+        // Dynamically find and sort lights to prevent Unity scene-reference loss
+        var allSceneLights = FindObjectsByType<TrafficLightController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        List<TrafficLightController> validLights = new List<TrafficLightController>();
+        foreach (var l in allSceneLights) 
+        {
+            if (l.lightId != -1) validLights.Add(l);
+        }
+        validLights.Sort((a, b) => a.lightId.CompareTo(b.lightId));
+        trafficLights = validLights.ToArray();
+        
+        Debug.Log($"[TrafficManager] Found {allSceneLights.Length} lights in scene. {validLights.Count} have valid lightIds.");
+
         _edgeStates = new NativeArray<NativeEdge>(_trafficGraph.edges.Count, Allocator.Persistent);
 
         List<ushort> allConnections = new List<ushort>();

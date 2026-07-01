@@ -44,12 +44,13 @@ public class TrafficLightController : MonoBehaviour
             MeshRenderer renderer = light.GetComponent<MeshRenderer>();
             if(renderer != null)
             {
-                Material[] mats = renderer.materials;                
-                mats[1] = CurrentState == TrafficLightState.Green ? greenMaterial : blackMaterial;
-                mats[2] = CurrentState == TrafficLightState.Red ? redMaterial : blackMaterial;
+                Material[] mats = renderer.sharedMaterials;
+                
+                mats[1] = CurrentState == TrafficLightState.Red ? redMaterial : blackMaterial;
+                mats[2] = CurrentState == TrafficLightState.Green ? greenMaterial : blackMaterial;
                 mats[3] = CurrentState == TrafficLightState.Yellow ? yellowMaterial : blackMaterial;
                 
-                renderer.materials = mats;
+                renderer.sharedMaterials = mats;
             }
         }
     }
