@@ -31,13 +31,21 @@ public class BalanceUI : NetworkBehaviour
     bool _ready = false;
     private Coroutine _countdownCoroutine;
 
+    void OnEnable()
+    {
+        _readyButton.onClick.AddListener(OnContinueButtonClicked);
+        _exitButton.onClick.AddListener(OnExitButtonClicked);
+    }
+    void OnDisable()
+    {
+        _readyButton.onClick.RemoveListener(OnContinueButtonClicked);
+        _exitButton.onClick.RemoveListener(OnExitButtonClicked);
+    }
+
     public override void OnStartServer()
     {
         _balance = BalanceManager.GetBalance();
         _previousMoney = MoneyManager.CurrentMoney;
-        string balanceString = string.Join(", ", _balance.ConvertAll(t => $"{t.reason}: {t.amount:F2}"));
-        DevLogger.Log($"Balance for the day: {balanceString}");
-        DevLogger.Log($"Previous money: {_previousMoney:F2}");
 
         _playerCount = NetworkServer.connections.Count;
     }
@@ -61,7 +69,7 @@ public class BalanceUI : NetworkBehaviour
     {
        DevLogger.Log($"Previous money updated. Old money: {oldMoney:F2}, New money: {newMoney:F2}");
         _previousMoneyUpdated = true;
-        _previousMoneyText.text = newMoney.ToString("F2");
+        _previousMoneyText.text = $"[{newMoney:F2}]";
         if (_balanceUpdated)
         {
             StartCoroutine(UIAnimation());
@@ -78,8 +86,8 @@ public class BalanceUI : NetworkBehaviour
 
         float totalMoney = _previousMoney;
 
-        _totalMoneyText.text = totalMoney.ToString("F2");
-        _totalMoneyText.color = totalMoney >= 0 ? Color.green : Color.red;
+        _totalMoneyText.text = $"[{totalMoney:F2}]";
+        _totalMoneyText.color = totalMoney >= 0 ? Color.black : Color.red;
 
         yield return _waitForAnimationDelay;
 
@@ -91,15 +99,15 @@ public class BalanceUI : NetworkBehaviour
 
             totalMoney = _previousMoney + _totalBalance;
 
-            _totalMoneyText.text = totalMoney.ToString("F2");
-            _totalMoneyText.color = totalMoney >= 0 ? Color.green : Color.red;
+            _totalMoneyText.text = $"[{totalMoney:F2}]";
+            _totalMoneyText.color = totalMoney >= 0 ? Color.black : Color.red;
 
             yield return _waitForAnimationDelay; // Wait for the next frame to allow UI to update
         }
 
         _resultsText.gameObject.SetActive(true);
-        _resultsText.text = totalMoney >= 0 ? "Good job today" : "You're fired";
-        _resultsText.color = totalMoney >= 0 ? Color.green : Color.red;
+        _resultsText.text = totalMoney >= 0 ? "" : "[You're fired]";
+        _resultsText.color = totalMoney >= 0 ? Color.black : Color.red;
 
         if (isServer)
         {
@@ -135,7 +143,7 @@ public class BalanceUI : NetworkBehaviour
         _readyButton.gameObject.SetActive(showReady);
         _exitButton.gameObject.SetActive(!showReady);
         _readyText.gameObject.SetActive(showReady);
-        _readyText.text = $"Players Ready: {_readyCount}/{_playerCount}";
+        _readyText.text = $"[{_readyCount}/{_playerCount}]";
     }
 
     [Server]
@@ -145,7 +153,7 @@ public class BalanceUI : NetworkBehaviour
         _readyButton.gameObject.SetActive(showReady);
         _exitButton.gameObject.SetActive(!showReady);
         _readyText.gameObject.SetActive(showReady);
-        _readyText.text = $"Players Ready: {_readyCount}/{_playerCount}";
+        _readyText.text = $"[{_readyCount}/{_playerCount}]";
     }
 
     public void OnContinueButtonClicked()
@@ -154,13 +162,13 @@ public class BalanceUI : NetworkBehaviour
         {
             CmdNotReady();
             _ready = false;
-            _readyButton.GetComponentInChildren<TextMeshProUGUI>().text = "Ready";
+            _readyButton.GetComponentInChildren<TextMeshProUGUI>().text = "[Ready]";
         }
         else
         {
             CmdReady();
             _ready = true;
-            _readyButton.GetComponentInChildren<TextMeshProUGUI>().text = "Cancel";
+            _readyButton.GetComponentInChildren<TextMeshProUGUI>().text = "[Cancel]";
         }
     }
 
@@ -189,7 +197,7 @@ public class BalanceUI : NetworkBehaviour
 
     void OnReadyChanged(int oldCount, int newCount)
     {
-        _readyText.text = $"Players Ready: {newCount}/{_playerCount}";
+        _readyText.text = $"[{newCount}/{_playerCount}]";
 
         if (_countdownCoroutine != null)
         {
@@ -210,7 +218,7 @@ public class BalanceUI : NetworkBehaviour
         int countdown = _countdownTime;
         while (countdown > 0)
         {
-            _countdownText.text = countdown.ToString();
+            _countdownText.text = $"[{countdown}]";
             yield return new WaitForSeconds(1);
             countdown--;
         }
