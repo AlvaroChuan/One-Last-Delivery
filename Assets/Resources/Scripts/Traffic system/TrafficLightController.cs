@@ -41,12 +41,15 @@ public class TrafficLightController : MonoBehaviour
     {
         foreach (GameObject light in lights)
         {
-            Renderer renderer = light.GetComponent<Renderer>();
+            MeshRenderer renderer = light.GetComponent<MeshRenderer>();
             if(renderer != null)
             {
-                renderer.materials[1] = CurrentState == TrafficLightState.Green ? greenMaterial : blackMaterial;
-                renderer.materials[2] = CurrentState == TrafficLightState.Red ? redMaterial : blackMaterial;
-                renderer.materials[3] = CurrentState == TrafficLightState.Yellow ? yellowMaterial : blackMaterial;
+                Material[] mats = renderer.materials;                
+                mats[1] = CurrentState == TrafficLightState.Green ? greenMaterial : blackMaterial;
+                mats[2] = CurrentState == TrafficLightState.Red ? redMaterial : blackMaterial;
+                mats[3] = CurrentState == TrafficLightState.Yellow ? yellowMaterial : blackMaterial;
+                
+                renderer.materials = mats;
             }
         }
     }
