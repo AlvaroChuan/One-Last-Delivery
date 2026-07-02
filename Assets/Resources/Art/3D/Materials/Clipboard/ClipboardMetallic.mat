@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Plastic
+  m_Name: ClipboardMetallic
   m_Shader: {fileID: -6465566751694194690, guid: 3c1fcfd1056c0084ca053a49ababb3bc, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -152,7 +152,7 @@ Material:
     - _ColorA: {r: 0.29411766, g: 0.28627452, b: 0.2784314, a: 0}
     - _ColorB: {r: 0.2924528, g: 0.2871319, b: 0.28003737, a: 0}
     - _ColorC: {r: 0, g: 0, b: 0, a: 0}
-    - _PaintColor: {r: 0.8207547, g: 0.6617335, b: 0.615566, a: 0}
+    - _PaintColor: {r: 0.3584906, g: 0.3584906, b: 0.3584906, a: 0}
     - _ShadowColor: {r: 0.86666673, g: 0.7843138, b: 0.6745098, a: 0}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
