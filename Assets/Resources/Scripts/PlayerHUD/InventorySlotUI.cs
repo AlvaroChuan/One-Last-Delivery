@@ -20,12 +20,13 @@ public class InventorySlotUI : MonoBehaviour
         if (itemData.itemID == ItemID.None)
         {
             _itemIcon.sprite = null;
-            _itemIcon.color = new Color(1, 1, 1, 0); // Make the icon transparent if no item
+            _itemIcon.enabled = false; // Disable the icon if there's no item
+            _durabilityBar.fillAmount = 0f; // Empty bar for no item
         }
         else
         {
             _itemIcon.sprite = icon;
-            _itemIcon.color = new Color(1, 1, 1, 1); // Make the icon visible if there's an item
+            _itemIcon.enabled = true; // Enable the icon if there's an item
             if (itemData.infiniteDurability)
             {
                 _durabilityBar.fillAmount = 1f; // Full bar for infinite durability
