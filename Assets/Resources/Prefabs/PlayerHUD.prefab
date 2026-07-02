@@ -492,10 +492,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _startHour: 18
-  _endHour: 2
+  _totalHours: 8
   _timeText: {fileID: 6853160553017442970}
   _dayNightImage: {fileID: 2068284870499690914}
-  _nightSprite: {fileID: 21300000, guid: 45f8ff1d374f69146b5ae02c53b2869c, type: 3}
+  _nightSprite: {fileID: 21300000, guid: 478b6987ecf2cb647806db308029db2f, type: 3}
 --- !u!1 &5801259206248550538
 GameObject:
   m_ObjectHideFlags: 0
@@ -754,10 +754,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 233041724054397092}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -35.213013, y: -17.524952}
-  m_SizeDelta: {x: 122.9249, y: 69.35}
+  m_AnchorMin: {x: 0.048, y: 0.09246398}
+  m_AnchorMax: {x: 0.6213493, y: 0.6331547}
+  m_AnchoredPosition: {x: 0.2869873, y: -0.02495575}
+  m_SizeDelta: {x: -0.07510376, y: 0.34999847}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6065257614139719409
 CanvasRenderer:
@@ -890,10 +890,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 233041724054397092}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 62, y: -18.6}
-  m_SizeDelta: {x: 71.5, y: 71.5}
+  m_AnchorMin: {x: 0.6213493, y: 0.07684535}
+  m_AnchorMax: {x: 0.9566508, y: 0.6331547}
+  m_AnchoredPosition: {x: 0, y: -0.099998474}
+  m_SizeDelta: {x: -0.5, y: 0.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5294449833086730346
 CanvasRenderer:
@@ -923,7 +923,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 60f51d58c101bd648b47e54c30bc32d8, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
