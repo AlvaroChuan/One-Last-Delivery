@@ -14,7 +14,6 @@ public class PlayerManager : NetworkBehaviour
         string steamName = SteamFriends.GetPersonaName();
 
         SteamLobbyManager lobbyManager = FindAnyObjectByType<SteamLobbyManager>();
-        lobbyManager.playerManager = this;
 
         CmdSetPlayerName(steamName);
     }
