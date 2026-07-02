@@ -8,6 +8,8 @@ public class WorkdayManager : NetworkBehaviour
     private float _workdayDurationSeconds;
     private float _workdayTimer;
 
+    public float WorkdayProgress => Mathf.Clamp01(_workdayTimer / _workdayDurationSeconds);
+
     void Awake()
     {
         _workdayDurationSeconds = _workdayDurationMinutes * 60f;

@@ -2,9 +2,10 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using System;
+using Mirror;
 
 [RequireComponent(typeof(Light))]
-public class SunManager : MonoBehaviour
+public class SunManager : NetworkBehaviour
 {
     public static Action OnNightfall;
 
