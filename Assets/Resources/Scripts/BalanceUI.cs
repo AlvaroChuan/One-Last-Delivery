@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using Mirror;
 using TMPro;
 using UnityEngine;
@@ -7,6 +8,11 @@ using UnityEngine.UI;
 
 public class BalanceUI : NetworkBehaviour
 {
+    [SerializeField] private float _transitionDuration = 0.2f;
+    [SerializeField] private GameObject _clipboard;
+    [SerializeField] private Transform _clipboardStartPosition;
+    [SerializeField] private Transform _clipboardEndPosition;
+    [SerializeField] private Ease _clipboardEase = Ease.InOutSine;
     [SerializeField] private string _mainMenuSceneName = "GraphicsMainMenu";
     [SerializeField] private int _countdownTime = 5;
     [SerializeField] private TextMeshProUGUI _countdownText;
@@ -50,11 +56,6 @@ public class BalanceUI : NetworkBehaviour
         _playerCount = NetworkServer.connections.Count;
     }
 
-    public override void OnStartClient()
-    {
-        DevLogger.Log($"BalanceUI started on client. Player count: {_playerCount}, Ready count: {_readyCount}");
-    }
-
     void OnBalanceChanged(List<Transaction> oldBalance, List<Transaction> newBalance)
     {
         _balanceUpdated = true;
@@ -88,6 +89,10 @@ public class BalanceUI : NetworkBehaviour
 
         _totalMoneyText.text = $"[{totalMoney:F2}]";
         _totalMoneyText.color = totalMoney >= 0 ? Color.black : Color.red;
+
+        _clipboard.transform.DOMove(_clipboardEndPosition.position, _transitionDuration).SetEase(_clipboardEase);
+
+        yield return new WaitForSeconds(_transitionDuration);
 
         yield return _waitForAnimationDelay;
 
@@ -222,6 +227,10 @@ public class BalanceUI : NetworkBehaviour
             yield return new WaitForSeconds(1);
             countdown--;
         }
+
+        _clipboard.transform.DOMove(_clipboardStartPosition.position, _transitionDuration).SetEase(_clipboardEase);
+
+        yield return new WaitForSeconds(_transitionDuration);
 
         if (isServer)
         {
