@@ -273,7 +273,7 @@ MonoBehaviour:
   - {fileID: 6030126412903574998, guid: e7d8b0890447ccf4ba52ba7d4efb6ac4, type: 3}
   _gameScene: GameScene
   _balanceScene: BalanceScene
-  _balanceScenePlayerPrefab: {fileID: 0}
+  _balanceScenePlayerPrefab: {fileID: 4994518011696477468, guid: c72ae7dc10d53514bb25cfc53429e16b, type: 3}
   _allPackagesDeliveredReward: 100
 --- !u!114 &81846156
 MonoBehaviour:
@@ -1143,6 +1143,7 @@ MonoBehaviour:
   _cycleDurationMinutes: 2
   _currentTimeOfDay: 0.512
   _cycleStopTime: 0.75
+  _framesBetweenSunUpdates: 10
   _skyboxMaterial: {fileID: 2100000, guid: 0942b99fd2c3ad3439618b15833f7f15, type: 2}
   _skyColorPropertyName: _SkyColor
   _horizonColorPropertyName: _HorizonColor
