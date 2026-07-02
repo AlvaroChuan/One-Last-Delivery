@@ -41,7 +41,6 @@ public class PlayerInventoryManager : PersistentDataManager<PlayerInventoryManag
     {
         if(index < 0)
         {
-            Debug.LogWarning($"Attempted to get inventory slot {index} which is out of bounds.");
             return new InventoryItemData { itemID = ItemID.None };
         }
         if(StaticDataState.StaticData.items == null || index >= StaticDataState.StaticData.items.Count)

@@ -16,8 +16,9 @@ MonoBehaviour:
     itemID: 3
     oneShot: 0
     infiniteDurability: 0
-    durability: 100
-    durabilityCost: 5
+    maxDurability: 120
+    currentDurability: 120
+    durabilityCost: 1
   _price: 20
-  _itemName: Bat
+  _itemName: Torch
   _itemIcon: {fileID: 0}

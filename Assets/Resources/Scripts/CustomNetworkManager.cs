@@ -13,6 +13,7 @@ public class CustomNetworkManager : NetworkManager
     [SerializeField] private string _balanceScene = "BalanceScene";
     [SerializeField] private GameObject _balanceScenePlayerPrefab;
     [SerializeField] private float _allPackagesDeliveredReward = 100f; // Reward for delivering all packages
+    private List<NetworkConnectionToClient> _playerIndices = new List<NetworkConnectionToClient>();
 
     // Track how many characters we have spawned in the game scene
     private int _numberOfPlayers = 0;
@@ -78,9 +79,14 @@ public class CustomNetworkManager : NetworkManager
 
     private void SpawnPlayerForConnection(NetworkConnectionToClient conn)
     {
-        if (_numberOfPlayers < _playerPrefabs.Length)
+        int playerIndex = _numberOfPlayers; // Use the current number of players as the index
+        if (_playerIndices.Contains(conn))
         {
-            GameObject prefab = _playerPrefabs[_numberOfPlayers];
+            playerIndex = _playerIndices.IndexOf(conn);
+        }
+        if (playerIndex < _playerPrefabs.Length)
+        {
+            GameObject prefab = _playerPrefabs[playerIndex];
 
             // Grab a spawn point if you use NetworkStartPosition components
             Transform startPos = GetStartPosition();
@@ -95,7 +101,8 @@ public class CustomNetworkManager : NetworkManager
 
             PlayerRegistry.RegisterPlayer(playerInstance);
             _numberOfPlayers++;
-            DevLogger.Log($"Game Scene Loaded: Spawned character index {_numberOfPlayers - 1} for Connection {conn.connectionId}");
+            DevLogger.Log($"Game Scene Loaded: Spawned character index {playerIndex} for Connection {conn.connectionId}");
+            _playerIndices.Add(conn); // Keep track of the connection for future reference
         }
         else
         {
@@ -109,6 +116,11 @@ public class CustomNetworkManager : NetworkManager
 
         _numberOfPlayers = 0;
         _deadPlayers = 0;
+
+        if (newSceneName != _gameScene && newSceneName != _balanceScene)
+        {
+            _playerIndices.Clear(); // Clear the list of player connections if we're not in the game or balance scene
+        }
     }
 
     public void NotifyPlayerDeath()
