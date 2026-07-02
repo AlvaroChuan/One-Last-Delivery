@@ -276,7 +276,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _model: {fileID: 0}
+  _model: {fileID: 8788884157331623649}
   _openPosition: {fileID: 1984507959196683981}
   _positionLerpSpeed: 10
   _rotationSpeed: 10
