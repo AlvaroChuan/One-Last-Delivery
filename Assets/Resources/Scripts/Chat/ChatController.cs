@@ -26,7 +26,8 @@ public class ChatController : MonoBehaviour
     {
         if (string.IsNullOrWhiteSpace(_chatInputField.text)) return;
 
-        if (_localPlayer is null) _localPlayer = NetworkClient.localPlayer.gameObject.GetComponent<PlayerManager>();
+        if (_localPlayer is null)
+            _localPlayer = NetworkClient.localPlayer.gameObject.GetComponent<PlayerManager>();
 
         _localPlayer.CmdSendMessege(_chatInputField.text);
 
