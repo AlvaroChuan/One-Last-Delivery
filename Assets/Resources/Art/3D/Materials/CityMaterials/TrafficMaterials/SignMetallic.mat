@@ -93,6 +93,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaToMask: 0
+    - _AmbientColorFactor: 0.266
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _CastShadows: 1
@@ -109,7 +110,7 @@ Material:
     - _HeightMapIntensity: 1
     - _InnerErosionStrength: 3
     - _InnerErosionTiling: 2
-    - _LightFactor: 0.194
+    - _LightFactor: 0.15
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _MetallicFactor: 1

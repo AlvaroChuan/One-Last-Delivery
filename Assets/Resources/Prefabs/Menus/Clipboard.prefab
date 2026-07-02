@@ -10158,7 +10158,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 102.08}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8576623651130778649
 MonoBehaviour:
@@ -15196,9 +15196,9 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -389402008792246631, guid: af975066befee5c49ad62d38e1796a4d, type: 3}
-  - {fileID: -4973734387028869240, guid: af975066befee5c49ad62d38e1796a4d, type: 3}
-  - {fileID: 3312050983373826766, guid: af975066befee5c49ad62d38e1796a4d, type: 3}
+  - {fileID: 2100000, guid: 84105d32e0415934b971fde947603a6e, type: 2}
+  - {fileID: 2100000, guid: 1347ad185c991ac4a8ae641d42f1b6d4, type: 2}
+  - {fileID: 2100000, guid: 0d6033f022dd68e468f3bbb575af8dc7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

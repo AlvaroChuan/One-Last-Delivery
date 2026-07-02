@@ -15,17 +15,21 @@ public class PlayerSprintComponent : InputComponent
     [SerializeField] private float _staminaLockoutAfterSprint = 1f;
     [SerializeField] private InputActionReference _sprintInput;
 
+    private Rigidbody _rigidbody;
     private PlayerMovementComponent _movementComponent;
     private PlayerStaminaComponent _staminaComponent;
     private PlayerGroundCheckComponent _groundCheckComponent;
     private bool _isTryingToSprint = false;
     private bool _isSprinting = false;
+    private bool _consumingStamina = false;
+    public bool IsSprinting => _isSprinting;
 
     void Awake()
     {
         _movementComponent = GetComponent<PlayerMovementComponent>();
         _staminaComponent = GetComponent<PlayerStaminaComponent>();
         _groundCheckComponent = GetComponent<PlayerGroundCheckComponent>();
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
     protected override void BindInputs()
@@ -52,7 +56,7 @@ public class PlayerSprintComponent : InputComponent
         _isTryingToSprint = false;
     }
 
-    void FixedUpdate()
+    void Update()
     {
         if (!isLocalPlayer) return;
 
@@ -60,17 +64,37 @@ public class PlayerSprintComponent : InputComponent
 
         if (_isSprinting)
         {
-            _staminaComponent.ConsumeStamina(_sprintStaminaCostPerSecond * Time.fixedDeltaTime);
+            if (!_staminaComponent.HasEnoughStamina(_sprintStaminaCostPerSecond * Time.deltaTime))
+            {
+                StopSprint();
+                return;
+            }
+            if(Math.Abs(_rigidbody.linearVelocity.x) > 0.1f || Math.Abs(_rigidbody.linearVelocity.z) > 0.1f)
+            {
+                if (!_consumingStamina)
+                {
+                    DevLogger.Log("Player started moving while sprinting, disabling stamina regen.");
+                    _staminaComponent.DisableStaminaRegen();
+                    _consumingStamina = true;
+                }
+                _staminaComponent.ConsumeStamina(_sprintStaminaCostPerSecond * Time.deltaTime);
+            }
+            else if(_consumingStamina)
+            {
+                DevLogger.Log("Player stopped moving while sprinting, enabling stamina regen.");
+                _consumingStamina = false;
+                _staminaComponent.EnableStaminaRegen(_staminaLockoutAfterSprint);
+            }
         }
     }
 
     void CheckSprinting()
     {
-        if (_isTryingToSprint && _movementComponent.IsMoving && !_isSprinting)
+        if (_isTryingToSprint && !_isSprinting)
         {
              StartSprint();
         }
-        else if (_isSprinting && (!_isTryingToSprint || !_movementComponent.IsMoving))
+        else if (_isSprinting && !_isTryingToSprint)
         {
             StopSprint();
         }
@@ -84,7 +108,6 @@ public class PlayerSprintComponent : InputComponent
         _movementComponent.MaxMoveSpeed *= _sprintSpeedMultiplier;
         _movementComponent.Acceleration *= _sprintSpeedMultiplier;
         _movementComponent.Deceleration *= _sprintSpeedMultiplier;
-        _staminaComponent.DisableStaminaRegen();
         onStartSprintEvent?.Invoke();
     }
 
@@ -96,7 +119,13 @@ public class PlayerSprintComponent : InputComponent
         _movementComponent.MaxMoveSpeed /= _sprintSpeedMultiplier;
         _movementComponent.Acceleration /= _sprintSpeedMultiplier;
         _movementComponent.Deceleration /= _sprintSpeedMultiplier;
-        _staminaComponent.EnableStaminaRegen(_staminaLockoutAfterSprint);
         onStopSprintEvent?.Invoke();
+
+        if(_consumingStamina)
+        {
+            DevLogger.Log("Player stopped sprinting, enabling stamina regen.");
+            _consumingStamina = false;
+            _staminaComponent.EnableStaminaRegen(_staminaLockoutAfterSprint);
+        }
     }
 }

@@ -110,6 +110,7 @@ Material:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
+    - _AmbientFactorColor: 0.266
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -164,7 +165,7 @@ Material:
     - _BaseColor: {r: 0.2915882, g: 0.9063396, b: 0.2268759, a: 1}
     - _Color: {r: 0.29158816, g: 0.9063396, b: 0.22687587, a: 1}
     - _ColorA: {r: 0, g: 0, b: 0, a: 0}
-    - _EmissionColor: {r: 0.4605636, g: 2.6082377, b: 0.30757514, a: 0}
+    - _EmissionColor: {r: 1.4963757, g: 8.47419, b: 0.99931467, a: 0}
     - _PaintColor: {r: 0, g: 0, b: 0, a: 0}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

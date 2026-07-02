@@ -29,15 +29,13 @@ public class PlayerInventoryManager : PersistentDataManager<PlayerInventoryManag
             Debug.LogWarning($"Attempted to set inventory slot {index} which is out of bounds.");
             return;
         }
-        if(StaticDataState.StaticData.items == null || index >= StaticDataState.StaticData.items.Count)
+        Inventory inventory = StaticDataState.StaticData;
+        while (inventory.items.Count <= index)
         {
-            // Resize the list to accommodate the new index
-            while(StaticDataState.StaticData.items.Count <= index)
-            {
-                StaticDataState.StaticData.items.Add(new InventoryItemData { itemID = ItemID.None });
-            }
+            inventory.items.Add(new InventoryItemData { itemID = ItemID.None });
         }
-        StaticDataState.StaticData.items[index] = itemData;
+        inventory.items[index] = itemData;
+        StaticDataState.StaticData = inventory;
     }
     public InventoryItemData GetInventorySlot(int index)
     {

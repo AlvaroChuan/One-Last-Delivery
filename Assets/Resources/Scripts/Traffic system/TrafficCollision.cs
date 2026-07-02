@@ -4,13 +4,9 @@ using Mirror;
 [RequireComponent(typeof(TrafficVehicleVisual))]
 public class TrafficCollision : MonoBehaviour
 {
-    private TrafficVehicleVisual _visual;
     public float crashVelocityThreshold = 5f;
-
-    private void Awake()
-    {
-        _visual = GetComponent<TrafficVehicleVisual>();
-    }
+    public uint CarId { get; set; }
+    public float NetworkSpeed { get; set; }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -22,7 +18,7 @@ public class TrafficCollision : MonoBehaviour
             // Only the client controlling the player should send the crash message to prevent duplicates
             if (ni != null && ni.isOwned)
             {
-                Vector3 carVelocity = _visual.NetworkSpeed * transform.forward;
+                Vector3 carVelocity = NetworkSpeed * transform.forward;
                 Vector3 relativeVelocity = collision.relativeVelocity - carVelocity;
                 float relativeVelocityMagnitude = relativeVelocity.magnitude;
 
@@ -33,7 +29,7 @@ public class TrafficCollision : MonoBehaviour
                     // Send crash message to the server
                     NetworkClient.Send(new ServerCarCrashCarMessage
                     {
-                        carId = _visual.CarId,
+                        carId = CarId,
                         position = transform.position,
                         rotation = transform.rotation,
                         impactVelocity = relativeVelocity

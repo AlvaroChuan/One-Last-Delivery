@@ -6,12 +6,17 @@ using UnityEngine.InputSystem;
 
 public class PlayerInventoryComponent : InputComponent
 {
-    public Action<ItemID> onInventorySlotChanged; // Event to notify when the inventory slot changes
+    public Action<SlotChangeInfo> onInventorySlotChanged; // Event to notify when the inventory slot changes
     [Serializable]
     struct ItemEntry
     {
         public ItemID itemID;
         public InventoryItem item;
+    }
+    public struct SlotChangeInfo
+    {
+        public int slotIndex;
+        public InventoryItemData itemData;
     }
     [SerializeField] private int _inventorySize = 4;
     [SerializeField] private InputActionReference _scrollInput;
@@ -124,7 +129,7 @@ public class PlayerInventoryComponent : InputComponent
 
         UpdateVisualMesh(itemID);
         CmdUpdateVisualMesh(itemID);
-        onInventorySlotChanged?.Invoke(itemID); // Notify listeners about the inventory slot change
+        onInventorySlotChanged?.Invoke(new SlotChangeInfo { slotIndex = index, itemData = _inventoryManager.GetInventorySlot(index) }); // Notify listeners about the inventory slot change
     }
 
     [Command]

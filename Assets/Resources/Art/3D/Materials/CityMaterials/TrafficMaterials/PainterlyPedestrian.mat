@@ -93,6 +93,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaToMask: 0
+    - _AmbientColorFactor: 0.266
     - _Blend: 0
     - _CastShadows: 1
     - _CellAngle: 2
@@ -115,7 +116,7 @@ Material:
     - _NormalNoise: 161
     - _NormalStrength: 0.3
     - _PaintIntensity: 0.27
-    - _PaintScale: 2.96
+    - _PaintScale: 0.56
     - _PencilThreshold1: 0.1
     - _PencilThreshold2: 0.32
     - _PencilThreshold3: 0.45

@@ -1,0 +1,158 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-4762982973635689124
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 10
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: WalkieMat1
+  m_Shader: {fileID: -6465566751694194690, guid: 2bace74d48292d441868ab580bff9736, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _MAIN_LIGHT_SHADOWS
+  - _MAIN_LIGHT_SHADOWS_CASCADE
+  - _SHADOWS_SOFT
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2000
+  stringTagMap:
+    RenderType: Opaque
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AOMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HeightMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _InnerBrushTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: db5f87fe0de4e1d4ab9e525ca4a843f8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalFromTexture_a29bd90d0f6748f99711f956a3d8ae5e_Texture_0_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 7b806a2f79219f240a926857726b5808, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: 914a384a08d6d344f886365717fdeb78, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PencilTexture:
+        m_Texture: {fileID: 2800000, guid: 7b806a2f79219f240a926857726b5808, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RoughnessMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlphaClip: 0
+    - _AlphaToMask: 0
+    - _AmbientColorFactor: 0.266
+    - _Blend: 0
+    - _CastShadows: 1
+    - _CellAngle: 2
+    - _CellDensity: 10
+    - _CellFalloff: 2.5
+    - _CellNormal: 0.02
+    - _CellOffsetIntensity: 0.92
+    - _CellOffsetNoise: 18.06
+    - _Cull: 2
+    - _DstBlend: 0
+    - _DstBlendAlpha: 0
+    - _FPS: 12
+    - _HeightMapIntensity: 0
+    - _InnerErosionStrength: 3
+    - _InnerErosionTiling: 2
+    - _LightFactor: 0.015
+    - _MAIN_LIGHT_SHADOWS: 1
+    - _MAIN_LIGHT_SHADOWS_CASCADE: 1
+    - _MainTexBlend: 0
+    - _MainTexIntensity: 0
+    - _MetallicFactor: 0
+    - _NormalNoise: 161
+    - _NormalStrength: 0.3
+    - _PaintIntensity: 0.21
+    - _PaintScale: 2.68
+    - _PencilThreshold1: 0
+    - _PencilThreshold2: 0.35
+    - _PencilThreshold3: 0.17
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _SHADOWS_CASCADE: 0
+    - _SHADOWS_SOFT: 1
+    - _SHADOW_CASCADES: 1
+    - _SOFT_SHADOWS: 1
+    - _SmoothnessFactor: 0
+    - _SpecularEdgeSmooth: 1
+    - _SpecularOpacity: 1
+    - _SpecularReductor: -0.32
+    - _SrcBlend: 1
+    - _SrcBlendAlpha: 1
+    - _Surface: 0
+    - _TexTiling: 1
+    - _TextureTiling: 0
+    - _Threshold: 0
+    - _ThresholdA: 1
+    - _ThresholdB: 0.25
+    - _ThresholdC: 0.5
+    - _WaveNoise: 0
+    - _WaveOffset: 10
+    - _ZTest: 4
+    - _ZWrite: 1
+    - _ZWriteControl: 0
+    m_Colors:
+    - _CellTiling: {r: 1, g: 0.4, b: 0, a: 0}
+    - _ColorA: {r: 0.35686275, g: 0.35686275, b: 0.35686275, a: 0}
+    - _ColorB: {r: 0.3584906, g: 0.3584906, b: 0.3584906, a: 0}
+    - _ColorC: {r: 0, g: 0, b: 0, a: 0}
+    - _PaintColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ShadowColor: {r: 0.35686275, g: 0.35686275, b: 0.35686275, a: 0}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

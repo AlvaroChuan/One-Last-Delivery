@@ -16,8 +16,9 @@ MonoBehaviour:
     itemID: 5
     oneShot: 0
     infiniteDurability: 0
-    durability: 20
+    maxDurability: 0
+    currentDurability: 0
     durabilityCost: 5
   _price: 20
-  _itemName: Walkie-Talkie
+  _itemName: Walkie
   _itemIcon: {fileID: 0}

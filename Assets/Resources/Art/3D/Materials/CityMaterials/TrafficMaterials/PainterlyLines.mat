@@ -93,6 +93,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaToMask: 0
+    - _AmbientColorFactor: 0.266
     - _Blend: 0
     - _CastShadows: 1
     - _CellAngle: 2
@@ -108,14 +109,14 @@ Material:
     - _HeightMapIntensity: 1
     - _InnerErosionStrength: 3
     - _InnerErosionTiling: 2
-    - _LightFactor: 0.1
+    - _LightFactor: 0.15
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _MetallicFactor: 0
     - _NormalNoise: 161
     - _NormalStrength: 0.3
     - _PaintIntensity: 0.1
-    - _PaintScale: 0.3
+    - _PaintScale: 0.15
     - _PencilThreshold1: 0.1
     - _PencilThreshold2: 0.27
     - _PencilThreshold3: 0.45

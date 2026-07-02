@@ -42,7 +42,7 @@ public class PlayerItemUseComponent : InputComponent
 
         if (heldItemData.IsEmpty) return;
 
-        if (heldItemData.durability <= 0 && !heldItemData.infiniteDurability) return; // Don't use the item if it's out of durability
+        if (heldItemData.currentDurability <= 0 && !heldItemData.infiniteDurability) return; // Don't use the item if it's out of durability
 
         InventoryItem item = _inventoryComponent.GetHeldItem();
         item.StartUse(gameObject);
@@ -51,11 +51,11 @@ public class PlayerItemUseComponent : InputComponent
         {
             if (!heldItemData.infiniteDurability)
             {
-                heldItemData.durability -= heldItemData.durabilityCost;
+                heldItemData.currentDurability -= heldItemData.durabilityCost;
 
-                if (heldItemData.durability < 0)
+                if (heldItemData.currentDurability < 0)
                 {
-                    heldItemData.durability = 0; // Ensure durability doesn't go below 0
+                    heldItemData.currentDurability = 0; // Ensure durability doesn't go below 0
                 }
 
                 _inventoryComponent.UpdateHeldItemData(heldItemData);
@@ -101,10 +101,10 @@ public class PlayerItemUseComponent : InputComponent
 
         if (!usingItemData.infiniteDurability)
         {
-            usingItemData.durability -= usingItemData.durabilityCost * Time.deltaTime;
-            if (usingItemData.durability <= 0)
+            usingItemData.currentDurability -= usingItemData.durabilityCost * Time.deltaTime;
+            if (usingItemData.currentDurability <= 0)
             {
-                usingItemData.durability = 0; // Ensure durability doesn't go below 0
+                usingItemData.currentDurability = 0; // Ensure durability doesn't go below 0
 
                 StopUsingItem();
             }

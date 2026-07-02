@@ -72,11 +72,11 @@ public class TrafficVehicleVisual : MonoBehaviour
         _networkSpeed = speed;
     }
 
-    private void Update()
+    public void ManualUpdate(float deltaTime)
     {
         if (_graph == null || _graph.edges.Count == 0 || _targetEdgeIndex < 0 || _targetEdgeIndex >= _graph.edges.Count) return;
 
-        _logicalDistance += _networkSpeed * Time.deltaTime;
+        _logicalDistance += _networkSpeed * deltaTime;
 
         TrafficEdge edge = _graph.edges[_targetEdgeIndex];
 
@@ -104,7 +104,7 @@ public class TrafficVehicleVisual : MonoBehaviour
         // Apply Smooth Lateral Offset for Lane Changes
         if (Mathf.Abs(_currentLateralOffset) > 0.01f)
         {
-            _currentLateralOffset = Mathf.SmoothDamp(_currentLateralOffset, 0f, ref _lateralVelocity, _laneChangeSmoothTime);
+            _currentLateralOffset = Mathf.SmoothDamp(_currentLateralOffset, 0f, ref _lateralVelocity, _laneChangeSmoothTime, float.PositiveInfinity, deltaTime);
             Vector3 rightVec = Vector3.Cross(Vector3.up, dir).normalized;
             _targetPosition += rightVec * _currentLateralOffset;
         }
@@ -132,13 +132,13 @@ public class TrafficVehicleVisual : MonoBehaviour
             if (forwardDot < 0f)
             {
                 actualSpeed = _networkSpeed * _overshootBrakeFactor;
-                transform.position += _targetRotation * Vector3.forward * (actualSpeed * Time.deltaTime);
+                transform.position += _targetRotation * Vector3.forward * (actualSpeed * deltaTime);
                 stateMsg = "OVERSHOOT (Beaking to catch target)";
             }
             else
             {
                 actualSpeed = _networkSpeed + (distanceToTarget * _catchUpMultiplier);
-                transform.position = Vector3.MoveTowards(transform.position, _targetPosition, actualSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, _targetPosition, actualSpeed * deltaTime);
                 stateMsg = "CATCH-UP (Accelerating to catch target)";
             }
 
@@ -161,7 +161,7 @@ public class TrafficVehicleVisual : MonoBehaviour
         // Apply rotation scaled by physical distance traveled (physically accurate steering)
         if (distanceToTarget <= _teleportDistanceThreshold)
         {
-            float distanceTravelled = actualSpeed * Time.deltaTime;
+            float distanceTravelled = actualSpeed * deltaTime;
             // _rotationSpeed now acts as a steering multiplier per meter traveled
             transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, distanceTravelled * _rotationSpeed);
         }
