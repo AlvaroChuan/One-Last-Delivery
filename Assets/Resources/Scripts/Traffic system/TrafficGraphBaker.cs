@@ -392,9 +392,11 @@ public class TrafficGraphBaker : MonoBehaviour
             
             if (closestEdge != 0xFFFF)
             {
+                Undo.RecordObject(light, "Assign Traffic Light ID");
                 light.lightId = lightIdCounter++;
                 light.edgeId = closestEdge;
                 EditorUtility.SetDirty(light);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(light);
                 validLights.Add(light);
             }
         }

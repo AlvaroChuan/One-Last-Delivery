@@ -11,10 +11,25 @@ public class StoreMenu : MonoBehaviour
     [SerializeField] private Transform _truckUpgradeButtonContainer;
     [Header("Prefabs")]
     [SerializeField] private PurchaseButton _purchaseButtonPrefab;
+    bool _storeAvailable = true;
 
     private void Start()
     {
         PopulateStore();
+        SunManager.OnNightfall += OnNightfall;
+    }
+
+    void OnDestroy()
+    {
+        SunManager.OnNightfall -= OnNightfall;
+    }
+
+    void OnEnable()
+    {
+        if (!_storeAvailable)
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     void PopulateStore()
@@ -31,6 +46,16 @@ public class StoreMenu : MonoBehaviour
         {
             var button = Instantiate(_purchaseButtonPrefab, _truckUpgradeButtonContainer);
             button.SetListing(truckUpgrade);
+        }
+    }
+
+    public void OnNightfall()
+    {
+        _storeAvailable = false;
+        // Optionally, you can disable the store UI or show a message indicating that the store is closed.
+        if (gameObject.activeSelf)
+        {
+            gameObject.SetActive(false);
         }
     }
 }

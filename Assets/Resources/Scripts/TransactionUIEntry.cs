@@ -8,8 +8,8 @@ public class TransactionUIEntry : MonoBehaviour
 
     public void SetTransaction(Transaction transaction)
     {
-        _reasonText.text = transaction.reason;
-        _amountText.text = transaction.amount >= 0 ? $"+{transaction.amount:F2}" : $"{transaction.amount:F2}";
-        _amountText.color = transaction.amount >= 0 ? Color.green : Color.red;
+        _reasonText.text = $"[{transaction.reason}";
+        _amountText.text = transaction.amount >= 0 ? $"+{transaction.amount:F2}]" : $"{transaction.amount:F2}]";
+        _amountText.color = transaction.amount >= 0 ? Color.black : Color.red;
     }
 }

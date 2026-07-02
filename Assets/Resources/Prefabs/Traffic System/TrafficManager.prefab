@@ -64,13 +64,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ea008637dfc7f342b042854860faf5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _outputGraph: {fileID: 11400000, guid: 1b0685675873183488283ceb5109fce6, type: 2}
+  _outputGraph: {fileID: 11400000, guid: c64605972c4fb89478de67935d96670e, type: 2}
   _splineContainers:
   - {fileID: 0}
-  _pointsPerEdge: 20
+  _pointsPerEdge: 100
   _connectionThreshold: 1
   _trafficLightSearchRadius: 15
+  _intersectionClusterRadius: 50
   _laneDistanceThreshold: 5
+  _knotMergeRadius: 1
 --- !u!114 &8227465571552678054
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,14 +88,15 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _trafficGraph: {fileID: 11400000, guid: 1b0685675873183488283ceb5109fce6, type: 2}
-  _wreckPrefab: {fileID: 0}
-  _initialVehiclesToSpawn: 200
+  _trafficGraph: {fileID: 11400000, guid: c64605972c4fb89478de67935d96670e, type: 2}
+  _wreckPrefab: {fileID: 7680324919787913421, guid: bb39f32f4cf7d5a478d17ecad2320608, type: 3}
+  _initialVehiclesToSpawn: 1500
   _maxVehicleCapacity: 2000
   _vehicleMaxSpeed: 20
   _vehicleAcceleration: 5
   _safeDistance: 5
   _spawnSpacing: 15
+  _respawnEdgeId: 0
   _networkTickRate: 0.1
   _maxBatchSize: 100
   _greenTime: 10
@@ -101,7 +104,108 @@ MonoBehaviour:
   _bothRedTime: 1
   _spatialGridCellSize: 20
   _obstacleSnapDistance: 5
-  trafficLights: []
+  trafficLights:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &5234839964796977862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,6 +218,115 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c4f2b350cb6474680bb9df9742964b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _trafficGraph: {fileID: 11400000, guid: 1b0685675873183488283ceb5109fce6, type: 2}
-  _vehiclePrefab: {fileID: 7680324919787913421, guid: 0e29eef36184a6549ba8bf7d5b20b8b9, type: 3}
-  trafficLights: []
+  _trafficGraph: {fileID: 11400000, guid: c64605972c4fb89478de67935d96670e, type: 2}
+  _vehiclePrefabs:
+  - {fileID: 7680324919787913421, guid: 0e29eef36184a6549ba8bf7d5b20b8b9, type: 3}
+  _logicalCorrectionFactor: 0.1
+  _logicalDistanceThreshold: 10
+  _teleportDistanceThreshold: 15
+  _rotationSpeed: 10
+  _catchUpMultiplier: 2
+  _overshootBrakeFactor: 0.3
+  _laneChangeSmoothTime: 1
+  trafficLights:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
