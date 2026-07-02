@@ -42419,6 +42419,103 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5966797, y: 0.5966796, z: 5.38333}
   m_Center: {x: 0.00012207031, y: 0.00006103515, z: 2.7998507}
+--- !u!1001 &1149810413
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6284819462314451909, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_Name
+      value: PlayerHUD
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852896898174683279, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c09998bba8b48ac41a8003c7c6af85c9, type: 3}
 --- !u!1 &1149822504 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3889297824687380458, guid: 565ae1b70dcd49042bc13e489347cd41, type: 3}
@@ -71342,6 +71439,7 @@ GameObject:
   - component: {fileID: 1824317430}
   - component: {fileID: 1824317429}
   - component: {fileID: 1824317428}
+  - component: {fileID: 1824317432}
   m_Layer: 0
   m_Name: SunManager
   m_TagString: Untagged
@@ -71361,9 +71459,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f60ea6d925c1c4888df45e9b8ab951, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cycleDurationMinutes: 15
-  _currentTimeOfDay: 0.25
-  _cycleStopTime: 0.75
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _cycleDurationMinutes: 10.4
+  _currentTimeOfDay: 0.2
+  _cycleStopTime: 0.7
   _framesBetweenSunUpdates: 10
   _skyboxMaterial: {fileID: 2100000, guid: 0942b99fd2c3ad3439618b15833f7f15, type: 2}
   _skyColorPropertyName: _SkyColor
@@ -71594,6 +71695,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 170, z: 0}
+--- !u!114 &1824317432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1824317427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 50874923
+  _assetId: 0
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1 &1824954543 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7592087462140319140, guid: 565ae1b70dcd49042bc13e489347cd41, type: 3}
@@ -81153,3 +81271,4 @@ SceneRoots:
   - {fileID: 377329774}
   - {fileID: 612369532}
   - {fileID: 123351070}
+  - {fileID: 1149810413}
