@@ -1,8 +1,8 @@
-using System;
 using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(HideOnDeath))]
 public class HealthBar : MonoBehaviour
 {
     PlayerHealthComponent _playerHealthComponent;
@@ -29,5 +29,13 @@ public class HealthBar : MonoBehaviour
     {
         float healthPercentage = info.newHealth / info.maxHealth;
         _healthBarImage.fillAmount = Mathf.Clamp01(healthPercentage);
+    }
+
+    void OnDestroy()
+    {
+        if (_playerHealthComponent != null)
+        {
+            _playerHealthComponent.onHealthChangedEvent -= OnHealthChanged;
+        }
     }
 }
