@@ -10,10 +10,8 @@ public class ProxymityVoiceChatController : BaseVoiceChat
 
     private void Start()
     {
-        Debug.Log("HEEY");
         TAG = "[ProxymityVoiceChatController]";
         if (HasSetUp) {
-            Debug.Log("Volviendooo");
             return;
         }
         HasSetUp = Setup();
@@ -28,19 +26,28 @@ public class ProxymityVoiceChatController : BaseVoiceChat
     {
         base.SetupClientSession();
 
-        _client.OnPeerJoined += id =>
+        Debug.unityLogger.Log(LogType.Log, TAG, $"numbre of ids: {_client.PeerIDs.Count}");
+        foreach (int peerId in _client.PeerIDs)
         {
-            StartCoroutine(ConfigureAudio(id));
-        };
+            StartCoroutine(ConfigureAudio(peerId));
+        }
+
+
         return true;
     }
 
     private IEnumerator ConfigureAudio(int id)
     {
-        if (ClientSession == null || !ClientSession.PeerOutputs.ContainsKey(id)) yield break;
+        Debug.unityLogger.Log(LogType.Log, TAG, $"Aqui entra");
+        if (ClientSession == null || !ClientSession.PeerOutputs.ContainsKey(id))
+        {
+            Debug.unityLogger.Log(LogType.Log, TAG, $"ADIOOOOS");
+            yield break;
+        }
 
         IAudioOutput peerOutput = ClientSession.PeerOutputs[id];
         StreamedAudioSourceOutput streamedAudioSourceOutput = peerOutput as StreamedAudioSourceOutput;
+        Debug.unityLogger.Log(LogType.Log, TAG, $"Output: {streamedAudioSourceOutput}");
         AudioSource peerAudioSource = streamedAudioSourceOutput.Stream.UnityAudioSource;
 
         Transform peerAvatar = null;
@@ -59,6 +66,10 @@ public class ProxymityVoiceChatController : BaseVoiceChat
         {
             peerAudioSource.transform.SetParent(peerAvatar);
             peerAudioSource.transform.localPosition = Vector3.zero;
+        }
+        else
+        {
+            Debug.unityLogger.Log(LogType.Log, TAG, $"PeerAvatar no encontrado");
         }
 
         peerAudioSource.rolloffMode = AudioRolloffMode.Linear;
