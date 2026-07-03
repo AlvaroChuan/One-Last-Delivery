@@ -30,7 +30,13 @@ public class PlayerVoiceDeathComponent : PlayerComponent
     private void Start()
     {
         _playerVoiceProxyComponent = FindAnyObjectByType<ProxymityVoiceChatController>();
-        FindAnyObjectByType<ProxymityVoiceChatController>().StartVoiceChat();
+
+        if (isServer)
+        {
+            Debug.unityLogger.Log(LogType.Log, "[Proxymity]", $"Server Arranca");
+            FindAnyObjectByType<ProxymityVoiceChatController>().StartVoiceChat();
+            CmdNotifyJoinVoiceChat();
+        }
     }
 
     void OnEnable()
@@ -55,5 +61,22 @@ public class PlayerVoiceDeathComponent : PlayerComponent
     {
         if (_playerVoiceProxyComponent != null)
             _playerVoiceProxyComponent.UpdateAudio();
+    }
+
+
+    [Command]
+    private void CmdNotifyJoinVoiceChat()
+    {
+        RcpJoinVoiceChat();
+    }
+
+    [ClientRpc]
+    private void RcpJoinVoiceChat()
+    {
+        if (!isServer)
+        {
+            Debug.unityLogger.Log(LogType.Log, "[Proxymity]", $"Cliente Arranca");
+            FindAnyObjectByType<ProxymityVoiceChatController>().StartVoiceChat();
+        }
     }
 }
