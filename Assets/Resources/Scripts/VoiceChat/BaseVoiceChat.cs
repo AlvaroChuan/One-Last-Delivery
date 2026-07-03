@@ -117,8 +117,6 @@ public class BaseVoiceChat : MonoBehaviour
 
         _pushToTalkInput.action.started -= ActivatePushToTalk;
         _pushToTalkInput.action.canceled -= DeactivatePushToTalk;
-
-        StopVoiceChat();
     }
 
     #endregion
@@ -394,10 +392,10 @@ public class BaseVoiceChat : MonoBehaviour
             Debug.unityLogger.Log(LogType.Log, TAG, "You left the voice chatroom");
         };
 
-        /*_client.OnPeerJoined += id =>
+        _client.OnPeerJoined += id =>
         {
             Debug.unityLogger.Log(LogType.Log, TAG, $"Peer {id} joined voice chat");
-        };*/
+        };
 
         _client.OnPeerLeft += id =>
         {
