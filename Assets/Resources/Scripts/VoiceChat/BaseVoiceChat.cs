@@ -117,6 +117,8 @@ public class BaseVoiceChat : MonoBehaviour
 
         _pushToTalkInput.action.started -= ActivatePushToTalk;
         _pushToTalkInput.action.canceled -= DeactivatePushToTalk;
+
+        StopVoiceChat();
     }
 
     #endregion
