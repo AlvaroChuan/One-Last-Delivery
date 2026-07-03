@@ -394,10 +394,10 @@ public class BaseVoiceChat : MonoBehaviour
             Debug.unityLogger.Log(LogType.Log, TAG, "You left the voice chatroom");
         };
 
-        _client.OnPeerJoined += id =>
+        /*_client.OnPeerJoined += id =>
         {
             Debug.unityLogger.Log(LogType.Log, TAG, $"Peer {id} joined voice chat");
-        };
+        };*/
 
         _client.OnPeerLeft += id =>
         {
@@ -557,6 +557,10 @@ public class BaseVoiceChat : MonoBehaviour
         /// </summary>
         public float MicrophoneVolume { get; set; } = 1f;
 
+
+        private AudioFrame _silentFrame;
+        private AudioFrame _audioFrame;
+
         /// <summary>
         /// Runs the input control filter over an outgoing audio frame.
         /// </summary>
@@ -598,13 +602,12 @@ public class BaseVoiceChat : MonoBehaviour
             if (frame.samples == null || frame.samples.Length == 0)
                 return frame;
 
-            return new AudioFrame
-            {
-                timestamp = frame.timestamp,
-                frequency = frame.frequency,
-                channelCount = frame.channelCount,
-                samples = new byte[frame.samples.Length]
-            };
+            _silentFrame.timestamp = frame.timestamp;
+            _silentFrame.frequency = frame.frequency;
+            _silentFrame.channelCount = frame.channelCount;
+            _silentFrame.samples = new byte[frame.samples.Length];
+
+            return _silentFrame;
         }
 
         /// <summary>
@@ -637,13 +640,12 @@ public class BaseVoiceChat : MonoBehaviour
 
             Buffer.BlockCopy(floatSamples, 0, newSamples, 0, newSamples.Length);
 
-            return new AudioFrame
-            {
-                timestamp = frame.timestamp,
-                frequency = frame.frequency,
-                channelCount = frame.channelCount,
-                samples = newSamples
-            };
+            _audioFrame.timestamp = frame.timestamp;
+            _audioFrame.frequency = frame.frequency;
+            _audioFrame.channelCount = frame.channelCount;
+            _audioFrame.samples = newSamples;
+
+            return _audioFrame;
         }
     }
 
