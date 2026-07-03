@@ -600,11 +600,11 @@ Light:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 10
   m_Range: 10
-  m_SpotAngle: 30
-  m_InnerSpotAngle: 21.80208
+  m_SpotAngle: 74.75
+  m_InnerSpotAngle: 45.668747
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -629,7 +629,7 @@ Light:
       e32: 0
       e33: 1
     m_UseCullingMatrixOverride: 0
-  m_Cookie: {fileID: 0}
+  m_Cookie: {fileID: 2800000, guid: 62478d8a429745f4faae8a3165d80641, type: 3}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
   m_RenderMode: 0
@@ -2361,8 +2361,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1264797133376724486, guid: ebc668412f4c3bd4d89815e094fb7a8f, type: 3}
-  - {fileID: -3847127413898124825, guid: ebc668412f4c3bd4d89815e094fb7a8f, type: 3}
+  - {fileID: 2100000, guid: f0c487ae78c3f1f47a26d201d61aac16, type: 2}
+  - {fileID: 2100000, guid: a19fa7a8ffe228d42abadd3fa35b7252, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
