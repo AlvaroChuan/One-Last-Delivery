@@ -14,18 +14,14 @@ public class SpeedChecker : NetworkBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        DevLogger.Log($"Object entered speed zone: {other.name}");
-        if (other.CompareTag("Truck") || other.CompareTag("Player"))
+        DevLogger.Log($"Truck entered speed zone: {other.name}");
+        if(_truckEnteredCount == 0)
         {
-            DevLogger.Log($"Truck entered speed zone: {other.name}");
-            if(_truckEnteredCount == 0)
-            {
-                _truck = other.GetComponent<Rigidbody>();
-                _speedCheckTimer = 0;
-                _alreadyFined = false; // Reset fine status when a new truck enters
-            }
-            _truckEnteredCount++;
+            _truck = other.GetComponent<Rigidbody>();
+            _speedCheckTimer = 0;
+            _alreadyFined = false; // Reset fine status when a new truck enters
         }
+        _truckEnteredCount++;
     }
 
     void OnTriggerExit(Collider other)

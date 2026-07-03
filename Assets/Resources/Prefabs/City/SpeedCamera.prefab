@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3434993634795581177}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bound_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6635577551226957866}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: TriggerHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60,7 +60,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3300185759970912477}
+  - {fileID: 8731944012379381855}
   m_Father: {fileID: 7607801653785103032}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4863848888566338433
@@ -72,7 +72,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4519161063964482958}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bound_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7607801653785103032}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &7845858738721208958
+--- !u!1 &5551799968298136603
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -102,8 +102,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3300185759970912477}
-  - component: {fileID: 6338709702798852782}
+  - component: {fileID: 8731944012379381855}
+  - component: {fileID: 5928111826242800563}
   m_Layer: 0
   m_Name: TriggerCollider_0
   m_TagString: Untagged
@@ -111,13 +111,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3300185759970912477
+--- !u!4 &8731944012379381855
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7845858738721208958}
+  m_GameObject: {fileID: 5551799968298136603}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -126,13 +126,13 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6635577551226957866}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &6338709702798852782
+--- !u!65 &5928111826242800563
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7845858738721208958}
+  m_GameObject: {fileID: 5551799968298136603}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -160,7 +160,7 @@ GameObject:
   - component: {fileID: 907222185153780219}
   - component: {fileID: 7991147260122252175}
   - component: {fileID: 8435227641853236342}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: SpeedCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -203,6 +203,9 @@ MonoBehaviour:
   - {fileID: 4519161063964482958}
   _boundRadius: 8
   _colliderHolder: {fileID: 3672776038336314634}
+  _triggerLayer:
+    serializedVersion: 2
+    m_Bits: 2048
   _updateTriggers: 0
 --- !u!114 &907222185153780219
 MonoBehaviour:
@@ -221,7 +224,7 @@ MonoBehaviour:
   syncInterval: 0
   _speedLimit: 25
   _baseFineAmount: 10
-  _finePerUnitOverLimit: 10
+  _finePerTenOverLimit: 10
   _speedCheckInterval: 1
 --- !u!54 &7991147260122252175
 Rigidbody:
@@ -276,7 +279,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5547724810163620138}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Models
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -353,12 +356,24 @@ PrefabInstance:
       value: SpeedCameraModel_1
       objectReference: {fileID: 0}
     - target: {fileID: 4895928859024724682, guid: 4fbea81fc22dec04592b758b9a910c04, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4895928859024724682, guid: 4fbea81fc22dec04592b758b9a910c04, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 6002438037532565684, guid: 4fbea81fc22dec04592b758b9a910c04, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6002438037532565684, guid: 4fbea81fc22dec04592b758b9a910c04, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 6830860796890687454, guid: 4fbea81fc22dec04592b758b9a910c04, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 6830860796890687454, guid: 4fbea81fc22dec04592b758b9a910c04, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -427,12 +442,24 @@ PrefabInstance:
       value: SpeedCameraModel
       objectReference: {fileID: 0}
     - target: {fileID: 4895928859024724682, guid: 4fbea81fc22dec04592b758b9a910c04, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4895928859024724682, guid: 4fbea81fc22dec04592b758b9a910c04, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 6002438037532565684, guid: 4fbea81fc22dec04592b758b9a910c04, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6002438037532565684, guid: 4fbea81fc22dec04592b758b9a910c04, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 6830860796890687454, guid: 4fbea81fc22dec04592b758b9a910c04, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 6830860796890687454, guid: 4fbea81fc22dec04592b758b9a910c04, type: 3}
       propertyPath: m_StaticEditorFlags

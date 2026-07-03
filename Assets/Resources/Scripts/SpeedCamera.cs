@@ -10,6 +10,7 @@ public class SpeedCamera : MonoBehaviour
     [SerializeField] private List<Transform> _boundPoints = new List<Transform>();
     [SerializeField] private float _boundRadius = 5f; // Radius for the sphere handles at the bound points
     [SerializeField] private GameObject _colliderHolder; // Parent object to hold the trigger colliders
+    [SerializeField] private LayerMask _triggerLayer; // Layer for the trigger colliders
     [SerializeField] private bool _updateTriggers = false;
     private List<BoxCollider> _triggerColliders = new List<BoxCollider>();
     private List<Vector3> _lastBoundPositions = new List<Vector3>();
@@ -98,6 +99,7 @@ public class SpeedCamera : MonoBehaviour
         {
             collider.isTrigger = true;
             collider.transform.SetParent(_colliderHolder.transform);
+            collider.gameObject.layer = LayerMask.NameToLayer(LayerMask.LayerToName(_triggerLayer));
         }
 
         _lastBoundPositions.Clear();
