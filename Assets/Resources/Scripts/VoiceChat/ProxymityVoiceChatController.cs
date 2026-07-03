@@ -10,8 +10,10 @@ public class ProxymityVoiceChatController : BaseVoiceChat
 
     private void Start()
     {
+        Debug.Log("HEEY");
         TAG = "[ProxymityVoiceChatController]";
         if (HasSetUp) {
+            Debug.Log("Volviendooo");
             return;
         }
         HasSetUp = Setup();
@@ -81,15 +83,18 @@ public class ProxymityVoiceChatController : BaseVoiceChat
 
         if (peerIsAlive)
         {
+            Debug.LogError("SpatialBlend Active");
             peerAudioSource.mute = false;
             peerAudioSource.spatialBlend = 1f;
         }
         else if (localIsAlive)
         {
+            Debug.LogError("muted");
             peerAudioSource.mute = true;
         }
         else
         {
+            Debug.LogError("Da igual el sitio");
             peerAudioSource.mute = false;
             peerAudioSource.spatialBlend = 0f;
         }
