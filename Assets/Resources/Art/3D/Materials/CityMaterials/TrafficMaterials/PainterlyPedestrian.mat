@@ -121,6 +121,8 @@ Material:
     - _LightFactor: 0.05
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
+    - _MainTexBlend: 1
+    - _MainTexIntensity: 1
     - _MetallicFactor: 1
     - _NormalNoise: 161
     - _NormalStrength: 0.3

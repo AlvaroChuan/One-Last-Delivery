@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: WalkieMat3
-  m_Shader: {fileID: -6465566751694194690, guid: 2bace74d48292d441868ab580bff9736, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: ad89e01e130589e49bb2c9581c841d27, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
