@@ -9,6 +9,7 @@ TagManager:
   - Truck
   - SpectatorCamera
   - PlayerCamera
+  - Building
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - Players
   - CarriedPackage
   - PlayerProjectiles
-  - 
+  - Environment
   - 
   - 
   - 
