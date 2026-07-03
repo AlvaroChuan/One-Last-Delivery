@@ -2,6 +2,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(HideOnDeath))]
 public class StaminaBar : MonoBehaviour
 {
     PlayerStaminaComponent _playerStaminaComponent;

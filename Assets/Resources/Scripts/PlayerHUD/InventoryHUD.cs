@@ -1,6 +1,7 @@
 using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(HideOnDeath))]
 public class InventoryHUD : MonoBehaviour
 {
     [System.Serializable]
