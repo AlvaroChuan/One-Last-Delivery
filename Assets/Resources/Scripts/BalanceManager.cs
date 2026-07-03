@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 /// <summary>
@@ -14,6 +15,7 @@ public class BalanceManager : MonoBehaviour
 
     public static void RegisterTransaction(string reason, float amount)
     {
+        DevLogger.Log($"Registering transaction: {reason}: {amount}");
         Balance.Add(new Transaction(reason, amount));
     }
 

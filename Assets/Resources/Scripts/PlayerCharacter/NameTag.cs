@@ -15,6 +15,7 @@ public class NameTag : NetworkBehaviour
         if (!isLocalPlayer) return;
 
         CmdSetName(SteamFriends.GetPersonaName());
+        _nameText.enabled = false; // Disable the name tag for the local player
     }
 
     [Command]

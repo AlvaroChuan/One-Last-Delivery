@@ -25,6 +25,10 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - _ADDITIONAL_LIGHTS
+  - _ADDITIONAL_LIGHT_SHADOWS
+  - _FORWARD_PLUS
+  - _LIGHT_COOKIES
   - _MAIN_LIGHT_SHADOWS
   - _MAIN_LIGHT_SHADOWS_CASCADE
   - _SHADOWS_SOFT
@@ -91,6 +95,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _ADDITIONAL_LIGHTS: 1
+    - _ADDITIONAL_LIGHT_SHADOWS: 1
     - _AlphaClip: 0
     - _AlphaToMask: 0
     - _AmbientColorFactor: 0.266
@@ -105,10 +111,12 @@ Material:
     - _Cull: 2
     - _DstBlend: 0
     - _DstBlendAlpha: 0
+    - _FORWARD_PLUS: 1
     - _FPS: 12
     - _HeightMapIntensity: 0
     - _InnerErosionStrength: 3
     - _InnerErosionTiling: 2
+    - _LIGHT_COOKIES: 1
     - _LightFactor: 0.015
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
