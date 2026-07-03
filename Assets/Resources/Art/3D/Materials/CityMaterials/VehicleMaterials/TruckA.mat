@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: TruckA
-  m_Shader: {fileID: -6465566751694194690, guid: ad89e01e130589e49bb2c9581c841d27, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: d813a7cb0595be74385788fbea61ac2c, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
@@ -58,7 +58,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: db5f87fe0de4e1d4ab9e525ca4a843f8, type: 3}
+        m_Texture: {fileID: 2800000, guid: ec08e3ff9965c634d9ec228dbd670376, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicMap:
@@ -118,10 +118,10 @@ Material:
     - _InnerErosionStrength: 3
     - _InnerErosionTiling: 2
     - _LIGHT_COOKIES: 1
-    - _LightFactor: 0.08
+    - _LightFactor: 0.193
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
-    - _MainTexBlend: 0
+    - _MainTexBlend: 1
     - _MainTexIntensity: 2
     - _MetallicFactor: 0
     - _NormalNoise: 161
@@ -158,9 +158,9 @@ Material:
     m_Colors:
     - _CellTiling: {r: 1, g: 0.4, b: 0, a: 0}
     - _ColorA: {r: 0.3647059, g: 0.7803922, b: 0.9058824, a: 0}
-    - _ColorB: {r: 1, g: 1, b: 1, a: 0}
+    - _ColorB: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 0}
     - _ColorC: {r: 0, g: 0, b: 0, a: 0}
-    - _PaintColor: {r: 0.41509432, g: 0.41509432, b: 0.41509432, a: 0}
+    - _PaintColor: {r: 1, g: 1, b: 1, a: 0}
     - _ShadowColor: {r: 0.3490566, g: 0.3243592, b: 0.3243592, a: 0}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
