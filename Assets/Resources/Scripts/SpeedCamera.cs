@@ -8,6 +8,8 @@ public class SpeedCamera : MonoBehaviour
 {
 #if UNITY_EDITOR
     [SerializeField] private List<Transform> _boundPoints = new List<Transform>();
+    [SerializeField] private float _boundRadius = 5f; // Radius for the sphere handles at the bound points
+    [SerializeField] private GameObject _colliderHolder; // Parent object to hold the trigger colliders
     [SerializeField] private bool _updateTriggers = false;
     private List<BoxCollider> _triggerColliders = new List<BoxCollider>();
     private List<Vector3> _lastBoundPositions = new List<Vector3>();
@@ -27,7 +29,7 @@ public class SpeedCamera : MonoBehaviour
                     i--; // Adjust index after removal
                     hasNullOrDuplicate = true;
                 }
-                if (_boundPoints.IndexOf(_boundPoints[i]) != i)
+                if (_boundPoints.Count > 0 && _boundPoints.IndexOf(_boundPoints[i]) != i)
                 {
                     DevLogger.LogWarning($"Duplicate bound point found: {_boundPoints[i].name}. Removing duplicate.");
                     _boundPoints.RemoveAt(i);
@@ -80,21 +82,22 @@ public class SpeedCamera : MonoBehaviour
     {
         yield return null; // Wait for the end of the frame
 
-        _triggerColliders = new List<BoxCollider>(GetComponents<BoxCollider>());
+        _triggerColliders = new List<BoxCollider>(GetComponentsInChildren<BoxCollider>());
         foreach (var collider in _triggerColliders)
         {
-            DestroyImmediate(collider);
+            DestroyImmediate(collider.gameObject);
         }
         _triggerColliders.Clear();
 
         for (int i = 1; i < BoundPointsInternal.Count; i++)
         {
-            _triggerColliders.Add(gameObject.AddComponent<BoxCollider>());
+            _triggerColliders.Add(new GameObject($"TriggerCollider_{i - 1}").AddComponent<BoxCollider>());
         }
 
         foreach (var collider in _triggerColliders)
         {
             collider.isTrigger = true;
+            collider.transform.SetParent(_colliderHolder.transform);
         }
 
         _lastBoundPositions.Clear();
@@ -130,7 +133,7 @@ public class SpeedCamera : MonoBehaviour
             }
         }
         if (!boundsChanged)
-            return; // No change in corner positions, no need to update
+            return; // No change in bound positions, no need to update
 
         _lastBoundPositions.Clear();
         foreach (var point in BoundPointsInternal)
@@ -138,19 +141,18 @@ public class SpeedCamera : MonoBehaviour
             _lastBoundPositions.Add(point.position);
         }
 
-        Vector3 currentCorner, nextCorner, center, size;
+        Vector3 currentBound, nextBound, position, scale;
 
         for (int i = 0; i < BoundPointsInternal.Count - 1; i++)
         {
-            currentCorner = BoundPointsInternal[i].position;
-            nextCorner = BoundPointsInternal[i + 1].position;
+            currentBound = BoundPointsInternal[i].position;
+            nextBound = BoundPointsInternal[i + 1].position;
 
-            center = (currentCorner + nextCorner) / 2;
-            center = transform.InverseTransformPoint(center);
-            size = new Vector3(Mathf.Abs(nextCorner.x - currentCorner.x), 20, Mathf.Abs(nextCorner.z - currentCorner.z));
-
-            _triggerColliders[i].center = center;
-            _triggerColliders[i].size = size;
+            position = (currentBound + nextBound) / 2;
+            scale = new Vector3(_boundRadius * 2, _boundRadius * 2, Vector3.Distance(currentBound, nextBound) + _boundRadius * 2);
+            _triggerColliders[i].transform.position = position;
+            _triggerColliders[i].transform.localScale = scale;
+            _triggerColliders[i].transform.rotation = Quaternion.LookRotation(nextBound - currentBound);
         }
     }
 
@@ -161,10 +163,15 @@ public class SpeedCamera : MonoBehaviour
         {
             Gizmos.DrawLine(BoundPointsInternal[i].position, BoundPointsInternal[i + 1].position);
         }
-        Gizmos.color = Color.green;
+
         foreach (var trigger in _triggerColliders)
         {
-            Gizmos.DrawWireCube(trigger.transform.TransformPoint(trigger.center), trigger.size);
+            if (trigger != null)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.matrix = trigger.transform.localToWorldMatrix;
+                Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+            }
         }
     }
 #endif
