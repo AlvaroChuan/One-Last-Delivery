@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 9046405830815967785}
   - component: {fileID: -4763735821570511397}
   m_Layer: 0
-  m_Name: Visual Car 3
+  m_Name: Car3_A
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -157,7 +157,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8355145430207058661}
-  m_Mesh: {fileID: 1261789430142750755, guid: d23c0c38d33068740bfd6c0cb8067cf8, type: 3}
+  m_Mesh: {fileID: 1261789430142750755, guid: ad52df001f3e6f7438176887f301943e, type: 3}
 --- !u!23 &7865587890961666685
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -181,11 +181,12 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3806505857497548946, guid: d23c0c38d33068740bfd6c0cb8067cf8, type: 3}
-  - {fileID: -4717423942690615098, guid: d23c0c38d33068740bfd6c0cb8067cf8, type: 3}
-  - {fileID: -65375683603449752, guid: d23c0c38d33068740bfd6c0cb8067cf8, type: 3}
-  - {fileID: -4776674738486492693, guid: d23c0c38d33068740bfd6c0cb8067cf8, type: 3}
-  - {fileID: -1490840691146882595, guid: d23c0c38d33068740bfd6c0cb8067cf8, type: 3}
+  - {fileID: 2100000, guid: 1766fa590b012b846a8079b2288060ed, type: 2}
+  - {fileID: 2100000, guid: 0ca0ae2b4f36cc54b9899c8ef2bc9102, type: 2}
+  - {fileID: 2100000, guid: 7cc0cec4b2fec9d4dba09ffa9fd94a24, type: 2}
+  - {fileID: 2100000, guid: 82d68edf207aac04d84e4c50dac67815, type: 2}
+  - {fileID: 2100000, guid: 71190a26830eda14889353125358a647, type: 2}
+  - {fileID: 2100000, guid: 13ebf7da8ddf4964d8c9ea5bb2d803ef, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

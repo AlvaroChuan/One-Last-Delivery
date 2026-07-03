@@ -110,6 +110,7 @@ Material:
     - _CellOffsetIntensity: 0.92
     - _CellOffsetNoise: 18.06
     - _Cull: 2
+    - _DayFactor: 0.6
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _FORWARD_PLUS: 1

@@ -221,6 +221,22 @@ MonoBehaviour:
   _trafficGraph: {fileID: 11400000, guid: c64605972c4fb89478de67935d96670e, type: 2}
   _vehiclePrefabs:
   - {fileID: 7680324919787913421, guid: 0e29eef36184a6549ba8bf7d5b20b8b9, type: 3}
+  - {fileID: 7680324919787913421, guid: de5678c6d4165f447ad8496c7970eea0, type: 3}
+  - {fileID: 7680324919787913421, guid: 87bc05a2c6a668c41a215e40c03b4ad1, type: 3}
+  - {fileID: 7680324919787913421, guid: b22ccd65757ae5e47bf99d586f26d84c, type: 3}
+  - {fileID: 7680324919787913421, guid: 660d49b0645001342b8bcc812d534356, type: 3}
+  - {fileID: 7680324919787913421, guid: 62aaa73251bf40c49b4aef7feadfe453, type: 3}
+  - {fileID: 7680324919787913421, guid: cb66087578477454ea8f66c405591038, type: 3}
+  - {fileID: 7680324919787913421, guid: 5ef7c6ef4ceded344a07691713988f19, type: 3}
+  - {fileID: 7680324919787913421, guid: f911e15cc92949346bceb59418010bf4, type: 3}
+  - {fileID: 7680324919787913421, guid: 23fdfe86516f16448ae68e2c180a40fc, type: 3}
+  - {fileID: 7680324919787913421, guid: 926c3746242c52f4598369f014d792ed, type: 3}
+  - {fileID: 7680324919787913421, guid: 08a50b4ccf6faa14c8fc5831719333cc, type: 3}
+  - {fileID: 7680324919787913421, guid: a42d0956ec4ac7b4088aad46936977ac, type: 3}
+  - {fileID: 7680324919787913421, guid: 9f887d62295b8bc45b1d2b67dade7af4, type: 3}
+  - {fileID: 7680324919787913421, guid: 838f6272913a27c45a45b850a9181c86, type: 3}
+  - {fileID: 7680324919787913421, guid: 512d51b469e810b4ea80b3e91ce66b3e, type: 3}
+  - {fileID: 7680324919787913421, guid: 89c38b9f3fc15f44ab3901aa47d42744, type: 3}
   _logicalCorrectionFactor: 0.1
   _logicalDistanceThreshold: 10
   _teleportDistanceThreshold: 15
