@@ -304,7 +304,6 @@ public class PlayerInventoryComponent : InputComponent
     {
         if (_carriedPackage != null)
         {
-            DevLogger.Log("Dropping package from player: " + netIdentity.connectionToClient.connectionId);
             PackageInteractionComponent packageInteraction = _carriedPackage.GetComponent<PackageInteractionComponent>();
             if (packageInteraction != null)
             {
