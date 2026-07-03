@@ -1433,9 +1433,9 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _bindInputsOnStart: 1
-  _sprintSpeedMultiplier: 3
+  _sprintSpeedMultiplier: 1.5
   _sprintStaminaRequirement: 10
-  _sprintStaminaCostPerSecond: 20
+  _sprintStaminaCostPerSecond: 15
   _staminaLockoutAfterSprint: 1
   _sprintInput: {fileID: -7471211009204490832, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &-3730698815220783982
@@ -1564,7 +1564,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _maxStamina: 100
-  _staminaRegenRate: 5
+  _staminaRegenRate: 12
 --- !u!114 &4208426610961486441
 MonoBehaviour:
   m_ObjectHideFlags: 0
