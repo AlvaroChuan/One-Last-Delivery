@@ -30,6 +30,7 @@ public class PlayerVoiceDeathComponent : PlayerComponent
     private void Start()
     {
         _playerVoiceProxyComponent = FindAnyObjectByType<ProxymityVoiceChatController>();
+        FindAnyObjectByType<ProxymityVoiceChatController>().StartVoiceChat();
     }
 
     void OnEnable()

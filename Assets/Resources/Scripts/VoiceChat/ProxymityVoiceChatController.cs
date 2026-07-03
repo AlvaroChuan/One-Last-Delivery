@@ -11,12 +11,6 @@ public class ProxymityVoiceChatController : BaseVoiceChat
     private void Start()
     {
         TAG = "[ProxymityVoiceChatController]";
-        if (HasSetUp) {
-            return;
-        }
-        HasSetUp = Setup();
-
-        StartCoroutine(DelayConfiguration());
     }
 
     private void OnDestroy()
@@ -38,6 +32,8 @@ public class ProxymityVoiceChatController : BaseVoiceChat
 
         Debug.unityLogger.Log(LogType.Log, TAG, $"numbre before of ids: {_client.PeerIDs.Count}");
         Debug.unityLogger.Log(LogType.Log, TAG, $"numbre before of ids2: {ClientSession.PeerOutputs.Keys.Count}");
+
+        StartCoroutine(DelayConfiguration());
 
 
         return true;
