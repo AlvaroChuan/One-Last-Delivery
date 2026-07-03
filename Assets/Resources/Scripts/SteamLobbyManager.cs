@@ -2,12 +2,14 @@ using System.Collections;
 using UnityEngine;
 using Mirror;
 using Steamworks;
+using UnityEngine.SceneManagement;
 
 public class SteamLobbyManager : MonoBehaviour
 {
     [SerializeField] private UIManager _uiManager;
     [SerializeField] private BaseVoiceChat _lobbyVoiceChat;
     [SerializeField] private string _gameSceneName = "GameScene";
+    [SerializeField] private string _lobbySceneName = "GraphicsMainMenu";
     protected Callback<LobbyCreated_t> lobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
     protected Callback<LobbyEnter_t> lobbyEntered;
@@ -36,7 +38,21 @@ public class SteamLobbyManager : MonoBehaviour
         lobbyList = Callback<LobbyMatchList_t>.Create(OnLobbyList);
         lobbyChatUpdate = Callback<LobbyChatUpdate_t>.Create(OnLobbyChatUpdate);
         lobbyDataUpdate = Callback<LobbyDataUpdate_t>.Create(OnLobbyDataUpdate);
-        if(_lobbyVoiceChat == null) _lobbyVoiceChat = _networkManager.GetComponent<BaseVoiceChat>();
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == _lobbySceneName)
+        {
+            if(_lobbyVoiceChat == null) _lobbyVoiceChat = FindAnyObjectByType<BaseVoiceChat>();
+            if(_uiManager == null) _uiManager = FindAnyObjectByType<UIManager>();
+        }
     }
 
     public void HostLobby(string lobbyName, string password)

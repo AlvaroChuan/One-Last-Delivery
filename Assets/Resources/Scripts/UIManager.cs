@@ -83,6 +83,11 @@ public class UIManager : MonoBehaviour
     private int _currentQualityIndex;
     private bool _pushToTalkEnabled;
 
+    void Awake()
+    {
+        _steamLobbyManager = FindAnyObjectByType<SteamLobbyManager>();
+    }
+
     public void Start()
     {
         ShowMainMenu();
