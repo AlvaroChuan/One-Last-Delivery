@@ -15,6 +15,8 @@ public class ProxymityVoiceChatController : BaseVoiceChat
             return;
         }
         HasSetUp = Setup();
+
+        StartCoroutine(DelayConfiguration());
     }
 
     private void OnDestroy()
@@ -26,14 +28,40 @@ public class ProxymityVoiceChatController : BaseVoiceChat
     {
         base.SetupClientSession();
 
-        Debug.unityLogger.Log(LogType.Log, TAG, $"numbre of ids: {_client.PeerIDs.Count}");
-        foreach (int peerId in _client.PeerIDs)
+        _client.OnJoined += (id, peerIds) =>
         {
-            StartCoroutine(ConfigureAudio(peerId));
-        }
+            foreach (int peerId in peerIds)
+            {
+                StartCoroutine(ConfigureAudio(peerId));
+            }
+        };
+
+        Debug.unityLogger.Log(LogType.Log, TAG, $"numbre before of ids: {_client.PeerIDs.Count}");
+        Debug.unityLogger.Log(LogType.Log, TAG, $"numbre before of ids2: {ClientSession.PeerOutputs.Keys.Count}");
 
 
         return true;
+    }
+
+    IEnumerator DelayConfiguration()
+    {
+        yield return new WaitForSeconds(5f);
+
+        PlayerVoiceDeathComponent[] players = FindObjectsByType<PlayerVoiceDeathComponent>(FindObjectsSortMode.None);
+        foreach (PlayerVoiceDeathComponent p in players)
+        {
+            int peerId = p.voiceId;
+
+            // Ignore the local player if needed, otherwise configure audio
+            if (!p.isLocalPlayer)
+            {
+                StartCoroutine(ConfigureAudio(peerId));
+            }
+            else
+            {
+                Debug.unityLogger.Log(LogType.Log, TAG, $"Se usa a si mismo");
+            }
+        }
     }
 
     private IEnumerator ConfigureAudio(int id)
