@@ -8,7 +8,7 @@ public class VoiceChatController : NetworkBehaviour
 {
     [SerializeField] private string _activeSceneName = "GameScene";
     [SerializeField] private float _distanceProximityChat = 10f;
-    [SerializeField] private BaseVoiceChat _voiceChat;
+    private static BaseVoiceChat VoiceChat;
     public static VoiceChatController Instance;
 
     private Dictionary<int, Transform> _peerIdToTransformMap = new Dictionary<int, Transform>();
@@ -21,6 +21,7 @@ public class VoiceChatController : NetworkBehaviour
         if (Instance == null)
         {
             Instance = this;
+            VoiceChat = FindAnyObjectByType<BaseVoiceChat>();
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -28,6 +29,7 @@ public class VoiceChatController : NetworkBehaviour
             Destroy(gameObject);
         }
 
+        SceneManager.activeSceneChanged -= OnSceneChanged;
         SceneManager.activeSceneChanged += OnSceneChanged;
     }
 
@@ -52,10 +54,10 @@ public class VoiceChatController : NetworkBehaviour
 
     void SetUpProximityVoiceChat()
     {
-        List<int> peerIds = _voiceChat.PeerIds;
+        List<int> peerIds = VoiceChat.PeerIds;
         foreach (var peerId in peerIds)
         {
-            var output = _voiceChat.Client.PeerOutputs[peerId];
+            var output = VoiceChat.Client.PeerOutputs[peerId];
             StreamedAudioSourceOutput streamedOutput = output as StreamedAudioSourceOutput;
             if (streamedOutput != null)
             {
@@ -69,13 +71,13 @@ public class VoiceChatController : NetworkBehaviour
 
     void SetUpGlobalVoiceChat()
     {
-        DevLogger.Log($"voiceChat != null: {_voiceChat != null}");
-        DevLogger.Log($"voiceChat.PeerIds != null: {_voiceChat.PeerIds != null}");
-        DevLogger.Log($"voiceChat.PeerIds.Count: {_voiceChat.PeerIds.Count}");
-        List<int> peerIds = _voiceChat.PeerIds;
+        DevLogger.Log($"voiceChat != null: {VoiceChat != null}");
+        DevLogger.Log($"voiceChat.PeerIds != null: {VoiceChat.PeerIds != null}");
+        DevLogger.Log($"voiceChat.PeerIds.Count: {VoiceChat.PeerIds.Count}");
+        List<int> peerIds = VoiceChat.PeerIds;
         foreach (var peerId in peerIds)
         {
-            var output = _voiceChat.Client.PeerOutputs[peerId];
+            var output = VoiceChat.Client.PeerOutputs[peerId];
             StreamedAudioSourceOutput streamedOutput = output as StreamedAudioSourceOutput;
             if (streamedOutput != null)
             {
@@ -102,7 +104,7 @@ public class VoiceChatController : NetworkBehaviour
 
             if (playerTransform == null) continue;
 
-            if(_voiceChat.Client.PeerOutputs.TryGetValue(peerId, out var output))
+            if(VoiceChat.Client.PeerOutputs.TryGetValue(peerId, out var output))
             {
                 StreamedAudioSourceOutput streamedOutput = output as StreamedAudioSourceOutput;
                 if (streamedOutput != null)
@@ -141,9 +143,9 @@ public class VoiceChatController : NetworkBehaviour
 
     void ApplySpectatorRules()
     {
-        foreach (var peer in _voiceChat.PeerIds)
+        foreach (var peer in VoiceChat.PeerIds)
         {
-            if (_voiceChat.Client.PeerOutputs.TryGetValue(peer, out var output))
+            if (VoiceChat.Client.PeerOutputs.TryGetValue(peer, out var output))
             {
                 StreamedAudioSourceOutput streamedOutput = output as StreamedAudioSourceOutput;
                 if (streamedOutput != null)
