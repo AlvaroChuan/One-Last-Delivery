@@ -29,8 +29,8 @@ public class Speedometer : NetworkBehaviour
 
     private void OnSpeedoMeterUpdate(float oldSpeed, float newSpeed)
     {
-        if (newSpeed == 0f) _speedText.text = "0 mph - N";
-        else if (newSpeed > 0f) _speedText.text = $"{Mathf.Abs(newSpeed):0} - mph D";
-        else _speedText.text = $"{Mathf.Abs(newSpeed):0} mph - R";
+        if (newSpeed >= 1) _speedText.text = $"{Mathf.Abs(newSpeed):0} mph - D";
+        else if (newSpeed <= -1) _speedText.text = $"{Mathf.Abs(newSpeed):0} mph - R";
+        else _speedText.text = "0 mph - N";
     }
 }

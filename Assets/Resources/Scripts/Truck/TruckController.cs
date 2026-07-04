@@ -65,6 +65,7 @@ public class TruckController : NetworkBehaviour
     [SerializeField] private Transform _rearLeftWheel;
     [SerializeField] private Transform _rearRightWheel;
 
+    private float _mpsToMph = 2.23694f; // Conversion factor from meters per second to miles per hour
     private Transform[] _wheels;
     private Rigidbody _vehicleRigidbody;
     Vector2 _movementInput;
@@ -116,8 +117,8 @@ public class TruckController : NetworkBehaviour
         if (isOwned)
         {
             float currentSpeed = Vector3.Dot(_vehicleRigidbody.transform.forward, _vehicleRigidbody.linearVelocity);
-            OnAccelerationChanged?.Invoke(new MovementInfo { acceleration = _movementInput.y, speed = currentSpeed });
-            OnSpeedChanged?.Invoke(new MovementInfo { acceleration = _movementInput.y, speed = currentSpeed });
+            OnAccelerationChanged?.Invoke(new MovementInfo { acceleration = _movementInput.y, speed = currentSpeed * _mpsToMph });
+            OnSpeedChanged?.Invoke(new MovementInfo { acceleration = _movementInput.y, speed = currentSpeed * _mpsToMph });
         }
 
         foreach (var wheel in _wheels)

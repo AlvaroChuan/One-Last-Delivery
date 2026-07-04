@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8435227641853236342}
   - component: {fileID: 3136670308677214365}
   - component: {fileID: 7964927216041003875}
+  - component: {fileID: 6020890720577709799}
   m_Layer: 11
   m_Name: SpeedCamera
   m_TagString: Untagged
@@ -91,6 +92,20 @@ MonoBehaviour:
   _speedLimit: 25
   _baseFineAmount: 10
   _finePerTenOverLimit: 10
+  _fineCooldownTime: 5
+--- !u!114 &6020890720577709799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7953247369953800264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 768a447f191f964429c57b2370ef9d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _disableChance: 0.5
 --- !u!1001 &4673169236243633264
 PrefabInstance:
   m_ObjectHideFlags: 0

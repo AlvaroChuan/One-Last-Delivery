@@ -47,6 +47,11 @@ public class PlayerHealthComponent : PlayerComponent
     [ClientRpc]
     public void RpcTakeDamage(float damage)
     {
+        TakeDamage(damage);
+    }
+
+    public void TakeDamage(float damage)
+    {
         if (!isLocalPlayer) return;
 
         if (_currentHealth <= 0)
@@ -70,25 +75,6 @@ public class PlayerHealthComponent : PlayerComponent
             _currentHealth = 0;
             Die();
         }
-    }
-
-    [ClientRpc]
-    public void RpcHeal(float healAmount)
-    {
-        if (!isLocalPlayer) return;
-
-        if (_currentHealth <= 0)
-            return;
-
-        float oldHealth = _currentHealth;
-        _currentHealth = Mathf.Min(_currentHealth + healAmount, _maxHealth);
-
-        onHealthChangedEvent?.Invoke(new HealthChangeInfo
-        {
-            oldHealth = oldHealth,
-            newHealth = _currentHealth,
-            maxHealth = _maxHealth
-        });
     }
 
     void Die()

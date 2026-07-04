@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 public class TrafficManager : NetworkBehaviour
 {
+    [SerializeField] private float _finePerCollision = 30f; // Fine amount for colliding with a car
     [Header("Simulation Settings")]
     [SerializeField] private TrafficGraph _trafficGraph;
     [SerializeField] private GameObject _wreckPrefab;
@@ -242,6 +243,8 @@ public class TrafficManager : NetworkBehaviour
 
     private void OnCrashCarMessage(NetworkConnectionToClient conn, ServerCarCrashCarMessage msg)
     {
+        BalanceManager.RegisterTransaction("Collision", -_finePerCollision);
+
         // 1. Despawn from Job System
         DespawnVehicle(msg.carId);
 
@@ -269,13 +272,13 @@ public class TrafficManager : NetworkBehaviour
         // Dynamically find and sort lights to prevent Unity scene-reference loss
         var allSceneLights = FindObjectsByType<TrafficLightController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         List<TrafficLightController> validLights = new List<TrafficLightController>();
-        foreach (var l in allSceneLights) 
+        foreach (var l in allSceneLights)
         {
             if (l.lightId != -1) validLights.Add(l);
         }
         validLights.Sort((a, b) => a.lightId.CompareTo(b.lightId));
         trafficLights = validLights.ToArray();
-        
+
         Debug.Log($"[TrafficManager] Found {allSceneLights.Length} lights in scene. {validLights.Count} have valid lightIds.");
 
         _edgeStates = new NativeArray<NativeEdge>(_trafficGraph.edges.Count, Allocator.Persistent);
