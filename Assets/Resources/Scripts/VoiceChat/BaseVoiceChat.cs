@@ -407,7 +407,7 @@ public class BaseVoiceChat : MonoBehaviour
         {
             _peerIds.Add(id);
 
-            (Client.PeerOutputs[id] as StreamedAudioSourceOutput).Stream.UnityAudioSource.transform.SetParent(transform);
+            //(Client.PeerOutputs[id] as StreamedAudioSourceOutput).Stream.UnityAudioSource.transform.SetParent(transform);
 
             Debug.unityLogger.Log(LogType.Log, TAG, $"Peer {id} joined voice chat");
         };
