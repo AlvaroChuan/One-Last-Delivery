@@ -207,6 +207,12 @@ public class SteamLobbyManager : MonoBehaviour
 
             SteamMatchmaking.LeaveLobby(_currentLobbyID);
             _currentLobbyID = CSteamID.Nil;
+            if(NetworkServer.active && NetworkClient.isConnected)
+                NetworkManager.singleton.StopHost();
+            else if(NetworkClient.isConnected)
+                NetworkManager.singleton.StopClient();
+            else
+                NetworkManager.singleton.StopServer();
         }
     }
 

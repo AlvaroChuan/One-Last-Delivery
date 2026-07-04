@@ -70,6 +70,8 @@ public class CustomNetworkManager : NetworkManager
     {
         base.OnClientDisconnect();
 
+        GetComponent<BaseVoiceChat>().StopVoiceChat();
+
         // Changes the scene locally for a client if they lose connection or if the host leaves
         if (SceneManager.GetActiveScene().name != "GraphicsMainMenu")
         {
