@@ -6,6 +6,12 @@ public class SpeedCamera : NetworkBehaviour
     [SerializeField] private float _speedLimit = 10f; // Speed limit in units per second
     [SerializeField] private float _baseFineAmount = 10f; // Fine amount for speeding
     [SerializeField] private float _finePerTenOverLimit = 10f; // Additional fine per 10 units over the speed limit
+
+    public void SetSpeedLimit(float speedLimit)
+    {
+        _speedLimit = speedLimit;
+    }
+
     void OnTriggerEnter(Collider other)
     {
         DevLogger.Log($"Truck entered speed zone: {other.name}");

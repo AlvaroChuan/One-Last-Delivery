@@ -67,11 +67,11 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 6, z: 22}
+  m_Size: {x: 1, y: 5, z: 22}
   m_Center: {x: 0, y: -3, z: 11}
 --- !u!114 &7964927216041003875
 MonoBehaviour:
@@ -91,7 +91,6 @@ MonoBehaviour:
   _speedLimit: 25
   _baseFineAmount: 10
   _finePerTenOverLimit: 10
-  _speedCheckInterval: 1
 --- !u!1001 &4673169236243633264
 PrefabInstance:
   m_ObjectHideFlags: 0
