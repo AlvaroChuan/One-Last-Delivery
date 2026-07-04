@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class SteamLobbyManager : MonoBehaviour
 {
     [SerializeField] private UIManager _uiManager;
-    [SerializeField] private BaseVoiceChat _lobbyVoiceChat;
+    [SerializeField] private BaseVoiceChat _voiceChat;
     [SerializeField] private string _gameSceneName = "GameScene";
     [SerializeField] private string _lobbySceneName = "GraphicsMainMenu";
     protected Callback<LobbyCreated_t> lobbyCreated;
@@ -50,7 +50,7 @@ public class SteamLobbyManager : MonoBehaviour
     {
         if (scene.name == _lobbySceneName)
         {
-            if(_lobbyVoiceChat == null) _lobbyVoiceChat = FindAnyObjectByType<BaseVoiceChat>();
+            if(_voiceChat == null) _voiceChat = FindAnyObjectByType<BaseVoiceChat>();
             if(_uiManager == null) _uiManager = FindAnyObjectByType<UIManager>();
         }
     }
@@ -68,8 +68,7 @@ public class SteamLobbyManager : MonoBehaviour
 
         _networkManager.StartHost();
 
-        if (_lobbyVoiceChat != null)
-            _lobbyVoiceChat.StartVoiceChat();
+        _voiceChat.StartVoiceChat();
 
         _currentLobbyID = (CSteamID)callback.m_ulSteamIDLobby;
 
@@ -172,7 +171,7 @@ public class SteamLobbyManager : MonoBehaviour
 
     public void ExitLobby()
     {
-        if (_lobbyVoiceChat != null) _lobbyVoiceChat.StopVoiceChat();
+        if (_voiceChat != null) _voiceChat.StopVoiceChat();
 
         if (NetworkServer.active && NetworkClient.isConnected)
         {
@@ -187,6 +186,13 @@ public class SteamLobbyManager : MonoBehaviour
             _networkManager.StopClient();
         }
         _uiManager.OnLobbyExit();
+
+        if (_startGameCoroutine != null)
+        {
+            StopCoroutine(_startGameCoroutine);
+            _startGameCoroutine = null;
+            _uiManager.UpdateCountdown();
+        }
     }
 
     public void LeaveAndCloseLobby()
@@ -235,7 +241,7 @@ public class SteamLobbyManager : MonoBehaviour
         _networkManager.networkAddress = hostAddress;
         _networkManager.StartClient();
 
-        if (_lobbyVoiceChat != null) _lobbyVoiceChat.StartVoiceChat();
+        if (_voiceChat != null) _voiceChat.StartVoiceChat();
 
         _uiManager.OnJoinedLobby();
         UpdatePlayerList();

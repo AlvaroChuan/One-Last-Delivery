@@ -20,7 +20,7 @@ public class OptionsMenu : MonoBehaviour
     [SerializeField] private Transform _optionsContent;
     [SerializeField] private KeyBinder _keyBindPrefab;
     [SerializeField] private InputActionReference[] _inputReferences;
-    [SerializeField] private BaseVoiceChat _voiceChat;
+    private BaseVoiceChat _voiceChat;
     private Resolution[] _resolutions;
     private List<Resolution> _filteredResolutions;
     private int _currentResolutionIndex;
@@ -28,6 +28,10 @@ public class OptionsMenu : MonoBehaviour
     private int _currentWindowModeIndex;
     private int _currentQualityIndex;
     private bool _pushToTalkEnabled;
+    void Awake()
+    {
+        _voiceChat = FindAnyObjectByType<BaseVoiceChat>();
+    }
     void Start()
     {
         AddListeners();

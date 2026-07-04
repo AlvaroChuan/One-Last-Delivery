@@ -1,42 +1,19 @@
 using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerVoiceLink))]
 [RequireComponent(typeof(PlayerDeathComponent))]
 public class PlayerVoiceDeathComponent : PlayerComponent
 {
-    ProxymityVoiceChatController _playerVoiceProxyComponent;
+    PlayerVoiceLink _playerVoiceLink;
     PlayerDeathComponent _deathComponent;
 
-    [SyncVar]
-    public int voiceId = -1;
-
-    [SyncVar]
-    public bool isAlive = true;
-
-    public override void OnStartServer()
-    {
-        base.OnStartServer();
-        if (connectionToClient != null)
-        {
-            voiceId = connectionToClient.connectionId;
-        }
-    }
+    [SyncVar(hook = nameof(OnSpectatorStatusChanged))] public bool isSpectator = false;
 
     void Awake()
     {
         _deathComponent = GetComponent<PlayerDeathComponent>();
-    }
-
-    private void Start()
-    {
-        _playerVoiceProxyComponent = FindAnyObjectByType<ProxymityVoiceChatController>();
-
-        if (isServer)
-        {
-            Debug.unityLogger.Log(LogType.Log, "[Proxymity]", $"Server Arranca");
-            FindAnyObjectByType<ProxymityVoiceChatController>().StartVoiceChat();
-            CmdNotifyJoinVoiceChat();
-        }
+        _playerVoiceLink = GetComponent<PlayerVoiceLink>();
     }
 
     void OnEnable()
@@ -52,31 +29,14 @@ public class PlayerVoiceDeathComponent : PlayerComponent
     [Command]
     public void CmdNotifyDeathOnNetwork()
     {
-        isAlive = false;
-        RpcAllPlayersUpdateAudio();
+        isSpectator = true;
     }
 
-    [ClientRpc]
-    private void RpcAllPlayersUpdateAudio()
+    void OnSpectatorStatusChanged(bool oldValue, bool newValue)
     {
-        if (_playerVoiceProxyComponent != null)
-            _playerVoiceProxyComponent.UpdateAudio();
-    }
-
-
-    [Command]
-    private void CmdNotifyJoinVoiceChat()
-    {
-        RcpJoinVoiceChat();
-    }
-
-    [ClientRpc]
-    private void RcpJoinVoiceChat()
-    {
-        if (!isServer)
+        if (newValue && _playerVoiceLink.voiceId != -1)
         {
-            Debug.unityLogger.Log(LogType.Log, "[Proxymity]", $"Cliente Arranca");
-            FindAnyObjectByType<ProxymityVoiceChatController>().StartVoiceChat();
+            VoiceChatController.Instance.SetSpectatorState(_playerVoiceLink.voiceId, true);
         }
     }
 }

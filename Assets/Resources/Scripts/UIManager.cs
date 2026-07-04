@@ -66,7 +66,6 @@ public class UIManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private SteamLobbyManager _steamLobbyManager;
-    [SerializeField] private BaseVoiceChat _lobbyVoiceChat;
     [SerializeField] private KeyBinder _keyBindPrefab;
 
     [Header("Controls")]
@@ -82,10 +81,13 @@ public class UIManager : MonoBehaviour
     private int _currentWindowModeIndex;
     private int _currentQualityIndex;
     private bool _pushToTalkEnabled;
+    private BaseVoiceChat _voiceChat;
+
 
     void Awake()
     {
         _steamLobbyManager = FindAnyObjectByType<SteamLobbyManager>();
+        _voiceChat = FindAnyObjectByType<BaseVoiceChat>();
     }
 
     public void Start()
@@ -469,20 +471,20 @@ public class UIManager : MonoBehaviour
     public void SetInputDevice(int deviceIndex)
     {
         PlayerPrefs.SetInt("InputDeviceIndex", deviceIndex);
-        _lobbyVoiceChat.ChangeMicrophone(deviceIndex);
+        _voiceChat.ChangeMicrophone(deviceIndex);
     }
 
     public void SetInputVolume(float volume)
     {
         PlayerPrefs.SetFloat("InputVolume", volume);
-        _lobbyVoiceChat.SetMicrophoneVolume(volume);
+        _voiceChat.SetMicrophoneVolume(volume);
     }
 
     public void SetPushToTalk(int pushToTalkIndex)
     {
         _pushToTalkEnabled = pushToTalkIndex == 1;
         PlayerPrefs.SetInt("PushToTalkEnabled", pushToTalkIndex);
-        _lobbyVoiceChat.SetPushToTalk(_pushToTalkEnabled);
+        _voiceChat.SetPushToTalk(_pushToTalkEnabled);
     }
 
     private IEnumerator PassPanelsAndSheets(int objectivePanelIndex)

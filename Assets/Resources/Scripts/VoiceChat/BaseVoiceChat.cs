@@ -1,10 +1,5 @@
 using System;
-using System.Linq;
-
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-
 using Adrenak.UniMic;
 using Adrenak.UniVoice;
 using Adrenak.UniVoice.Networks;
@@ -12,9 +7,12 @@ using Adrenak.UniVoice.Outputs;
 using Adrenak.UniVoice.Inputs;
 using Adrenak.UniVoice.Filters;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class BaseVoiceChat : MonoBehaviour
 {
+    public static event Action OnLocalPeerJoined;
+    public static int LocalPeerId { get; private set; } = -1;
     #region Constants
 
     protected string TAG = "[LobbyVoiceChat]";
@@ -82,6 +80,8 @@ public class BaseVoiceChat : MonoBehaviour
     public bool PushToTalkEnabled => _pushToTalkEnabled;
     public int CurrentMicrophoneIndex => _currentMicrophoneIndex;
     public float MicrophoneVolume => _microphoneVolume;
+    public List<int> PeerIds => _peerIds;
+    public ClientSession<int> Client => ClientSession;
 
     #endregion
 
@@ -92,6 +92,9 @@ public class BaseVoiceChat : MonoBehaviour
     private IAudioInput _currentInput;
 
     protected IAudioClient<int> _client;
+
+    private List<int> _peerIds = new List<int>();
+    private int _localPeerId = -1;
 
     #endregion
 
@@ -173,6 +176,10 @@ public class BaseVoiceChat : MonoBehaviour
 
         IsMuted = false;
         HasSetUp = false;
+
+        _localPeerId = -1;
+        LocalPeerId = -1;
+        _peerIds.Clear();
 
         Debug.unityLogger.Log(LogType.Log, TAG, "UniVoice stopped.");
     }
@@ -384,7 +391,11 @@ public class BaseVoiceChat : MonoBehaviour
 
         _client.OnJoined += (id, peerIds) =>
         {
+            _localPeerId = id;
+            LocalPeerId = id;
             Debug.unityLogger.Log(LogType.Log, TAG, $"You are Peer ID {id}");
+
+            OnLocalPeerJoined?.Invoke();
         };
 
         _client.OnLeft += () =>
@@ -394,6 +405,10 @@ public class BaseVoiceChat : MonoBehaviour
 
         _client.OnPeerJoined += id =>
         {
+            _peerIds.Add(id);
+
+            (Client.PeerOutputs[id] as StreamedAudioSourceOutput).Stream.UnityAudioSource.transform.SetParent(transform);
+
             Debug.unityLogger.Log(LogType.Log, TAG, $"Peer {id} joined voice chat");
         };
 
@@ -645,6 +660,7 @@ public class BaseVoiceChat : MonoBehaviour
 
             return _audioFrame;
         }
+
     }
 
     #endregion
