@@ -6,24 +6,43 @@ public class SpeedCamera : NetworkBehaviour
     [SerializeField] private float _speedLimit = 10f; // Speed limit in units per second
     [SerializeField] private float _baseFineAmount = 10f; // Fine amount for speeding
     [SerializeField] private float _finePerTenOverLimit = 10f; // Additional fine per 10 units over the speed limit
+    [SerializeField] private float _fineCooldownTime = 5f; // Cooldown time in seconds to prevent multiple fines for the same truck
+
+    bool _isOnCooldown = false;
+    float _cooldownTimer = 0f;
+
+    void Update()
+    {
+        if (_isOnCooldown)
+        {
+            _cooldownTimer += Time.deltaTime;
+            if (_cooldownTimer >= _fineCooldownTime)
+            {
+                _isOnCooldown = false;
+                _cooldownTimer = 0f;
+            }
+        }
+    }
 
     public void SetSpeedLimit(float speedLimit)
     {
         _speedLimit = speedLimit;
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerExit(Collider other)
     {
-        DevLogger.Log($"Truck entered speed zone: {other.name}");
+        if (_isOnCooldown) return;
+        _isOnCooldown = true;
 
-        Rigidbody rb = other.GetComponent<Rigidbody>();
+        Rigidbody rb = other.attachedRigidbody;
         Vector3 truckVelocity = rb.linearVelocity;
         truckVelocity.y = 0; // Ignore vertical speed
         float truckSpeed = truckVelocity.magnitude;
         if (truckSpeed > _speedLimit)
         {
-            Vector3 vecProduct = Vector3.Cross(other.transform.forward, transform.forward);
-            if (vecProduct.y > 0)
+            Vector3 vecProduct = Vector3.Cross(truckVelocity.normalized, transform.forward);
+            DevLogger.Log($"Cross Product Y: {vecProduct.y}");
+            if (vecProduct.y < 0)
             {
                 float speedOverLimit = truckSpeed - _speedLimit;
                 float fineAmount = _baseFineAmount + Mathf.Floor(speedOverLimit / 10f) * _finePerTenOverLimit;
