@@ -229,6 +229,7 @@ MonoBehaviour:
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs:
+  - {fileID: 4994518011696477468, guid: c72ae7dc10d53514bb25cfc53429e16b, type: 3}
   - {fileID: 2340398685216393081, guid: 0f6e0e673570db44dbdd63b38e2742ab, type: 3}
   - {fileID: 3626590714432623591, guid: 2ac8c80f493bb6a4ea408a722cfd7ae7, type: 3}
   - {fileID: 1865245426965013292, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
@@ -241,7 +242,9 @@ MonoBehaviour:
   - {fileID: 6030126412903574998, guid: c3b69f3eef5b3d840a67bcf25e613c57, type: 3}
   - {fileID: 6030126412903574998, guid: c17bd1a966515634d8c868af5345f378, type: 3}
   - {fileID: 6030126412903574998, guid: e7d8b0890447ccf4ba52ba7d4efb6ac4, type: 3}
+  - {fileID: 5188595553858114656, guid: ce4c0afbb40426f49af333d9a6e30c4b, type: 3}
   - {fileID: 2340398685216393081, guid: 7df7fa529d3550e409a97e6cb91eedcb, type: 3}
+  - {fileID: 7953247369953800264, guid: 80e3397949674b548943cea6cb498fa8, type: 3}
   - {fileID: 5126083997327050711, guid: bc5b8f0335182b34ab516dca7eee3fcb, type: 3}
   - {fileID: 184020480669936351, guid: 2355eb6e53a0e5045835a9d3d3c01dcc, type: 3}
   - {fileID: 3626590714432623591, guid: 9629c2b8feda0e546ac06e52a9403220, type: 3}
@@ -2298,7 +2301,6 @@ MonoBehaviour:
   _sfxVolumeSlider: {fileID: 349683614}
   _inputVolumeSlider: {fileID: 1641791908}
   _steamLobbyManager: {fileID: 81846152}
-  _lobbyVoiceChat: {fileID: 0}
   _keyBindPrefab: {fileID: 4961365561675677948, guid: 5d91e073a3798974ca0525498e1b3450, type: 3}
   _inputReferences:
   - {fileID: -1199959785099435234, guid: 052faaac586de48259a63d0c4782560b, type: 3}
@@ -2338,7 +2340,6 @@ MonoBehaviour:
   syncInterval: 0
   _activeSceneName: GameScene
   _distanceProximityChat: 10
-  _voiceChat: {fileID: 81846156}
 --- !u!4 &1937644282
 Transform:
   m_ObjectHideFlags: 0
