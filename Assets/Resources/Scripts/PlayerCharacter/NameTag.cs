@@ -12,6 +12,7 @@ public class NameTag : NetworkBehaviour
     public override void OnStartClient()
     {
         _nameText = GetComponent<TextMeshProUGUI>();
+        _nameText.text = _name;
         if (!isLocalPlayer) return;
 
         CmdSetName(SteamFriends.GetPersonaName());
