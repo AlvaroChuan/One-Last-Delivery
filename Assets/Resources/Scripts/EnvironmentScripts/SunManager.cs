@@ -4,7 +4,7 @@ using UnityEngine.Rendering.Universal;
 using System;
 using Mirror;
 
-[RequireComponent(typeof(Light))]
+[RequireComponent(typeof(UnityEngine.Light))]
 public class SunManager : NetworkBehaviour
 {
     public static Action OnNightfall;
@@ -72,7 +72,7 @@ public class SunManager : NetworkBehaviour
     [SerializeField] private Gradient _horizonColorGradient;
     [SerializeField] private Gradient _directionalLightColorGradient;
 
-    private Light _directionalLight;
+    private UnityEngine.Light _directionalLight;
     private float _cycleDurationSeconds;
     private float _currentStarsIntensity = 0f;
     private float _environmentTransitionProgress = 0f;
@@ -88,7 +88,7 @@ public class SunManager : NetworkBehaviour
 
     private void Start()
     {
-        _directionalLight = GetComponent<Light>();
+        _directionalLight = GetComponent<UnityEngine.Light>();
         _cycleDurationSeconds = _cycleDurationMinutes * 60f;
         _dynamicDayExposure = _dayExposureDefault;
 
