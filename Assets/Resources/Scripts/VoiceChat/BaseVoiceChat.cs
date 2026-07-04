@@ -168,7 +168,17 @@ public class BaseVoiceChat : MonoBehaviour
 
         StopCurrentMicrophone();
 
+        AudioServer?.Dispose();
+
         ClientSession?.Dispose();
+
+        GameObject mic = FindAnyObjectByType<Mic>()?.gameObject;
+        Destroy(mic);
+        MirrorModeObserver[] eventProviders = FindObjectsByType<MirrorModeObserver>(FindObjectsSortMode.None);
+        foreach (var provider in eventProviders)
+        {
+            Destroy(provider.gameObject);
+        }
 
         ClientSession = null;
         AudioServer = null;
