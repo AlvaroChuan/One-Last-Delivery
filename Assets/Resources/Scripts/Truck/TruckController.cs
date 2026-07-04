@@ -12,6 +12,12 @@ public class TruckController : NetworkBehaviour
         AllWheelDrive
     }
 
+    public struct MovementInfo
+    {
+        public float acceleration;
+        public float speed;
+    }
+
     [Header("Input")]
     [SerializeField] private InputActionReference _movementInputActionReference;
 
@@ -66,6 +72,10 @@ public class TruckController : NetworkBehaviour
 
     [SyncVar(hook = nameof(OnUpgradeStatsChanged))] private TruckStatsStruct _currentUpgradeStats;
 
+    public static Action<float> OnSteeringAngleChanged;
+    public static Action<MovementInfo> OnAccelerationChanged;
+    public static Action<MovementInfo> OnSpeedChanged;
+
     void Awake()
     {
         _vehicleRigidbody = GetComponent<Rigidbody>();
@@ -95,29 +105,20 @@ public class TruckController : NetworkBehaviour
         if (!isOwned) return;
 
         _movementInput = context.ReadValue<Vector2>();
-    }
-
-    private void Update()
-    {
-        if (!isOwned) return;
-
-        if (_movementInput.x != 0)
-        {
-            float steeringAngle = _maxSteeringAngle * Mathf.Sign(_movementInput.x);
-            _frontLeftWheel.localRotation = Quaternion.Slerp(_frontLeftWheel.localRotation, Quaternion.Euler(0f, steeringAngle, 0f), Time.deltaTime * _steeringSpeed);
-            _frontRightWheel.localRotation = Quaternion.Slerp(_frontRightWheel.localRotation, Quaternion.Euler(0f, steeringAngle, 0f), Time.deltaTime * _steeringSpeed);
-        }
-        else //return wheels to straight position when no input
-        {
-            _frontLeftWheel.localRotation = Quaternion.Slerp(_frontLeftWheel.localRotation, Quaternion.Euler(0f, 0f, 0f), Time.deltaTime * _steeringSpeed);
-            _frontRightWheel.localRotation = Quaternion.Slerp(_frontRightWheel.localRotation, Quaternion.Euler(0f, 0f, 0f), Time.deltaTime * _steeringSpeed);
-        }
+        OnSteeringAngleChanged?.Invoke(_movementInput.x);
     }
 
     private void FixedUpdate()
     {
         bool hasAuthority = isOwned || (isServer && netIdentity.connectionToClient == null);
         if (!hasAuthority) return;
+
+        if (isOwned)
+        {
+            float currentSpeed = Vector3.Dot(_vehicleRigidbody.transform.forward, _vehicleRigidbody.linearVelocity);
+            OnAccelerationChanged?.Invoke(new MovementInfo { acceleration = _movementInput.y, speed = currentSpeed });
+            OnSpeedChanged?.Invoke(new MovementInfo { acceleration = _movementInput.y, speed = currentSpeed });
+        }
 
         foreach (var wheel in _wheels)
         {
