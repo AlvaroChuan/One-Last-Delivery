@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
@@ -7,6 +8,7 @@ using UnityEngine;
 /// </summary>
 public class BalanceManager : MonoBehaviour
 {
+    public static Action<Transaction> OnTransactionRegistered;
     private static List<Transaction> Balance = new List<Transaction>();
     private void Awake()
     {
@@ -17,6 +19,7 @@ public class BalanceManager : MonoBehaviour
     {
         DevLogger.Log($"Registering transaction: {reason}: {amount}");
         Balance.Add(new Transaction(reason, amount));
+        OnTransactionRegistered?.Invoke(Balance[Balance.Count - 1]);
     }
 
     public static List<Transaction> GetBalance()
