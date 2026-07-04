@@ -21,4 +21,4 @@ MonoBehaviour:
     durabilityCost: 1
   _price: 20
   _itemName: Torch
-  _itemIcon: {fileID: 0}
+  _itemIcon: {fileID: 21300000, guid: 9cef8f26f679e974d97df2cf72455a1b, type: 3}

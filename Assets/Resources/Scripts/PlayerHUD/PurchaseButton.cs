@@ -73,7 +73,7 @@ public class PurchaseButton : MonoBehaviour
         _itemData = itemListing.ItemData;
         _price.text = Mathf.RoundToInt(itemListing.Price).ToString();
         _name.text = itemListing.ItemName;
-        _icon.sprite = itemListing.ItemIcon?.sprite;
+        _icon.sprite = itemListing.ItemIcon;
         _priceValue = itemListing.Price;
         _purchaseType = PurchaseType.Item;
     }

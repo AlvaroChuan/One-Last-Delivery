@@ -21,4 +21,4 @@ MonoBehaviour:
     durabilityCost: 5
   _price: 20
   _itemName: Walkie
-  _itemIcon: {fileID: 0}
+  _itemIcon: {fileID: 21300000, guid: 7ff42ccb28e873d4da222757f3a1732a, type: 3}
