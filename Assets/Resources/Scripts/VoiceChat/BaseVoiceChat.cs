@@ -168,6 +168,8 @@ public class BaseVoiceChat : MonoBehaviour
 
         StopCurrentMicrophone();
 
+        ClientSession?.Dispose();
+
         ClientSession = null;
         AudioServer = null;
 
