@@ -1307,8 +1307,9 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _sidewalkFineAmount: 10
-  _timeOnSidewalkThreshold: 2
+  _timeOnSidewalkThreshold: 1.5
   _sidewalkHeight: 0.15
+  _initialGracePeriod: 10
 --- !u!1 &2958880394431956936
 GameObject:
   m_ObjectHideFlags: 0
