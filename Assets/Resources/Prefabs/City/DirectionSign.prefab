@@ -1040,7 +1040,7 @@ GameObject:
   - component: {fileID: 2396582233654918141}
   - component: {fileID: 6083147893171175250}
   m_Layer: 0
-  m_Name: DirectionSign
+  m_Name: ModelSign
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
