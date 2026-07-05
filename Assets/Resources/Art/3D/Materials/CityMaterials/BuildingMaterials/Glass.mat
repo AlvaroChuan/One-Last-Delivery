@@ -120,7 +120,7 @@ Material:
     - _InnerErosionStrength: 3
     - _InnerErosionTiling: 2
     - _LIGHT_COOKIES: 1
-    - _LightFactor: 0.2
+    - _LightFactor: 0.386
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _MainTexBlend: 0
@@ -160,7 +160,7 @@ Material:
     m_Colors:
     - _CellTiling: {r: 1, g: 0.4, b: 0, a: 0}
     - _ColorA: {r: 0.44699994, g: 0.52859515, b: 0.59599996, a: 0}
-    - _ColorB: {r: 0.18807451, g: 0.6492362, b: 0.78039217, a: 1}
+    - _ColorB: {r: 0.38431373, g: 0.45882353, b: 0.5176471, a: 1}
     - _ColorC: {r: 0, g: 0, b: 0, a: 0}
     - _PaintColor: {r: 1, g: 1, b: 1, a: 0}
     - _ShadowColor: {r: 0.23945753, g: 0.30273077, b: 0.355, a: 0}
