@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class TrafficFader : MonoBehaviour
 {
+    public static Action OnCarsFadedOut;
     [SerializeField] Material[] _carMaterials;
     [SerializeField] private float _fadeDuration = 10.0f; // Duration of the fade effect in seconds
     Coroutine _fadeCoroutine;
@@ -60,5 +62,6 @@ public class TrafficFader : MonoBehaviour
             material.SetFloat("_FadeValue", 1.0f);
         }
         DevLogger.Log("Cars faded out completely.");
+        OnCarsFadedOut?.Invoke();
     }
 }
