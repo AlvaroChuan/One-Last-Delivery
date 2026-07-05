@@ -96,6 +96,7 @@ public class TruckSeat : Interactable
         }
         if (_isDriverSeat && player.TryGetComponent<PlayerInventoryComponent>(out var playerInventoryComponent))
         {
+            playerInventoryComponent.SetInventorySlot(-1); // Deselect any selected inventory slot when getting on the truck
             playerInventoryComponent.enabled = !isOnTruck;
         }
         if(isOnTruck)
