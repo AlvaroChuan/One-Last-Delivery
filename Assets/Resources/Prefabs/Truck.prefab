@@ -1094,7 +1094,7 @@ GameObject:
   - component: {fileID: 7675928165931119230}
   m_Layer: 12
   m_Name: Truck
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2927,7 +2927,7 @@ GameObject:
   - component: {fileID: 2964582406576512709}
   m_Layer: 12
   m_Name: Colliders
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
