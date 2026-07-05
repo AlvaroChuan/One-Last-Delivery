@@ -9,6 +9,8 @@ public class TrafficCollision : MonoBehaviour
     public uint CarId { get; set; }
     public float NetworkSpeed { get; set; }
 
+    bool _collided = false;
+
     private void OnCollisionEnter(Collision collision)
     {
         // Check if hit by a player
@@ -19,6 +21,9 @@ public class TrafficCollision : MonoBehaviour
             // Only the client controlling the player should send the crash message to prevent duplicates
             if (ni != null && ni.isOwned)
             {
+                if (_collided) return; // Prevent multiple collision messages for the same event
+
+                _collided = true;
                 Vector3 carVelocity = NetworkSpeed * transform.forward;
                 Vector3 relativeVelocity = collision.relativeVelocity - carVelocity;
                 float relativeVelocityMagnitude = relativeVelocity.magnitude;
