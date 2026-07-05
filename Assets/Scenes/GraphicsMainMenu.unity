@@ -2646,6 +2646,13 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 8
     m_NumAlphaKeys: 2
+  _glassMaterials:
+  - {fileID: 2100000, guid: d69c33a34dd6d9346ac2d5eb0e979ef5, type: 2}
+  - {fileID: 2100000, guid: 1766fa590b012b846a8079b2288060ed, type: 2}
+  - {fileID: 2100000, guid: b9a35948b36ef6b4c907c0f8a390b820, type: 2}
+  _glassColorPropertyName: _ColorB
+  _glassColorDay: {r: 0.23137255, g: 0.65882355, b: 0.78039217, a: 1}
+  _glassColorNight: {r: 0.38431373, g: 0.45882353, b: 0.5176471, a: 1}
 --- !u!1001 &1611140331
 PrefabInstance:
   m_ObjectHideFlags: 0

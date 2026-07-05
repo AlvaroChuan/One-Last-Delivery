@@ -72,6 +72,12 @@ public class LobbySunManager : MonoBehaviour
     [SerializeField] private Gradient _horizonColorGradient;
     [SerializeField] private Gradient _directionalLightColorGradient;
 
+    [Header("Glass Materials Settings")]
+    [SerializeField] private Material[] _glassMaterials;
+    [SerializeField] private string _glassColorPropertyName = "_ColorB";
+    [SerializeField] private Color _glassColorDay = Color.white;
+    [SerializeField] private Color _glassColorNight = Color.blue;
+
     private UnityEngine.Light _directionalLight;
     private float _cycleDurationSeconds;
     private float _currentStarsIntensity = 0f;
@@ -94,6 +100,17 @@ public class LobbySunManager : MonoBehaviour
 
         if (_globalVolume != null && _globalVolume.profile.TryGet(out _vignette))
         {
+        }
+
+        if (_glassMaterials != null && _glassMaterials.Length > 0)
+        {
+            for (int i = 0; i < _glassMaterials.Length; i++)
+            {
+                if (_glassMaterials[i] != null)
+                {
+                    _glassMaterials[i].SetColor(_glassColorPropertyName, _glassColorDay);
+                }
+            }
         }
 
         UpdateSunRotation(true);
@@ -274,6 +291,18 @@ public class LobbySunManager : MonoBehaviour
             _skyboxMaterial.SetFloat(_hdriExposurePropertyName, currentExposure);
             _skyboxMaterial.SetColor(_cloudsColorPropertyName, currentClouds);
             _skyboxMaterial.SetFloat(_fogHeightPropertyName, Mathf.Lerp(_fogHeightDay, _fogHeightNight, smoothProgress));
+        }
+
+        if (_glassMaterials != null && _glassMaterials.Length > 0)
+        {
+            Color currentGlassColor = Color.Lerp(_glassColorDay, _glassColorNight, smoothProgress);
+            for (int i = 0; i < _glassMaterials.Length; i++)
+            {
+                if (_glassMaterials[i] != null)
+                {
+                    _glassMaterials[i].SetColor(_glassColorPropertyName, currentGlassColor);
+                }
+            }
         }
 
         RenderSettings.fogDensity = Mathf.Lerp(_fogDensityDay, _fogDensityNight, smoothProgress);
