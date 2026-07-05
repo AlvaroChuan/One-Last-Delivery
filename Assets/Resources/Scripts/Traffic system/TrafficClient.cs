@@ -48,6 +48,7 @@ public class TrafficClient : MonoBehaviour
 
     private void Awake()
     {
+        TrafficFader.OnCarsFadedOut += StopTrafficAndRemoveAllCars;
         NetworkClient.RegisterHandler<TrafficBatchMessage>(OnTrafficBatchReceived);
         NetworkClient.RegisterHandler<ClientCarCrashCarMessage>(OnClientCarCrashCarReceived);
 
@@ -105,6 +106,8 @@ public class TrafficClient : MonoBehaviour
         if (_edges.IsCreated) _edges.Dispose();
         if (_states.IsCreated) _states.Dispose();
         if (_transformArray.isCreated) _transformArray.Dispose();
+
+        TrafficFader.OnCarsFadedOut -= StopTrafficAndRemoveAllCars;
     }
 
     private void OnTrafficBatchReceived(TrafficBatchMessage message)
@@ -245,6 +248,23 @@ public class TrafficClient : MonoBehaviour
             _indexToIdMap.RemoveAt(lastIndex);
             _idToIndexMap.Remove(id);
         }
+    }
+
+    public void StopTrafficAndRemoveAllCars()
+    {
+        foreach (var vehicle in _vehicles)
+        {
+            Destroy(vehicle.Value.gameObject);
+        }
+
+        _vehicles.Clear();
+        _vehicleLastUpdate.Clear();
+        _idToIndexMap.Clear();
+        _indexToIdMap.Clear();
+        _states.Clear();
+        NetworkClient.UnregisterHandler<TrafficBatchMessage>();
+        NetworkClient.UnregisterHandler<ClientCarCrashCarMessage>();
+        enabled = false;
     }
 
     private void OnClientCarCrashCarReceived(ClientCarCrashCarMessage message)

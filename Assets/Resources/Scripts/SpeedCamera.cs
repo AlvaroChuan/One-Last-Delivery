@@ -17,6 +17,11 @@ public class SpeedCamera : NetworkBehaviour
         SunManager.OnNightfall += DisableSpeedCamera;
     }
 
+    void OnDestroy()
+    {
+        SunManager.OnNightfall -= DisableSpeedCamera;
+    }
+
     private void DisableSpeedCamera()
     {
         GetComponent<Collider>().enabled = false;

@@ -59,6 +59,7 @@ public class TrafficManager : NetworkBehaviour
 
     public override void OnStartServer()
     {
+        TrafficFader.OnCarsFadedOut += StopTrafficAndRemoveAllCars;
         NetworkServer.RegisterHandler<ServerCarCrashCarMessage>(OnCrashCarMessage);
 
         InitializeGraph();
@@ -437,6 +438,26 @@ public class TrafficManager : NetworkBehaviour
         Debug.Log($"Initialized Pool: {_maxVehicleCapacity} capacity. Spawned: {carsToSpawn} initially.");
     }
 
+    public void StopTrafficAndRemoveAllCars()
+    {
+        if (!_vehicleStates.IsCreated) return;
+
+        for (int i = 0; i < _vehicleStates.Length; i++)
+        {
+            var v = _vehicleStates[i];
+            v.currentEdgeId = -1; // Mark as inactive
+            _vehicleStates[i] = v;
+        }
+
+        _edgeToVehiclesMap.Clear();
+
+        if (isServer)
+        {
+            NetworkServer.UnregisterHandler<ServerCarCrashCarMessage>();
+        }
+        enabled = false;
+    }
+
     private int GetEdgeIndexByID(int id)
     {
         if (id < 0) return -1;
@@ -467,5 +488,7 @@ public class TrafficManager : NetworkBehaviour
         if (_spatialGrid.IsCreated) _spatialGrid.Dispose();
         if (_dynamicObstacles.IsCreated) _dynamicObstacles.Dispose();
         if (_mappedObstacles.IsCreated) _mappedObstacles.Dispose();
+
+        TrafficFader.OnCarsFadedOut -= StopTrafficAndRemoveAllCars;
     }
 }
