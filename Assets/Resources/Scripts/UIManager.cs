@@ -530,7 +530,7 @@ public class UIManager : MonoBehaviour
     public IEnumerator ShowLoadingScreen()
     {
         _transitionAnimator.gameObject.SetActive(true);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
         _transitionAnimator.Play("InTransition");
     }
 }

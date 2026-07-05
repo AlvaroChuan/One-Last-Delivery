@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class InventorySlotUI : MonoBehaviour
 {
     [SerializeField] private Image _durabilityBar;
+    [SerializeField] private GameObject _durabilityBarGameObject;
     [SerializeField] private Image _itemIcon;
     [SerializeField] private float _selectedHeightOffset = 10f; // Offset for the selected slot
     [SerializeField] private float _animationDuration = 0.2f; // Duration of the animation
@@ -21,7 +22,7 @@ public class InventorySlotUI : MonoBehaviour
         {
             _itemIcon.sprite = null;
             _itemIcon.enabled = false; // Disable the icon if there's no item
-            _durabilityBar.fillAmount = 0f; // Empty bar for no item
+            _durabilityBarGameObject.SetActive(false);
         }
         else
         {
@@ -29,10 +30,11 @@ public class InventorySlotUI : MonoBehaviour
             _itemIcon.enabled = true; // Enable the icon if there's an item
             if (itemData.infiniteDurability)
             {
-                _durabilityBar.fillAmount = 1f; // Full bar for infinite durability
+                _durabilityBarGameObject.SetActive(false);
             }
             else
             {
+                _durabilityBarGameObject.SetActive(true);
                 _durabilityBar.fillAmount = Mathf.Clamp01(itemData.currentDurability / itemData.maxDurability);
             }
         }
