@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 106423857259495561}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.5, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.6719999, z: -1.074}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -459,6 +459,8 @@ MonoBehaviour:
   _openPosition: {x: -0.9472002, y: 0.9269416, z: -3.867}
   _openRotation: {x: 270, y: 209.99994, z: 0}
   _animationDuration: 0.5
+  _closeCollider: {fileID: 0}
+  _assignedSeat: {fileID: 0}
 --- !u!1 &1535419321003973565
 GameObject:
   m_ObjectHideFlags: 0
@@ -1308,7 +1310,7 @@ MonoBehaviour:
   syncInterval: 0
   _sidewalkFineAmount: 10
   _timeOnSidewalkThreshold: 1.5
-  _sidewalkHeight: 0.15
+  _sidewalkHeight: 0.1
   _initialGracePeriod: 10
 --- !u!1 &2958880394431956936
 GameObject:
@@ -1490,7 +1492,7 @@ Transform:
   m_GameObject: {fileID: 4088800375640776474}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.5, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.67199993, z: -1.074}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2754,6 +2756,7 @@ GameObject:
   - component: {fileID: 6526245948110820101}
   - component: {fileID: 7221847162951890828}
   - component: {fileID: 5013868013697827800}
+  - component: {fileID: 3480991243224367323}
   m_Layer: 3
   m_Name: Front Right Door
   m_TagString: Untagged
@@ -2903,6 +2906,29 @@ MonoBehaviour:
   _openPosition: {x: 1.471, y: 0.6904031, z: -1.471}
   _openRotation: {x: 270, y: 90, z: 0}
   _animationDuration: 0.5
+  _closeCollider: {fileID: 3480991243224367323}
+  _assignedSeat: {fileID: 1890931589405435656}
+--- !u!65 &3480991243224367323
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7040554873946963817}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.0019875, y: 0.12887119, z: 1.65}
+  m_Center: {x: -3.0022, y: 0.007452857, z: 2.74}
 --- !u!1 &7101644025673753134
 GameObject:
   m_ObjectHideFlags: 0
@@ -3669,6 +3695,7 @@ GameObject:
   - component: {fileID: 95921090364475053}
   - component: {fileID: 198463425828175461}
   - component: {fileID: 2818381707878348863}
+  - component: {fileID: 8742179113632861135}
   m_Layer: 3
   m_Name: Front Left Door
   m_TagString: Untagged
@@ -3818,6 +3845,29 @@ MonoBehaviour:
   _openPosition: {x: -1.471, y: 0.6904031, z: -1.471}
   _openRotation: {x: 270, y: 90, z: 0}
   _animationDuration: 0.5
+  _closeCollider: {fileID: 8742179113632861135}
+  _assignedSeat: {fileID: 2695905769666103715}
+--- !u!65 &8742179113632861135
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8078582964793858198}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.0019875, y: 0.12887119, z: 1.65}
+  m_Center: {x: -3.0022, y: 0.007452857, z: 2.74}
 --- !u!1 &8082656298700242941
 GameObject:
   m_ObjectHideFlags: 0
@@ -4252,6 +4302,8 @@ MonoBehaviour:
   _openPosition: {x: 0.9472002, y: 0.9269416, z: -3.867}
   _openRotation: {x: 270, y: 329.99994, z: 0}
   _animationDuration: 0.5
+  _closeCollider: {fileID: 0}
+  _assignedSeat: {fileID: 0}
 --- !u!1 &9193133479089208817
 GameObject:
   m_ObjectHideFlags: 0

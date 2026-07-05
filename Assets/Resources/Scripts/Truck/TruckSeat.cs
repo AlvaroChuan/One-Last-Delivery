@@ -13,6 +13,12 @@ public class TruckSeat : Interactable
     [SyncVar(hook = nameof(OnOccupantChanged))]
     GameObject _occupant;
     static List<GameObject> PlayersInTruck = new List<GameObject>();
+    private bool _canGetUp = true; // Flag to control if the player can get up from the seat
+    public bool CanGetUp
+    {
+        get => _canGetUp;
+        set => _canGetUp = value;
+    }
 
     private void OnOccupantChanged(GameObject oldOccupant, GameObject newOccupant)
     {
@@ -37,7 +43,7 @@ public class TruckSeat : Interactable
                 // If the old occupant is the local player, re-enable their input and colliders
                 SetPlayerInput(oldOccupant, false);
                 RaycastHit hit;
-                if (Physics.Raycast(_exitPosition.position + Vector3.up * 10f, Vector3.down, out hit, 20f))
+                if (Physics.Raycast(_exitPosition.position + Vector3.up, Vector3.down, out hit, 20f))
                 {
                     oldOccupant.transform.position = hit.point + Vector3.up; // Move the player to the ground below them
                 }
@@ -122,6 +128,7 @@ public class TruckSeat : Interactable
 
     private void OnGetUpPerformed(InputAction.CallbackContext context)
     {
+        if(!_canGetUp) return; // Seat is not enabled, ignore input
         if (_occupant == null) return; // No occupant to get up
 
         CmdGetUp();

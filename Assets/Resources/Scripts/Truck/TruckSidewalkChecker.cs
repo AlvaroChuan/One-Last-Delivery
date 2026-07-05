@@ -32,7 +32,7 @@ public class TruckSidewalkChecker : NetworkBehaviour
             if (_timeOnSidewalk >= _timeOnSidewalkThreshold)
             {
                 // Issue a fine to the player for driving on the sidewalk
-                BalanceManager.RegisterTransaction("Driving on the sidewalk", _sidewalkFineAmount);
+                BalanceManager.RegisterTransaction("Driving on the sidewalk", -_sidewalkFineAmount);
                 _timeOnSidewalk = 0f; // Reset the timer after issuing the fine
             }
         }

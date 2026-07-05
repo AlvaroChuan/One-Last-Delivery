@@ -26,6 +26,7 @@ public class BalanceUI : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI _resultsText;
     [SerializeField] private TextMeshProUGUI _previousMoneyText;
     [SerializeField] private float _animationDuration = 1f;
+    [SerializeField] private ScrollRect _scrollRect;
     [SyncVar(hook = nameof(OnBalanceChanged))] private List<Transaction> _balance;
     [SyncVar(hook = nameof(OnPreviousMoneyChanged))] private float _previousMoney = -1;
     [SyncVar(hook = nameof(OnReadyChanged))] private int _readyCount = 0;
@@ -107,6 +108,8 @@ public class BalanceUI : NetworkBehaviour
             _totalMoneyText.text = $"[{totalMoney:F2}]";
             _totalMoneyText.color = totalMoney >= 0 ? Color.black : Color.red;
 
+            ScrollToBottom();
+
             yield return _waitForAnimationDelay; // Wait for the next frame to allow UI to update
         }
 
@@ -118,6 +121,13 @@ public class BalanceUI : NetworkBehaviour
         {
             ProcessResults();
         }
+    }
+
+    void ScrollToBottom()
+    {
+        Canvas.ForceUpdateCanvases();
+        _scrollRect.verticalNormalizedPosition = 0f;
+        Canvas.ForceUpdateCanvases();
     }
 
     void ProcessResults()

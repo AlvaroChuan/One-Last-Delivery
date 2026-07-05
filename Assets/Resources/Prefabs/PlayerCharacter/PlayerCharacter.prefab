@@ -1253,6 +1253,7 @@ GameObject:
   - component: {fileID: 8613117895025778054}
   - component: {fileID: 3735697329787270073}
   - component: {fileID: -1360730053089287495}
+  - component: {fileID: 7704359510507146346}
   m_Layer: 7
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -1528,9 +1529,9 @@ MonoBehaviour:
   _interactInput: {fileID: -1688946743975941878, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   _interactionRange: 3
   _interactionSphereRadius: 0.1
-  _interactableLayerMask:
+  _interactionLayerMask:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 4105
 --- !u!114 &5617894696755801156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1601,8 +1602,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  voiceId: -1
-  isAlive: 1
+  isSpectator: 0
 --- !u!114 &2615629803135551852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1688,6 +1688,22 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!114 &7704359510507146346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6383342393515265997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85bc89718ebb79043ab65abad5a09146, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  voiceId: -1
 --- !u!1 &6716311414115863244
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,11 +6,13 @@ public abstract class Interactable : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdInteract(NetworkIdentity interactorIdentity)
     {
-        ServerInteract(interactorIdentity.gameObject);
+        if (enabled)
+            ServerInteract(interactorIdentity.gameObject);
     }
     public void LocalInteract(GameObject interactor)
     {
-        ClientInteraction(interactor);
+        if (enabled)
+            ClientInteraction(interactor);
     }
 
     /// <summary>

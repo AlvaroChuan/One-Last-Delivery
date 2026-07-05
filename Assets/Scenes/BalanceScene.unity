@@ -2981,6 +2981,7 @@ MonoBehaviour:
   _resultsText: {fileID: 1764608729}
   _previousMoneyText: {fileID: 1190492583}
   _animationDuration: 1
+  _scrollRect: {fileID: 1620869579}
 --- !u!4 &7210704425223880406
 Transform:
   m_ObjectHideFlags: 0

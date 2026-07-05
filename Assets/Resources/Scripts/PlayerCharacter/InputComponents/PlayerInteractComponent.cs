@@ -15,7 +15,7 @@ public class PlayerInteractComponent : InputComponent
     [SerializeField] private InputActionReference _interactInput;
     [SerializeField] private float _interactionRange = 3f;
     [SerializeField] private float _interactionSphereRadius = 0.1f;
-    [SerializeField] private LayerMask _interactableLayerMask;
+    [SerializeField] private LayerMask _interactionLayerMask = ~0;
     protected override void BindInputs()
     {
         if (!isLocalPlayer) return;
@@ -38,7 +38,7 @@ public class PlayerInteractComponent : InputComponent
 
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         RaycastHit hitInfo;
-        if (Physics.SphereCast(ray, _interactionSphereRadius, out hitInfo, _interactionRange, _interactableLayerMask))
+        if (Physics.SphereCast(ray, _interactionSphereRadius, out hitInfo, _interactionRange, _interactionLayerMask))
         {
             Interactable[] interactables = hitInfo.collider.GetComponents<Interactable>();
             interactables = interactables.Concat(hitInfo.collider.GetComponentsInParent<Interactable>()).Where(i => i != null).ToArray();
