@@ -16,11 +16,13 @@ public class TrafficLightController : MonoBehaviour
     }
 
     [HideInInspector] public int lightId = -1; // Assigned by the Baker
-    [HideInInspector] public ushort edgeId = 0xFFFF; // The edge this light controls
+    [HideInInspector] public ushort[] edgeIds = new ushort[0]; // The edges this light controls
     
     [Header("Phase")]
     public LightPhase phase; // Phase A or Phase B
 
+    [Header("Gizmos")]
+    public Vector3 searchOffset = Vector3.zero;
 
     [Header("Visuals")]
     public GameObject[] lights;

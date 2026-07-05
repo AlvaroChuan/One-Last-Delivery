@@ -15,6 +15,7 @@ public class TrafficGraphBaker : MonoBehaviour
     [SerializeField] float _intersectionClusterRadius = 50.0f;
     [SerializeField] float _laneDistanceThreshold = 5.0f;
     [SerializeField] float _knotMergeRadius = 1.0f;
+    [SerializeField] bool _showGizmos = true;
 
     private struct EndpointData
     {
@@ -373,28 +374,30 @@ public class TrafficGraphBaker : MonoBehaviour
         TrafficLightController[] allLights = FindObjectsByType<TrafficLightController>(FindObjectsSortMode.None);
         List<TrafficLightController> validLights = new List<TrafficLightController>();
         int lightIdCounter = 0;
+        HashSet<ushort> assignedEdges = new HashSet<ushort>();
         
         foreach (var light in allLights)
         {
-            float minDistance = float.MaxValue;
-            ushort closestEdge = 0xFFFF;
+            List<ushort> controlledEdges = new List<ushort>();
+            Vector3 center = light.transform.position + light.transform.TransformVector(light.searchOffset);
+
             foreach (var edge in _outputGraph.edges)
             {
                 // Traffic light is placed at the stop line, which is the END of the edge
                 Vector3 endPoint = edge.points[edge.points.Length - 1].position;
-                float dist = Vector3.Distance(light.transform.position, endPoint);
-                if (dist < minDistance && dist <_trafficLightSearchRadius)
+                float dist = Vector3.Distance(center, endPoint);
+                if (dist < _trafficLightSearchRadius && !assignedEdges.Contains(edge.id))
                 {
-                    minDistance = dist;
-                    closestEdge = edge.id;
+                    controlledEdges.Add(edge.id);
                 }
             }
             
-            if (closestEdge != 0xFFFF)
+            if (controlledEdges.Count > 0)
             {
+                foreach(var id in controlledEdges) assignedEdges.Add(id);
                 Undo.RecordObject(light, "Assign Traffic Light ID");
                 light.lightId = lightIdCounter++;
-                light.edgeId = closestEdge;
+                light.edgeIds = controlledEdges.ToArray();
                 EditorUtility.SetDirty(light);
                 PrefabUtility.RecordPrefabInstancePropertyModifications(light);
                 validLights.Add(light);
@@ -495,13 +498,17 @@ public class TrafficGraphBaker : MonoBehaviour
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
+        if (!_showGizmos) return;
+
         TrafficLightController[] allLights = FindObjectsByType<TrafficLightController>(FindObjectsSortMode.None);
         
         foreach (var light in allLights)
         {
+            Vector3 center = light.transform.position + light.transform.TransformVector(light.searchOffset);
+            
             // Draw the Search Radius (How far it looks for a lane)
             Handles.color = new Color(1f, 1f, 0f, 0.5f); // Semi-transparent yellow
-            Handles.DrawWireDisc(light.transform.position, Vector3.up, _trafficLightSearchRadius);
+            Handles.DrawWireDisc(center, Vector3.up, _trafficLightSearchRadius);
 
             // Draw the Cluster Radius (How far it looks for other lights)
             Handles.color = new Color(0f, 1f, 1f, 0.2f); // Semi-transparent cyan

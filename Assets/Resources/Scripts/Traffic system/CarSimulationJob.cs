@@ -77,7 +77,7 @@ public struct CarSimulationJob : IJobParallelFor
             }
         }
 
-        if (distanceToFront < safeDistance * 2f && vehicle.lastLaneChangeTime >= 5f)
+        if (vehicle.speed < maxSpeed * 0.9f && vehicle.lastLaneChangeTime >= 5f)
         {
             int bestTargetEdge = -1;
             float bestTargetLaneDistToFront = distanceToFront + (safeDistance * 1.5f); // Must be strictly better than this
@@ -141,15 +141,94 @@ public struct CarSimulationJob : IJobParallelFor
         float lookAhead = math.max(safeDistance, (vehicle.speed * vehicle.speed) / (2f * acceleration * 2f) + 2f);
         bool isAtRedLight = edgeStopSignals[vehicle.currentEdgeId] == 1;
 
+        int chosenNextEdgeId = -1;
+
         if (distanceToEnd < lookAhead && currentEdge.connectionCount > 0 && !isAtRedLight)
         {
             uint stableSeed = (uint)math.max(1, vehicle.id * 73856 + currentEdge.id * 19284);
             Random random = new Random(stableSeed);
-            int nextEdgeOffset = random.NextInt(0, currentEdge.connectionCount);
-            int nextEdgeId = connections[currentEdge.connectionStartIndex + nextEdgeOffset];
-            NativeEdge nextEdge = edges[nextEdgeId];
+            int startOffset = random.NextInt(0, currentEdge.connectionCount);
+            
+            bool finalHasConflict = true;
+            NativeEdge finalNextEdge = default;
 
-            // Check for vehicles in the next edge to brake if necessary
+            for (int attempt = 0; attempt < currentEdge.connectionCount; attempt++)
+            {
+                int offset = (startOffset + attempt) % currentEdge.connectionCount;
+                int candidateEdgeId = connections[currentEdge.connectionStartIndex + offset];
+                NativeEdge candidateEdge = edges[candidateEdgeId];
+                
+                bool hasConflict = false;
+                
+                // Only check conflicts if we are NOT already in the intersection
+                if (currentEdge.conflictCount == 0)
+                {
+                    unsafe
+                    {
+                        int* locksPtr = (int*)nodeLocks.GetUnsafePtr();
+                        int myLockValue = (int)currentEdge.id + 1; // Use approach lane ID to share lock with vehicles behind
+
+                        int currentLock = Interlocked.CompareExchange(ref locksPtr[candidateEdgeId], myLockValue, 0);
+                        bool ownsLock = currentLock == 0 || currentLock == myLockValue;
+
+                        if (!ownsLock) hasConflict = true;
+                        else
+                        {
+                            for (int i = 0; i < candidateEdge.conflictCount; i++)
+                            {
+                                ushort conflictId = conflicts[candidateEdge.conflictStartIndex + i];
+
+                                int confLock = Interlocked.CompareExchange(ref locksPtr[conflictId], 0, 0);
+                                if (confLock != 0 && confLock != myLockValue)
+                                {
+                                    if (confLock < myLockValue) // In case of tie, lower edge ID wins
+                                    {
+                                        hasConflict = true;
+                                        break;
+                                    }
+                                }
+
+                                if (vehicleMap.TryGetFirstValue(conflictId, out int confIdx, out NativeParallelMultiHashMapIterator<int> confIt))
+                                {
+                                    // Deadlock fix: If the conflicting edge has a RED light, cars on it are parked. Ignore them!
+                                    if (edgeStopSignals[conflictId] != 1)
+                                    {
+                                        hasConflict = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (hasConflict && currentLock == 0)
+                            {
+                                // Only release if WE were the ones who acquired it (not a shared lock from another car ahead)
+                                Interlocked.CompareExchange(ref locksPtr[candidateEdgeId], 0, myLockValue);
+                            }
+                        }
+                    }
+                }
+                
+                if (!hasConflict)
+                {
+                    chosenNextEdgeId = candidateEdgeId;
+                    finalNextEdge = candidateEdge;
+                    finalHasConflict = false;
+                    break; // Found an open path!
+                }
+            }
+
+            // If ALL paths are blocked, default to the original intended path so we wait at the correct spot
+            if (chosenNextEdgeId == -1)
+            {
+                chosenNextEdgeId = connections[currentEdge.connectionStartIndex + startOffset];
+                finalNextEdge = edges[chosenNextEdgeId];
+                finalHasConflict = true;
+            }
+
+            int nextEdgeId = chosenNextEdgeId;
+            NativeEdge nextEdge = finalNextEdge;
+
+            // Check for vehicles in the chosen next edge to brake if necessary
             if (vehicleMap.TryGetFirstValue(nextEdgeId, out int nextIdx, out NativeParallelMultiHashMapIterator<int> nextIt))
             {
                 do
@@ -180,49 +259,7 @@ public struct CarSimulationJob : IJobParallelFor
                 }
             }
 
-            // Check for conflicts in the intersection (simplified: if any conflicting edge has a vehicle, we have to wait)
-            bool hasConflict = false;
-            unsafe
-            {
-                int* locksPtr = (int*)nodeLocks.GetUnsafePtr();
-                int myLockValue = (int)currentEdge.id + 1; // Use approach lane ID to share lock with vehicles behind
-
-                int currentLock = Interlocked.CompareExchange(ref locksPtr[nextEdgeId], myLockValue, 0);
-                bool ownsLock = currentLock == 0 || currentLock == myLockValue;
-
-                if (!ownsLock) hasConflict = true;
-                else
-                {
-                    for (int i = 0; i < nextEdge.conflictCount; i++)
-                    {
-                        ushort conflictId = conflicts[nextEdge.conflictStartIndex + i];
-
-                        int confLock = Interlocked.CompareExchange(ref locksPtr[conflictId], 0, 0);
-                        if (confLock != 0 && confLock != myLockValue)
-                        {
-                            if (confLock < myLockValue) // In case of tie, lower edge ID wins
-                            {
-                                hasConflict = true;
-                                break;
-                            }
-                        }
-
-                        if (vehicleMap.TryGetFirstValue(conflictId, out int confIdx, out NativeParallelMultiHashMapIterator<int> confIt))
-                        {
-                            hasConflict = true;
-                            break;
-                        }
-                    }
-
-                    if (hasConflict && currentLock == 0)
-                    {
-                        // Only release if WE were the ones who acquired it (not a shared lock from another car ahead)
-                        Interlocked.CompareExchange(ref locksPtr[nextEdgeId], 0, myLockValue);
-                    }
-                }
-            }
-
-            if (hasConflict)
+            if (finalHasConflict)
             {
                 canEnterIntersection = false;
                 distanceToFront = math.min(distanceToFront, distanceToEnd);
@@ -230,10 +267,15 @@ public struct CarSimulationJob : IJobParallelFor
         }
 
         // Speed control logic
-        float dynamicSafeDistance = safeDistance + vehicle.speed * 1.0f;
+        float dynamicSafeDistance = safeDistance + vehicle.speed * 0.5f;
         if (distanceToFront < dynamicSafeDistance || !canEnterIntersection)
         {
-            vehicle.speed -= acceleration * 2f * deltaTime;
+            // Calculate EXACT required braking deceleration to reach 0 speed at exactly safeDistance
+            float distToBrake = math.max(0.1f, distanceToFront - safeDistance);
+            float requiredBrake = (vehicle.speed * vehicle.speed) / (2f * distToBrake);
+            float actualBrake = math.max(acceleration * 2f, requiredBrake);
+            
+            vehicle.speed -= actualBrake * deltaTime;
             if (vehicle.speed < 0f) vehicle.speed = 0f;
         }
         else
@@ -248,12 +290,17 @@ public struct CarSimulationJob : IJobParallelFor
         {
             if (currentEdge.connectionCount > 0 && canEnterIntersection)
             {
-                uint stableSeed = (uint)math.max(1, vehicle.id * 73856 + currentEdge.id * 19284);
-                Random random = new Random(stableSeed);
-                int nextEdgeOffset = random.NextInt(0, currentEdge.connectionCount);
-                int nextEdgeId = connections[currentEdge.connectionStartIndex + nextEdgeOffset];
-
-                vehicle.currentEdgeId = nextEdgeId;
+                if (chosenNextEdgeId != -1)
+                {
+                    vehicle.currentEdgeId = chosenNextEdgeId;
+                }
+                else
+                {
+                    uint stableSeed = (uint)math.max(1, vehicle.id * 73856 + currentEdge.id * 19284);
+                    Random random = new Random(stableSeed);
+                    int nextEdgeOffset = random.NextInt(0, currentEdge.connectionCount);
+                    vehicle.currentEdgeId = connections[currentEdge.connectionStartIndex + nextEdgeOffset];
+                }
                 vehicle.distance = 0f;
             }
             else

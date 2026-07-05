@@ -45,6 +45,8 @@ public class TrafficManager : NetworkBehaviour
     private NativeArray<NativeIntersection> _intersections;
     private NativeArray<int> _intersectionLightIds;
     private NativeArray<ushort> _lightToEdgeMapping;
+    private NativeArray<int> _lightToEdgeStartIndex;
+    private NativeArray<int> _lightToEdgeCount;
     private NativeArray<byte> _lightStates;
 
     // Spatial Grid for Dynamic Obstacles
@@ -86,6 +88,8 @@ public class TrafficManager : NetworkBehaviour
             intersections = _intersections,
             intersectionLightIds = _intersectionLightIds,
             lightToEdgeMapping = _lightToEdgeMapping,
+            lightToEdgeStartIndex = _lightToEdgeStartIndex,
+            lightToEdgeCount = _lightToEdgeCount,
             lightStates = _lightStates,
             edgeStopSignals = _edgeStopSignals,
             deltaTime = Time.deltaTime,
@@ -372,11 +376,23 @@ public class TrafficManager : NetworkBehaviour
         }
         _intersectionLightIds = new NativeArray<int>(allLightIds.ToArray(), Allocator.Persistent);
 
-        _lightToEdgeMapping = new NativeArray<ushort>(trafficLights.Length, Allocator.Persistent);
+        List<ushort> flatEdgeMapping = new List<ushort>();
+        _lightToEdgeStartIndex = new NativeArray<int>(trafficLights.Length, Allocator.Persistent);
+        _lightToEdgeCount = new NativeArray<int>(trafficLights.Length, Allocator.Persistent);
+
         for (int i = 0; i < trafficLights.Length; i++)
         {
-            _lightToEdgeMapping[i] = trafficLights[i] != null ? trafficLights[i].edgeId : (ushort)0xFFFF;
+            _lightToEdgeStartIndex[i] = flatEdgeMapping.Count;
+            int count = 0;
+            if (trafficLights[i] != null && trafficLights[i].edgeIds != null)
+            {
+                flatEdgeMapping.AddRange(trafficLights[i].edgeIds);
+                count = trafficLights[i].edgeIds.Length;
+            }
+            _lightToEdgeCount[i] = count;
         }
+        
+        _lightToEdgeMapping = new NativeArray<ushort>(flatEdgeMapping.ToArray(), Allocator.Persistent);
 
         _lightStates = new NativeArray<byte>(trafficLights.Length, Allocator.Persistent);
     }
@@ -483,6 +499,8 @@ public class TrafficManager : NetworkBehaviour
         if (_intersections.IsCreated) _intersections.Dispose();
         if (_intersectionLightIds.IsCreated) _intersectionLightIds.Dispose();
         if (_lightToEdgeMapping.IsCreated) _lightToEdgeMapping.Dispose();
+        if (_lightToEdgeStartIndex.IsCreated) _lightToEdgeStartIndex.Dispose();
+        if (_lightToEdgeCount.IsCreated) _lightToEdgeCount.Dispose();
         if (_lightStates.IsCreated) _lightStates.Dispose();
         if (_allPoints.IsCreated) _allPoints.Dispose();
         if (_spatialGrid.IsCreated) _spatialGrid.Dispose();
