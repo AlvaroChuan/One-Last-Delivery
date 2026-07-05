@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6976170459701134898}
   - component: {fileID: 8227465571552678054}
   - component: {fileID: 5234839964796977862}
+  - component: {fileID: 8624877790051745337}
   m_Layer: 0
   m_Name: TrafficManager
   m_TagString: Untagged
@@ -88,6 +89,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _finePerCollision: 30
   _trafficGraph: {fileID: 11400000, guid: c64605972c4fb89478de67935d96670e, type: 2}
   _wreckPrefab: {fileID: 7680324919787913421, guid: bb39f32f4cf7d5a478d17ecad2320608, type: 3}
   _initialVehiclesToSpawn: 1500
@@ -346,3 +348,29 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+--- !u!114 &8624877790051745337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1191736457431806603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e70490434757ba428e890a352c8fd80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _carMaterials:
+  - {fileID: 2100000, guid: 0ca0ae2b4f36cc54b9899c8ef2bc9102, type: 2}
+  - {fileID: 2100000, guid: 53841493ddff0f54d85584a0ac025205, type: 2}
+  - {fileID: 2100000, guid: ad3b1b8aedfd1a543a47063fd55ef515, type: 2}
+  - {fileID: 2100000, guid: 6bb7f229ceb6e5043a3e57dc835dc639, type: 2}
+  - {fileID: 2100000, guid: 571bf91ddce12c848afe1747db2891b7, type: 2}
+  - {fileID: 2100000, guid: 71437e35095c2ef409ebc197d11479a2, type: 2}
+  - {fileID: 2100000, guid: 1d8bec9a4bd049f419286851190b0c40, type: 2}
+  - {fileID: 2100000, guid: 71190a26830eda14889353125358a647, type: 2}
+  - {fileID: 2100000, guid: 13ebf7da8ddf4964d8c9ea5bb2d803ef, type: 2}
+  - {fileID: 2100000, guid: d69c33a34dd6d9346ac2d5eb0e979ef5, type: 2}
+  - {fileID: 2100000, guid: d68d97d1dd8c2a44abd9a65475127467, type: 2}
+  - {fileID: 2100000, guid: 5196beb622827f54fa128367421ea518, type: 2}
+  _fadeDuration: 1

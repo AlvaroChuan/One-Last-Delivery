@@ -21,12 +21,13 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: VehicleLight1
-  m_Shader: {fileID: -6465566751694194690, guid: ad89e01e130589e49bb2c9581c841d27, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: ffb90aae05b6aa942ba0d6a3ec0e8108, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _ADDITIONAL_LIGHTS
   - _ADDITIONAL_LIGHT_SHADOWS
+  - _ALPHATEST_ON
   - _FORWARD_PLUS
   - _LIGHT_COOKIES
   - _MAIN_LIGHT_SHADOWS
@@ -36,9 +37,9 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: 2450
   stringTagMap:
-    RenderType: Opaque
+    RenderType: TransparentCutout
   disabledShaderPasses:
   - MOTIONVECTORS
   m_LockedProperties: 
@@ -97,8 +98,8 @@ Material:
     m_Floats:
     - _ADDITIONAL_LIGHTS: 1
     - _ADDITIONAL_LIGHT_SHADOWS: 1
-    - _AlphaClip: 0
-    - _AlphaToMask: 0
+    - _AlphaClip: 1
+    - _AlphaToMask: 1
     - _AmbientColorFactor: 0.198
     - _AmbientFactorColor: 0.266
     - _Blend: 0
@@ -115,6 +116,7 @@ Material:
     - _DstBlendAlpha: 0
     - _FORWARD_PLUS: 1
     - _FPS: 12
+    - _FadeValue: 0
     - _HeightMapIntensity: 0
     - _InnerErosionStrength: 3
     - _InnerErosionTiling: 2

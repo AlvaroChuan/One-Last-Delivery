@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: VehicleG
+  m_Name: FadeGlass
   m_Shader: {fileID: -6465566751694194690, guid: ffb90aae05b6aa942ba0d6a3ec0e8108, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -37,7 +37,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2450
   stringTagMap:
     RenderType: TransparentCutout
   disabledShaderPasses:
@@ -100,7 +100,7 @@ Material:
     - _ADDITIONAL_LIGHT_SHADOWS: 1
     - _AlphaClip: 1
     - _AlphaToMask: 1
-    - _AmbientColorFactor: 0.198
+    - _AmbientColorFactor: 0.266
     - _Blend: 0
     - _CastShadows: 1
     - _CellAngle: 2
@@ -110,26 +110,27 @@ Material:
     - _CellOffsetIntensity: 0.92
     - _CellOffsetNoise: 18.06
     - _Cull: 2
-    - _DayFactor: 0.6
+    - _DayFactor: 0.5
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _FORWARD_PLUS: 1
     - _FPS: 12
     - _FadeValue: 0
-    - _HeightMapIntensity: 0
+    - _FogMultiplier: 0
+    - _HeightMapIntensity: 1
     - _InnerErosionStrength: 3
     - _InnerErosionTiling: 2
     - _LIGHT_COOKIES: 1
-    - _LightFactor: 0.08
+    - _LightFactor: 0.2
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _MainTexBlend: 0
-    - _MainTexIntensity: 2
+    - _MainTexIntensity: 0
     - _MetallicFactor: 0
-    - _NormalNoise: 161
-    - _NormalStrength: 0.3
-    - _PaintIntensity: 0.17
-    - _PaintScale: 0.32
+    - _NormalNoise: 53
+    - _NormalStrength: 0.01
+    - _PaintIntensity: 0.07
+    - _PaintScale: 0.12
     - _PencilThreshold1: 0.1
     - _PencilThreshold2: 0.32
     - _PencilThreshold3: 0.45
@@ -147,23 +148,23 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _TexTiling: 1
-    - _TextureTiling: 0.16
+    - _TextureTiling: 1
     - _Threshold: 0
-    - _ThresholdA: 2
+    - _ThresholdA: 1
     - _ThresholdB: 0.25
     - _ThresholdC: 0.5
     - _WaveNoise: 0
-    - _WaveOffset: 10
+    - _WaveOffset: 0
     - _ZTest: 4
     - _ZWrite: 1
     - _ZWriteControl: 0
     m_Colors:
     - _CellTiling: {r: 1, g: 0.4, b: 0, a: 0}
-    - _ColorA: {r: 0.3647059, g: 0.7803922, b: 0.9058824, a: 0}
-    - _ColorB: {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 0}
+    - _ColorA: {r: 0.44699994, g: 0.52859515, b: 0.59599996, a: 0}
+    - _ColorB: {r: 0.38425595, g: 0.45787185, b: 0.5188679, a: 0}
     - _ColorC: {r: 0, g: 0, b: 0, a: 0}
-    - _PaintColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 0}
-    - _ShadowColor: {r: 0.2735849, g: 0.2735849, b: 0.2735849, a: 0}
+    - _PaintColor: {r: 1, g: 1, b: 1, a: 0}
+    - _ShadowColor: {r: 0.23945753, g: 0.30273077, b: 0.355, a: 0}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

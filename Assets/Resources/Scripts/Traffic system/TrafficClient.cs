@@ -42,7 +42,7 @@ public class TrafficClient : MonoBehaviour
 
     private Dictionary<uint, int> _idToIndexMap = new Dictionary<uint, int>();
     private List<uint> _indexToIdMap = new List<uint>();
-    
+
     private Dictionary<uint, VisualVehicle> _vehicles = new Dictionary<uint, VisualVehicle>();
     private Dictionary<uint, float> _vehicleLastUpdate = new Dictionary<uint, float>();
 
@@ -59,7 +59,7 @@ public class TrafficClient : MonoBehaviour
         trafficLights = validLights.ToArray();
 
         InitializeGraphNativeArrays();
-        
+
         _states = new NativeList<VehicleVisualState>(1000, Allocator.Persistent);
         _transformArray = new TransformAccessArray(1000);
     }
@@ -67,7 +67,7 @@ public class TrafficClient : MonoBehaviour
     private void InitializeGraphNativeArrays()
     {
         if (_trafficGraph == null || _trafficGraph.edges == null) return;
-        
+
         int totalNodes = 0;
         foreach (var edge in _trafficGraph.edges) totalNodes += edge.points.Length;
 
@@ -229,13 +229,13 @@ public class TrafficClient : MonoBehaviour
             int lastIndex = _states.Length - 1;
 
             _transformArray.RemoveAtSwapBack(index);
-            
+
             // If the element removed was not the last one, update the swapped element's index map
             if (index != lastIndex)
             {
                 VehicleVisualState lastState = _states[lastIndex];
                 _states[index] = lastState;
-                
+
                 uint swappedId = _indexToIdMap[lastIndex];
                 _idToIndexMap[swappedId] = index;
                 _indexToIdMap[index] = swappedId;

@@ -114,6 +114,7 @@ Material:
     - _DstBlendAlpha: 0
     - _FORWARD_PLUS: 1
     - _FPS: 12
+    - _FadeValue: 0
     - _HeightMapIntensity: 0
     - _InnerErosionStrength: 3
     - _InnerErosionTiling: 2
