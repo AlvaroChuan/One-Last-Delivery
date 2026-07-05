@@ -147,7 +147,7 @@ Material:
     - _TexTiling: 1
     - _TextureTiling: 1
     - _Threshold: 0
-    - _ThresholdA: 1
+    - _ThresholdA: 2.05
     - _ThresholdB: 0.25
     - _ThresholdC: 0.5
     - _WaveNoise: 7.7
