@@ -7,7 +7,9 @@ public struct TrafficLightSimulationJob : IJobParallelFor
 {
     public NativeArray<NativeIntersection> intersections;
     [ReadOnly] public NativeArray<int> intersectionLightIds;
-    [ReadOnly] public NativeArray<ushort> lightToEdgeMapping; // lightId -> edgeId
+    [ReadOnly] public NativeArray<ushort> lightToEdgeMapping; // Flat array of all controlled edges
+    [ReadOnly] public NativeArray<int> lightToEdgeStartIndex;
+    [ReadOnly] public NativeArray<int> lightToEdgeCount;
     
     [NativeDisableParallelForRestriction] public NativeArray<byte> lightStates;
     [NativeDisableParallelForRestriction] public NativeArray<byte> edgeStopSignals;
@@ -66,9 +68,12 @@ public struct TrafficLightSimulationJob : IJobParallelFor
         {
             int lightId = intersectionLightIds[intersection.phaseAStartIndex + i];
             lightStates[lightId] = phaseAState;
-            ushort edgeId = lightToEdgeMapping[lightId];
-            if (edgeId != 0xFFFF)
+            
+            int startIdx = lightToEdgeStartIndex[lightId];
+            int count = lightToEdgeCount[lightId];
+            for (int e = 0; e < count; e++)
             {
+                ushort edgeId = lightToEdgeMapping[startIdx + e];
                 edgeStopSignals[edgeId] = (phaseAState == 1 || phaseAState == 2) ? (byte)1 : (byte)0;
             }
         }
@@ -78,9 +83,12 @@ public struct TrafficLightSimulationJob : IJobParallelFor
         {
             int lightId = intersectionLightIds[intersection.phaseBStartIndex + i];
             lightStates[lightId] = phaseBState;
-            ushort edgeId = lightToEdgeMapping[lightId];
-            if (edgeId != 0xFFFF)
+            
+            int startIdx = lightToEdgeStartIndex[lightId];
+            int count = lightToEdgeCount[lightId];
+            for (int e = 0; e < count; e++)
             {
+                ushort edgeId = lightToEdgeMapping[startIdx + e];
                 edgeStopSignals[edgeId] = (phaseBState == 1 || phaseBState == 2) ? (byte)1 : (byte)0;
             }
         }
