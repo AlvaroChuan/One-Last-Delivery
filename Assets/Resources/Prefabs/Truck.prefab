@@ -1091,6 +1091,7 @@ GameObject:
   - component: {fileID: 7503893881625129648}
   - component: {fileID: 8230852734623474739}
   - component: {fileID: 9063974721962446835}
+  - component: {fileID: 7675928165931119230}
   m_Layer: 12
   m_Name: Truck
   m_TagString: Untagged
@@ -1290,6 +1291,24 @@ MonoBehaviour:
   _frontRightWheel: {fileID: 4223761235790611117}
   _rearLeftWheel: {fileID: 3838480323859670340}
   _rearRightWheel: {fileID: 6204070165017977666}
+--- !u!114 &7675928165931119230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2692446500960853747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1452e1939082bf24e92889223ec07ada, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _sidewalkFineAmount: 10
+  _timeOnSidewalkThreshold: 2
+  _sidewalkHeight: 0.15
 --- !u!1 &2958880394431956936
 GameObject:
   m_ObjectHideFlags: 0
