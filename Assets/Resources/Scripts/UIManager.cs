@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine.InputSystem;
+using UnityEngine.Audio;
 
 public class UIManager : MonoBehaviour
 {
@@ -63,6 +64,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Slider _musicVolumeSlider;
     [SerializeField] private Slider _sfxVolumeSlider;
     [SerializeField] private Slider _inputVolumeSlider;
+    [SerializeField] private AudioMixerGroup _masterMixerGroup;
+    [SerializeField] private AudioMixerGroup _musicMixerGroup;
+    [SerializeField] private AudioMixerGroup _sfxMixerGroup;
 
     [Header("References")]
     [SerializeField] private SteamLobbyManager _steamLobbyManager;

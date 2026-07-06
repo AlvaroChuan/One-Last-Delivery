@@ -732,6 +732,68 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7206087876014289064, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
   m_PrefabInstance: {fileID: 6611141109885885893}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &196425156
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 196425159}
+  - component: {fileID: 196425158}
+  - component: {fileID: 196425157}
+  m_Layer: 0
+  m_Name: MusicPlayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &196425157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196425156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cb696a63d9fd5b46a0c0c74c8110fa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mainMenuSceneName: GraphicsMainMenu
+  _gameSceneName: GameScene
+  _balanceSceneName: BalanceScene
+--- !u!114 &196425158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196425156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ee1305799bed564db286d6314300410, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mixerGroup: {fileID: 243093888839763902, guid: 89ef2123a31ebe547959c299198012c1, type: 2}
+  _musicClips: []
+--- !u!4 &196425159
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196425156}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -762.57477, y: -3.3493986, z: -680.4947}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &321495961
 GameObject:
   m_ObjectHideFlags: 0
@@ -3626,6 +3688,9 @@ MonoBehaviour:
   _musicVolumeSlider: {fileID: 1554898414}
   _sfxVolumeSlider: {fileID: 349683614}
   _inputVolumeSlider: {fileID: 1641791908}
+  _masterMixerGroup: {fileID: 0}
+  _musicMixerGroup: {fileID: 0}
+  _sfxMixerGroup: {fileID: 0}
   _steamLobbyManager: {fileID: 81846152}
   _keyBindPrefab: {fileID: 4961365561675677948, guid: 5d91e073a3798974ca0525498e1b3450, type: 3}
   _inputReferences:
@@ -53467,3 +53532,4 @@ SceneRoots:
   - {fileID: 505287126}
   - {fileID: 1937644282}
   - {fileID: 1946306170}
+  - {fileID: 196425159}
