@@ -68,12 +68,13 @@ MonoBehaviour:
   _outputGraph: {fileID: 11400000, guid: c64605972c4fb89478de67935d96670e, type: 2}
   _splineContainers:
   - {fileID: 0}
-  _pointsPerEdge: 100
+  _pointsPerEdge: 75
   _connectionThreshold: 1
-  _trafficLightSearchRadius: 15
-  _intersectionClusterRadius: 50
+  _trafficLightSearchRadius: 4
+  _intersectionClusterRadius: 28.1
   _laneDistanceThreshold: 5
   _knotMergeRadius: 1
+  _showGizmos: 0
 --- !u!114 &8227465571552678054
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,13 +92,28 @@ MonoBehaviour:
   syncInterval: 0
   _finePerCollision: 30
   _trafficGraph: {fileID: 11400000, guid: c64605972c4fb89478de67935d96670e, type: 2}
-  _wreckPrefab: {fileID: 7680324919787913421, guid: bb39f32f4cf7d5a478d17ecad2320608, type: 3}
-  _initialVehiclesToSpawn: 1500
-  _maxVehicleCapacity: 2000
-  _vehicleMaxSpeed: 20
-  _vehicleAcceleration: 5
-  _safeDistance: 5
-  _spawnSpacing: 15
+  _vehiclePrefabs:
+  - {fileID: 4473275926494619251, guid: fda3655d6a67bb34f964fa0015104a8b, type: 3}
+  - {fileID: 7711151346020062612, guid: 41720e87daf4bf34f879d403e0c07d20, type: 3}
+  - {fileID: 6482473297988652326, guid: 3696c94465c4d8c458352e812b639102, type: 3}
+  - {fileID: 1893809515966240059, guid: c283dd96d9f864b43a564b6f90e1a1cc, type: 3}
+  - {fileID: 7475868171406378635, guid: 8ca10d5cd99acac458a18039c78c84ac, type: 3}
+  - {fileID: 4464517272551291613, guid: 1f9007c4f83138442b6a04652f531b75, type: 3}
+  - {fileID: 4883081329174324740, guid: 45e48b3051c0d8a4185bbabc90882eba, type: 3}
+  - {fileID: 4647908638652691856, guid: 26f67d62f26326143b84471d3218ec02, type: 3}
+  - {fileID: 4650079510120236315, guid: eba2cb086f9f8ef47b70de483b96e652, type: 3}
+  - {fileID: 542098978035181770, guid: 5060ab37759c6b54ead8e20bc00a4265, type: 3}
+  - {fileID: 5733561760394479361, guid: 54b2aa4b57edb2b4e8c7b2b173aaa3fc, type: 3}
+  - {fileID: 7100548700004466356, guid: ee26ae687c8f8b24d87d1482b44b6df1, type: 3}
+  - {fileID: 44630737031633487, guid: 0729698161209fe4c85066084d3a9cf0, type: 3}
+  - {fileID: 3010820056347056830, guid: 3b27be64d2f4a494eb3f28a690213c8f, type: 3}
+  - {fileID: 240421667584557637, guid: f1934ad8ff5e20342a26d08f5723fb65, type: 3}
+  - {fileID: 8264192800819283755, guid: 928275e45568b204489bcf1096d10373, type: 3}
+  - {fileID: 3995983753270083228, guid: 159e868828d96194d9cf29448cd16a64, type: 3}
+  - {fileID: 4352286928480756489, guid: 49c9f24ef30792c47a964fafa8f54730, type: 3}
+  _initialVehiclesToSpawn: 500
+  _maxVehicleCapacity: 1000
+  _spawnSpacing: 10
   _respawnEdgeId: 0
   _networkTickRate: 0.1
   _maxBatchSize: 100
@@ -105,7 +121,7 @@ MonoBehaviour:
   _yellowTime: 3
   _bothRedTime: 1
   _spatialGridCellSize: 20
-  _obstacleSnapDistance: 5
+  _obstacleSnapDistance: 2
   trafficLights:
   - {fileID: 0}
   - {fileID: 0}
@@ -222,23 +238,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _trafficGraph: {fileID: 11400000, guid: c64605972c4fb89478de67935d96670e, type: 2}
   _vehiclePrefabs:
-  - {fileID: 7680324919787913421, guid: 0e29eef36184a6549ba8bf7d5b20b8b9, type: 3}
-  - {fileID: 7680324919787913421, guid: de5678c6d4165f447ad8496c7970eea0, type: 3}
-  - {fileID: 7680324919787913421, guid: 87bc05a2c6a668c41a215e40c03b4ad1, type: 3}
-  - {fileID: 7680324919787913421, guid: b22ccd65757ae5e47bf99d586f26d84c, type: 3}
-  - {fileID: 7680324919787913421, guid: 660d49b0645001342b8bcc812d534356, type: 3}
-  - {fileID: 7680324919787913421, guid: 62aaa73251bf40c49b4aef7feadfe453, type: 3}
-  - {fileID: 7680324919787913421, guid: cb66087578477454ea8f66c405591038, type: 3}
-  - {fileID: 7680324919787913421, guid: 5ef7c6ef4ceded344a07691713988f19, type: 3}
-  - {fileID: 7680324919787913421, guid: f911e15cc92949346bceb59418010bf4, type: 3}
-  - {fileID: 7680324919787913421, guid: 23fdfe86516f16448ae68e2c180a40fc, type: 3}
-  - {fileID: 7680324919787913421, guid: 926c3746242c52f4598369f014d792ed, type: 3}
-  - {fileID: 7680324919787913421, guid: 08a50b4ccf6faa14c8fc5831719333cc, type: 3}
-  - {fileID: 7680324919787913421, guid: a42d0956ec4ac7b4088aad46936977ac, type: 3}
-  - {fileID: 7680324919787913421, guid: 9f887d62295b8bc45b1d2b67dade7af4, type: 3}
-  - {fileID: 7680324919787913421, guid: 838f6272913a27c45a45b850a9181c86, type: 3}
-  - {fileID: 7680324919787913421, guid: 512d51b469e810b4ea80b3e91ce66b3e, type: 3}
-  - {fileID: 7680324919787913421, guid: 89c38b9f3fc15f44ab3901aa47d42744, type: 3}
+  - {fileID: 4473275926494619251, guid: fda3655d6a67bb34f964fa0015104a8b, type: 3}
+  - {fileID: 7711151346020062612, guid: 41720e87daf4bf34f879d403e0c07d20, type: 3}
+  - {fileID: 6482473297988652326, guid: 3696c94465c4d8c458352e812b639102, type: 3}
+  - {fileID: 1893809515966240059, guid: c283dd96d9f864b43a564b6f90e1a1cc, type: 3}
+  - {fileID: 7475868171406378635, guid: 8ca10d5cd99acac458a18039c78c84ac, type: 3}
+  - {fileID: 4464517272551291613, guid: 1f9007c4f83138442b6a04652f531b75, type: 3}
+  - {fileID: 4883081329174324740, guid: 45e48b3051c0d8a4185bbabc90882eba, type: 3}
+  - {fileID: 4647908638652691856, guid: 26f67d62f26326143b84471d3218ec02, type: 3}
+  - {fileID: 4650079510120236315, guid: eba2cb086f9f8ef47b70de483b96e652, type: 3}
+  - {fileID: 542098978035181770, guid: 5060ab37759c6b54ead8e20bc00a4265, type: 3}
+  - {fileID: 5733561760394479361, guid: 54b2aa4b57edb2b4e8c7b2b173aaa3fc, type: 3}
+  - {fileID: 7100548700004466356, guid: ee26ae687c8f8b24d87d1482b44b6df1, type: 3}
+  - {fileID: 44630737031633487, guid: 0729698161209fe4c85066084d3a9cf0, type: 3}
+  - {fileID: 3010820056347056830, guid: 3b27be64d2f4a494eb3f28a690213c8f, type: 3}
+  - {fileID: 240421667584557637, guid: f1934ad8ff5e20342a26d08f5723fb65, type: 3}
+  - {fileID: 8264192800819283755, guid: 928275e45568b204489bcf1096d10373, type: 3}
+  - {fileID: 3995983753270083228, guid: 159e868828d96194d9cf29448cd16a64, type: 3}
+  - {fileID: 4352286928480756489, guid: 49c9f24ef30792c47a964fafa8f54730, type: 3}
   _logicalCorrectionFactor: 0.1
   _logicalDistanceThreshold: 10
   _teleportDistanceThreshold: 15

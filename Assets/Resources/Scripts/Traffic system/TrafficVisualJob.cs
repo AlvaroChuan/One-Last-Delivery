@@ -71,6 +71,14 @@ public struct UpdateVehiclesVisualJob : IJobParallelForTransform
         if (math.lengthsq(dir) > 0.001f)
         {
             state.targetRotation = quaternion.LookRotationSafe(dir, math.up());
+            // Apply Dynamic Kinematic Steering for smooth lane changes
+            if (math.abs(state.currentLateralOffset) > 0.01f)
+            {
+                float lookAheadDist = math.max(3.0f, state.networkSpeed * 0.6f);
+                float steerAngle = math.atan(-state.currentLateralOffset / lookAheadDist);
+                steerAngle = math.clamp(steerAngle, -0.6f, 0.6f); // clamp to roughly +/- 35 degrees
+                state.targetRotation = math.mul(state.targetRotation, quaternion.AxisAngle(math.up(), steerAngle));
+            }
         }
         
         // Extrapolate
@@ -132,22 +140,13 @@ public struct UpdateVehiclesVisualJob : IJobParallelForTransform
                 else transform.position = a + vector / mag * maxDist;
             }
 
-            if (math.abs(state.currentLateralOffset) > 0.1f)
-            {
-                // Use the intended target position instead of the frame-dependent delta
-                // This completely prevents flickering at high framerates or low speeds!
-                float3 moveDir = state.targetPosition - previousPosition;
-                if (math.lengthsq(moveDir) > 0.0001f)
-                {
-                    state.targetRotation = quaternion.LookRotationSafe(math.normalize(moveDir), math.up());
-                }
-            }
+            // The sideways delta rotation override was removed to prevent 90-degree snapping
         }
 
         if (distanceToTarget <= teleportDistanceThreshold)
         {
-            float distanceTravelled = actualSpeed * deltaTime;
-            transform.rotation = math.slerp(transform.rotation, state.targetRotation, math.clamp(distanceTravelled * rotationSpeed, 0f, 1f));
+            // Always allow smooth rotation based on time, so cars can straighten their wheels when stopped
+            transform.rotation = math.slerp(transform.rotation, state.targetRotation, math.clamp(deltaTime * rotationSpeed * 2f, 0f, 1f));
         }
         
         states[index] = state;

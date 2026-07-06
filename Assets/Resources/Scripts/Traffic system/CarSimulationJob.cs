@@ -17,10 +17,8 @@ public struct CarSimulationJob : IJobParallelFor
     [ReadOnly] public NativeArray<ushort> conflicts;
     [ReadOnly] public NativeArray<byte> edgeStopSignals;
     [ReadOnly] public NativeArray<NativeObstacle> dynamicObstacles;
+    [ReadOnly] public NativeArray<NativeVehicleConfig> vehicleConfigs;
     public float deltaTime;
-    public float maxSpeed;
-    public float acceleration;
-    public float safeDistance;
     public uint randomSeed;
 
     public void Execute(int index)
@@ -33,6 +31,11 @@ public struct CarSimulationJob : IJobParallelFor
         }
 
         NativeEdge currentEdge = edges[vehicle.currentEdgeId];
+        NativeVehicleConfig config = vehicleConfigs[(int)(vehicle.id % vehicleConfigs.Length)];
+        float maxSpeed = config.maxSpeed;
+        float acceleration = config.acceleration;
+        float safeDistance = config.safeDistance;
+
         float distanceToFront = float.MaxValue;
         vehicle.lastLaneChangeTime += deltaTime;
 
@@ -44,7 +47,12 @@ public struct CarSimulationJob : IJobParallelFor
                 if (otherIndex == index) continue;
                 NativeVehicle other = previousStates[otherIndex];
                 float dist = other.distance - vehicle.distance;
-                if (dist > 0 && dist < distanceToFront) distanceToFront = dist;
+                if (dist > 0)
+                {
+                    NativeVehicleConfig otherConfig = vehicleConfigs[(int)(other.id % vehicleConfigs.Length)];
+                    dist -= math.max(0f, otherConfig.safeDistance - safeDistance);
+                    if (dist < distanceToFront) distanceToFront = dist;
+                }
 
             } while (vehicleMap.TryGetNextValue(out otherIndex, ref it));
         }
@@ -77,7 +85,7 @@ public struct CarSimulationJob : IJobParallelFor
             }
         }
 
-        if (vehicle.speed < maxSpeed * 0.9f && vehicle.lastLaneChangeTime >= 5f)
+        if (vehicle.speed < maxSpeed * 0.9f && vehicle.lastLaneChangeTime >= 2.5f && distanceToEnd > 10f)
         {
             int bestTargetEdge = -1;
             float bestTargetLaneDistToFront = distanceToFront + (safeDistance * 1.5f); // Must be strictly better than this
@@ -105,10 +113,20 @@ public struct CarSimulationJob : IJobParallelFor
                         float myEquivalentDist = vehicle.distance * ratio;
                         float distDiff = adjVehicle.distance - myEquivalentDist;
 
-                        if (distDiff > 0 && distDiff < targetLaneDistToFront) targetLaneDistToFront = distDiff;
-                        else if (distDiff < 0 && math.abs(distDiff) < targetLaneDistToBack) targetLaneDistToBack = math.abs(distDiff);
+                        NativeVehicleConfig otherConfig = vehicleConfigs[(int)(adjVehicle.id % vehicleConfigs.Length)];
+                        float requiredSafeGap = math.max(safeDistance, otherConfig.safeDistance);
 
-                        if (math.abs(distDiff) < (safeDistance * 0.5f))
+                        if (distDiff > 0)
+                        {
+                            float effectiveDist = distDiff - math.max(0f, otherConfig.safeDistance - safeDistance);
+                            if (effectiveDist < targetLaneDistToFront) targetLaneDistToFront = effectiveDist;
+                        }
+                        else if (distDiff < 0 && math.abs(distDiff) < targetLaneDistToBack)
+                        {
+                            targetLaneDistToBack = math.abs(distDiff);
+                        }
+
+                        if (math.abs(distDiff) < requiredSafeGap * 1.5f)
                         {
                             safeToChange = false;
                             break;
@@ -235,7 +253,12 @@ public struct CarSimulationJob : IJobParallelFor
                 {
                     NativeVehicle nextVehicle = previousStates[nextIdx];
                     float dist = distanceToEnd + nextVehicle.distance;
-                    if (dist > 0 && dist < distanceToFront) distanceToFront = dist;
+                    if (dist > 0)
+                    {
+                        NativeVehicleConfig otherConfig = vehicleConfigs[(int)(nextVehicle.id % vehicleConfigs.Length)];
+                        dist -= math.max(0f, otherConfig.safeDistance - safeDistance);
+                        if (dist < distanceToFront) distanceToFront = dist;
+                    }
 
                 } while (vehicleMap.TryGetNextValue(out nextIdx, ref nextIt));
             }
@@ -254,7 +277,12 @@ public struct CarSimulationJob : IJobParallelFor
                     {
                         NativeVehicle nextNextVehicle = previousStates[nextNextIdx];
                         float dist2 = distanceToEnd + nextEdge.length + nextNextVehicle.distance;
-                        if (dist2 > 0 && dist2 < distanceToFront) distanceToFront = dist2;
+                        if (dist2 > 0)
+                        {
+                            NativeVehicleConfig otherConfig = vehicleConfigs[(int)(nextNextVehicle.id % vehicleConfigs.Length)];
+                            dist2 -= math.max(0f, otherConfig.safeDistance - safeDistance);
+                            if (dist2 < distanceToFront) distanceToFront = dist2;
+                        }
                     } while (vehicleMap.TryGetNextValue(out nextNextIdx, ref nextNextIt));
                 }
             }
