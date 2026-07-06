@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -11,6 +12,7 @@ public class AudioEvent : ScriptableObject
     [Range(0f, 1f)] [SerializeField] private float _volume = 1f;
     [Range(0f, 2f)] [SerializeField] private float _minPitch = 0.85f;
     [Range(0f, 2f)] [SerializeField] private float _maxPitch = 1.15f;
+    Dictionary<GameObject, AudioSource> _activeAudioSources = new Dictionary<GameObject, AudioSource>();
 
     /// <summary>
     /// Plays the audio event from a given GameObject. If the GameObject does not have an AudioSource, one will be added automatically.
@@ -19,9 +21,10 @@ public class AudioEvent : ScriptableObject
     {
         if (_clips.Length == 0) return;
 
-        if (!sourceObject.TryGetComponent(out AudioSource source))
+        if (!_activeAudioSources.TryGetValue(sourceObject, out AudioSource source))
         {
             source = sourceObject.AddComponent<AudioSource>();
+            _activeAudioSources[sourceObject] = source;
         }
 
         ConfigureAndPlay(source);

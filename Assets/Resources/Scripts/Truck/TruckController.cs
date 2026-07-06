@@ -16,6 +16,7 @@ public class TruckController : NetworkBehaviour
     {
         public float acceleration;
         public float speed;
+        public float maxSpeed;
     }
 
     [Header("Input")]
@@ -74,7 +75,6 @@ public class TruckController : NetworkBehaviour
     [SyncVar(hook = nameof(OnUpgradeStatsChanged))] private TruckStatsStruct _currentUpgradeStats;
 
     public static Action<float> OnSteeringAngleChanged;
-    public static Action<MovementInfo> OnAccelerationChanged;
     public static Action<MovementInfo> OnSpeedChanged;
 
     void Awake()
@@ -114,11 +114,10 @@ public class TruckController : NetworkBehaviour
         bool hasAuthority = isOwned || (isServer && netIdentity.connectionToClient == null);
         if (!hasAuthority) return;
 
-        if (isOwned)
+        if (isOwned || (isServer && netIdentity.connectionToClient == null))
         {
             float currentSpeed = Vector3.Dot(_vehicleRigidbody.transform.forward, _vehicleRigidbody.linearVelocity);
-            OnAccelerationChanged?.Invoke(new MovementInfo { acceleration = _movementInput.y, speed = currentSpeed * _mpsToMph });
-            OnSpeedChanged?.Invoke(new MovementInfo { acceleration = _movementInput.y, speed = currentSpeed * _mpsToMph });
+            OnSpeedChanged?.Invoke(new MovementInfo { acceleration = _movementInput.y, speed = currentSpeed * _mpsToMph, maxSpeed = _carMaxSpeed * _mpsToMph });
         }
 
         foreach (var wheel in _wheels)

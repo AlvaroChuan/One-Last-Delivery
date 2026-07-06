@@ -38,7 +38,7 @@ public class EvilDoorInteractionComponent : Interactable
             PlayerHealthComponent playerHealth = interactor.GetComponent<PlayerHealthComponent>();
             if (playerHealth != null)
             {
-                playerHealth.RpcTakeDamage(playerHealth.MaxHealth); // Kill the player
+                playerHealth.ServerTakeDamage(playerHealth.MaxHealth); // Kill the player
             }
         }
     }

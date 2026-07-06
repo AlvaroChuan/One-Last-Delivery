@@ -30,7 +30,7 @@ public class EnemyAttack : MonoBehaviour
         var healthComponent = hitObject.GetComponent<PlayerHealthComponent>();
         if (healthComponent != null)
         {
-            healthComponent.RpcTakeDamage(_damage);
+            healthComponent.ServerTakeDamage(_damage);
         }
     }
 }

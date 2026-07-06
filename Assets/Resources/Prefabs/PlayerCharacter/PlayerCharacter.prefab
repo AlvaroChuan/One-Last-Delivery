@@ -1254,6 +1254,7 @@ GameObject:
   - component: {fileID: 3735697329787270073}
   - component: {fileID: -1360730053089287495}
   - component: {fileID: 7704359510507146346}
+  - component: {fileID: 6786939747723115699}
   m_Layer: 7
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -1704,6 +1705,21 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   voiceId: -1
+--- !u!114 &6786939747723115699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6383342393515265997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad6ddc95329a64c479b8bc8f81ace49f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _inventorySelectionAudioEvent: {fileID: 11400000, guid: e1f3189cc4415bb42bdfb6884fecce42, type: 2}
+  _hurtEvent: {fileID: 11400000, guid: bfd2bce3313a44740b163af3a725b97f, type: 2}
+  _batHitAudioEvent: {fileID: 11400000, guid: 2433353f6c1fe114ba42445842cbe1c2, type: 2}
 --- !u!1 &6716311414115863244
 GameObject:
   m_ObjectHideFlags: 0

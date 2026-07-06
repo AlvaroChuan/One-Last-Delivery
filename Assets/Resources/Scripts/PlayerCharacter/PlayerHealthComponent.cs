@@ -1,8 +1,8 @@
 using System;
 using Mirror;
+using Telepathy;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerDeathComponent))]
 public class PlayerHealthComponent : PlayerComponent
 {
     public struct HealthChangeInfo
@@ -12,18 +12,12 @@ public class PlayerHealthComponent : PlayerComponent
         public float maxHealth;
     }
 
-    public Action<HealthChangeInfo> onHealthChangedEvent;
+    public Action<HealthChangeInfo> onHealthChanged;
     [SerializeField]
     float _maxHealth = 100f;
     public float MaxHealth => _maxHealth;
-    float _currentHealth;
+    [SyncVar(hook = nameof(OnCurrentHealthChanged))] float _currentHealth;
     public float CurrentHealth => _currentHealth;
-    PlayerDeathComponent _playerDeathComponent;
-
-    void Awake()
-    {
-        _playerDeathComponent = GetComponent<PlayerDeathComponent>();
-    }
 
     public override void OnStartClient()
     {
@@ -39,46 +33,34 @@ public class PlayerHealthComponent : PlayerComponent
         if (_die)
         {
             _die = false;
-            RpcTakeDamage(_maxHealth);
+            ServerTakeDamage(_maxHealth);
         }
     }
 #endif
 
-    [ClientRpc]
-    public void RpcTakeDamage(float damage)
+    [Server]
+    public void ServerTakeDamage(float damage)
     {
-        TakeDamage(damage);
-    }
-
-    public void TakeDamage(float damage)
-    {
-        if (!isLocalPlayer) return;
-
         if (_currentHealth <= 0)
             return;
-
-        float oldHealth = _currentHealth;
-
         _currentHealth -= damage;
-
-        DevLogger.Log($"Player took {damage} damage. Health: {_currentHealth}/{_maxHealth}");
-
-        onHealthChangedEvent?.Invoke(new HealthChangeInfo
-        {
-            oldHealth = oldHealth,
-            newHealth = _currentHealth,
-            maxHealth = _maxHealth
-        });
-
-        if (_currentHealth <= 0)
-        {
-            _currentHealth = 0;
-            Die();
-        }
     }
 
-    void Die()
+    [Command(requiresAuthority = false)]
+    public void CmdTakeDamage(float damage)
     {
-        _playerDeathComponent.Die();
+        ServerTakeDamage(damage);
+    }
+
+    void OnCurrentHealthChanged(float oldHealth, float newHealth)
+    {
+        HealthChangeInfo info = new HealthChangeInfo
+        {
+            oldHealth = oldHealth,
+            newHealth = newHealth,
+            maxHealth = _maxHealth
+        };
+
+        onHealthChanged?.Invoke(info);
     }
 }

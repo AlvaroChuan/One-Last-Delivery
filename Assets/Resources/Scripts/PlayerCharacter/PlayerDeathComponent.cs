@@ -1,15 +1,37 @@
 using System;
 using Mirror;
+using Mirror.Examples.Basic;
 using UnityEngine;
 [RequireComponent(typeof(PlayerMovementComponent))]
 [RequireComponent(typeof(PlayerLookComponent))]
 
 [RequireComponent(typeof(PlayerSpectateComponent))]
 [RequireComponent(typeof(PlayerInventoryComponent))]
+[RequireComponent(typeof(PlayerHealthComponent))]
 public class PlayerDeathComponent : PlayerComponent
 {
+    PlayerHealthComponent _playerHealthComponent;
     public Action onPlayerDeathEvent;
     public bool IsDead { get; private set; } = false;
+
+    void Awake()
+    {
+        _playerHealthComponent = GetComponent<PlayerHealthComponent>();
+        _playerHealthComponent.onHealthChanged += HandleHealthChanged;
+    }
+
+    void OnDestroy()
+    {
+        _playerHealthComponent.onHealthChanged -= HandleHealthChanged;
+    }
+
+    void HandleHealthChanged(PlayerHealthComponent.HealthChangeInfo info)
+    {
+        if (info.newHealth <= 0f && !IsDead)
+        {
+            Die();
+        }
+    }
 
     public override void OnStartClient()
     {

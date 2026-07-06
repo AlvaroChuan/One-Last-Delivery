@@ -58,7 +58,7 @@ public class TrafficCollision : MonoBehaviour
             {
                 // Apply damage to the player based on the relative velocity
                 float damageAmount = relativeVelocityMagnitude * _damageMultiplier;
-                playerHealth.TakeDamage(damageAmount);
+                playerHealth.CmdTakeDamage(damageAmount);
             }
         }
     }

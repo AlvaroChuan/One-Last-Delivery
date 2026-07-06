@@ -6,6 +6,7 @@ public struct InventoryItemData
     public ItemID itemID;
     [Tooltip("If true, the item is used instantly on use input and doesn't require holding down the use button.")]
     public bool oneShot;
+    public bool durabilityOnCallbackOnly; // If true, durability is only reduced when the item use callback is invoked, not on every use.
     public bool infiniteDurability;
     public float maxDurability;
     public float currentDurability;

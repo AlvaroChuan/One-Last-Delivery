@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerInventoryComponent : InputComponent
 {
-    public Action<SlotChangeInfo> onInventorySlotChanged; // Event to notify when the inventory slot changes
+    public Action<SlotChangeInfo> onInventorySlotChangedOwner; // Event to notify when the inventory slot changes
     [Serializable]
     struct ItemEntry
     {
@@ -15,8 +15,12 @@ public class PlayerInventoryComponent : InputComponent
     }
     public struct SlotChangeInfo
     {
-        public int slotIndex;
-        public InventoryItemData itemData;
+        public int oldSlotIndex;
+        public InventoryItemData oldItemData;
+        public InventoryItem oldHeldItem;
+        public int newSlotIndex;
+        public InventoryItemData newItemData;
+        public InventoryItem newHeldItem;
     }
     [SerializeField] private int _inventorySize = 4;
     [SerializeField] private InputActionReference _scrollInput;
@@ -120,6 +124,9 @@ public class PlayerInventoryComponent : InputComponent
 
     void SetInventorySelection(int index)
     {
+        int oldIndex = _selectedInventoryIndex;
+        InventoryItemData oldItemData = _inventoryManager.GetInventorySlot(oldIndex);
+        InventoryItem oldHeldItem = GetItem(oldIndex);
         _selectedInventoryIndex = index;
         ItemID itemID = ItemID.None;
         if (index >= 0 && index < _inventorySize)
@@ -129,7 +136,16 @@ public class PlayerInventoryComponent : InputComponent
 
         UpdateVisualMesh(itemID);
         CmdUpdateVisualMesh(itemID);
-        onInventorySlotChanged?.Invoke(new SlotChangeInfo { slotIndex = index, itemData = _inventoryManager.GetInventorySlot(index) }); // Notify listeners about the inventory slot change
+        SlotChangeInfo slotChangeInfo = new SlotChangeInfo
+        {
+            oldSlotIndex = oldIndex,
+            oldItemData = oldItemData,
+            oldHeldItem = oldHeldItem,
+            newSlotIndex = index,
+            newItemData = _inventoryManager.GetInventorySlot(index),
+            newHeldItem = GetItem(index)
+        };
+        onInventorySlotChangedOwner?.Invoke(slotChangeInfo); // Notify listeners about the inventory slot change
     }
 
     [Command]

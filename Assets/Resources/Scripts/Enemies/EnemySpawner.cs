@@ -10,11 +10,17 @@ public class EnemySpawner : NetworkBehaviour
         [SerializeField] public GameObject enemyPrefab;
         [SerializeField, Range(0, 1)] public float additiveSpawnChance;
     }
+    [System.Serializable]
+    private struct SpawnPointInfo
+    {
+        public Vector3 origin;
+        public Vector3 size;
+    }
     [SerializeField] private EnemySpawnEntry[] _enemySpawnEntries;
     [SerializeField] private float _spawnInterval = 60f;
     [SerializeField] private int _enemiesPerSpawn = 5;
-    [SerializeField] private Vector2 _spawnAreaBound1 = new Vector2(-10f, -10f);
-    [SerializeField] private Vector2 _spawnAreaBound2 = new Vector2(10f, 10f);
+    [SerializeField] private SpawnPointInfo[] _spawnpoints = new SpawnPointInfo[0];
+    [SerializeField] private float _spawnpointRadius = 100f;
     [SerializeField] private float _minDistanceFromPlayer = 20f;
     bool _isNightTime = false;
 
@@ -75,11 +81,16 @@ public class EnemySpawner : NetworkBehaviour
                     Vector3 spawnPosition;
                     bool isInNavMesh;
                     bool tooCloseToPlayer;
+                    bool isInsideBuilding;
                     do
                     {
-                        spawnPosition = new Vector3(Random.Range(_spawnAreaBound1.x, _spawnAreaBound2.x), 0, Random.Range(_spawnAreaBound1.y, _spawnAreaBound2.y));
+                        SpawnPointInfo spawnPointInfo = _spawnpoints[Random.Range(0, _spawnpoints.Length)];
+                        float randomX = Random.Range(-spawnPointInfo.size.x / 2f, spawnPointInfo.size.x / 2f);
+                        float randomZ = Random.Range(-spawnPointInfo.size.z / 2f, spawnPointInfo.size.z / 2f);
+                        spawnPosition = spawnPointInfo.origin + new Vector3(randomX, 0f, randomZ);
                         isInNavMesh = NavMesh.SamplePosition(spawnPosition, out hit, 5f, NavMesh.AllAreas);
                         tooCloseToPlayer = false;
+                        isInsideBuilding = Physics.Raycast(spawnPosition + Vector3.up, Vector3.up, out _, 100f);
                         foreach (var player in PlayerRegistry.SpawnedPlayers)
                         {
                             if (Vector3.Distance(player.transform.position, hit.position) < _minDistanceFromPlayer)
@@ -88,7 +99,7 @@ public class EnemySpawner : NetworkBehaviour
                                 break;
                             }
                         }
-                    } while (!isInNavMesh || tooCloseToPlayer);
+                    } while (!isInNavMesh || tooCloseToPlayer || isInsideBuilding);
 
                     GameObject enemyInstance = Instantiate(entry.enemyPrefab, hit.position, Quaternion.identity);
                     NetworkServer.Spawn(enemyInstance);
@@ -97,4 +108,15 @@ public class EnemySpawner : NetworkBehaviour
             }
         }
     }
+
+#if UNITY_EDITOR
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        foreach (var spawnPoint in _spawnpoints)
+        {
+            Gizmos.DrawWireCube(spawnPoint.origin, spawnPoint.size);
+        }
+    }
+#endif
 }

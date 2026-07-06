@@ -20,7 +20,7 @@ public class HealthBar : MonoBehaviour
             if (_playerHealthComponent != null)
             {
                 DevLogger.Log("PlayerHealthComponent found and subscribed to onHealthChanged.");
-                _playerHealthComponent.onHealthChangedEvent += OnHealthChanged;
+                _playerHealthComponent.onHealthChanged += OnHealthChanged;
             }
         }
     }
@@ -35,7 +35,7 @@ public class HealthBar : MonoBehaviour
     {
         if (_playerHealthComponent != null)
         {
-            _playerHealthComponent.onHealthChangedEvent -= OnHealthChanged;
+            _playerHealthComponent.onHealthChanged -= OnHealthChanged;
         }
     }
 }

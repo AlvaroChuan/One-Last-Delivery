@@ -57,10 +57,11 @@ MonoBehaviour:
   _inventoryItemData:
     itemID: 1
     oneShot: 1
-    infiniteDurability: 1
-    maxDurability: 0
-    currentDurability: 0
-    durabilityCost: 0
+    durabilityOnCallbackOnly: 1
+    infiniteDurability: 0
+    maxDurability: 3
+    currentDurability: 3
+    durabilityCost: 1
 --- !u!114 &8432997841342778207
 MonoBehaviour:
   m_ObjectHideFlags: 0

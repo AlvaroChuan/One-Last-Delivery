@@ -12,10 +12,12 @@ public class PlayerItemUseComponent : InputComponent
     private PlayerInventoryComponent _inventoryComponent;
     InventoryItemData? _usingItemDataNullable;
     InventoryItem _usingItem;
+    Action _durabilityCallback;
 
     void Awake()
     {
         _inventoryComponent = GetComponent<PlayerInventoryComponent>();
+        _inventoryComponent.onInventorySlotChangedOwner += HandleInventorySlotChanged;
     }
 
     protected override void BindInputs()
@@ -25,6 +27,7 @@ public class PlayerItemUseComponent : InputComponent
         _useInput.action.Enable();
         _useInput.action.performed += OnUseInputTriggered;
         _useInput.action.canceled += OnUseInputCanceled;
+        _durabilityCallback += UpdateDurability;
     }
 
     protected override void UnbindInputs()
@@ -34,6 +37,48 @@ public class PlayerItemUseComponent : InputComponent
         _useInput.action.Disable();
         _useInput.action.performed -= OnUseInputTriggered;
         _useInput.action.canceled -= OnUseInputCanceled;
+        _durabilityCallback -= UpdateDurability;
+    }
+
+    void HandleInventorySlotChanged(PlayerInventoryComponent.SlotChangeInfo info)
+    {
+        // If the player switches to a different item while using one, stop using the previous item
+        if (_usingItem != null && _usingItemDataNullable.HasValue)
+        {
+            InventoryItemData currentHeldItemData = _inventoryComponent.GetHeldItemData();
+            if (!currentHeldItemData.Equals(_usingItemDataNullable.Value))
+            {
+                StopUsingItem();
+            }
+        }
+
+        InventoryItem oldHeldItem = info.oldHeldItem;
+        if (oldHeldItem != null)
+        {
+            oldHeldItem.SetCallback(null); // Remove the durability callback from the old item
+        }
+        InventoryItem newHeldItem = info.newHeldItem;
+        if (newHeldItem != null)
+        {
+            newHeldItem.SetCallback(_durabilityCallback); // Set the durability callback for the new item
+        }
+    }
+
+    void UpdateDurability()
+    {
+        InventoryItemData heldItemData = _inventoryComponent.GetHeldItemData();
+
+        if (!heldItemData.IsEmpty && !heldItemData.infiniteDurability)
+        {
+            heldItemData.currentDurability -= heldItemData.durabilityCost;
+
+            if (heldItemData.currentDurability < 0)
+            {
+                heldItemData.currentDurability = 0; // Ensure durability doesn't go below 0
+            }
+
+            _inventoryComponent.UpdateHeldItemData(heldItemData);
+        }
     }
 
     private void OnUseInputTriggered(InputAction.CallbackContext context)
@@ -47,9 +92,9 @@ public class PlayerItemUseComponent : InputComponent
         InventoryItem item = _inventoryComponent.GetHeldItem();
         item.StartUse(gameObject);
 
-        if (heldItemData.oneShot)
+        if (heldItemData.oneShot || heldItemData.durabilityOnCallbackOnly)
         {
-            if (!heldItemData.infiniteDurability)
+            if (!heldItemData.infiniteDurability && !heldItemData.durabilityOnCallbackOnly)
             {
                 heldItemData.currentDurability -= heldItemData.durabilityCost;
 
@@ -77,6 +122,8 @@ public class PlayerItemUseComponent : InputComponent
     void StopUsingItem()
     {
         if (_usingItem == null) return;
+        if (_usingItemDataNullable == null) return;
+
 
         _usingItem.EndUse(gameObject);
         onItemUseStop?.Invoke(_usingItemDataNullable.Value.itemID);
@@ -113,5 +160,10 @@ public class PlayerItemUseComponent : InputComponent
         }
 
         onItemUseContinuous?.Invoke(usingItemData.itemID);
+    }
+
+    void OnDestroy()
+    {
+        _inventoryComponent.onInventorySlotChangedOwner -= HandleInventorySlotChanged;
     }
 }

@@ -33,7 +33,7 @@ public class InventoryHUD : MonoBehaviour
             if (_playerInventoryComponent != null)
             {
                 DevLogger.Log("PlayerInventoryComponent found and subscribed to onInventorySlotChanged.");
-                _playerInventoryComponent.onInventorySlotChanged += OnSelectionChanged;
+                _playerInventoryComponent.onInventorySlotChangedOwner += OnSelectionChanged;
             }
         }
     }
@@ -47,13 +47,13 @@ public class InventoryHUD : MonoBehaviour
 
         if (_playerInventoryComponent != null)
         {
-            _playerInventoryComponent.onInventorySlotChanged -= OnSelectionChanged;
+            _playerInventoryComponent.onInventorySlotChangedOwner -= OnSelectionChanged;
         }
     }
 
     private void OnSelectionChanged(PlayerInventoryComponent.SlotChangeInfo slotChangeInfo)
     {
-        int index = slotChangeInfo.slotIndex;
+        int index = slotChangeInfo.newSlotIndex;
         for(int i = 0; i < _inventorySlots.Length; i++)
         {
             _inventorySlots[i].SetSelected(i == index);

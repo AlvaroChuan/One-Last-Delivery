@@ -22,12 +22,12 @@ public class Pedal : MonoBehaviour
 
     private void OnEnable()
     {
-        TruckController.OnAccelerationChanged += OnAccelerationChanged;
+        TruckController.OnSpeedChanged += OnSpeedChanged;
     }
 
     private void OnDisable()
     {
-        TruckController.OnAccelerationChanged -= OnAccelerationChanged;
+        TruckController.OnSpeedChanged -= OnSpeedChanged;
     }
 
     private void Update()
@@ -36,7 +36,7 @@ public class Pedal : MonoBehaviour
         transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRotation, Time.deltaTime * _rotationSpeed);
     }
 
-    private void OnAccelerationChanged(TruckController.MovementInfo movementInfo)
+    private void OnSpeedChanged(TruckController.MovementInfo movementInfo)
     {
         switch (_pedalType)
         {
