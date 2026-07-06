@@ -1,7 +1,6 @@
 using UnityEngine;
 using Mirror;
 
-[RequireComponent(typeof(TrafficVehicleVisual))]
 public class TrafficCollision : MonoBehaviour
 {
     [SerializeField] private float _damageMultiplier = 1.5f; // Multiplier for damage based on relative velocity

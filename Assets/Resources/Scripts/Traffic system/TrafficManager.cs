@@ -9,12 +9,9 @@ public class TrafficManager : NetworkBehaviour
     [SerializeField] private float _finePerCollision = 30f; // Fine amount for colliding with a car
     [Header("Simulation Settings")]
     [SerializeField] private TrafficGraph _trafficGraph;
-    [SerializeField] private GameObject _wreckPrefab;
+    [SerializeField] private GameObject[] _vehiclePrefabs;
     [SerializeField] private int _initialVehiclesToSpawn = 200;
     [SerializeField] private int _maxVehicleCapacity = 2000;
-    [SerializeField] private float _vehicleMaxSpeed = 20f;
-    [SerializeField] private float _vehicleAcceleration = 5f;
-    [SerializeField] private float _safeDistance = 5f;
     [SerializeField] private float _spawnSpacing = 15f;
     [SerializeField] private int _respawnEdgeId = 0; // Default edge ID for respawning vehicles
 
@@ -40,6 +37,7 @@ public class TrafficManager : NetworkBehaviour
     private NativeArray<ushort> _edgeConflicts;
     private NativeArray<int> _nodeLocks;
     private NativeArray<byte> _edgeStopSignals;
+    private NativeArray<NativeVehicleConfig> _vehicleConfigs;
 
     // Traffic Light Data
     private NativeArray<NativeIntersection> _intersections;
@@ -162,10 +160,8 @@ public class TrafficManager : NetworkBehaviour
             nodeLocks = _nodeLocks,
             edgeStopSignals = _edgeStopSignals,
             dynamicObstacles = _mappedObstacles,
+            vehicleConfigs = _vehicleConfigs,
             deltaTime = Time.deltaTime,
-            maxSpeed = _vehicleMaxSpeed,
-            acceleration = _vehicleAcceleration,
-            safeDistance = _safeDistance,
             randomSeed = (uint) Random.Range(1, 100000)
         };
 
@@ -254,17 +250,23 @@ public class TrafficManager : NetworkBehaviour
         DespawnVehicle(msg.carId);
 
         // 2. Spawn the physical wreck
-        if (_wreckPrefab != null)
+        if (_vehiclePrefabs != null && _vehiclePrefabs.Length > 0)
         {
-            GameObject wreck = Instantiate(_wreckPrefab, msg.position, msg.rotation);
-            NetworkServer.Spawn(wreck);
+            int prefabIndex = (int)(msg.carId % _vehiclePrefabs.Length);
+            GameObject originalPrefab = _vehiclePrefabs[prefabIndex];
+            TrafficVehicleConfig config = originalPrefab.GetComponent<TrafficVehicleConfig>();
 
-            Rigidbody rb = wreck.GetComponent<Rigidbody>();
-            if (rb != null)
+            if (config != null && config.wreckPrefab != null)
             {
-                // Give it a rough tumbling force based on player impact
-                rb.AddForce(msg.impactVelocity, ForceMode.Impulse);
-                rb.AddTorque(Random.insideUnitSphere * msg.impactVelocity.magnitude, ForceMode.Impulse);
+                GameObject wreck = Instantiate(config.wreckPrefab, msg.position, msg.rotation);
+                NetworkServer.Spawn(wreck);
+
+                Rigidbody rb = wreck.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    rb.AddForce(msg.impactVelocity, ForceMode.Impulse);
+                    rb.AddTorque(Random.insideUnitSphere * msg.impactVelocity.magnitude, ForceMode.Impulse);
+                }
             }
         }
 
@@ -431,6 +433,34 @@ public class TrafficManager : NetworkBehaviour
         _previousVehicleStates = new NativeArray<NativeVehicle>(_maxVehicleCapacity, Allocator.Persistent);
         _edgeToVehiclesMap = new NativeParallelMultiHashMap<int, int>(_maxVehicleCapacity, Allocator.Persistent);
 
+        if (_vehiclePrefabs != null && _vehiclePrefabs.Length > 0)
+        {
+            _vehicleConfigs = new NativeArray<NativeVehicleConfig>(_vehiclePrefabs.Length, Allocator.Persistent);
+            for (int i = 0; i < _vehiclePrefabs.Length; i++)
+            {
+                TrafficVehicleConfig cfg = _vehiclePrefabs[i].GetComponent<TrafficVehicleConfig>();
+                if (cfg != null)
+                {
+                    _vehicleConfigs[i] = new NativeVehicleConfig
+                    {
+                        maxSpeed = cfg.maxSpeed,
+                        acceleration = cfg.acceleration,
+                        safeDistance = cfg.safeDistance
+                    };
+                }
+                else
+                {
+                    _vehicleConfigs[i] = new NativeVehicleConfig { maxSpeed = 20f, acceleration = 5f, safeDistance = 5f };
+                }
+            }
+        }
+        else
+        {
+            // Fallback if no prefabs are assigned
+            _vehicleConfigs = new NativeArray<NativeVehicleConfig>(1, Allocator.Persistent);
+            _vehicleConfigs[0] = new NativeVehicleConfig { maxSpeed = 20f, acceleration = 5f, safeDistance = 5f };
+        }
+
         // Pre-allocate the entire pool as inactive
         for (int i = 0; i < _maxVehicleCapacity; i++)
         {
@@ -494,6 +524,7 @@ public class TrafficManager : NetworkBehaviour
         if (_edgeConflicts.IsCreated) _edgeConflicts.Dispose();
         if (_nodeLocks.IsCreated) _nodeLocks.Dispose();
         if (_edgeStopSignals.IsCreated) _edgeStopSignals.Dispose();
+        if (_vehicleConfigs.IsCreated) _vehicleConfigs.Dispose();
         if (_previousVehicleStates.IsCreated) _previousVehicleStates.Dispose();
         if (_edgeToVehiclesMap.IsCreated) _edgeToVehiclesMap.Dispose();
         if (_intersections.IsCreated) _intersections.Dispose();

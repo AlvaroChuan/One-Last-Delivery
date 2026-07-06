@@ -12,8 +12,16 @@ public struct NativeVehicle
 
 public struct NativeObstacle
 {
-    public int edgeId;
+    public uint id;
     public float distance;
+    public int edgeId;
+}
+
+public struct NativeVehicleConfig
+{
+    public float maxSpeed;
+    public float acceleration;
+    public float safeDistance;
 }
 
 public struct DynamicObstacleData

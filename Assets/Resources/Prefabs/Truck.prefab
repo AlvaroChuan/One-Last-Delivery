@@ -75,7 +75,7 @@ GameObject:
   - component: {fileID: 3170421377469562247}
   m_Layer: 12
   m_Name: Windshield
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -159,7 +159,7 @@ GameObject:
   - component: {fileID: 2759270485853528475}
   m_Layer: 12
   m_Name: Wheels
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -196,7 +196,7 @@ GameObject:
   - component: {fileID: 6680356631696218217}
   m_Layer: 12
   m_Name: Front Right Wheel
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -474,7 +474,7 @@ GameObject:
   - component: {fileID: 3923589906477416894}
   m_Layer: 12
   m_Name: Front Right Wheel Model
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -798,7 +798,7 @@ GameObject:
   - component: {fileID: 1213098922657366312}
   m_Layer: 12
   m_Name: Elements
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1094,6 +1094,7 @@ GameObject:
   - component: {fileID: 8230852734623474739}
   - component: {fileID: 9063974721962446835}
   - component: {fileID: 7675928165931119230}
+  - component: {fileID: 8904180090716600069}
   m_Layer: 12
   m_Name: Truck
   m_TagString: Truck
@@ -1312,6 +1313,18 @@ MonoBehaviour:
   _timeOnSidewalkThreshold: 1.5
   _sidewalkHeight: 0.1
   _initialGracePeriod: 10
+--- !u!114 &8904180090716600069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2692446500960853747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3813a50745e3f84383a2ed6999f9ef5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2958880394431956936
 GameObject:
   m_ObjectHideFlags: 0
@@ -1323,7 +1336,7 @@ GameObject:
   - component: {fileID: 3838480323859670340}
   m_Layer: 12
   m_Name: Rear Left Wheel
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1392,7 +1405,7 @@ GameObject:
   - component: {fileID: 2332617848098255183}
   m_Layer: 12
   m_Name: Rear Right Wheel Model
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1577,7 +1590,7 @@ GameObject:
   - component: {fileID: 5812640835139030342}
   m_Layer: 12
   m_Name: Front Left Wheel Model
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1739,7 +1752,7 @@ GameObject:
   - component: {fileID: 7005630491181966567}
   m_Layer: 12
   m_Name: GameObject
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1868,7 +1881,7 @@ GameObject:
   - component: {fileID: 315955810176491050}
   m_Layer: 12
   m_Name: Main
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2233,7 +2246,7 @@ GameObject:
   - component: {fileID: 8249978867942684971}
   m_Layer: 12
   m_Name: Rear Left Wheel Model
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2459,7 +2472,7 @@ GameObject:
   - component: {fileID: 6012769993837248934}
   m_Layer: 12
   m_Name: Front Left Wheel
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3258,7 +3271,7 @@ GameObject:
   - component: {fileID: 6204070165017977666}
   m_Layer: 12
   m_Name: Rear Right Wheel
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3451,7 +3464,7 @@ GameObject:
   - component: {fileID: 2984189473973654741}
   m_Layer: 12
   m_Name: Main Body
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3482,9 +3495,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5476735384083062513}
-  m_Layer: 12
+  m_Layer: 3
   m_Name: Doors
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3655,9 +3668,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6668997727079407719}
-  m_Layer: 12
+  m_Layer: 3
   m_Name: Seats
-  m_TagString: Untagged
+  m_TagString: Truck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
