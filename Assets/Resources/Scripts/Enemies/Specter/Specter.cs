@@ -212,7 +212,7 @@ public class Specter : NetworkBehaviour
         if (targetPlayer != null)
         {
             var health = targetPlayer.GetComponent<PlayerHealthComponent>();
-            if (health != null) health.RpcTakeDamage(_jumpscareLethalDamage);
+            if (health != null) health.ServerTakeDamage(_jumpscareLethalDamage);
         }
 
         _isExecutingJumpscare = false;
