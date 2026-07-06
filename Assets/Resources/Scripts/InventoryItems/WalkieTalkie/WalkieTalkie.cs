@@ -4,11 +4,14 @@ using Adrenak.UniMic;
 using Adrenak.UniVoice;
 using Adrenak.UniVoice.Filters;
 using System;
+using Adrenak.UniVoice.Outputs;
+using System.Collections.Generic;
 
 public class WalkieTalkie : InventoryItem
 {
     private ConcentusEncodeFilter _encoder;
     private Action<int, int, float[]> _micListener;
+    bool _isRecording = false;
 
     public override void StartUse(GameObject user)
     {
@@ -27,6 +30,7 @@ public class WalkieTalkie : InventoryItem
     }
 
     void StartRecording() {
+        _isRecording = true;
         int micIndex = GetMicrophoneIndex();
         if (Mic.AvailableDevices.Count > micIndex) {
             var device = Mic.AvailableDevices[micIndex];
@@ -41,6 +45,7 @@ public class WalkieTalkie : InventoryItem
     }
 
     void StopRecording() {
+        _isRecording = false;
         int micIndex = GetMicrophoneIndex();
         if (Mic.AvailableDevices.Count > micIndex && _micListener != null) {
             Mic.AvailableDevices[micIndex].OnFrameCollected -= _micListener;
@@ -125,9 +130,11 @@ public class WalkieTalkie : InventoryItem
 
     [ClientRpc(channel = Channels.Unreliable)]
     void RpcReceiveAudio(int senderNetId, byte[] samples, int frequency, int channels) {
-        if (isLocalPlayer) return;
+        if (!isLocalPlayer || _isRecording) return;
 
-        if (WalkieTalkieVoiceChannel.Instance.IsLocalPlayerHoldingWalkieTalkie()) {
+        PlayerInventoryComponent playerInventory = GetComponentInParent<PlayerInventoryComponent>();
+        InventoryItemData itemData = playerInventory.GetHeldItemData();
+        if (itemData.itemID == ItemID.WalkieTalkie && itemData.currentDurability > 0) {
             WalkieTalkieVoiceChannel.Instance.PlayAudio(senderNetId, samples, frequency, channels);
         }
     }
