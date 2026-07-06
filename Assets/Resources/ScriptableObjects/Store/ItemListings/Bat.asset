@@ -15,10 +15,11 @@ MonoBehaviour:
   _itemData:
     itemID: 1
     oneShot: 1
-    infiniteDurability: 1
-    maxDurability: 0
-    currentDurability: 0
-    durabilityCost: 0
+    durabilityOnCallbackOnly: 1
+    infiniteDurability: 0
+    maxDurability: 3
+    currentDurability: 3
+    durabilityCost: 1
   _price: 20
   _itemName: Bat
   _itemIcon: {fileID: 21300000, guid: c209eb6fe66124942908af9bc2737b76, type: 3}
