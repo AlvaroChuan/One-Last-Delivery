@@ -1,5 +1,8 @@
 using Mirror;
 using UnityEngine;
+using UnityEngine.AI;
+using System.Collections;
+using Unity.Cinemachine;
 
 [RequireComponent(typeof(FieldOfViewDetector))]
 [RequireComponent(typeof(NavMeshMovementComponent))]
@@ -9,15 +12,33 @@ using UnityEngine;
 public class Specter : NetworkBehaviour
 {
     [SerializeField] float _fovCheckInterval = 0.05f;
-    [SerializeField] float _playerDetectionRadius = 10f; // Radius within which to detect players
+    [SerializeField] float _playerDetectionRadius = 10f;
+
+    [SerializeField] private Animator _animator;
+
+    [SerializeField] private Transform _handGrabPoint;
+    [SerializeField] private Transform _specterFace;
+    [SerializeField] private float _jumpscareDuration = 2.5f;
+    [SerializeField] private float _jumpscareLethalDamage = 999f;
+
     private FieldOfViewDetector _fieldOfViewDetector;
     private NavMeshMovementComponent _movementComponent;
     private PlayerChaseBehaviour _playerChaseBehaviour;
     private EnemyStunComponent _enemyStunComponent;
     private EnemyAttackComponent _enemyAttackComponent;
-    int _inFOVCount = 0;
+    private NavMeshAgent _navMeshAgent;
+
+    [SyncVar(hook = nameof(OnCurrentTargetChanged))]
+    private GameObject _currentTarget;
+
+    [SyncVar]
+    private bool _isStoppedByTarget = false;
+
     float _fovCheckTimer = 0f;
-    bool _isInFOV = false;
+    bool _localIsInFOV = false;
+
+    private bool _isExecutingJumpscare = false;
+    private bool _isCurrentlyStunned = false;
 
     private void Awake()
     {
@@ -26,8 +47,9 @@ public class Specter : NetworkBehaviour
         _playerChaseBehaviour = GetComponent<PlayerChaseBehaviour>();
         _enemyStunComponent = GetComponent<EnemyStunComponent>();
         _enemyAttackComponent = GetComponent<EnemyAttackComponent>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
 
-        _fovCheckTimer = Random.Range(0f, _fovCheckInterval); // Randomize the initial timer to avoid all Specters checking FOV at the same time
+        _fovCheckTimer = Random.Range(0f, _fovCheckInterval);
     }
 
     void OnEnable()
@@ -41,33 +63,45 @@ public class Specter : NetworkBehaviour
         _enemyAttackComponent.onAttackStartedEvent -= OnAttackStarted;
         _enemyStunComponent.onStunChangedEvent -= OnStunChanged;
     }
+
     void Update()
     {
-        _fovCheckTimer += Time.deltaTime;
-        if (_fovCheckTimer >= _fovCheckInterval)
+        if (isClient)
         {
-            _fovCheckTimer = 0f;
-            CheckFOV();
+            _fovCheckTimer += Time.deltaTime;
+            if (_fovCheckTimer >= _fovCheckInterval)
+            {
+                _fovCheckTimer = 0f;
+                CheckFOV();
+            }
         }
 
-        if(!isServer) return;
+        if (!isServer) return;
 
-        if (_enemyAttackComponent.IsAttacking) return;
-        if (_enemyStunComponent.IsStunned) return;
+        UpdateAnimations();
 
-        if (_inFOVCount > 0)
+        if (_enemyAttackComponent.IsAttacking || _isExecutingJumpscare) return;
+        if (_isCurrentlyStunned) return;
+
+        if (_playerChaseBehaviour.CurrentTarget != _currentTarget)
+        {
+            _currentTarget = _playerChaseBehaviour.CurrentTarget;
+            _isStoppedByTarget = false;
+        }
+
+        if (_isStoppedByTarget)
         {
             if (_movementComponent.Target != null)
             {
-                _movementComponent.SetTarget(null); // Clear target when a player is in FOV
+                _movementComponent.SetTarget(null);
             }
             return;
         }
-        else if (_inFOVCount <= 0)
+        else
         {
             if (_movementComponent.Target == null)
             {
-                _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius); // Recheck for players after resuming movement
+                _playerChaseBehaviour.CheckForPlayer(_playerDetectionRadius);
             }
             _playerChaseBehaviour.UpdateChase(Time.deltaTime, _playerDetectionRadius);
 
@@ -78,36 +112,52 @@ public class Specter : NetworkBehaviour
         }
     }
 
+    [Client]
     void CheckFOV()
     {
-        bool oldIsInFOV = _isInFOV;
-        _isInFOV = _fieldOfViewDetector.IsInFOV(_playerDetectionRadius);
-        if (_isInFOV && !oldIsInFOV)
+        if (_currentTarget == null || NetworkClient.localPlayer == null || _currentTarget != NetworkClient.localPlayer.gameObject)
         {
-            CmdEnteredFOV();
+            if (_localIsInFOV)
+            {
+                _localIsInFOV = false;
+                CmdSetFOV(false);
+            }
+            return;
         }
-        else if (!_isInFOV && oldIsInFOV)
+
+        bool oldIsInFOV = _localIsInFOV;
+        _localIsInFOV = _fieldOfViewDetector.IsInFOV(_playerDetectionRadius);
+
+        if (_localIsInFOV && !oldIsInFOV)
         {
-            CmdExitedFOV();
+            CmdSetFOV(true);
+        }
+        else if (!_localIsInFOV && oldIsInFOV)
+        {
+            CmdSetFOV(false);
         }
     }
 
     [Command(requiresAuthority = false)]
-    void CmdEnteredFOV()
+    void CmdSetFOV(bool inFOV)
     {
-        _inFOVCount++;
-    }
-    [Command(requiresAuthority = false)]
-    void CmdExitedFOV()
-    {
-        _inFOVCount--;
+        _isStoppedByTarget = inFOV;
     }
 
-    void OnAttackStarted()
+    void OnCurrentTargetChanged(GameObject oldTarget, GameObject newTarget)
     {
-        if (!isServer) return;
+        if (isClient) _localIsInFOV = false;
+    }
 
-        _movementComponent.SetTarget(null); // Clear target when attack starts
+    void UpdateAnimations()
+    {
+        if (_animator == null || _navMeshAgent == null) return;
+
+        bool isMoving = _navMeshAgent.velocity.sqrMagnitude > 0.01f;
+        bool isChasing = _playerChaseBehaviour.IsChasing;
+
+        _animator.SetBool("IsWalking", isMoving && !isChasing);
+        _animator.SetBool("IsRunning", isMoving && isChasing);
     }
 
     void OnStunChanged(EnemyStunComponent.StunChangeInfo stunInfo)
@@ -116,7 +166,123 @@ public class Specter : NetworkBehaviour
 
         if (stunInfo.isStunned)
         {
-            _movementComponent.SetTarget(null); // Clear target when stunned
+            if (_enemyAttackComponent.IsAttacking || _isExecutingJumpscare) return;
+
+            _isCurrentlyStunned = true;
+            _movementComponent.SetTarget(null);
+            if (_animator != null) _animator.SetBool("IsStunned", true);
         }
+        else
+        {
+            _isCurrentlyStunned = false;
+            if (_animator != null) _animator.SetBool("IsStunned", false);
+        }
+    }
+
+    void OnAttackStarted()
+    {
+        if (!isServer) return;
+
+        _isExecutingJumpscare = true;
+        _movementComponent.SetTarget(null);
+
+        if (_animator != null) _animator.SetTrigger("Attack");
+
+        GameObject targetPlayer = _playerChaseBehaviour.CurrentTarget;
+        if (targetPlayer != null)
+        {
+            NetworkIdentity targetIdentity = targetPlayer.GetComponent<NetworkIdentity>();
+            if (targetIdentity != null)
+            {
+                TargetExecuteJumpscare(targetIdentity.connectionToClient, targetPlayer);
+                StartCoroutine(ServerKillRoutine(targetPlayer));
+            }
+        }
+        else
+        {
+            _isExecutingJumpscare = false;
+        }
+    }
+
+    [Server]
+    private IEnumerator ServerKillRoutine(GameObject targetPlayer)
+    {
+        yield return new WaitForSeconds(_jumpscareDuration);
+
+        if (targetPlayer != null)
+        {
+            var health = targetPlayer.GetComponent<PlayerHealthComponent>();
+            if (health != null) health.ServerTakeDamage(_jumpscareLethalDamage);
+        }
+
+        _isExecutingJumpscare = false;
+    }
+
+    [TargetRpc]
+    private void TargetExecuteJumpscare(NetworkConnectionToClient conn, GameObject victim)
+    {
+        if (victim != null)
+        {
+            StartCoroutine(ClientJumpscareRoutine(victim));
+        }
+    }
+
+    private IEnumerator ClientJumpscareRoutine(GameObject victim)
+    {
+        Rigidbody rb = victim.GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = true;
+
+        PlayerLookComponent lookComp = victim.GetComponent<PlayerLookComponent>();
+        Transform playerEyes = lookComp != null ? lookComp.Eyes : victim.transform;
+
+        CinemachineBrain cineBrain = null;
+        float originalFov = 100f;
+
+        if (Camera.main != null)
+        {
+            cineBrain = Camera.main.GetComponent<CinemachineBrain>();
+            if (cineBrain != null) cineBrain.enabled = false;
+            originalFov = Camera.main.fieldOfView;
+        }
+
+        float elapsed = 0f;
+        Vector3 startPos = victim.transform.position;
+
+        while (elapsed < _jumpscareDuration)
+        {
+            float t = Mathf.Clamp01(elapsed / 0.15f);
+
+            if (_handGrabPoint != null)
+            {
+                victim.transform.position = Vector3.Lerp(startPos, _handGrabPoint.position, t);
+            }
+
+            yield return new WaitForEndOfFrame();
+
+            if (Camera.main != null)
+            {
+                Camera.main.transform.position = playerEyes.position;
+                Camera.main.fieldOfView = Mathf.Lerp(originalFov, 70f, t);
+
+                if (_specterFace != null)
+                {
+                    Vector3 lookDir = (_specterFace.position - Camera.main.transform.position).normalized;
+                    if (lookDir.sqrMagnitude > 0.001f)
+                    {
+                        Camera.main.transform.rotation = Quaternion.LookRotation(lookDir);
+                    }
+                }
+            }
+            elapsed += Time.deltaTime;
+        }
+
+        if (rb != null) rb.isKinematic = false;
+
+        if (Camera.main != null)
+        {
+            Camera.main.fieldOfView = originalFov;
+        }
+
+        if (cineBrain != null) cineBrain.enabled = true;
     }
 }

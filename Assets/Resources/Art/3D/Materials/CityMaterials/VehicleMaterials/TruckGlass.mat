@@ -120,8 +120,9 @@ Material:
     - _HeightMapIntensity: 1
     - _InnerErosionStrength: 3
     - _InnerErosionTiling: 2
+    - _IsTriplanar: 1
     - _LIGHT_COOKIES: 1
-    - _LightFactor: 0.2
+    - _LightFactor: 0.15
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _MainTexBlend: 0
