@@ -8,7 +8,7 @@ public abstract class InventoryItem : NetworkBehaviour
     public abstract void StartUse(GameObject user);
     public virtual void EndUse(GameObject user) { }
 
-    public virtual void SetCallback(Action durabilityCallback)
+    public virtual void SetDurabilityCallback(Action durabilityCallback)
     {
         if (durabilityCallback == null || _durabilityCallback == null)
         {

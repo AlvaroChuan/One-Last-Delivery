@@ -55,12 +55,12 @@ public class PlayerItemUseComponent : InputComponent
         InventoryItem oldHeldItem = info.oldHeldItem;
         if (oldHeldItem != null)
         {
-            oldHeldItem.SetCallback(null); // Remove the durability callback from the old item
+            oldHeldItem.SetDurabilityCallback(null); // Remove the durability callback from the old item
         }
         InventoryItem newHeldItem = info.newHeldItem;
         if (newHeldItem != null)
         {
-            newHeldItem.SetCallback(_durabilityCallback); // Set the durability callback for the new item
+            newHeldItem.SetDurabilityCallback(_durabilityCallback); // Set the durability callback for the new item
         }
     }
 
