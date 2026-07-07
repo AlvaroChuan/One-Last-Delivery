@@ -20,7 +20,7 @@ public class QuotaManager : NetPersistentDataManager<QuotaManager, QuotaManager.
     [SerializeField] private float _quotaIncreasePerDay = 10f;
 
     [SyncVar(hook = nameof(OnQuotaChanged))] private float _currentQuota;
-    public QuotaIndicator quotaHUD;
+    public static float CurrentQuota => StaticDataState.StaticData;
 
     protected override void ServerInitializeStaticData()
     {
@@ -33,7 +33,6 @@ public class QuotaManager : NetPersistentDataManager<QuotaManager, QuotaManager.
         {
             StaticDataState.StaticData += _quotaIncreasePerDay;
         }
-        BalanceManager.RegisterTransaction("Daily quota", -StaticDataState.StaticData);
     }
 
     protected override void ServerUpdateInstanceData()
@@ -43,11 +42,10 @@ public class QuotaManager : NetPersistentDataManager<QuotaManager, QuotaManager.
 
     private void OnQuotaChanged(float oldQuota, float newQuota)
     {
-        onDataChangedEvent?.Invoke(new DataChangeInfo
+        OnDataChangedEvent?.Invoke(new DataChangeInfo
         {
             oldValue = oldQuota,
             newValue = newQuota
         });
-        quotaHUD.SetDailyQuota(StaticDataState.StaticData);
     }
 }
