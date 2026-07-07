@@ -16,7 +16,7 @@ public struct CarSimulationJob : IJobParallelFor
     [NativeDisableParallelForRestriction] public NativeArray<int> nodeLocks;
     [ReadOnly] public NativeArray<ushort> conflicts;
     [ReadOnly] public NativeArray<byte> edgeStopSignals;
-    [ReadOnly] public NativeArray<NativeObstacle> dynamicObstacles;
+    [ReadOnly] public NativeParallelMultiHashMap<int, float> dynamicObstacles;
     [ReadOnly] public NativeArray<NativeVehicleConfig> vehicleConfigs;
     public float deltaTime;
     public uint randomSeed;
@@ -73,16 +73,16 @@ public struct CarSimulationJob : IJobParallelFor
         }
 
         // Virtual Obstacles for Players and Dynamics
-        for (int i = 0; i < dynamicObstacles.Length; i++)
+        if (dynamicObstacles.TryGetFirstValue(vehicle.currentEdgeId, out float obsDist, out NativeParallelMultiHashMapIterator<int> obsIt))
         {
-            if (dynamicObstacles[i].edgeId == vehicle.currentEdgeId)
+            do
             {
-                float distToObs = dynamicObstacles[i].distance - vehicle.distance;
+                float distToObs = obsDist - vehicle.distance;
                 if (distToObs > 0 && distToObs < distanceToFront)
                 {
                     distanceToFront = distToObs;
                 }
-            }
+            } while (dynamicObstacles.TryGetNextValue(out obsDist, ref obsIt));
         }
 
         if (vehicle.speed < maxSpeed * 0.9f && vehicle.lastLaneChangeTime >= 2.5f && distanceToEnd > 10f)
@@ -263,6 +263,15 @@ public struct CarSimulationJob : IJobParallelFor
                 } while (vehicleMap.TryGetNextValue(out nextIdx, ref nextIt));
             }
 
+            if (dynamicObstacles.TryGetFirstValue(nextEdgeId, out float nextObsDist, out NativeParallelMultiHashMapIterator<int> nextObsIt))
+            {
+                do
+                {
+                    float dist = distanceToEnd + nextObsDist;
+                    if (dist > 0 && dist < distanceToFront) distanceToFront = dist;
+                } while (dynamicObstacles.TryGetNextValue(out nextObsDist, ref nextObsIt));
+            }
+
             // Double look-ahead for the edge after the next one to avoid entering an intersection if the way ahead is blocked
             if (nextEdge.connectionCount > 0 && (distanceToEnd + nextEdge.length) < lookAhead)
             {
@@ -284,6 +293,15 @@ public struct CarSimulationJob : IJobParallelFor
                             if (dist2 < distanceToFront) distanceToFront = dist2;
                         }
                     } while (vehicleMap.TryGetNextValue(out nextNextIdx, ref nextNextIt));
+                }
+
+                if (dynamicObstacles.TryGetFirstValue(nextNextEdgeId, out float nextNextObsDist, out NativeParallelMultiHashMapIterator<int> nextNextObsIt))
+                {
+                    do
+                    {
+                        float dist2 = distanceToEnd + nextEdge.length + nextNextObsDist;
+                        if (dist2 > 0 && dist2 < distanceToFront) distanceToFront = dist2;
+                    } while (dynamicObstacles.TryGetNextValue(out nextNextObsDist, ref nextNextObsIt));
                 }
             }
 

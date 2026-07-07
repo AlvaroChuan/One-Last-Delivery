@@ -2,13 +2,21 @@ using UnityEngine;
 using Unity.Cinemachine;
 using System.Collections.Generic;
 
-
 public class PlayerLookComponent : PlayerComponent
 {
     [SerializeField] private GameObject _model;
     [SerializeField] private GameObject _head;
     [SerializeField] private Transform _eyes;
     [SerializeField] private float _rotationSpeed = 10f;
+
+    [Header("Bone Corrections")]
+    [SerializeField] private Vector3 _headRotationOffset = new Vector3(0f, -90f, 0f);
+
+    [Header("Dynamic Model Offsets")]
+    [SerializeField] private Vector3 _emptyHandOffset = Vector3.zero;
+    [SerializeField] private Vector3 _equippedItemOffset = new Vector3(0f, 25f, 0f);
+    [SerializeField] private float _offsetTransitionSpeed = 10f;
+
     [SerializeField] private string[] _cameraTags = new string[] { "PlayerCamera", "SpectatorCamera" };
     [SerializeField] private string _mainCameraTag = "PlayerCamera";
     private List<CinemachineCamera> _cinemachineCameras = new List<CinemachineCamera>();
@@ -16,9 +24,14 @@ public class PlayerLookComponent : PlayerComponent
     private Vector3 _eyesInitialLocalPosition;
     private float _bobTimer = 0f;
     private float _currentAmplitude = 0f;
+
     private PlayerMovementComponent _movementComponent;
     private PlayerGroundCheckComponent _groundCheckComponent;
     private PlayerSprintComponent _sprintComponent;
+    private PlayerInventoryComponent _inventoryComponent;
+
+    private Vector3 _currentModelOffset;
+    private Vector3 _targetModelOffset;
 
     [Header("Head Bobbing")]
     [SerializeField] private float _bobFrequency = 12f;
@@ -26,22 +39,30 @@ public class PlayerLookComponent : PlayerComponent
     [SerializeField] private float _bobAmplitude = 0.05f;
     [SerializeField] private float _sprintBobAmplitude = 0.1f;
     [SerializeField] private float _bobReturnSpeed = 5f;
-    [SerializeField] private float _bobTransitionSpeed = 10f; //Transition between walking-running
+    [SerializeField] private float _bobTransitionSpeed = 10f;
+
     public GameObject Model => _model;
     public Transform Eyes => _eyes;
+
     public override void OnStartClient()
     {
         base.OnStartClient();
         if (!isLocalPlayer)
         {
-            enabled = false; // Disable this component for non-local players
+            enabled = false;
             return;
         }
+
+        _currentModelOffset = _emptyHandOffset;
+        _targetModelOffset = _emptyHandOffset;
+
         _eyesInitialLocalPosition = _eyes.localPosition;
         _currentAmplitude = _bobAmplitude;
         _movementComponent = GetComponent<PlayerMovementComponent>();
         _groundCheckComponent = GetComponent<PlayerGroundCheckComponent>();
         _sprintComponent = GetComponent<PlayerSprintComponent>();
+        _inventoryComponent = GetComponent<PlayerInventoryComponent>();
+
         CinemachineCamera[] cameras = FindObjectsByType<CinemachineCamera>(FindObjectsSortMode.None);
         foreach (var camera in cameras)
         {
@@ -54,7 +75,7 @@ public class PlayerLookComponent : PlayerComponent
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        SwitchCamera(_mainCameraTag); // Set the main camera as the active camera
+        SwitchCamera(_mainCameraTag);
     }
 
     void OnEnable()
@@ -70,6 +91,10 @@ public class PlayerLookComponent : PlayerComponent
             _currentCamera.Follow = _eyes;
             _currentCamera.LookAt = _eyes;
         }
+
+        if (_inventoryComponent == null) _inventoryComponent = GetComponent<PlayerInventoryComponent>();
+        if (_inventoryComponent != null)
+            _inventoryComponent.onInventorySlotChangedOwner += HandleInventoryChange;
     }
 
     void OnDisable()
@@ -84,6 +109,22 @@ public class PlayerLookComponent : PlayerComponent
             _currentCamera.enabled = false;
             _currentCamera.Follow = null;
             _currentCamera.LookAt = null;
+        }
+
+        if (_inventoryComponent != null)
+            _inventoryComponent.onInventorySlotChangedOwner -= HandleInventoryChange;
+    }
+
+    private void HandleInventoryChange(PlayerInventoryComponent.SlotChangeInfo info)
+    {
+
+        if (info.newSlotIndex == -1 || info.newItemData.itemID == ItemID.None)
+        {
+            _targetModelOffset = _emptyHandOffset;
+        }
+        else
+        {
+            _targetModelOffset = _equippedItemOffset;
         }
     }
 
@@ -111,38 +152,68 @@ public class PlayerLookComponent : PlayerComponent
 
     void FixedUpdate()
     {
-        if (!isLocalPlayer) return; // Only allow local player to process look input
-
-        HandleRotation();
+        if (!isLocalPlayer) return;
         HandleHeadBob();
+    }
+
+    void LateUpdate()
+    {
+        if (!isLocalPlayer) return;
+        HandleRotation();
     }
 
     private void HandleRotation()
     {
+        if (_inventoryComponent != null)
+        {
+            InventoryItemData heldData = _inventoryComponent.GetHeldItemData();
+
+            if (heldData.itemID == ItemID.None)
+            {
+                _targetModelOffset = _emptyHandOffset;
+            }
+            else
+            {
+                _targetModelOffset = _equippedItemOffset;
+            }
+        }
+
         Vector3 forward = Camera.main.transform.forward;
         Vector3 flatForward = new Vector3(forward.x, 0f, forward.z).normalized;
+        _currentModelOffset = Vector3.Lerp(_currentModelOffset, _targetModelOffset, Time.deltaTime * _offsetTransitionSpeed);
 
         if (flatForward.sqrMagnitude > 0.001f)
         {
-            Quaternion modelTargetRotation = Quaternion.LookRotation(flatForward);
-            _model.transform.rotation = Quaternion.Slerp(_model.transform.rotation, modelTargetRotation, _rotationSpeed * Time.fixedDeltaTime);
+            Quaternion baseModelRotation = Quaternion.LookRotation(flatForward);
+            Quaternion modelTargetRotation = baseModelRotation * Quaternion.Euler(_currentModelOffset);
+
+            _model.transform.rotation = Quaternion.Slerp(_model.transform.rotation, modelTargetRotation, _rotationSpeed * Time.deltaTime);
         }
-        Quaternion headTargetRotation = Quaternion.LookRotation(forward);
-        _head.transform.rotation = Quaternion.Slerp(_head.transform.rotation, headTargetRotation, _rotationSpeed * Time.fixedDeltaTime);
+        if (forward.sqrMagnitude > 0.001f)
+        {
+            Quaternion baseHeadRotation = Quaternion.LookRotation(forward);
+            Quaternion correctedHeadRotation = baseHeadRotation * Quaternion.Euler(_headRotationOffset);
+
+            _head.transform.rotation = correctedHeadRotation;
+        }
     }
 
     private void HandleHeadBob()
     {
         if (_movementComponent == null || _groundCheckComponent == null) return;
         bool isSprinting = _sprintComponent != null && _sprintComponent.IsSprinting;
+
         if (_movementComponent.IsMoving && _groundCheckComponent.IsGrounded())
         {
             float targetFrequency = isSprinting ? _sprintBobFrequency : _bobFrequency;
             float targetAmplitude = isSprinting ? _sprintBobAmplitude : _bobAmplitude;
+
             _currentAmplitude = Mathf.Lerp(_currentAmplitude, targetAmplitude, Time.fixedDeltaTime * _bobTransitionSpeed);
             _bobTimer += Time.fixedDeltaTime * targetFrequency;
+
             float verticalOffset = Mathf.Sin(_bobTimer) * _currentAmplitude;
             Vector3 targetPosition = _eyesInitialLocalPosition + new Vector3(0f, verticalOffset, 0f);
+
             _eyes.localPosition = Vector3.Lerp(_eyes.localPosition, targetPosition, Time.fixedDeltaTime * 15f);
         }
         else
@@ -153,75 +224,3 @@ public class PlayerLookComponent : PlayerComponent
         }
     }
 }
-
-/*
-
-public class PlayerLookComponent : InputComponent
-{
-    [SerializeField] private float _sensitivity = 10f;
-    [SerializeField] private float _maxVerticalAngle = 80f;
-    [SerializeField] private Transform _cameraHorizontalPivot;
-    [SerializeField] private Transform _cameraVerticalPivot;
-    [SerializeField] private InputActionReference _lookInput;
-    Camera _playerCamera;
-    public Camera PlayerCamera => _playerCamera;
-    Vector2 _currentLookInput;
-
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
-        _playerCamera = GetComponentInChildren<Camera>();
-        if (!isLocalPlayer)
-        {
-            if (_playerCamera != null)
-            {
-                _playerCamera.gameObject.SetActive(false); // Disable camera for non-local players
-            }
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-    }
-
-    protected override void BindInputs()
-    {
-        _lookInput.action.Enable();
-        _lookInput.action.performed += OnLookInput;
-        _lookInput.action.canceled += OnLookInput;
-    }
-
-    protected override void UnbindInputs()
-    {
-        _lookInput.action.Disable();
-        _lookInput.action.performed -= OnLookInput;
-        _lookInput.action.canceled -= OnLookInput;
-    }
-
-    void OnLookInput(InputAction.CallbackContext context)
-    {
-        _currentLookInput = context.ReadValue<Vector2>();
-    }
-
-    public void Look()
-    {
-        if (!isLocalPlayer) return; // Only allow local player to process look input
-
-        // Apply horizontal rotation to the horizontal pivot (yaw)
-        float currentYaw = _cameraHorizontalPivot.localEulerAngles.y;
-        float targetYaw = currentYaw + _currentLookInput.x * _sensitivity * Time.deltaTime;
-        _cameraHorizontalPivot.localRotation = Quaternion.Euler(0f, targetYaw, 0f);
-        // Apply vertical rotation to the vertical pivot (pitch) with clamping
-        float currentPitch = _cameraVerticalPivot.localEulerAngles.x;
-        currentPitch = (currentPitch > 180f) ? currentPitch - 360f : currentPitch; // Convert to -180 to 180 range
-        float targetPitch = Mathf.Clamp(currentPitch - _currentLookInput.y * _sensitivity * Time.deltaTime, -_maxVerticalAngle, _maxVerticalAngle);
-        _cameraVerticalPivot.localRotation = Quaternion.Euler(targetPitch, 0f, 0f);
-    }
-
-    void LateUpdate()
-    {
-        Look();
-    }
-}
-*/

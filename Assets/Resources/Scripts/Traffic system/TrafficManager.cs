@@ -52,7 +52,7 @@ public class TrafficManager : NetworkBehaviour
     private NativeArray<EdgePoint> _allPoints;
     private NativeParallelMultiHashMap<int, int> _spatialGrid;
     private NativeArray<DynamicObstacleData> _dynamicObstacles;
-    private NativeArray<NativeObstacle> _mappedObstacles;
+    private NativeParallelMultiHashMap<int, float> _mappedObstacles;
 
     [HideInInspector]
     public TrafficLightController[] trafficLights;
@@ -119,8 +119,10 @@ public class TrafficManager : NetworkBehaviour
             _dynamicObstacles.Dispose();
             _mappedObstacles.Dispose();
             _dynamicObstacles = new NativeArray<DynamicObstacleData>(newCapacity, Allocator.Persistent);
-            _mappedObstacles = new NativeArray<NativeObstacle>(newCapacity, Allocator.Persistent);
+            _mappedObstacles = new NativeParallelMultiHashMap<int, float>(newCapacity * 4, Allocator.Persistent);
         }
+
+        _mappedObstacles.Clear();
 
         // Fill NativeArray with active obstacles
         int activeCount = 0;
@@ -145,7 +147,7 @@ public class TrafficManager : NetworkBehaviour
             allPoints = _allPoints,
             cellSize = _spatialGridCellSize,
             snapDistance = _obstacleSnapDistance,
-            outputObstacles = _mappedObstacles
+            outputObstacles = _mappedObstacles.AsParallelWriter()
         };
         // We only schedule the Map job for the actual number of active obstacles!
         JobHandle mapObstaclesHandle = mapObstaclesJob.Schedule(activeCount, 64, clearLocksHandle);
@@ -362,7 +364,7 @@ public class TrafficManager : NetworkBehaviour
 
         // Initialize max 10 dynamic obstacles
         _dynamicObstacles = new NativeArray<DynamicObstacleData>(10, Allocator.Persistent);
-        _mappedObstacles = new NativeArray<NativeObstacle>(10, Allocator.Persistent);
+        _mappedObstacles = new NativeParallelMultiHashMap<int, float>(40, Allocator.Persistent);
 
         _intersections = new NativeArray<NativeIntersection>(_trafficGraph.intersections.Count, Allocator.Persistent);
         List<int> allLightIds = new List<int>();
