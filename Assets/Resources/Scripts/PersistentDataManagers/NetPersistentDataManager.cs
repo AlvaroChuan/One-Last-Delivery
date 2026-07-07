@@ -42,7 +42,7 @@ public abstract class NetPersistentDataManager<T, TStaticState, TDataType> : Net
     [SerializeField] protected string[] _activeSceneNames;
     private static string[] StaticActiveSceneNames;
 
-    public Action<DataChangeInfo> onDataChangedEvent;
+    public static Action<DataChangeInfo> OnDataChangedEvent;
 
     protected static readonly TStaticState StaticDataState = new TStaticState();
 

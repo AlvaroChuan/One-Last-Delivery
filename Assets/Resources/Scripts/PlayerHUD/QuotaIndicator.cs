@@ -6,46 +6,46 @@ public class QuotaIndicator : NetworkBehaviour
 {
     [SerializeField] private TextMeshProUGUI _quoteQuantity;
 
-    private QuotaManager _quotaManager;
-
-    private float _dailyQuota, _currentQuota;
+    [SyncVar (hook = nameof(OnQuotaSync))] private float _dailyQuota;
+    [SyncVar (hook = nameof(OnMoneySync))] private float _currentMoney;
 
     public override void OnStartServer()
     {
-        _quotaManager = FindAnyObjectByType<QuotaManager>();
-        _quotaManager.quotaHUD = this;
+        base.OnStartServer();
+        BalanceManager.OnTransactionRegistered += OnTransaction;
+        QuotaManager.OnDataChangedEvent += OnQuotaChanged;
+        MoneyManager.OnDataChangedEvent += OnMoneyChanged;
     }
 
-    private void OnEnable()
+    private void OnDestroy()
     {
-        BalanceManager.OnTransactionRegistered += SetActualQuota;
+        BalanceManager.OnTransactionRegistered -= OnTransaction;
+        QuotaManager.OnDataChangedEvent -= OnQuotaChanged;
+        MoneyManager.OnDataChangedEvent -= OnMoneyChanged;
     }
 
-    private void OnDisable()
+    void OnMoneyChanged(MoneyManager.DataChangeInfo moneyChangeInfo)
     {
-        BalanceManager.OnTransactionRegistered -= SetActualQuota;
+        _currentMoney = moneyChangeInfo.newValue + BalanceManager.GetBalance();
     }
 
-    public void SetDailyQuota(float quota)
+    void OnQuotaChanged(QuotaManager.DataChangeInfo quota)
     {
-        _dailyQuota = quota;
-        UpdateHUD();
+        _dailyQuota = quota.newValue;
     }
 
-    [Command]
-    public void SetActualQuota(Transaction transaction)
+    public void OnTransaction(Transaction transaction)
     {
-        RcpSetCurrentQuota();
+        _currentMoney = MoneyManager.CurrentMoney + BalanceManager.GetBalance();
     }
 
-    [ClientRpc]
-    public void RcpSetCurrentQuota()
+    void OnQuotaSync(float oldQuota, float newQuota)
     {
-        _currentQuota = BalanceManager.GetBalance() + MoneyManager.CurrentMoney;
+        _quoteQuantity.text = $"{_currentMoney:0.00}/{newQuota:0.00}";
     }
 
-    void UpdateHUD()
+    void OnMoneySync(float oldMoney, float newMoney)
     {
-        _quoteQuantity.text = _currentQuota.ToString("N0") + " / " + _dailyQuota.ToString("N0");
+        _quoteQuantity.text = $"{newMoney:0.00}/{_dailyQuota:0.00}";
     }
 }

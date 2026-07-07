@@ -186,6 +186,10 @@ public class CustomNetworkManager : NetworkManager
 
     public void ServerChangeSceneWithTransition(string sceneName)
     {
+        if(SceneManager.GetActiveScene().name == _gameScene)
+        {
+            BalanceManager.RegisterTransaction("Daily quota", -QuotaManager.CurrentQuota);
+        }
         _currentDestinationScene = sceneName; // Store the destination scene for later use
         NetworkServer.SendToAll(new SceneTransitionMessage()); // Notify all clients to start the transition
     }

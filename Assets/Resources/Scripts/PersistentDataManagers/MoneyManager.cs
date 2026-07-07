@@ -37,7 +37,7 @@ public class MoneyManager : NetPersistentDataManager<MoneyManager, MoneyManager.
 
     private void OnMoneyChanged(float oldMoney, float newMoney)
     {
-        onDataChangedEvent?.Invoke(new DataChangeInfo
+        OnDataChangedEvent?.Invoke(new DataChangeInfo
         {
             oldValue = oldMoney,
             newValue = newMoney
