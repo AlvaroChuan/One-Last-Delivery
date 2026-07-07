@@ -780,7 +780,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mixerGroup: {fileID: 243093888839763902, guid: 89ef2123a31ebe547959c299198012c1, type: 2}
-  _musicClips: []
+  _musicClips:
+  - id: 1
+    clip: {fileID: 8300000, guid: 0fbb44defc354044599945964b7ed265, type: 3}
+    volume: 1
+  - id: 2
+    clip: {fileID: 8300000, guid: 1eea09a3006e55b4d87ac5581a7cc177, type: 3}
+    volume: 1
+  - id: 3
+    clip: {fileID: 8300000, guid: c6d7b24cb8c083546982c0487deef75a, type: 3}
+    volume: 1
+  - id: 4
+    clip: {fileID: 8300000, guid: f36fcd74a297fb845ad948274f8fbe4a, type: 3}
+    volume: 1
 --- !u!4 &196425159
 Transform:
   m_ObjectHideFlags: 0
