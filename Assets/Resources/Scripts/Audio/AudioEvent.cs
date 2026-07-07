@@ -12,6 +12,9 @@ public class AudioEvent : ScriptableObject
     [Range(0f, 1f)] [SerializeField] private float _volume = 1f;
     [Range(0f, 2f)] [SerializeField] private float _minPitch = 0.85f;
     [Range(0f, 2f)] [SerializeField] private float _maxPitch = 1.15f;
+    [Range(0f, 1f)] [SerializeField] private float _spatialBlend = 1f; // 0 = 2D, 1 = 3D
+    [SerializeField] private float _maxDistance = 50f;
+    [SerializeField] private AudioRolloffMode _audioRolloffMode = AudioRolloffMode.Logarithmic;
     Dictionary<GameObject, AudioSource> _activeAudioSources = new Dictionary<GameObject, AudioSource>();
 
     /// <summary>
@@ -42,8 +45,6 @@ public class AudioEvent : ScriptableObject
 
         AudioSource source = tempGO.AddComponent<AudioSource>();
 
-        source.spatialBlend = 1.0f; // Force full 3D sound
-
         AudioClip selectedClip = ConfigureAndPlay(source);
 
         float clipLength = selectedClip.length / Mathf.Max(0.001f, source.pitch);
@@ -52,6 +53,10 @@ public class AudioEvent : ScriptableObject
 
     private AudioClip ConfigureAndPlay(AudioSource source)
     {
+        source.spatialBlend = _spatialBlend;
+        source.maxDistance = _maxDistance;
+        source.rolloffMode = _audioRolloffMode;
+
         source.outputAudioMixerGroup = _mixerGroup;
 
         AudioClip clip = _clips[Random.Range(0, _clips.Length)];

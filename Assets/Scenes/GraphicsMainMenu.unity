@@ -2602,7 +2602,7 @@ MonoBehaviour:
   _fogDensityDay: 0.018
   _fogDensityNight: 0.05
   _fogHeightPropertyName: _FogHeight
-  _fogHeightDay: 14
+  _fogHeightDay: 1
   _fogHeightNight: 6
   _globalVolume: {fileID: 1490652288}
   _vignetteIntensityDay: 0.29

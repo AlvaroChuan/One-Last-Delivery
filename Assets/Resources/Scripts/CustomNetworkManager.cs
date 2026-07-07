@@ -133,7 +133,7 @@ public class CustomNetworkManager : NetworkManager
         if (_deadPlayers >= _numberOfPlayers)
         {
             DevLogger.Log("All players are dead. Transitioning to balance scene.");
-            List<Transaction> transactions = BalanceManager.GetBalance();
+            List<Transaction> transactions = BalanceManager.GetBalanceList();
             float totalBalance = 0f;
             foreach (var transaction in transactions)
             {

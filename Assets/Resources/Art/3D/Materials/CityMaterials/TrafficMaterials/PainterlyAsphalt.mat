@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PainterlyAsphalt
-  m_Shader: {fileID: -6465566751694194690, guid: d813a7cb0595be74385788fbea61ac2c, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 922c7132646195f468019d0caaa607c6, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
@@ -58,7 +58,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: db5f87fe0de4e1d4ab9e525ca4a843f8, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicMap:
@@ -121,6 +121,8 @@ Material:
     - _LightFactor: 0.035
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
+    - _MainTexBlend: 0
+    - _MainTexIntensity: 0
     - _MetallicFactor: 0
     - _NormalNoise: 161
     - _NormalStrength: 0.3

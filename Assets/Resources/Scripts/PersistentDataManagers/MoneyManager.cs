@@ -26,6 +26,7 @@ public class MoneyManager : NetPersistentDataManager<MoneyManager, MoneyManager.
         {
             StaticDataState.StaticData = _initialMoney;
             StaticDataState.isFirstDay = false;
+            DevLogger.Log($"Initializing money for the first day. Setting initial money to {_initialMoney}");
         }
     }
 
