@@ -96,6 +96,8 @@ public class PackageHealthComponent : NetworkBehaviour
         {
             _currentHealth = 0f;
 
+            (NetworkManager.singleton as CustomNetworkManager).NotifyPackageDestroyed(); // Notify the network manager that the package has been destroyed
+
             NetworkServer.Destroy(gameObject);
         }
         else

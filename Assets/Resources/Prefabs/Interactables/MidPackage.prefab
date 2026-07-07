@@ -294,6 +294,14 @@ PrefabInstance:
       propertyPath: _assetId
       value: 2491948120
       objectReference: {fileID: 0}
+    - target: {fileID: 6813047963127189066, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
+      propertyPath: _volumeScale
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6813047963127189066, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
+      propertyPath: _impactThreshold
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7128960944206856421, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0

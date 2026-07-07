@@ -20,7 +20,7 @@ public class AudioEvent : ScriptableObject
     /// <summary>
     /// Plays the audio event from a given GameObject. If the GameObject does not have an AudioSource, one will be added automatically.
     /// </summary>
-    public void Play(GameObject sourceObject)
+    public void Play(GameObject sourceObject, float volumeScale = 1f)
     {
         if (_clips.Length == 0) return;
 
@@ -30,13 +30,13 @@ public class AudioEvent : ScriptableObject
             _activeAudioSources[sourceObject] = source;
         }
 
-        ConfigureAndPlay(source);
+        ConfigureAndPlay(source, volumeScale);
     }
 
     /// <summary>
     /// Plays the audio event at a specific position in the world. A temporary GameObject with an AudioSource will be created to play the sound, and it will be destroyed after the clip finishes playing.
     /// </summary>
-    public void Play(Vector3 position)
+    public void Play(Vector3 position, float volumeScale = 1f)
     {
         if (_clips.Length == 0) return;
 
@@ -45,13 +45,13 @@ public class AudioEvent : ScriptableObject
 
         AudioSource source = tempGO.AddComponent<AudioSource>();
 
-        AudioClip selectedClip = ConfigureAndPlay(source);
+        AudioClip selectedClip = ConfigureAndPlay(source, volumeScale);
 
         float clipLength = selectedClip.length / Mathf.Max(0.001f, source.pitch);
         Destroy(tempGO, clipLength);
     }
 
-    private AudioClip ConfigureAndPlay(AudioSource source)
+    private AudioClip ConfigureAndPlay(AudioSource source, float volumeScale)
     {
         source.spatialBlend = _spatialBlend;
         source.maxDistance = _maxDistance;
@@ -62,7 +62,11 @@ public class AudioEvent : ScriptableObject
         AudioClip clip = _clips[Random.Range(0, _clips.Length)];
         source.pitch = Random.Range(_minPitch, _maxPitch);
 
-        source.PlayOneShot(clip, _volume);
+        DevLogger.Log($"Playing audio clip: {clip.name} at position: {source.transform.position} with volume scale: {volumeScale}");
+
+        float finalVolume = Mathf.Clamp01(_volume * volumeScale);
+
+        source.PlayOneShot(clip, finalVolume * finalVolume);
 
         return clip;
     }

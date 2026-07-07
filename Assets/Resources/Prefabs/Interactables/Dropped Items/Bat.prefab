@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 1019802735134934631}
   - component: {fileID: 7385990102405255724}
   - component: {fileID: 8243692011557601798}
+  - component: {fileID: -1550146988126473629}
   m_Layer: 3
   m_Name: Bat
   m_TagString: Untagged
@@ -196,6 +197,23 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   enableRigidbodyControl: 1
+--- !u!114 &-1550146988126473629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3626590714432623591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 976e806701e633d42bdc33af06d393d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _impactSoundEvent: {fileID: 11400000, guid: 4515609e892f16f449906bad0b4f0796, type: 2}
+  _impactThreshold: 1
 --- !u!1 &7062676235366834583
 GameObject:
   m_ObjectHideFlags: 0

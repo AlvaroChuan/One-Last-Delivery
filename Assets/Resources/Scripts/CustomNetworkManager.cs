@@ -18,6 +18,7 @@ public class CustomNetworkManager : NetworkManager
     // Track how many characters we have spawned in the game scene
     private int _numberOfPlayers = 0;
     private int _deadPlayers = 0;
+    bool _packageDestroyed = false; // Track if a package has been destroyed
 
     public override void OnStartServer()
     {
@@ -118,6 +119,7 @@ public class CustomNetworkManager : NetworkManager
 
         _numberOfPlayers = 0;
         _deadPlayers = 0;
+        _packageDestroyed = false; // Reset package destroyed flag when changing scenes
 
         if (newSceneName != _gameScene && newSceneName != _balanceScene)
         {
@@ -150,7 +152,15 @@ public class CustomNetworkManager : NetworkManager
 
     public void NotifyAllPackagesDelivered()
     {
-        BalanceManager.RegisterTransaction("All packages delivered!", _allPackagesDeliveredReward);
+        if (!_packageDestroyed)
+        {
+            BalanceManager.RegisterTransaction("All packages delivered!", _allPackagesDeliveredReward);
+        }
         ServerChangeScene(_balanceScene);
+    }
+
+    internal void NotifyPackageDestroyed()
+    {
+        _packageDestroyed = true;
     }
 }

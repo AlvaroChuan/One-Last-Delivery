@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 6735916694950570071}
   - component: {fileID: 8045201277797530763}
   - component: {fileID: 845320219464696297}
+  - component: {fileID: 6813047963127189066}
   m_Layer: 3
   m_Name: Package
   m_TagString: Package
@@ -301,6 +302,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _streetLabel: {fileID: 8616374103077212214}
   _numberLabel: {fileID: 1384233891832045967}
+--- !u!114 &6813047963127189066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1369721123284713815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 976e806701e633d42bdc33af06d393d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _impactSoundEvent: {fileID: 11400000, guid: 4515609e892f16f449906bad0b4f0796, type: 2}
+  _impactThreshold: 1
 --- !u!1 &2333763140310054004
 GameObject:
   m_ObjectHideFlags: 0

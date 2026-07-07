@@ -10,10 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8baab117d5c6ecc43a8428a4a05e1332, type: 3}
-  m_Name: TaserFire
+  m_Name: ObjectImpact
   m_EditorClassIdentifier: 
   _clips:
-  - {fileID: 8300000, guid: 2b21ef916f6943c439b71a7c74568878, type: 3}
+  - {fileID: 8300000, guid: 72a9b2a2a3eaa584d9ba3a8e2166f0fd, type: 3}
+  - {fileID: 8300000, guid: a37109c51cd477548ad1c882be3971d5, type: 3}
+  - {fileID: 8300000, guid: 0e270ecb84908054a9d6f727dbea974e, type: 3}
+  - {fileID: 8300000, guid: cd13436b01a4b5b4082c89e180d10dc3, type: 3}
+  - {fileID: 8300000, guid: 1f53a5fc6bd934e46a5d8cfa8fd27b64, type: 3}
+  - {fileID: 8300000, guid: e82879725b40ce444bca27d19a75f42c, type: 3}
+  - {fileID: 8300000, guid: 2b019c6187fca1e48b47e28c891dc66c, type: 3}
+  - {fileID: 8300000, guid: b883c27c88428884fb3a10dcc42b8b47, type: 3}
   _mixerGroup: {fileID: 243703940283072516, guid: 89ef2123a31ebe547959c299198012c1, type: 2}
   _volume: 1
   _minPitch: 0.85
