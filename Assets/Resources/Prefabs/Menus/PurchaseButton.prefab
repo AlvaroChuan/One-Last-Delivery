@@ -360,6 +360,7 @@ GameObject:
   - component: {fileID: 3236188956708480871}
   - component: {fileID: 4333467512749333038}
   - component: {fileID: 6418924213376811082}
+  - component: {fileID: 3289228754564888362}
   m_Layer: 5
   m_Name: PurchaseButton
   m_TagString: Untagged
@@ -486,3 +487,16 @@ MonoBehaviour:
   _name: {fileID: 4171100593318566536}
   _price: {fileID: 5153317077832607628}
   _icon: {fileID: 5355181074533720480}
+--- !u!114 &3289228754564888362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8855602561810962251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5de0cc7a941fb5478da866bd71c3b5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buttonClickAudioEvent: {fileID: 11400000, guid: e1f3189cc4415bb42bdfb6884fecce42, type: 2}

@@ -1328,7 +1328,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mixerGroup: {fileID: 243599824091497972, guid: 89ef2123a31ebe547959c299198012c1, type: 2}
-  _volume: 0.1
+  _volume: 0.732
   _spatial: 1
   _maxDistance: 50
   _audioLoops:

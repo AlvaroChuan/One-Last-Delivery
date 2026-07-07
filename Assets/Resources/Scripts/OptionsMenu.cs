@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -20,6 +21,7 @@ public class OptionsMenu : MonoBehaviour
     [SerializeField] private Transform _optionsContent;
     [SerializeField] private KeyBinder _keyBindPrefab;
     [SerializeField] private InputActionReference[] _inputReferences;
+    [SerializeField] private AudioMixerGroup _masterMixerGroup;
     private BaseVoiceChat _voiceChat;
     private Resolution[] _resolutions;
     private List<Resolution> _filteredResolutions;
@@ -210,19 +212,19 @@ public class OptionsMenu : MonoBehaviour
 
     public void SetMasterVolume(float volume)
     {
-        // TODO: Integrate with audio manager to set the actual volume
+        _masterMixerGroup.audioMixer.SetFloat("MasterVolume", Mathf.Log10(Mathf.Max(volume, 0.0001f)) * 20); // Convert linear volume to decibels
         PlayerPrefs.SetFloat("MasterVolume", volume);
     }
 
     public void SetMusicVolume(float volume)
     {
-        // TODO: Integrate with audio manager to set the actual volume
+        _masterMixerGroup.audioMixer.SetFloat("MusicVolume", Mathf.Log10(Mathf.Max(volume, 0.0001f)) * 20); // Convert linear volume to decibels
         PlayerPrefs.SetFloat("MusicVolume", volume);
     }
 
     public void SetSFXVolume(float volume)
     {
-        // TODO: Integrate with audio manager to set the actual volume
+        _masterMixerGroup.audioMixer.SetFloat("SFXVolume", Mathf.Log10(Mathf.Max(volume, 0.0001f)) * 20); // Convert linear volume to decibels
         PlayerPrefs.SetFloat("SFXVolume", volume);
     }
 

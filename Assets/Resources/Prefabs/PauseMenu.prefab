@@ -408,6 +408,7 @@ GameObject:
   - component: {fileID: 1970212039647985179}
   - component: {fileID: 6933766988274541719}
   - component: {fileID: 6438164751116216474}
+  - component: {fileID: 4503205143322251816}
   m_Layer: 5
   m_Name: QuitButton
   m_TagString: Untagged
@@ -499,6 +500,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4503205143322251816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3728984908145407275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5de0cc7a941fb5478da866bd71c3b5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buttonClickAudioEvent: {fileID: 11400000, guid: e1f3189cc4415bb42bdfb6884fecce42, type: 2}
 --- !u!1 &3779397213035547338
 GameObject:
   m_ObjectHideFlags: 0
@@ -900,6 +914,7 @@ GameObject:
   - component: {fileID: 4431824971697036017}
   - component: {fileID: 4115770475249275706}
   - component: {fileID: 1109949557366212648}
+  - component: {fileID: 4365668472255237912}
   m_Layer: 5
   m_Name: OptionsButton
   m_TagString: Untagged
@@ -991,6 +1006,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4365668472255237912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8425874915567433945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5de0cc7a941fb5478da866bd71c3b5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buttonClickAudioEvent: {fileID: 11400000, guid: e1f3189cc4415bb42bdfb6884fecce42, type: 2}
 --- !u!1 &8745791788658658400
 GameObject:
   m_ObjectHideFlags: 0
@@ -1002,6 +1030,7 @@ GameObject:
   - component: {fileID: 7133009862487822793}
   - component: {fileID: 8932828903110684573}
   - component: {fileID: 1484106796607304589}
+  - component: {fileID: 5473055867551658471}
   m_Layer: 5
   m_Name: ResumeButton
   m_TagString: Untagged
@@ -1093,6 +1122,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &5473055867551658471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8745791788658658400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5de0cc7a941fb5478da866bd71c3b5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buttonClickAudioEvent: {fileID: 11400000, guid: e1f3189cc4415bb42bdfb6884fecce42, type: 2}
 --- !u!1001 &7113672178086822948
 PrefabInstance:
   m_ObjectHideFlags: 0

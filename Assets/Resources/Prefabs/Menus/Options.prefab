@@ -2796,6 +2796,7 @@ GameObject:
   - component: {fileID: 2877800790537445476}
   - component: {fileID: 1743083225615815697}
   - component: {fileID: 8869482724789609741}
+  - component: {fileID: 7542381586664703547}
   m_Layer: 5
   m_Name: Back
   m_TagString: Untagged
@@ -2918,6 +2919,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &7542381586664703547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2925630927204046823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5de0cc7a941fb5478da866bd71c3b5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buttonClickAudioEvent: {fileID: 11400000, guid: e1f3189cc4415bb42bdfb6884fecce42, type: 2}
 --- !u!1 &2928891233699926147
 GameObject:
   m_ObjectHideFlags: 0
@@ -5134,7 +5148,7 @@ MonoBehaviour:
   _optionsContent: {fileID: 0}
   _keyBindPrefab: {fileID: 0}
   _inputReferences: []
-  _voiceChat: {fileID: 0}
+  _masterMixerGroup: {fileID: 24300002, guid: 89ef2123a31ebe547959c299198012c1, type: 2}
 --- !u!1 &4797586628914971807
 GameObject:
   m_ObjectHideFlags: 0
