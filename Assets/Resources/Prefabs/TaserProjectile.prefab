@@ -101,6 +101,7 @@ GameObject:
   - component: {fileID: 6854502559725745256}
   - component: {fileID: 2075399679196037545}
   - component: {fileID: 940585115831071266}
+  - component: {fileID: 5708999514597958149}
   m_Layer: 9
   m_Name: TaserProjectile
   m_TagString: Untagged
@@ -256,3 +257,16 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.25
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5708999514597958149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2176228484997862400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b626f790c864514f8db267926e7e81f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _projectileHitAudioEvent: {fileID: 11400000, guid: 96dc3a1a7048f9a448d37b86c477944c, type: 2}

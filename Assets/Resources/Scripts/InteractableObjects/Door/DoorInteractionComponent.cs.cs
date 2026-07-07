@@ -43,6 +43,11 @@ public class DoorInteractionComponent : Interactable
                 BalanceManager.RegisterTransaction("Package was damaged", -penalty);
             }
             NetworkServer.Destroy(package);
+            RpcDoorInteraction(true);
+        }
+        else
+        {
+            RpcDoorInteraction(false);
         }
     }
 

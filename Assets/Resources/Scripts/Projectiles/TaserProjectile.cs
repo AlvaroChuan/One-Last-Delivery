@@ -10,12 +10,12 @@ public class TaserProjectile : MonoBehaviour
     void Awake()
     {
         _projectile = GetComponent<Projectile>();
-        _projectile.onProjectileHit += HandleProjectileHit;
+        _projectile.onProjectileHitServer += HandleProjectileHit;
     }
 
     void OnDestroy()
     {
-        _projectile.onProjectileHit -= HandleProjectileHit;
+        _projectile.onProjectileHitServer -= HandleProjectileHit;
     }
 
     private void HandleProjectileHit(GameObject hitObject)

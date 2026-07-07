@@ -6,7 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Projectile : NetworkBehaviour
 {
-    public Action<GameObject> onProjectileHit; // Event to notify when the projectile hits something
+    public Action<GameObject> onProjectileHitRemote; // Event to notify when the projectile hits something
+    public Action<GameObject> onProjectileHitServer; // Event to notify when the projectile hits something
     [SerializeField] private float _speed = 10f;
     [SerializeField] private float _lifetime = -1f;
     [SerializeField] private float _range = -1f;
@@ -39,11 +40,12 @@ public class Projectile : NetworkBehaviour
 
     void OnTriggerEnter(Collider collider)
     {
+        onProjectileHitRemote?.Invoke(collider.gameObject);
         if (!isServer) return;
 
         DevLogger.Log($"Projectile hit: {collider.gameObject.name}");
 
-        onProjectileHit?.Invoke(collider.gameObject);
+        onProjectileHitServer?.Invoke(collider.gameObject);
 
         NetworkServer.Spawn(Instantiate(_impactParticlesPrefab, transform.position, Quaternion.identity).gameObject);
 
