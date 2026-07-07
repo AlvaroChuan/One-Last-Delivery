@@ -16,6 +16,30 @@ PrefabInstance:
       propertyPath: m_LODs.Array.data[0].screenRelativeHeight
       value: 0.02
       objectReference: {fileID: 0}
+    - target: {fileID: 4540378999826861189, guid: 1b1bd1e362ee9d749a568990e583d646, type: 3}
+      propertyPath: m_Size.x
+      value: 0.6870315
+      objectReference: {fileID: 0}
+    - target: {fileID: 4540378999826861189, guid: 1b1bd1e362ee9d749a568990e583d646, type: 3}
+      propertyPath: m_Size.y
+      value: 0.9724303
+      objectReference: {fileID: 0}
+    - target: {fileID: 4540378999826861189, guid: 1b1bd1e362ee9d749a568990e583d646, type: 3}
+      propertyPath: m_Size.z
+      value: 0.55551577
+      objectReference: {fileID: 0}
+    - target: {fileID: 4540378999826861189, guid: 1b1bd1e362ee9d749a568990e583d646, type: 3}
+      propertyPath: m_Center.x
+      value: -0.09149666
+      objectReference: {fileID: 0}
+    - target: {fileID: 4540378999826861189, guid: 1b1bd1e362ee9d749a568990e583d646, type: 3}
+      propertyPath: m_Center.y
+      value: 0.4626318
+      objectReference: {fileID: 0}
+    - target: {fileID: 4540378999826861189, guid: 1b1bd1e362ee9d749a568990e583d646, type: 3}
+      propertyPath: m_Center.z
+      value: -0.041486435
+      objectReference: {fileID: 0}
     - target: {fileID: 4853443129567600716, guid: 1b1bd1e362ee9d749a568990e583d646, type: 3}
       propertyPath: m_Name
       value: Bush_4

@@ -66,5 +66,5 @@
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj"
     },
-    "dotnet.defaultSolution": "One-Last-Delivery.sln"
+    "dotnet.defaultSolution": "One Last Delivery.sln"
 }
