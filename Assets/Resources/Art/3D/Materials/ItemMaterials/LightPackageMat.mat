@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Clipboard
-  m_Shader: {fileID: -6465566751694194690, guid: 922c7132646195f468019d0caaa607c6, type: 3}
+  m_Name: LightPackageMat
+  m_Shader: {fileID: -6465566751694194690, guid: ad89e01e130589e49bb2c9581c841d27, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
@@ -70,7 +70,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 914a384a08d6d344f886365717fdeb78, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PencilTexture:
@@ -99,7 +99,8 @@ Material:
     - _ADDITIONAL_LIGHT_SHADOWS: 1
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _AmbientColorFactor: 0.141
+    - _AmbientColorFactor: 0
+    - _AmbientFactorColor: 0.266
     - _Blend: 0
     - _CastShadows: 1
     - _CellAngle: 2
@@ -116,20 +117,21 @@ Material:
     - _HeightMapIntensity: 0
     - _InnerErosionStrength: 3
     - _InnerErosionTiling: 2
+    - _IsTriplanar: 1
     - _LIGHT_COOKIES: 1
-    - _LightFactor: 0
+    - _LightFactor: 1
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _MainTexBlend: 0
-    - _MainTexIntensity: 2
+    - _MainTexIntensity: 0
     - _MetallicFactor: 0
     - _NormalNoise: 161
     - _NormalStrength: 0.3
-    - _PaintIntensity: 0.11
-    - _PaintScale: 0.07
-    - _PencilThreshold1: 0.1
-    - _PencilThreshold2: 0.32
-    - _PencilThreshold3: 0.45
+    - _PaintIntensity: 1.64
+    - _PaintScale: 0.48
+    - _PencilThreshold1: 0
+    - _PencilThreshold2: 0.27
+    - _PencilThreshold3: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     - _SHADOWS_CASCADE: 0
@@ -144,9 +146,9 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _TexTiling: 1
-    - _TextureTiling: 1.09
+    - _TextureTiling: 0
     - _Threshold: 0
-    - _ThresholdA: 3
+    - _ThresholdA: 1
     - _ThresholdB: 0.25
     - _ThresholdC: 0.5
     - _WaveNoise: 0
@@ -156,11 +158,12 @@ Material:
     - _ZWriteControl: 0
     m_Colors:
     - _CellTiling: {r: 1, g: 0.4, b: 0, a: 0}
-    - _ColorA: {r: 0.86666673, g: 0.50980395, b: 0.15294118, a: 0}
-    - _ColorB: {r: 0.8773585, g: 0.5814569, b: 0.28555536, a: 0}
+    - _ColorA: {r: 0.83921576, g: 0.6627451, b: 0.21176472, a: 0}
+    - _ColorB: {r: 0.28235295, g: 0.2300539, b: 0.19228236, a: 0}
     - _ColorC: {r: 0, g: 0, b: 0, a: 0}
-    - _PaintColor: {r: 1, g: 0.9555152, b: 0.6179246, a: 0}
-    - _ShadowColor: {r: 0.86666673, g: 0.7843138, b: 0.6745098, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _PaintColor: {r: 0.27, g: 0.216, b: 0.15369232, a: 1}
+    - _ShadowColor: {r: 0.83921576, g: 0.6627451, b: 0.21176472, a: 0}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

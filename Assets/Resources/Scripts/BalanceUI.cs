@@ -13,6 +13,7 @@ public class BalanceUI : NetworkBehaviour
     [SerializeField] private Transform _clipboardStartPosition;
     [SerializeField] private Transform _clipboardEndPosition;
     [SerializeField] private Ease _clipboardEase = Ease.InOutSine;
+    [SerializeField] private Light _clipboardLight;
     [SerializeField] private string _mainMenuSceneName = "GraphicsMainMenu";
     [SerializeField] private int _countdownTime = 5;
     [SerializeField] private TextMeshProUGUI _countdownText;
@@ -94,6 +95,10 @@ public class BalanceUI : NetworkBehaviour
         _clipboard.transform.DOMove(_clipboardEndPosition.position, _transitionDuration).SetEase(_clipboardEase);
 
         yield return new WaitForSeconds(_transitionDuration);
+
+        _clipboardLight.enabled = true;
+
+        yield return new WaitForSeconds(0.25f);
 
         yield return _waitForAnimationDelay;
 
