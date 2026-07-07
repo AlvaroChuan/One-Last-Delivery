@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 public class TrafficManager : NetworkBehaviour
 {
+    [SerializeField] private AudioEvent _carCrashAudioEvent;
     [SerializeField] private float _finePerCollision = 30f; // Fine amount for colliding with a car
     [Header("Simulation Settings")]
     [SerializeField] private TrafficGraph _trafficGraph;
@@ -245,6 +246,7 @@ public class TrafficManager : NetworkBehaviour
     private void OnCrashCarMessage(NetworkConnectionToClient conn, ServerCarCrashCarMessage msg)
     {
         BalanceManager.RegisterTransaction("Collision", -_finePerCollision);
+        RpcPlayCarCrashAudio(msg.position);
 
         // 1. Despawn from Job System
         DespawnVehicle(msg.carId);
@@ -272,6 +274,12 @@ public class TrafficManager : NetworkBehaviour
 
         // 3. Respawn a replacement vehicle
         SpawnVehicle(_respawnEdgeId, 0f); // Respawn at the start of the designated edge
+    }
+
+    [ClientRpc]
+    private void RpcPlayCarCrashAudio(Vector3 position)
+    {
+        _carCrashAudioEvent.Play(position);
     }
 
     private void InitializeGraph()
@@ -393,7 +401,7 @@ public class TrafficManager : NetworkBehaviour
             }
             _lightToEdgeCount[i] = count;
         }
-        
+
         _lightToEdgeMapping = new NativeArray<ushort>(flatEdgeMapping.ToArray(), Allocator.Persistent);
 
         _lightStates = new NativeArray<byte>(trafficLights.Length, Allocator.Persistent);

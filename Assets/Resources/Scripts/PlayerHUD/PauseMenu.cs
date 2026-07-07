@@ -8,6 +8,11 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] private GameObject _pauseMenu;
     [SerializeField] private PauseMenuHandler _pauseMenuHandler;
 
+    void Awake()
+    {
+        _pauseMenuHandler = FindAnyObjectByType<PauseMenuHandler>();
+    }
+
     public void OnResumeButtonClicked()
     {
         _pauseMenuHandler.CmdTogglePause();

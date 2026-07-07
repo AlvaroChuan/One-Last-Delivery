@@ -573,6 +573,7 @@ GameObject:
   - component: {fileID: 1523509399179863949}
   - component: {fileID: 3816378512847987053}
   - component: {fileID: 2527695623727538151}
+  - component: {fileID: 6721053066616610830}
   m_Layer: 5
   m_Name: LobbyListItem 2
   m_TagString: Untagged
@@ -707,6 +708,19 @@ MonoBehaviour:
   - {fileID: 1346659833369503409}
   - {fileID: 7010006746233937694}
   - {fileID: 4112880206902750609}
+--- !u!114 &6721053066616610830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3941925265851687848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5de0cc7a941fb5478da866bd71c3b5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buttonClickAudioEvent: {fileID: 11400000, guid: e1f3189cc4415bb42bdfb6884fecce42, type: 2}
 --- !u!1 &4994212819367507033
 GameObject:
   m_ObjectHideFlags: 0

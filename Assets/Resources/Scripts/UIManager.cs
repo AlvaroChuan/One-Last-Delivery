@@ -65,8 +65,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Slider _sfxVolumeSlider;
     [SerializeField] private Slider _inputVolumeSlider;
     [SerializeField] private AudioMixerGroup _masterMixerGroup;
-    [SerializeField] private AudioMixerGroup _musicMixerGroup;
-    [SerializeField] private AudioMixerGroup _sfxMixerGroup;
 
     [Header("References")]
     [SerializeField] private SteamLobbyManager _steamLobbyManager;
@@ -456,19 +454,19 @@ public class UIManager : MonoBehaviour
 
     public void SetMasterVolume(float volume)
     {
-        // TODO: Integrate with audio manager to set the actual volume
+        _masterMixerGroup.audioMixer.SetFloat("MasterVolume", Mathf.Log10(Mathf.Max(volume, 0.0001f)) * 20); // Convert linear volume to decibels
         PlayerPrefs.SetFloat("MasterVolume", volume);
     }
 
     public void SetMusicVolume(float volume)
     {
-        // TODO: Integrate with audio manager to set the actual volume
+        _masterMixerGroup.audioMixer.SetFloat("MusicVolume", Mathf.Log10(Mathf.Max(volume, 0.0001f)) * 20); // Convert linear volume to decibels
         PlayerPrefs.SetFloat("MusicVolume", volume);
     }
 
     public void SetSFXVolume(float volume)
     {
-        // TODO: Integrate with audio manager to set the actual volume
+        _masterMixerGroup.audioMixer.SetFloat("SFXVolume", Mathf.Log10(Mathf.Max(volume, 0.0001f)) * 20); // Convert linear volume to decibels
         PlayerPrefs.SetFloat("SFXVolume", volume);
     }
 

@@ -6,11 +6,10 @@ public class ItemShopSystem : NetworkBehaviour
 {
     public struct ItemPurchaseInfo
     {
-        public NetworkConnectionToClient buyerConnection;
         public bool purchaseSuccessful;
     }
 
-    public Action<ItemPurchaseInfo> onItemPurchasedEvent;
+    public Action<ItemPurchaseInfo> onPurchaseEvent;
     public static ItemShopSystem Instance { get; private set; }
 
     [SerializeField] Transform _itemSpawnPoint;
@@ -29,8 +28,12 @@ public class ItemShopSystem : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdRequestBuy(TruckStatsStruct upgradeStats, float price, NetworkConnectionToClient conn = null)
     {
-        if (MoneyManager.ServerSubtractMoney(price))
+        float money = MoneyManager.CurrentMoney;
+        float balance = BalanceManager.GetBalance();
+        float totalAvailableMoney = money + balance;
+        if (totalAvailableMoney >= price)
         {
+            BalanceManager.RegisterTransaction($"Purchased Truck Upgrade", -price); // Register the transaction
             TruckUpgradeManager.AddUpgradeStats(upgradeStats); // Apply the truck upgrade for the buyer
             TargetNotifyPurchaseSuccess(conn); // Notify the buyer of successful purchase
         }
@@ -50,8 +53,12 @@ public class ItemShopSystem : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdRequestBuy(InventoryItemData itemData, float price, NetworkConnectionToClient conn = null)
     {
-        if (MoneyManager.ServerSubtractMoney(price))
+        float money = MoneyManager.CurrentMoney;
+        float balance = BalanceManager.GetBalance();
+        float totalAvailableMoney = money + balance;
+        if (totalAvailableMoney >= price)
         {
+            BalanceManager.RegisterTransaction($"Purchased Item", -price); // Register the transaction
             ServerSpawnItem(itemData); // Spawn the item for the buyer
             TargetNotifyPurchaseSuccess(conn); // Notify the buyer of successful purchase
         }
@@ -75,9 +82,8 @@ public class ItemShopSystem : NetworkBehaviour
     public void TargetNotifyPurchaseSuccess(NetworkConnectionToClient conn)
     {
         // Handle UI on clients for successful purchase
-        onItemPurchasedEvent?.Invoke(new ItemPurchaseInfo
+        onPurchaseEvent?.Invoke(new ItemPurchaseInfo
         {
-            buyerConnection = conn,
             purchaseSuccessful = true
         });
     }
@@ -86,9 +92,8 @@ public class ItemShopSystem : NetworkBehaviour
     public void TargetNotifyPurchaseFailure(NetworkConnectionToClient conn)
     {
         // Handle UI on clients for failed purchase
-        onItemPurchasedEvent?.Invoke(new ItemPurchaseInfo
+        onPurchaseEvent?.Invoke(new ItemPurchaseInfo
         {
-            buyerConnection = conn,
             purchaseSuccessful = false
         });
     }

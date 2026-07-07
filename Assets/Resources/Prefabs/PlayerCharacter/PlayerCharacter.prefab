@@ -1717,7 +1717,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad6ddc95329a64c479b8bc8f81ace49f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inventorySelectionAudioEvent: {fileID: 11400000, guid: e1f3189cc4415bb42bdfb6884fecce42, type: 2}
+  _inventorySelectionAudioEvent: {fileID: 11400000, guid: 073a4357031400c4689ed9450ae47ae3, type: 2}
   _hurtEvent: {fileID: 11400000, guid: bfd2bce3313a44740b163af3a725b97f, type: 2}
   _batHitAudioEvent: {fileID: 11400000, guid: 2433353f6c1fe114ba42445842cbe1c2, type: 2}
 --- !u!1 &6716311414115863244
