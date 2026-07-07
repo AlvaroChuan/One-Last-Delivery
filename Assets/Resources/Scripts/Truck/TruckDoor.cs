@@ -1,6 +1,7 @@
 using UnityEngine;
 using Mirror;
 using DG.Tweening;
+using System;
 
 public class TruckDoor : Interactable
 {
@@ -9,6 +10,8 @@ public class TruckDoor : Interactable
     [SerializeField] private float _animationDuration = 0.5f;
     [SerializeField] private BoxCollider _closeCollider;
     [SerializeField] private TruckSeat _assignedSeat; // Reference to the assigned TruckSeat
+    [SerializeField] private AudioEvent _doorOpenAudioEvent;
+    [SerializeField] private AudioEvent _doorCloseAudioEvent;
     private Vector3 _closedPosition;
     private Vector3 _closedRotation;
     [SyncVar (hook = nameof(OnIsOpenChanged))] private bool _isOpen = false;
@@ -38,11 +41,13 @@ public class TruckDoor : Interactable
         {
             _currentTween = transform.DOLocalMove(_openPosition, _animationDuration);
             _currentTween = transform.DOLocalRotate(_openRotation, _animationDuration);
+            RpcPlayDoorOpenAudio();
         }
         else
         {
             _currentTween = transform.DOLocalMove(_closedPosition, _animationDuration);
             _currentTween = transform.DOLocalRotate(_closedRotation, _animationDuration);
+            RpcPlayDoorCloseAudio();
         }
     }
 
@@ -54,5 +59,17 @@ public class TruckDoor : Interactable
         {
             _assignedSeat.CanGetUp = newValue; // Allow or prevent getting up from the assigned TruckSeat based on the door's state
         }
+    }
+
+    [ClientRpc]
+    void RpcPlayDoorOpenAudio()
+    {
+        _doorOpenAudioEvent.Play(gameObject);
+    }
+
+    [ClientRpc]
+    void RpcPlayDoorCloseAudio()
+    {
+        _doorCloseAudioEvent.Play(gameObject);
     }
 }

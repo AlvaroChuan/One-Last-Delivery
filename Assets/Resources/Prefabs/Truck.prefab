@@ -461,6 +461,8 @@ MonoBehaviour:
   _animationDuration: 0.5
   _closeCollider: {fileID: 0}
   _assignedSeat: {fileID: 0}
+  _doorOpenAudioEvent: {fileID: 11400000, guid: 2a75ee7f2a92c284fbfbaf7d54abe8b3, type: 2}
+  _doorCloseAudioEvent: {fileID: 11400000, guid: 9107b220e36419749a234a7b3d59135a, type: 2}
 --- !u!1 &1535419321003973565
 GameObject:
   m_ObjectHideFlags: 0
@@ -2963,9 +2965,11 @@ MonoBehaviour:
   syncInterval: 0
   _openPosition: {x: 1.471, y: 0.6904031, z: -1.471}
   _openRotation: {x: 270, y: 90, z: 0}
-  _animationDuration: 0.5
+  _animationDuration: 1
   _closeCollider: {fileID: 3480991243224367323}
   _assignedSeat: {fileID: 1890931589405435656}
+  _doorOpenAudioEvent: {fileID: 11400000, guid: e4267976bd6c70f4f9a10baccc114d99, type: 2}
+  _doorCloseAudioEvent: {fileID: 11400000, guid: 7a394f1972e56934fb94152cf85e7550, type: 2}
 --- !u!65 &3480991243224367323
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3902,9 +3906,11 @@ MonoBehaviour:
   syncInterval: 0
   _openPosition: {x: -1.471, y: 0.6904031, z: -1.471}
   _openRotation: {x: 270, y: 90, z: 0}
-  _animationDuration: 0.5
+  _animationDuration: 1
   _closeCollider: {fileID: 8742179113632861135}
   _assignedSeat: {fileID: 2695905769666103715}
+  _doorOpenAudioEvent: {fileID: 11400000, guid: e4267976bd6c70f4f9a10baccc114d99, type: 2}
+  _doorCloseAudioEvent: {fileID: 11400000, guid: 7a394f1972e56934fb94152cf85e7550, type: 2}
 --- !u!65 &8742179113632861135
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4362,6 +4368,8 @@ MonoBehaviour:
   _animationDuration: 0.5
   _closeCollider: {fileID: 0}
   _assignedSeat: {fileID: 0}
+  _doorOpenAudioEvent: {fileID: 11400000, guid: 2a75ee7f2a92c284fbfbaf7d54abe8b3, type: 2}
+  _doorCloseAudioEvent: {fileID: 11400000, guid: 9107b220e36419749a234a7b3d59135a, type: 2}
 --- !u!1 &9193133479089208817
 GameObject:
   m_ObjectHideFlags: 0

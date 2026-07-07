@@ -10,13 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8baab117d5c6ecc43a8428a4a05e1332, type: 3}
-  m_Name: CarImpact
+  m_Name: TruckHorn
   m_EditorClassIdentifier: 
   _clips:
-  - {fileID: 8300000, guid: 1e3312d22540aa14597a1fb4739f2782, type: 3}
-  - {fileID: 8300000, guid: d0f166575306db84091dc03fce0eff69, type: 3}
-  - {fileID: 8300000, guid: 58a5d36d6b134014ea5623d9802082e2, type: 3}
-  - {fileID: 8300000, guid: 4e7a9f408abdba8459fdccbeaea95215, type: 3}
+  - {fileID: 8300000, guid: 0d34d6e748eb93042b0ff0bf1c6f120c, type: 3}
   _mixerGroup: {fileID: 243703940283072516, guid: 89ef2123a31ebe547959c299198012c1, type: 2}
   _volume: 1
   _minPitch: 0.85
