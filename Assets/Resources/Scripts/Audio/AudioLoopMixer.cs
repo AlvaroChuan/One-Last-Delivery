@@ -20,7 +20,7 @@ public class AudioLoopMixer : MonoBehaviour
     [SerializeField] private float _maxDistance = 50f;
     [SerializeField] private AudioLoop[] _audioLoops;
     private float _currentFadeValue;
-    private AudioSource[] _audioSources;
+    private AudioSource[] _audioSources = new AudioSource[0];
 
     void Awake()
     {
@@ -44,6 +44,7 @@ public class AudioLoopMixer : MonoBehaviour
         for (int i = 0; i < _audioSources.Length; i++)
         {
             _audioSources[i].Play();
+            _audioSources[i].volume = CalculateVolume(_audioLoops[i], _currentFadeValue) * _volume;
         }
     }
     public void StopPlayback()

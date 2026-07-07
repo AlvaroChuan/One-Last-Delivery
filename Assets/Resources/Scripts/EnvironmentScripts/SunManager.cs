@@ -135,13 +135,15 @@ public class SunManager : NetworkBehaviour
         {
             if (!_sentNightfallEvent)
             {
-                OnNightfall?.Invoke();
+                DevLogger.Log("Nightfall event triggered.");
                 _sentNightfallEvent = true;
+                OnNightfall?.Invoke();
             }
         }
-        else
+        else if (_sentNightfallEvent)
         {
-            _sentNightfallEvent = false;
+            DevLogger.Log("Daytime detected, resetting nightfall event trigger.");
+            //_sentNightfallEvent = false;
         }
     }
 
@@ -163,18 +165,6 @@ public class SunManager : NetworkBehaviour
 
     private bool IsNight()
     {
-        if (_isFirstMorning)
-        {
-            if (_currentTimeOfDay >= 0.08f)
-            {
-                _isFirstMorning = false;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         return _currentTimeOfDay >= 0.58f || _currentTimeOfDay < 0.08f;
     }
 

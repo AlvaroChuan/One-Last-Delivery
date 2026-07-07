@@ -7,8 +7,6 @@ using Mirror;
 [RequireComponent(typeof(UnityEngine.Light))]
 public class LobbySunManager : MonoBehaviour
 {
-    public static Action OnNightfall;
-
     [Header("Time Settings")]
     [SerializeField] private float _cycleDurationMinutes = 10f;
     [SerializeField, Range(0f, 1f)] private float _currentTimeOfDay = 0.05f;
@@ -119,7 +117,6 @@ public class LobbySunManager : MonoBehaviour
     private void Update()
     {
         UpdateTime();
-        CheckNightfall();
         UpdateSunRotation();
         UpdateSkyboxColors();
         UpdateStarsIntensity();
@@ -127,22 +124,6 @@ public class LobbySunManager : MonoBehaviour
         UpdateEnvironmentTransitions();
         UpdateHeightOffset();
         UpdateDirectionalLightColor();
-    }
-
-    private void CheckNightfall()
-    {
-        if (IsNight())
-        {
-            if (!_sentNightfallEvent)
-            {
-                OnNightfall?.Invoke();
-                _sentNightfallEvent = true;
-            }
-        }
-        else
-        {
-            _sentNightfallEvent = false;
-        }
     }
 
     private void UpdateTime()
