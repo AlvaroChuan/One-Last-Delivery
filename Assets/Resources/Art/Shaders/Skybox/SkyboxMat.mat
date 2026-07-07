@@ -93,11 +93,11 @@ Material:
     m_Colors:
     - _BrushTiling: {r: 0.37, g: 2, b: 0, a: 0}
     - _CloudsColor: {r: 0.596, g: 0.596, b: 0.596, a: 1}
-    - _HorizonColor: {r: 0.72757727, g: 0.7203915, b: 0.6148814, a: 1}
+    - _HorizonColor: {r: 0.7268963, g: 0.72035635, b: 0.61581635, a: 1}
     - _MoonColor: {r: 3.6503575, g: 4.0458126, b: 4.867143, a: 0}
     - _MoonOffset: {r: -0.1, g: 0.07, b: 0.06, a: 0}
     - _MoonTiling: {r: 3, g: 3, b: 0, a: 0}
-    - _SkyColor: {r: 0.32492483, g: 0.53924316, b: 0.85409194, a: 1}
+    - _SkyColor: {r: 0.32506356, g: 0.53946596, b: 0.8544461, a: 1}
     - _SkyRotation: {r: 0, g: 0, b: 0, a: 0}
     - _StarsTiling: {r: 10, g: 3, b: 0, a: 0}
     - _SunColor: {r: 2.9960783, g: 1.4626755, b: 0.53333324, a: 0}

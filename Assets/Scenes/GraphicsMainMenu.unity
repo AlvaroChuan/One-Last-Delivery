@@ -1962,7 +1962,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c83829cc326c7624d92104c92279dc5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneTransitionAnimator: {fileID: 1236066675}
+  _transitionDuration: 1
+  _transitionAudioEvent: {fileID: 11400000, guid: 29b7a39ad7a2b374ebb37655b84934f4, type: 2}
+--- !u!114 &1236066678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 221546340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87a7a3bc7a14b62458de16023d22e587, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mixerGroup: {fileID: 243599824091497972, guid: 89ef2123a31ebe547959c299198012c1, type: 2}
+  _volume: 0.05
+  _spacialBlend: 0
+  _maxDistance: 50
+  _audioLoops:
+  - clip: {fileID: 8300000, guid: 75fa27e467267c74f91f1f6f4e74ff88, type: 3}
+    startFadeInValue: 0
+    endFadeInValue: 0
+    startFadeOutValue: 1
+    endFadeOutValue: 1
 --- !u!114 &1249110946 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9035264865469095219, guid: 8be12d3211b5e0e44be60e5822be652c, type: 3}
@@ -48514,7 +48537,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6336518152373891540, guid: dcfc44c1c18b4d1479dafba39c78b090, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7213288347888010399, guid: dcfc44c1c18b4d1479dafba39c78b090, type: 3}
       propertyPath: m_Sprite
@@ -48615,6 +48638,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6336518152373891540, guid: dcfc44c1c18b4d1479dafba39c78b090, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1236066676}
+    - targetCorrespondingSourceObject: {fileID: 6336518152373891540, guid: dcfc44c1c18b4d1479dafba39c78b090, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1236066678}
   m_SourcePrefab: {fileID: 100100000, guid: dcfc44c1c18b4d1479dafba39c78b090, type: 3}
 --- !u!1 &8231968502930507069
 GameObject:

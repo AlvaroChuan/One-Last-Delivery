@@ -16,7 +16,7 @@ public class AudioLoopMixer : MonoBehaviour
 
     [SerializeField] private AudioMixerGroup _mixerGroup;
     [Range(0f, 1f)] [SerializeField] private float _volume = 1f;
-    [SerializeField] private bool _spatial = true;
+    [Range(0f, 1f)] [SerializeField] private float _spacialBlend = 1f; // 0 = 2D, 1 = 3D
     [SerializeField] private float _maxDistance = 50f;
     [SerializeField] private AudioLoop[] _audioLoops;
     private float _currentFadeValue;
@@ -33,7 +33,7 @@ public class AudioLoopMixer : MonoBehaviour
             _audioSources[i].playOnAwake = false;
             _audioSources[i].volume = 0f;
             _audioSources[i].outputAudioMixerGroup = _mixerGroup;
-            _audioSources[i].spatialBlend = _spatial ? 1f : 0f;
+            _audioSources[i].spatialBlend = _spacialBlend;
             _audioSources[i].maxDistance = _maxDistance;
             _audioSources[i].rolloffMode = AudioRolloffMode.Linear;
         }
