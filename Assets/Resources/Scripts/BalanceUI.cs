@@ -244,7 +244,7 @@ public class BalanceUI : NetworkBehaviour
 
         if (isServer)
         {
-            NetworkManager.singleton.ServerChangeScene(_workdaySceneName);
+            (NetworkManager.singleton as CustomNetworkManager).ServerChangeSceneWithTransition(_workdaySceneName);
         }
     }
 }

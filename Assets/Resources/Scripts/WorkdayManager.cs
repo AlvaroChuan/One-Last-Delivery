@@ -29,7 +29,7 @@ public class WorkdayManager : NetworkBehaviour
     {
         if (!NetworkServer.active) return;
 
-        NetworkManager.singleton.ServerChangeScene(_sceneToLoadAfterWorkday);
+        (NetworkManager.singleton as CustomNetworkManager).ServerChangeSceneWithTransition(_sceneToLoadAfterWorkday);
     }
 
 #if UNITY_EDITOR

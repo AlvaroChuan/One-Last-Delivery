@@ -146,7 +146,7 @@ public class SteamLobbyManager : MonoBehaviour
 
         if (NetworkServer.active)
         {
-            NetworkManager.singleton.ServerChangeScene(_gameSceneName);
+            (NetworkManager.singleton as CustomNetworkManager).ServerChangeSceneWithTransition(_gameSceneName);
         }
     }
 

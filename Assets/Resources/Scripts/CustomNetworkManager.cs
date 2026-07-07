@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using Telepathy;
@@ -13,18 +14,34 @@ public class CustomNetworkManager : NetworkManager
     [SerializeField] private string _balanceScene = "BalanceScene";
     [SerializeField] private GameObject _balanceScenePlayerPrefab;
     [SerializeField] private float _allPackagesDeliveredReward = 100f; // Reward for delivering all packages
-    private List<NetworkConnectionToClient> _playerIndices = new List<NetworkConnectionToClient>();
+    [SerializeField] private SceneTransitionManager _sceneTransitionManager; // Reference to the scene transition manager
+    [SerializeField] private float _sceneTransitionDuration = 1f; // Duration of the scene transition effect
+
+    public struct SceneTransitionMessage : NetworkMessage { }
+    public struct SceneTransitionReceivedMessage : NetworkMessage { }
+    private List<int> _playerIndices = new List<int>();
 
     // Track how many characters we have spawned in the game scene
     private int _numberOfPlayers = 0;
     private int _deadPlayers = 0;
     bool _packageDestroyed = false; // Track if a package has been destroyed
+    private int _receivedTransitionCount = 0; // Track how many clients have received the transition message
+    private string _currentDestinationScene = ""; // Track the current destination scene for transitions
 
     public override void OnStartServer()
     {
         base.OnStartServer();
 
+        NetworkServer.RegisterHandler<SceneTransitionReceivedMessage>(OnSceneTransitionReceived);
         DevLogger.Log("CustomNetworkManager started on server.");
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+
+        NetworkClient.RegisterHandler<SceneTransitionMessage>(OnSceneTransition);
+        DevLogger.Log("CustomNetworkManager started on client.");
     }
 
     public override void OnServerReady(NetworkConnectionToClient conn)
@@ -56,36 +73,38 @@ public class CustomNetworkManager : NetworkManager
         }
     }
 
+    public override void OnStopServer()
+    {
+        NetworkServer.UnregisterHandler<SceneTransitionReceivedMessage>();
+    }
+
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
     {
         base.OnServerDisconnect(conn);
 
-        // Changes the scene for everyone else if a client disconnects
-        if (SceneManager.GetActiveScene().name != "GraphicsMainMenu")
-        {
-            ServerChangeScene("GraphicsMainMenu");
-        }
+        NetworkServer.Shutdown(); // Shutdown the server when a client disconnects
     }
 
     public override void OnClientDisconnect()
     {
         base.OnClientDisconnect();
 
+        NetworkClient.UnregisterHandler<SceneTransitionMessage>();
         GetComponent<BaseVoiceChat>().StopVoiceChat();
 
         // Changes the scene locally for a client if they lose connection or if the host leaves
         if (SceneManager.GetActiveScene().name != "GraphicsMainMenu")
         {
-            SceneManager.LoadScene("GraphicsMainMenu");
+            ClientChangeSceneWithTransition("GraphicsMainMenu");
         }
     }
 
     private void SpawnPlayerForConnection(NetworkConnectionToClient conn)
     {
         int playerIndex = _numberOfPlayers; // Use the current number of players as the index
-        if (_playerIndices.Contains(conn))
+        if (_playerIndices.Contains(conn.connectionId))
         {
-            playerIndex = _playerIndices.IndexOf(conn);
+            playerIndex = _playerIndices.IndexOf(conn.connectionId);
         }
         if (playerIndex < _playerPrefabs.Length)
         {
@@ -105,7 +124,8 @@ public class CustomNetworkManager : NetworkManager
             PlayerRegistry.RegisterPlayer(playerInstance);
             _numberOfPlayers++;
             DevLogger.Log($"Game Scene Loaded: Spawned character index {playerIndex} for Connection {conn.connectionId}");
-            _playerIndices.Add(conn); // Keep track of the connection for future reference
+            if (!_playerIndices.Contains(conn.connectionId))
+                _playerIndices.Add(conn.connectionId); // Keep track of the connection for future reference
         }
         else
         {
@@ -146,7 +166,7 @@ public class CustomNetworkManager : NetworkManager
             digits = Mathf.Max(digits, 4); // Ensure at least 4 digits
             float nines = Mathf.Pow(10, digits) - 1;
             BalanceManager.RegisterTransaction("You all died!", -nines);
-            ServerChangeScene(_balanceScene);
+            ServerChangeSceneWithTransition(_balanceScene);
         }
     }
 
@@ -156,11 +176,50 @@ public class CustomNetworkManager : NetworkManager
         {
             BalanceManager.RegisterTransaction("All packages delivered!", _allPackagesDeliveredReward);
         }
-        ServerChangeScene(_balanceScene);
+        ServerChangeSceneWithTransition(_balanceScene);
     }
 
     internal void NotifyPackageDestroyed()
     {
         _packageDestroyed = true;
+    }
+
+    public void ServerChangeSceneWithTransition(string sceneName)
+    {
+        _currentDestinationScene = sceneName; // Store the destination scene for later use
+        NetworkServer.SendToAll(new SceneTransitionMessage()); // Notify all clients to start the transition
+    }
+
+    void OnSceneTransition(SceneTransitionMessage message)
+    {
+        _sceneTransitionManager.PlayTransition();
+    }
+
+    void OnSceneTransitionReceived(NetworkConnectionToClient conn, SceneTransitionReceivedMessage msg)
+    {
+        _receivedTransitionCount++;
+        DevLogger.Log($"Received scene transition acknowledgment from Connection {conn.connectionId}. Total received: {_receivedTransitionCount}/{NetworkServer.connections.Count}");
+
+        // Check if all players have received the transition message
+        if (_receivedTransitionCount >= NetworkServer.connections.Count)
+        {
+            _receivedTransitionCount = 0; // Reset for future transitions
+
+            ServerChangeScene(_currentDestinationScene); // Proceed to change the scene for all clients
+        }
+    }
+
+    public void ClientChangeSceneWithTransition(string sceneName)
+    {
+        StartCoroutine(ClientChangeSceneCoroutine(sceneName));
+    }
+
+    IEnumerator ClientChangeSceneCoroutine(string sceneName)
+    {
+        _sceneTransitionManager.PlayTransition();
+
+        yield return new WaitForSecondsRealtime(_sceneTransitionDuration);
+
+        SceneManager.LoadScene(sceneName);
     }
 }
