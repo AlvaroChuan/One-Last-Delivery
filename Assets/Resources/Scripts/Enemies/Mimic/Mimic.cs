@@ -8,6 +8,12 @@ using UnityEngine;
 [RequireComponent(typeof(EnemyStunComponent))]
 public class Mimic : NetworkBehaviour
 {
+    [System.Serializable]
+    private struct ModelEntry
+    {
+        public GameObject packageModel;
+        public GameObject monsterModel;
+    }
     [Header("Settings")]
     [SerializeField] private float _attackCooldown = 5f;
     [SerializeField] private float _horizontalLungeForce = 10f;
@@ -17,15 +23,15 @@ public class Mimic : NetworkBehaviour
     [SerializeField] private float _playerDetectionRadius = 10f;
 
     [Header("References")]
-    [SerializeField] private GameObject _packageModel;
-    [SerializeField] private GameObject _monsterModel;
     [SerializeField] private ParticleSystem _transformationParticles;
     [SerializeField] private Collider _hitboxCollider;
+    [SerializeField] private ModelEntry[] _modelEntries;
 
     [SyncVar(hook = nameof(OnIsTransformedChanged))]
     private bool _isTransformed = false;
     public bool IsTransformed => _isTransformed;
-
+    private GameObject _packageModel;
+    private GameObject _monsterModel;
     private PlayerDistanceDetector _playerDistanceDetector;
     private Rigidbody _rigidbody;
     private EnemyStunComponent _stunComponent;
@@ -36,6 +42,19 @@ public class Mimic : NetworkBehaviour
 
     void Awake()
     {
+        int randomIndex = Random.Range(0, _modelEntries.Length);
+        _packageModel = _modelEntries[randomIndex].packageModel;
+        _monsterModel = _modelEntries[randomIndex].monsterModel;
+
+        for (int i = 0; i < _modelEntries.Length; i++)
+        {
+            if (i != randomIndex)
+            {
+                _modelEntries[i].packageModel.SetActive(false);
+                _modelEntries[i].monsterModel.SetActive(false);
+            }
+        }
+
         _playerDistanceDetector = GetComponent<PlayerDistanceDetector>();
         _rigidbody = GetComponent<Rigidbody>();
         _stunComponent = GetComponent<EnemyStunComponent>();
