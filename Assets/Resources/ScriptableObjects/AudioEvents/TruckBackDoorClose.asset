@@ -12,8 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8baab117d5c6ecc43a8428a4a05e1332, type: 3}
   m_Name: TruckBackDoorClose
   m_EditorClassIdentifier: 
-  _clips: []
-  _mixerGroup: {fileID: 0}
+  _clips:
+  - {fileID: 8300000, guid: 1c396552ab4e5e842a24193d282cba8d, type: 3}
+  - {fileID: 8300000, guid: 74a1af8a338a8d647952011eea2b86ba, type: 3}
+  - {fileID: 8300000, guid: 88faf55718acf274e81f0a15d1ec2551, type: 3}
+  - {fileID: 8300000, guid: bf8317e8730124949bd33f4cf72e0dd4, type: 3}
+  - {fileID: 8300000, guid: 5a6b53e8598107c48adf0cb28683a141, type: 3}
+  _mixerGroup: {fileID: 243703940283072516, guid: 89ef2123a31ebe547959c299198012c1, type: 2}
   _volume: 1
   _minPitch: 0.85
   _maxPitch: 1.15
