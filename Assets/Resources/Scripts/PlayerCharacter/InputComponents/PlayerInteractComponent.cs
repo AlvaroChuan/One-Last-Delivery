@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Mirror;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,6 +17,7 @@ public class PlayerInteractComponent : InputComponent
     [SerializeField] private float _interactionRange = 3f;
     [SerializeField] private float _interactionSphereRadius = 0.1f;
     [SerializeField] private LayerMask _interactionLayerMask = ~0;
+    [SerializeField] private GameObject _playerHUDInteractable;
     protected override void BindInputs()
     {
         if (!isLocalPlayer) return;
@@ -30,6 +32,28 @@ public class PlayerInteractComponent : InputComponent
 
         _interactInput.action.Disable();
         _interactInput.action.performed -= OnInteractInput;
+    }
+
+    public void Update()
+    {
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        RaycastHit hitInfo;
+        if (Physics.SphereCast(ray, _interactionSphereRadius, out hitInfo, _interactionRange, _interactionLayerMask))
+        {
+            Interactable[] interactables = hitInfo.collider.GetComponents<Interactable>();
+            if (interactables.Length > 0)
+            {
+                _playerHUDInteractable.SetActive(true);
+            }
+            else
+            {
+                _playerHUDInteractable.SetActive(false);
+            }
+        }
+        else
+        {
+            _playerHUDInteractable.SetActive(false);
+        }
     }
 
     private void OnInteractInput(InputAction.CallbackContext context)
