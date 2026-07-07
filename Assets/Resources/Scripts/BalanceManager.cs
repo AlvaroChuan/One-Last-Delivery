@@ -22,9 +22,19 @@ public class BalanceManager : MonoBehaviour
         OnTransactionRegistered?.Invoke(Balance[Balance.Count - 1]);
     }
 
-    public static List<Transaction> GetBalance()
+    public static List<Transaction> GetBalanceList()
     {
         return Balance;
+    }
+
+    public static float GetBalance()
+    {
+        float total = 0f;
+        foreach (var transaction in Balance)
+        {
+            total += transaction.amount;
+        }
+        return total;
     }
 }
 [System.Serializable]

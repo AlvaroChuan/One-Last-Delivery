@@ -51,7 +51,7 @@ public class BalanceUI : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        _balance = BalanceManager.GetBalance();
+        _balance = BalanceManager.GetBalanceList();
         _previousMoney = MoneyManager.CurrentMoney;
 
         _playerCount = NetworkServer.connections.Count;
