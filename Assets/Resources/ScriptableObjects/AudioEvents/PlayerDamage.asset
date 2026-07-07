@@ -24,3 +24,6 @@ MonoBehaviour:
   _volume: 1
   _minPitch: 0.85
   _maxPitch: 1.15
+  _spatialBlend: 1
+  _maxDistance: 50
+  _audioRolloffMode: 0

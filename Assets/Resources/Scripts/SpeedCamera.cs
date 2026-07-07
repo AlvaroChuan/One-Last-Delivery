@@ -10,6 +10,7 @@ public class SpeedCamera : NetworkBehaviour
     [SerializeField] private Material _offMaterial; // Material to indicate the camera is off
     [SerializeField] private int _indicatorMaterialIndex = 1; // Index of the material to change when the camera is off
     [SerializeField] private float _enabledChance = 0.5f; // Chance for the speed camera to be enabled at startup
+    [SerializeField] private AudioEvent _detectedAudioEvent; // Audio event to play when a truck is speeding
     [SyncVar(hook = nameof(OnEnabledChanged))] private bool _isEnabled = true;
 
     bool _isOnCooldown = false;
@@ -108,13 +109,14 @@ public class SpeedCamera : NetworkBehaviour
     void CmdRegisterFine(string reason, float amount)
     {
         BalanceManager.RegisterTransaction(reason, amount);
-        RpcFlashCameraLight();
+        RpcDetectionEffects();
     }
 
     [ClientRpc]
-    void RpcFlashCameraLight()
+    void RpcDetectionEffects()
     {
         _light.enabled = true;
+        _detectedAudioEvent.Play(gameObject); // Play the detection audio event
         Invoke(nameof(TurnOffLight), 0.1f); // Turn off the light
     }
 
