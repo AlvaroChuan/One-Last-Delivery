@@ -12,8 +12,6 @@ public class ItemShopSystem : NetworkBehaviour
     public Action<ItemPurchaseInfo> onPurchaseEvent;
     public static ItemShopSystem Instance { get; private set; }
 
-    [SerializeField] Transform _itemSpawnPoint;
-
     void Awake()
     {
         Instance = this;
@@ -59,7 +57,7 @@ public class ItemShopSystem : NetworkBehaviour
         if (totalAvailableMoney >= price)
         {
             BalanceManager.RegisterTransaction($"Purchased Item", -price); // Register the transaction
-            ServerSpawnItem(itemData); // Spawn the item for the buyer
+            ServerSpawnItem(itemData, conn); // Spawn the item for the buyer
             TargetNotifyPurchaseSuccess(conn); // Notify the buyer of successful purchase
         }
         else
@@ -70,10 +68,20 @@ public class ItemShopSystem : NetworkBehaviour
     }
 
     [Server]
-    public void ServerSpawnItem(InventoryItemData itemData)
+    public void ServerSpawnItem(InventoryItemData itemData, NetworkConnectionToClient conn = null)
     {
         DroppedItem itemPrefab = ItemDataList.Instance.GetPrefabFromID(itemData.itemID);
-        DroppedItem item = Instantiate(itemPrefab, _itemSpawnPoint.position, _itemSpawnPoint.rotation);
+        GameObject buyer;
+        if (conn != null && conn.identity != null)
+        {
+            buyer = conn.identity.gameObject;
+        }
+        else
+        {
+            buyer = NetworkClient.connection.identity.gameObject;
+        }
+        Vector3 forwardOffset = buyer.GetComponent<PlayerLookComponent>().Model.transform.forward; // Adjust the multiplier as needed for distance
+        DroppedItem item = Instantiate(itemPrefab, buyer.transform.position + forwardOffset, Quaternion.identity);
         item.SetInventoryItemData(itemData);
         NetworkServer.Spawn(item.gameObject);
     }
