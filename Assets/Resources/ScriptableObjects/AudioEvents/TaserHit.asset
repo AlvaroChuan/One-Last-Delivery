@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8baab117d5c6ecc43a8428a4a05e1332, type: 3}
   m_Name: TaserHit
   m_EditorClassIdentifier: 
-  _clips: []
-  _mixerGroup: {fileID: 0}
+  _clips:
+  - {fileID: 8300000, guid: f1cb5d83282f2904a85f73111d068616, type: 3}
+  _mixerGroup: {fileID: 243703940283072516, guid: 89ef2123a31ebe547959c299198012c1, type: 2}
   _volume: 1
-  _minPitch: 0.85
-  _maxPitch: 1.15
+  _minPitch: 1.7
+  _maxPitch: 2
   _spatialBlend: 1
   _maxDistance: 50
   _audioRolloffMode: 0

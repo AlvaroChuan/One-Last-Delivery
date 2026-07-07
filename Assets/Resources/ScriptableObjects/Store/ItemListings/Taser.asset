@@ -15,9 +15,10 @@ MonoBehaviour:
   _itemData:
     itemID: 2
     oneShot: 1
+    durabilityOnCallbackOnly: 0
     infiniteDurability: 0
-    maxDurability: 0
-    currentDurability: 0
+    maxDurability: 5
+    currentDurability: 5
     durabilityCost: 1
   _price: 60
   _itemName: Taser

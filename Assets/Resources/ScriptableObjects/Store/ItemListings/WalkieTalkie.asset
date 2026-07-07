@@ -15,9 +15,10 @@ MonoBehaviour:
   _itemData:
     itemID: 5
     oneShot: 0
+    durabilityOnCallbackOnly: 0
     infiniteDurability: 0
-    maxDurability: 0
-    currentDurability: 0
+    maxDurability: 100
+    currentDurability: 100
     durabilityCost: 5
   _price: 20
   _itemName: Walkie
