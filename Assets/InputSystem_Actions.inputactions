@@ -1132,6 +1132,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Horn",
+                    "type": "Button",
+                    "id": "03d3f47c-b055-4fc0-a7a0-eaccd10861fe",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1286,6 +1295,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Headlights",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dc0331aa-c9b2-4381-a362-ba9d22b82b2f",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Horn",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

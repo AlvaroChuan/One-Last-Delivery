@@ -3,9 +3,11 @@ using Mirror;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using Mirror.Examples.Basic;
+using System;
 
 public class TruckSeat : Interactable
 {
+    public Action<GameObject, GameObject> onOccupantChanged; // Action to notify when the occupant changes, passing old and new occupant
     [SerializeField] Transform _occupantPosition;
     [SerializeField] Transform _exitPosition;
     [SerializeField] bool _isDriverSeat = true;
@@ -71,6 +73,8 @@ public class TruckSeat : Interactable
             newOccupant.transform.localPosition = Vector3.zero; // Reset local position to ensure correct placement
             newOccupant.transform.localRotation = Quaternion.identity; // Reset local rotation to ensure correct orientation
         }
+
+        onOccupantChanged?.Invoke(oldOccupant, newOccupant); // Notify subscribers about the occupant change
     }
 
     public override void ServerInteract(GameObject interactor)
