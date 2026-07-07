@@ -12,10 +12,18 @@ public class QuotaIndicator : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        _quotaManager = FindObjectOfType<QuotaManager>();
+        _quotaManager = FindAnyObjectByType<QuotaManager>();
         _quotaManager.quotaHUD = this;
+    }
 
+    private void OnEnable()
+    {
         BalanceManager.OnTransactionRegistered += SetActualQuota;
+    }
+
+    private void OnDisable()
+    {
+        BalanceManager.OnTransactionRegistered -= SetActualQuota;
     }
 
     public void SetDailyQuota(float quota)

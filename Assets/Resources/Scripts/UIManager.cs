@@ -137,6 +137,7 @@ public class UIManager : MonoBehaviour
 
     public void OnCreateLobbyButtonClicked()
     {
+        if(_steamLobbyManager == null) _steamLobbyManager = FindAnyObjectByType<SteamLobbyManager>();
         _steamLobbyManager.HostLobby(_lobbyNameInput.text, _lobbyPasswordInput.text);
         ShowPanel(_lobbyPanel);
     }
@@ -527,12 +528,5 @@ public class UIManager : MonoBehaviour
             _countdownText.gameObject.SetActive(true);
             _countdownText.text = $"Starting in\n{secondsLeft}";
         }
-    }
-
-    public IEnumerator ShowLoadingScreen()
-    {
-        _transitionAnimator.gameObject.SetActive(true);
-        yield return new WaitForSeconds(0.5f);
-        _transitionAnimator.Play("InTransition");
     }
 }

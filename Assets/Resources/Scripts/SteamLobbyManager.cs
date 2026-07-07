@@ -140,10 +140,6 @@ public class SteamLobbyManager : MonoBehaviour
             countdown -= 1;
         }
 
-        yield return new WaitForSeconds(0.5f);
-        StartCoroutine(_uiManager.ShowLoadingScreen());
-        yield return new WaitForSeconds(3f);
-
         if (NetworkServer.active)
         {
             (NetworkManager.singleton as CustomNetworkManager).ServerChangeSceneWithTransition(_gameSceneName);
