@@ -19,7 +19,6 @@ public class SteamLobbyManager : MonoBehaviour
 
     private const string GAME_ID_KEY = "OneLastDeliveryID_145";
     private const string HOST_ADDRESS_KEY = "HostAddress";
-    private CustomNetworkManager _networkManager;
     private CSteamID _currentLobbyID;
     private Coroutine _autoRefreshCoroutine;
 
@@ -27,7 +26,6 @@ public class SteamLobbyManager : MonoBehaviour
 
     private void Start()
     {
-        _networkManager = GetComponent<CustomNetworkManager>();
         if (!SteamManager.Initialized) return;
         SteamNetworkingUtils.InitRelayNetworkAccess();
         SteamNetworkingUtils.CheckPingDataUpToDate(60f);
@@ -59,14 +57,14 @@ public class SteamLobbyManager : MonoBehaviour
     {
         PlayerPrefs.SetString("lobbyName", lobbyName);
         PlayerPrefs.SetString("lobbyPassword", password);
-        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeInvisible, _networkManager.maxConnections);
+        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeInvisible, NetworkManager.singleton.maxConnections);
     }
 
     private void OnLobbyCreated(LobbyCreated_t callback)
     {
         if (callback.m_eResult != EResult.k_EResultOK) return;
 
-        _networkManager.StartHost();
+        NetworkManager.singleton.StartHost();
 
         _voiceChat.StartVoiceChat();
 
@@ -172,14 +170,14 @@ public class SteamLobbyManager : MonoBehaviour
         if (NetworkServer.active && NetworkClient.isConnected)
         {
             LeaveAndCloseLobby();
-            _networkManager.StopHost();
+            NetworkManager.singleton.StopHost();
 
             _uiManager.OnLobbyExit();
         }
         else if (NetworkClient.isConnected)
         {
             LeaveLobbyOnly();
-            _networkManager.StopClient();
+            NetworkManager.singleton.StopClient();
         }
         _uiManager.OnLobbyExit();
 
@@ -240,8 +238,8 @@ public class SteamLobbyManager : MonoBehaviour
         }
 
         string hostAddress = SteamMatchmaking.GetLobbyData((CSteamID)callback.m_ulSteamIDLobby, HOST_ADDRESS_KEY);
-        _networkManager.networkAddress = hostAddress;
-        _networkManager.StartClient();
+        NetworkManager.singleton.networkAddress = hostAddress;
+        NetworkManager.singleton.StartClient();
 
         if (_voiceChat != null) _voiceChat.StartVoiceChat();
 

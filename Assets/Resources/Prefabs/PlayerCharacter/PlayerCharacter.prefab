@@ -3122,6 +3122,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df4566cab24ff6a4bb3170335bb57ec5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _weaponHitbox: {fileID: 688993454778332841}
 --- !u!114 &6458261290811739051
 MonoBehaviour:
