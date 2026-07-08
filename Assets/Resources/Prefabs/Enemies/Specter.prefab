@@ -100,7 +100,7 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.54
-  m_Height: 2.5615368
+  m_Height: 2.44
   m_Direction: 1
   m_Center: {x: 0, y: 0.2192316, z: 0.3}
 --- !u!195 &3475220148915711397
@@ -364,9 +364,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bf2f8606a5a94b47bccc15ef1d50974, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _creepySound: {fileID: 11400000, guid: 655eba1daae5a4c4391b56f06b5bffaa, type: 2}
   _detectionRange: 20
   _detectionInterval: 0.5
@@ -661,7 +658,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7437d2f99956faf42856f76273def86f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: -1.09
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7437d2f99956faf42856f76273def86f, type: 3}
       propertyPath: m_LocalPosition.z

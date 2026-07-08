@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class VoiceChatController : NetworkBehaviour
 {
     [SerializeField] private string _activeSceneName = "GameScene";
-    [SerializeField] private float _distanceProximityChat = 10f;
+    [SerializeField] private float _proximityChatRange = 20f;
     private static BaseVoiceChat VoiceChat;
     public static VoiceChatController Instance;
 
@@ -63,8 +63,8 @@ public class VoiceChatController : NetworkBehaviour
             {
                 AudioSource audioSource = streamedOutput.Stream.UnityAudioSource;
                 audioSource.spatialBlend = 1f; // Set to 3D
-                audioSource.maxDistance = _distanceProximityChat;
-                audioSource.rolloffMode = AudioRolloffMode.Linear;
+                audioSource.maxDistance = _proximityChatRange;
+                audioSource.rolloffMode = AudioRolloffMode.Logarithmic;
             }
         }
     }
