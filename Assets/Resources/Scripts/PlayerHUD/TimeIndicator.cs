@@ -19,10 +19,7 @@ public class TimeIndicator : MonoBehaviour
     [SerializeField] Sprite _nightSprite;
     private DayTime _currentDayTime;
     private WorkdayManager _workdayManager;
-    void Awake()
-    {
-        _workdayManager = FindAnyObjectByType<WorkdayManager>();
-    }
+
 
     void OnEnable()
     {
@@ -36,7 +33,11 @@ public class TimeIndicator : MonoBehaviour
 
     void Update()
     {
-        if (_workdayManager == null) return;
+        if (_workdayManager == null)
+        {
+            _workdayManager = FindAnyObjectByType<WorkdayManager>();
+            if (_workdayManager == null) return;
+        }
 
         float workdayProgress = _workdayManager.WorkdayProgress;
         float currentHour = _startHour + (_totalHours * workdayProgress);
