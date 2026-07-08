@@ -22,7 +22,7 @@ public class NetRigidbodyController : NetworkBehaviour
             _rigidbody.isKinematic = false; // Enable physics for the server/host
             netIdentity.AssignClientAuthority(NetworkServer.localConnection);
         }
-        else
+        else if (!isServer)
         {
             _rigidbody.isKinematic = true; // Disable physics on clients without authority
         }
