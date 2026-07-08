@@ -29,9 +29,11 @@ public class WalkieTalkie : InventoryItem
 
     void StartRecording()
     {
+        DevLogger.Log("Starting recording for WalkieTalkie");
         int micIndex = GetMicrophoneIndex();
         if (Mic.AvailableDevices.Count > micIndex)
         {
+            DevLogger.Log($"Using microphone: {Mic.AvailableDevices[micIndex].Name}");
             Mic.Device device = Mic.AvailableDevices[micIndex];
             if (_encoder == null) _encoder = new ConcentusEncodeFilter();
             if (_micListener == null)
@@ -55,8 +57,9 @@ public class WalkieTalkie : InventoryItem
 
     void OnFrameCollected(int frequency, int channels, float[] samples)
     {
+        DevLogger.Log($"Frame collected: Frequency={frequency}, Channels={channels}, Samples={samples.Length}");
         if (!ShouldTransmitAudio()) return;
-
+        DevLogger.Log("Transmitting audio frame for WalkieTalkie");
         float volume = 1f;
         BaseVoiceChat voiceChat = FindAnyObjectByType<BaseVoiceChat>();
         if (voiceChat != null)

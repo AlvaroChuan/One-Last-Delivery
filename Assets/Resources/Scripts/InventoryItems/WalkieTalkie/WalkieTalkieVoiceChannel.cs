@@ -38,8 +38,10 @@ public class WalkieTalkieVoiceChannel : MonoBehaviour
 
     public void PlayAudio(int senderId, byte[] compressedSamples, int frequency, int channelCount)
     {
+        DevLogger.Log($"Received audio from sender {senderId}: Frequency={frequency}, Channels={channelCount}, CompressedSamples={compressedSamples.Length}");
         if (!_outputs.ContainsKey(senderId))
         {
+            DevLogger.Log($"Creating new audio output for sender {senderId}");
             var output = StreamedAudioSourceOutput.New();
             output.gameObject.transform.SetParent(transform);
 
@@ -66,6 +68,7 @@ public class WalkieTalkieVoiceChannel : MonoBehaviour
         var decoded = _decoders[senderId].Run(frame);
         if (decoded.samples != null && decoded.samples.Length > 0)
         {
+            DevLogger.Log($"Feeding audio to sender {senderId}");
             _outputs[senderId].Feed(decoded);
         }
     }
