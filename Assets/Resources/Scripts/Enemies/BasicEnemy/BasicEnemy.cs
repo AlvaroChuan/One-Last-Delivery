@@ -40,10 +40,6 @@ public class BasicEnemy : NetworkBehaviour
         _wanderBehaviour.StartWander();
     }
 
-    void OnEnable()
-    {
-    }
-
     void OnDisable()
     {
         _attackComponent.onAttackStartedEvent -= OnAttackStarted;

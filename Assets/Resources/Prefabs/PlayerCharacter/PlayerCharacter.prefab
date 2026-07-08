@@ -2427,6 +2427,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 663004757000401250}
+  - component: {fileID: 6276264029147788945}
   m_Layer: 0
   m_Name: mixamorig:RightFoot
   m_TagString: Untagged
@@ -2450,6 +2451,27 @@ Transform:
   - {fileID: 8880654377822477487}
   m_Father: {fileID: 1122357779771092089}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6276264029147788945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6106296082564171621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e21c876383f158744b7cf5b2337bbf03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _groundCheckRadius: 0.5
+  _groundCheckDistance: 0.6
+  _maxGroundAngle: 45
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &6251614738620377798
 GameObject:
   m_ObjectHideFlags: 0
@@ -2632,6 +2654,7 @@ GameObject:
   - component: {fileID: 6786939747723115699}
   - component: {fileID: 35646654810113330}
   - component: {fileID: 6458261290811739051}
+  - component: {fileID: 2259684687209530329}
   m_Layer: 7
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -3143,6 +3166,20 @@ MonoBehaviour:
   syncInterval: 0
   clientAuthority: 1
   animator: {fileID: 3735697329787270073}
+--- !u!114 &2259684687209530329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6383342393515265997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c98d0e7d0207a494da63615028da956e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stepAudioEvent: {fileID: 11400000, guid: 50afd5f9cc7058a49906a372c0e4e3dd, type: 2}
+  _stepAmplitude: 2
 --- !u!1 &6716311414115863244
 GameObject:
   m_ObjectHideFlags: 0
@@ -3520,7 +3557,7 @@ Transform:
   m_GameObject: {fileID: 7964369610913314439}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.9, z: 0}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3720,6 +3757,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2754338279230217780}
+  - component: {fileID: 3021080505755520403}
   m_Layer: 0
   m_Name: mixamorig:LeftFoot
   m_TagString: Untagged
@@ -3743,6 +3781,27 @@ Transform:
   - {fileID: 6205874945082314241}
   m_Father: {fileID: 366278205217193622}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3021080505755520403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8273189842910415772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e21c876383f158744b7cf5b2337bbf03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _groundCheckRadius: 0.5
+  _groundCheckDistance: 0.6
+  _maxGroundAngle: 45
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &8369750188393247593
 GameObject:
   m_ObjectHideFlags: 0
