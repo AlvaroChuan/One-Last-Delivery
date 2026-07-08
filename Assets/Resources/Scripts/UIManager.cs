@@ -241,6 +241,8 @@ public class UIManager : MonoBehaviour
 
     public void OnJoinedLobby()
     {
+        HideMainMenu();
+        ShowClipboard();
         ShowPanel(_lobbyPanel);
     }
 
@@ -271,10 +273,10 @@ public class UIManager : MonoBehaviour
 
     private void HideMainMenu()
     {
-        _title.transform.DOMoveX(-900, 0.5f).SetEase(Ease.InOutCubic);
-        _playButton.transform.DOMoveX(-500, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.1f);
-        _optionsButton.transform.DOMoveX(-500, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.2f);
-        _quitButton.transform.DOMoveX(-500, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.3f);
+        _title.transform.DOMoveX(-Screen.width, 0.5f).SetEase(Ease.InOutCubic);
+        _playButton.transform.DOMoveX(-Screen.width, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.1f);
+        _optionsButton.transform.DOMoveX(-Screen.width, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.2f);
+        _quitButton.transform.DOMoveX(-Screen.width, 0.5f).SetEase(Ease.InOutCubic).SetDelay(0.3f);
     }
 
     private void ShowClipboard()
