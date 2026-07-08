@@ -2776,8 +2776,8 @@ MonoBehaviour:
   _mainCameraTag: PlayerCamera
   _bobFrequency: 12
   _sprintBobFrequency: 18
-  _bobAmplitude: 0.05
-  _sprintBobAmplitude: 0.1
+  _bobAmplitude: 0.2
+  _sprintBobAmplitude: 0.3
   _bobReturnSpeed: 5
   _bobTransitionSpeed: 10
 --- !u!114 &2171320601092882896

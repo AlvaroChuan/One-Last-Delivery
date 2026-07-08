@@ -50,6 +50,8 @@ public class PlayerLookComponent : PlayerComponent
     public GameObject Model => _model;
     public Transform Eyes => _eyes;
 
+    private CinemachineBasicMultiChannelPerlin _cameraNoise;
+
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -164,18 +166,20 @@ public class PlayerLookComponent : PlayerComponent
                 camera.LookAt = null;
             }
         }
+
+        _cameraNoise = _currentCamera.GetComponent<CinemachineBasicMultiChannelPerlin>();
     }
 
     void FixedUpdate()
     {
         if (!isLocalPlayer) return;
-        
+        HandleHeadBob();
     }
 
     void LateUpdate()
     {
         if (!isLocalPlayer) return;
-        HandleHeadBob();
+        
         HandleRotation();
         Quaternion headRotation = _head.transform.rotation;
         Vector3 rotatedEyeOffset = headRotation * _eyeOffset;
@@ -221,6 +225,7 @@ public class PlayerLookComponent : PlayerComponent
 
     private void HandleHeadBob()
     {
+        /*
         if (_movementComponent == null || _groundCheckComponent == null) return;
         bool isSprinting = _sprintComponent != null && _sprintComponent.IsSprinting;
 
@@ -242,6 +247,18 @@ public class PlayerLookComponent : PlayerComponent
             _bobTimer = 0f;
             _currentAmplitude = _bobAmplitude;
             _eyes.localPosition = Vector3.Lerp(_eyes.localPosition, _eyesInitialLocalPosition, Time.fixedDeltaTime * _bobReturnSpeed);
+        }
+        */
+        if (_movementComponent.IsMoving && _groundCheckComponent.IsGrounded())
+        {
+            bool isSprinting = _sprintComponent != null && _sprintComponent.IsSprinting;
+            _cameraNoise.AmplitudeGain = isSprinting ? 1f : 0.7f;
+            _cameraNoise.FrequencyGain = isSprinting ? 1f : 0.7f;
+        }
+        else
+        {
+            _cameraNoise.AmplitudeGain = 0f;
+            _cameraNoise.FrequencyGain = 0f;
         }
     }
 }
