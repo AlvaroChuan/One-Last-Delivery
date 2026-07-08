@@ -81,6 +81,12 @@ public class PlayerLookComponent : PlayerComponent
         _sprintComponent = GetComponent<PlayerSprintComponent>();
         _inventoryComponent = GetComponent<PlayerInventoryComponent>();
 
+        if (_inventoryComponent != null)
+        {
+            _inventoryComponent.onInventorySlotChangedOwner -= HandleInventoryChange;
+            _inventoryComponent.onInventorySlotChangedOwner += HandleInventoryChange;
+        }
+
         CinemachineCamera[] cameras = FindObjectsByType<CinemachineCamera>(FindObjectsSortMode.None);
         foreach (var camera in cameras)
         {
@@ -112,7 +118,10 @@ public class PlayerLookComponent : PlayerComponent
 
         if (_inventoryComponent == null) _inventoryComponent = GetComponent<PlayerInventoryComponent>();
         if (_inventoryComponent != null)
+        {
+            _inventoryComponent.onInventorySlotChangedOwner -= HandleInventoryChange;
             _inventoryComponent.onInventorySlotChangedOwner += HandleInventoryChange;
+        }
     }
 
     void OnDisable()
