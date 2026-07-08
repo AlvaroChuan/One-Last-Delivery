@@ -35,6 +35,7 @@ public class EvilDoorInteractionComponent : Interactable
 
         if (packageAddressComponent.MatchesAddress(_localAddressComponent.Address))
         {
+            package.GetComponent<PackageFadeComponent>().FadeOut();
             PlayerHealthComponent playerHealth = interactor.GetComponent<PlayerHealthComponent>();
             if (playerHealth != null)
             {

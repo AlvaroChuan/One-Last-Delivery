@@ -12,6 +12,7 @@ public class DoorController : NetworkBehaviour
     {
         _doorInteractionComponent = GetComponent<DoorInteractionComponent>();
         _evilDoorInteractionComponent = GetComponent<EvilDoorInteractionComponent>();
+        _evilDoorInteractionComponent.enabled = false; // Start with the evil door interaction disabled
     }
 
     [Server]

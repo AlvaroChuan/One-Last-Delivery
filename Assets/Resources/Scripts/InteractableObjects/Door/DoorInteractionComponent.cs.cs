@@ -42,7 +42,7 @@ public class DoorInteractionComponent : Interactable
             {
                 BalanceManager.RegisterTransaction("Package was damaged", -penalty);
             }
-            NetworkServer.Destroy(package);
+            package.GetComponent<PackageFadeComponent>().FadeOut();
             RpcDoorInteraction(true);
         }
         else
