@@ -1,11 +1,13 @@
 using UnityEngine;
 using Mirror;
+using Mirror.Examples.Basic;
 
 [RequireComponent(typeof(Animator))]
-public class PlayerAnimationComponent : MonoBehaviour
+public class PlayerAnimationComponent : PlayerComponent
 {
     [SerializeField] private Hitbox _weaponHitbox;
     private Animator _animator;
+    private NetworkAnimator _networkAnimator;
     private PlayerMovementComponent _movementComponent;
     private PlayerSprintComponent _sprintComponent;
     private PlayerJumpComponent _jumpComponent;
@@ -24,6 +26,7 @@ public class PlayerAnimationComponent : MonoBehaviour
     void Awake()
     {
         _animator = GetComponent<Animator>();
+        _networkAnimator = GetComponent<NetworkAnimator>();
         _movementComponent = GetComponent<PlayerMovementComponent>();
         _sprintComponent = GetComponent<PlayerSprintComponent>();
         _jumpComponent = GetComponent<PlayerJumpComponent>();
@@ -82,12 +85,12 @@ public class PlayerAnimationComponent : MonoBehaviour
 
     private void HandleJump(PlayerJumpComponent.JumpInfo info)
     {
-        if (info.isSuccessful) _animator.SetTrigger(_jumpHash);
+        if (info.isSuccessful) _networkAnimator.SetTrigger(_jumpHash);
     }
 
     private void HandleItemUse(ItemID itemID)
     {
-        if (itemID == ItemID.BaseballBat) _animator.SetTrigger(_attackHash);
+        if (itemID == ItemID.BaseballBat) _networkAnimator.SetTrigger(_attackHash);
     }
 
     private void HandleInventoryChange(PlayerInventoryComponent.SlotChangeInfo info)
