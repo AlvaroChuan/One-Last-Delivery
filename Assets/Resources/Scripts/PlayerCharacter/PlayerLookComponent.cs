@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class PlayerLookComponent : PlayerComponent
 {
+    [SerializeField] SkinnedMeshRenderer[] _meshesToHideForLocalPlayer;
+    [SerializeField] private SkinnedMeshRenderer _bodyMeshRenderer;
+    [SerializeField] private Mesh _headlessMesh;
     [SerializeField] private GameObject _model;
     [SerializeField] private GameObject _head;
     [SerializeField] private Transform _eyes;
@@ -41,6 +44,9 @@ public class PlayerLookComponent : PlayerComponent
     [SerializeField] private float _bobReturnSpeed = 5f;
     [SerializeField] private float _bobTransitionSpeed = 10f;
 
+    Vector3 _eyeOffset;
+    Quaternion _initialHeadRotation;
+
     public GameObject Model => _model;
     public Transform Eyes => _eyes;
 
@@ -51,6 +57,16 @@ public class PlayerLookComponent : PlayerComponent
         {
             enabled = false;
             return;
+        }
+
+        _eyeOffset = _eyes.position - _head.transform.position;
+        _initialHeadRotation = _head.transform.rotation;
+
+        _bodyMeshRenderer.sharedMesh = _headlessMesh;
+
+        foreach (var renderer in _meshesToHideForLocalPlayer)
+        {
+            renderer.enabled = false;
         }
 
         _currentModelOffset = _emptyHandOffset;
@@ -160,6 +176,11 @@ public class PlayerLookComponent : PlayerComponent
     {
         if (!isLocalPlayer) return;
         HandleRotation();
+
+        Quaternion headRotation = _head.transform.rotation;
+        Vector3 rotatedEyeOffset = headRotation * _eyeOffset;
+
+        _eyes.position = _head.transform.position + rotatedEyeOffset;
     }
 
     private void HandleRotation()
