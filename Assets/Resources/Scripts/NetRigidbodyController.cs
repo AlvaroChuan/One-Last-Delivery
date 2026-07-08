@@ -4,6 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class NetRigidbodyController : NetworkBehaviour
 {
+    [SerializeField] private bool _assignHostOwnershipOnLoad = true;
     Rigidbody _rigidbody;
     public bool enableRigidbodyControl = true;
 
@@ -16,7 +17,7 @@ public class NetRigidbodyController : NetworkBehaviour
     {
         base.OnStartClient();
 
-        if(isServer)
+        if(isServer && _assignHostOwnershipOnLoad)
         {
             _rigidbody.isKinematic = false; // Enable physics for the server/host
             netIdentity.AssignClientAuthority(NetworkServer.localConnection);

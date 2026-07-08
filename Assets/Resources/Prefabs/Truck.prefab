@@ -1396,6 +1396,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _assignHostOwnershipOnLoad: 0
   enableRigidbodyControl: 1
 --- !u!1 &2958880394431956936
 GameObject:

@@ -2851,7 +2851,7 @@ MonoBehaviour:
   _interactionSphereRadius: 0.1
   _interactionLayerMask:
     serializedVersion: 2
-    m_Bits: 4105
+    m_Bits: 4104
   _playerHUDInteractable: {fileID: 3206184347220379684}
 --- !u!114 &5617894696755801156
 MonoBehaviour:
