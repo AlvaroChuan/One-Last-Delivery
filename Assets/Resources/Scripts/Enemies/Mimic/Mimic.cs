@@ -41,7 +41,7 @@ public class Mimic : NetworkBehaviour
     private float _attackCooldownTimer = 0f;
     private float _playerCheckTimer = 0f;
     private Coroutine _resetTransformationCoroutine;
-    private Animator _animator;
+    private NetworkAnimator _networkAnimator;
 
     void Awake()
     {
@@ -61,7 +61,7 @@ public class Mimic : NetworkBehaviour
         _playerDistanceDetector = GetComponent<PlayerDistanceDetector>();
         _rigidbody = GetComponent<Rigidbody>();
         _stunComponent = GetComponent<EnemyStunComponent>();
-        _animator = GetComponentInChildren<Animator>();
+        _networkAnimator = GetComponent<NetworkAnimator>();
 
         _playerCheckTimer = Random.Range(0f, _playerCheckInterval); // Randomize the initial timer to avoid all Mimics checking for players at the same time
     }
@@ -128,7 +128,7 @@ public class Mimic : NetworkBehaviour
         _hitboxCollider.enabled = false;
         _hitboxCollider.enabled = true;
         _lungeSound.Play(gameObject);
-        _animator.SetTrigger("Attack");
+        _networkAnimator.SetTrigger("Attack");
         Vector3 direction = _closestPlayer.transform.position - transform.position;
         direction.y = 0;
         direction.Normalize();

@@ -1,4 +1,5 @@
 using System;
+using Mirror;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerAttack))]
@@ -8,8 +9,10 @@ public class Bat : InventoryItem
     [SerializeField] private float _cooldown = 1f; // Cooldown duration in seconds
     private float _timer = 0f;
     private Animator _animator;
+    private NetworkAnimator _networkAnimator;
     void Awake()
     {
+        _networkAnimator = GetComponent<NetworkAnimator>();
         _animator = GetComponentInParent<Animator>();
         DevLogger.Log($"Bat Awake: {_animator.name}");
     }
@@ -33,6 +36,13 @@ public class Bat : InventoryItem
         _animator.SetTrigger("BatAttack");
         _timer = _cooldown;
     }
+
+    [Command]
+    public void CmdPlayBatAttackAnimation()
+    {
+        _networkAnimator.SetTrigger("BatAttack");
+    }
+
     void Update()
     {
         if (_timer > 0)

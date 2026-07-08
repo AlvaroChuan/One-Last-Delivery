@@ -12,7 +12,7 @@ public class EnemyAttackComponent : MonoBehaviour
     [SerializeField] private float _attackRange = 2f; // Range within which the enemy can attack players
     [SerializeField] private Hitbox _hitbox;
     private float _currentAttackCooldown = 0f;
-    private Animator _animator;
+    private NetworkAnimator _networkAnimator;
     private RaycastHit[] _raycastHitBuffer = new RaycastHit[10]; // Preallocate array for raycast hits
     private bool _isAttacking = false;
     public bool IsAttacking => _isAttacking;
@@ -20,11 +20,7 @@ public class EnemyAttackComponent : MonoBehaviour
 
     void Awake()
     {
-        _animator = GetComponent<Animator>();
-        if (_animator == null)
-        {
-            Debug.LogError("Animator component is missing on AttackComponent.");
-        }
+        _networkAnimator = GetComponent<NetworkAnimator>();
 
         if (_hitbox == null)
         {
@@ -74,7 +70,7 @@ public class EnemyAttackComponent : MonoBehaviour
         if (_currentAttackCooldown <= 0f)
         {
             _currentAttackCooldown = _attackCooldown; // Reset cooldown
-            _animator.SetTrigger(AttackHash); // Trigger the attack animation
+            _networkAnimator.SetTrigger("Attack"); // Trigger the attack animation
             _isAttacking = true;
             onAttackStartedEvent?.Invoke();
             return true; // Attack initiated

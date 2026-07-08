@@ -11,7 +11,7 @@ public class BasicEnemy : NetworkBehaviour
 {
     [SerializeField] private float _playerDetectionRadius = 10f;
     [SerializeField] private Animator _animator;
-
+    private NetworkAnimator _networkAnimator;
     private NavMeshMovementComponent _movementComponent;
     private EnemyAttackComponent _attackComponent;
     private EnemyStunComponent _enemyStunComponent;
@@ -21,6 +21,7 @@ public class BasicEnemy : NetworkBehaviour
 
     void Awake()
     {
+        _networkAnimator = GetComponent<NetworkAnimator>();
         _movementComponent = GetComponent<NavMeshMovementComponent>();
         _wanderBehaviour = GetComponent<WanderBehaviour>();
         _attackComponent = GetComponent<EnemyAttackComponent>();
@@ -93,7 +94,7 @@ public class BasicEnemy : NetworkBehaviour
 
         if (_animator != null)
         {
-            _animator.SetTrigger("Attack");
+            _networkAnimator.SetTrigger("Attack");
         }
     }
 

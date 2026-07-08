@@ -219,8 +219,8 @@ public class PlayerInventoryComponent : InputComponent
         // Instantiate and spawn the object authoritatively on the server
         DroppedItem droppedObject = Instantiate(droppedItemPrefab, dropPosition, Quaternion.identity);
         droppedObject.SetInventoryItemData(itemData);
-        droppedObject.GetComponent<Rigidbody>().AddForce(throwForce, ForceMode.VelocityChange);
         NetworkServer.Spawn(droppedObject.gameObject);
+        droppedObject.GetComponent<Rigidbody>().AddForce(throwForce, ForceMode.VelocityChange);
     }
 
     [ClientRpc]

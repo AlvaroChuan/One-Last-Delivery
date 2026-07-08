@@ -21,6 +21,7 @@ public class Specter : NetworkBehaviour
     [SerializeField] private float _jumpscareDuration = 2.5f;
     [SerializeField] private float _jumpscareLethalDamage = 999f;
 
+    private NetworkAnimator _networkAnimator;
     private FieldOfViewDetector _fieldOfViewDetector;
     private NavMeshMovementComponent _movementComponent;
     private PlayerChaseBehaviour _playerChaseBehaviour;
@@ -48,6 +49,7 @@ public class Specter : NetworkBehaviour
         _enemyStunComponent = GetComponent<EnemyStunComponent>();
         _enemyAttackComponent = GetComponent<EnemyAttackComponent>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
+        _networkAnimator = GetComponent<NetworkAnimator>();
 
         _fovCheckTimer = Random.Range(0f, _fovCheckInterval);
     }
@@ -191,7 +193,7 @@ public class Specter : NetworkBehaviour
         _isExecutingJumpscare = true;
         _movementComponent.SetTarget(null);
 
-        if (_animator != null) _animator.SetTrigger("Attack");
+        _networkAnimator.SetTrigger("Attack");
 
         GameObject targetPlayer = _playerChaseBehaviour.CurrentTarget;
         if (targetPlayer != null)
