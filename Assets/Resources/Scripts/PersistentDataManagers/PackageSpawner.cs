@@ -286,6 +286,7 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
         UsedAddresses.Add(newAddress);
 
         GameObject door = _addressLibrary.GetDoorForAddress(newAddress);
+        DevLogger.Log($"Found door for corrupted package: {door}, at address: {newAddress}");
         door.GetComponent<DoorController>().CorruptDoor();
 
         DevLogger.Log($"Package at {_spawnedPackages[corruptedPackage].transform.position} has been corrupted with a new address: {newAddress}");

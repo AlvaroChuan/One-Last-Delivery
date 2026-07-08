@@ -539,13 +539,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: SmokeCloud
       objectReference: {fileID: 0}
+    - target: {fileID: 6609562690561066128, guid: ba036d7aa49283b44a8cc93d4de6305f, type: 3}
+      propertyPath: NoiseModule.strength.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6609562690561066128, guid: ba036d7aa49283b44a8cc93d4de6305f, type: 3}
+      propertyPath: NoiseModule.scrollSpeed.scalar
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6609562690561066128, guid: ba036d7aa49283b44a8cc93d4de6305f, type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8354219453752641167, guid: ba036d7aa49283b44a8cc93d4de6305f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8354219453752641167, guid: ba036d7aa49283b44a8cc93d4de6305f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.47
       objectReference: {fileID: 0}
     - target: {fileID: 8354219453752641167, guid: ba036d7aa49283b44a8cc93d4de6305f, type: 3}
       propertyPath: m_LocalPosition.z
