@@ -83,8 +83,11 @@ public class CustomNetworkManager : NetworkManager
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
     {
         base.OnServerDisconnect(conn);
-
-        NetworkServer.Shutdown(); // Shutdown the server when a client disconnects
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        if(currentSceneName == _gameScene || currentSceneName == _balanceScene)
+        {
+            NetworkServer.Shutdown();
+        }
     }
 
     public override void OnClientDisconnect()
