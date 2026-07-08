@@ -12,6 +12,7 @@ TagManager:
   - Building
   - SpawnPoint
   - BuildingFloor
+  - TruckInterior
   layers:
   - Default
   - TransparentFX

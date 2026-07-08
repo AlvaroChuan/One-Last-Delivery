@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 845320219464696297}
   - component: {fileID: 6813047963127189066}
   - component: {fileID: 3917182851813490240}
+  - component: {fileID: 236529126205769983}
   m_Layer: 3
   m_Name: Package
   m_TagString: Package
@@ -150,6 +151,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _assignHostOwnershipOnLoad: 1
   enableRigidbodyControl: 1
 --- !u!54 &3608739865664877126
 Rigidbody:
@@ -336,7 +338,19 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _fadeDuration: 1
+  _disappearEffect: {fileID: 6609562690561066128, guid: ba036d7aa49283b44a8cc93d4de6305f, type: 3}
+--- !u!114 &236529126205769983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1369721123284713815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b768d4c3169b0424986d694b9df18f24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2333763140310054004
 GameObject:
   m_ObjectHideFlags: 0

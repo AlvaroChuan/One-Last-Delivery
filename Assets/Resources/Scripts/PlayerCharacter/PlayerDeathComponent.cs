@@ -75,19 +75,6 @@ public class PlayerDeathComponent : PlayerComponent
     [ClientRpc]
     void RpcHandleDeath()
     {
-        if (isLocalPlayer) return; // Local player already handled death in Die()
-        DisableStuff();
-    }
-
-    void DisableStuff()
-    {
-        GetComponent<PlayerMovementComponent>().enabled = false;
-        GetComponent<PlayerLookComponent>().SwitchCamera("SpectatorCamera");
-        GetComponent<PlayerSpectateComponent>().enabled = true; // Enable spectate component for the local player
-        GetComponent<PlayerSpectateComponent>().ScrollPlayers(1); // Start spectating the next player
-        GetComponent<PlayerInventoryComponent>().SetInventorySlot(-1); // Clear the inventory slot
-        GetComponent<PlayerInventoryComponent>().enabled = false; // Disable inventory component for the local player
-        GetComponent<PlayerInteractComponent>().enabled = false; // Disable interact component for the local player
         GetComponent<Collider>().enabled = false; // Disable the player's collider to prevent further interactions
         GetComponent<Rigidbody>().isKinematic = true; // Make the player's rigidbody kinematic to prevent physics interactions
         Collider[] colliders = GetComponentsInChildren<Collider>();
@@ -105,5 +92,20 @@ public class PlayerDeathComponent : PlayerComponent
         {
             skinnedRenderer.enabled = false; // Disable all child skinned mesh renderers
         }
+        GetComponent<StepPlayer>().enabled = false; // Disable the StepPlayer component to stop footstep sounds
+
+        if (isLocalPlayer) return; // Local player already handled death in Die()
+        DisableStuff();
+    }
+
+    void DisableStuff()
+    {
+        GetComponent<PlayerMovementComponent>().enabled = false;
+        GetComponent<PlayerLookComponent>().SwitchCamera("SpectatorCamera");
+        GetComponent<PlayerSpectateComponent>().enabled = true; // Enable spectate component for the local player
+        GetComponent<PlayerSpectateComponent>().ScrollPlayers(1); // Start spectating the next player
+        GetComponent<PlayerInventoryComponent>().SetInventorySlot(-1); // Clear the inventory slot
+        GetComponent<PlayerInventoryComponent>().enabled = false; // Disable inventory component for the local player
+        GetComponent<PlayerInteractComponent>().enabled = false; // Disable interact component for the local player
     }
 }

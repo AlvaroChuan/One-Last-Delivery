@@ -1595,9 +1595,9 @@ GameObject:
   - component: {fileID: 2093269247836310882}
   - component: {fileID: 7449925326745761648}
   - component: {fileID: 7698896251129739207}
-  m_Layer: 12
-  m_Name: PackageInvulnerabilityZone
-  m_TagString: Truck
+  m_Layer: 13
+  m_Name: TruckInterior
+  m_TagString: TruckInterior
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

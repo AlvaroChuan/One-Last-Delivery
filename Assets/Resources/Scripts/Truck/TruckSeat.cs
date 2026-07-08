@@ -51,6 +51,7 @@ public class TruckSeat : Interactable
             }
             SetPlayerCollidersEnabled(oldOccupant, false);
             oldOccupant.GetComponent<Rigidbody>().isKinematic = false;
+            oldOccupant.GetComponent<StepPlayer>().enabled = true;
             oldOccupant.transform.parent = null;
             oldOccupant.transform.rotation = Quaternion.identity;
         }
@@ -64,6 +65,7 @@ public class TruckSeat : Interactable
                 if (newOccupant.TryGetComponent<PlayerAnimationComponent>(out var anim)) anim.SetSittingState(_isDriverSeat);
             }
             SetPlayerCollidersEnabled(newOccupant, true);
+            newOccupant.GetComponent<StepPlayer>().enabled = false;
             newOccupant.GetComponent<Rigidbody>().isKinematic = true;
             newOccupant.transform.parent = _occupantPosition;
             newOccupant.transform.localPosition = Vector3.zero;

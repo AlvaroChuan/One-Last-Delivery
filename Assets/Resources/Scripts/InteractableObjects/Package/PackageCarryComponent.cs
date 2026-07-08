@@ -1,9 +1,12 @@
 using UnityEngine;
 using Mirror;
+using System;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PackageCarryComponent : MonoBehaviour
 {
+    public Action onStartCarrying;
+    public Action onStopCarrying;
     [SerializeField] private float _carryForce = 40f;
     [SerializeField] private float _distanceForceScaling = .2f;
     [SerializeField] private float _damping = 7.5f;
@@ -30,6 +33,8 @@ public class PackageCarryComponent : MonoBehaviour
         _offsetFromPlayer.x = 0; // Keep the package centered horizontally relative to the player
 
         _isCarried = true;
+
+        onStartCarrying?.Invoke();
     }
 
     public void StopCarrying()
@@ -39,6 +44,8 @@ public class PackageCarryComponent : MonoBehaviour
         _playerRigidbody = null;
 
         _isCarried = false;
+
+        onStopCarrying?.Invoke();
     }
 
     void FixedUpdate()
