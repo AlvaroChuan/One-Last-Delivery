@@ -239,6 +239,10 @@ MonoBehaviour:
   _fovCheckInterval: 0.05
   _playerDetectionRadius: 50
   _animator: {fileID: 8170160084995849539}
+  _handGrabPoint: {fileID: 1918883902043462564}
+  _specterFace: {fileID: 8168687828310374867}
+  _jumpscareDuration: 2.5
+  _jumpscareLethalDamage: 999
 --- !u!114 &3791176424422493989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -918,6 +922,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 6868716418057165105, guid: 7437d2f99956faf42856f76273def86f, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 7183856d5cc7eab47a0508b910c7532c, type: 2}
     - target: {fileID: 7029726546076681841, guid: 7437d2f99956faf42856f76273def86f, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -967,5 +975,15 @@ PrefabInstance:
 --- !u!4 &524967813674300310 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7437d2f99956faf42856f76273def86f, type: 3}
+  m_PrefabInstance: {fileID: 55087785432618109}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1918883902043462564 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1901232293082075097, guid: 7437d2f99956faf42856f76273def86f, type: 3}
+  m_PrefabInstance: {fileID: 55087785432618109}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8168687828310374867 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8187179361008594350, guid: 7437d2f99956faf42856f76273def86f, type: 3}
   m_PrefabInstance: {fileID: 55087785432618109}
   m_PrefabAsset: {fileID: 0}
