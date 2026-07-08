@@ -15,12 +15,13 @@ public class PlayerMenuManager : MonoBehaviour
     }
 
     [SerializeField] private MenuEntry[] _menuEntries;
+    [SerializeField] private string _cameraTag = "PlayerCamera";
     CinemachineInputAxisController _playerCamera;
     GameObject _currentlyOpenMenu;
 
     void Awake()
     {
-        _playerCamera = FindAnyObjectByType<CinemachineInputAxisController>();
+        _playerCamera = GameObject.FindWithTag(_cameraTag)?.GetComponent<CinemachineInputAxisController>();
     }
 
     private void OnEnable()
