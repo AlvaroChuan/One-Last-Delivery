@@ -15,11 +15,7 @@ public class LobbyAnimationController : MonoBehaviour
         _animator = GetComponent<Animator>();
         if (_state == AnimationState.Drive)
         {
-            _animator.Play("Drive");
-        }
-        else if (_state == AnimationState.Pick)
-        {
-            _animator.Play("HoldMap");
+            _animator.SetTrigger("Driving");
         }
     }
 }
