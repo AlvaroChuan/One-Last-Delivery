@@ -34,6 +34,12 @@ public class PlayerInteractComponent : InputComponent
         _interactInput.action.performed -= OnInteractInput;
     }
 
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        _playerHUDInteractable.SetActive(false);
+    }
+
     void Update()
     {
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
