@@ -8,21 +8,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 336781680920837428, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0c48adf31e3af83409310506ec55ceaa, type: 2}
     - target: {fileID: 1582652698410507765, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: b0487790685d0cb4a8ee21b2aa329337, type: 2}
     - target: {fileID: 2059693814285598323, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -737.4156
       objectReference: {fileID: 0}
     - target: {fileID: 2059693814285598323, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.651
       objectReference: {fileID: 0}
     - target: {fileID: 2059693814285598323, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -5.312
       objectReference: {fileID: 0}
     - target: {fileID: 2059693814285598323, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
       propertyPath: m_LocalRotation.w
@@ -52,6 +56,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5201495189585953778, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0c48adf31e3af83409310506ec55ceaa, type: 2}
+    - target: {fileID: 5201495189585953778, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: d4ea6181eac2a1b4d9fe09f9c148acdb, type: 2}
     - target: {fileID: 5617894696755801156, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
       propertyPath: _assetId
       value: 1087650419
@@ -60,6 +72,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerCharacter_Red
       objectReference: {fileID: 0}
+    - target: {fileID: 7189674633286747991, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 69a39675de61bd3448d5a41abbb80750, type: 2}
+    - target: {fileID: 7189674633286747991, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 8f55f7d6d887d7e429736542b7fb086f, type: 2}
+    - target: {fileID: 7189674633286747991, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
+      propertyPath: 'm_Materials.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 636856194ce2f8145b56207875604e70, type: 2}
+    - target: {fileID: 7189674633286747991, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
+      propertyPath: 'm_Materials.Array.data[3]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0c48adf31e3af83409310506ec55ceaa, type: 2}
+    - target: {fileID: 7189674633286747991, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
+      propertyPath: 'm_Materials.Array.data[4]'
+      value: 
+      objectReference: {fileID: 2100000, guid: d4ea6181eac2a1b4d9fe09f9c148acdb, type: 2}
+    - target: {fileID: 7189674633286747991, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
+      propertyPath: 'm_Materials.Array.data[5]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 8f55f7d6d887d7e429736542b7fb086f, type: 2}
+    - target: {fileID: 8328627430671376253, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 55facfb84227fb34da9cf1139daeac61, type: 2}
     - target: {fileID: 8348344201888219740, guid: ee88a4351e7cada498b2a6832af0e7ac, type: 3}
       propertyPath: _assetId
       value: 1087650419

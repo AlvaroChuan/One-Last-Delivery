@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PlayerMetallic
+  m_Name: PlayerBody2
   m_Shader: {fileID: -6465566751694194690, guid: ad89e01e130589e49bb2c9581c841d27, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -128,7 +128,7 @@ Material:
     - _NormalNoise: 161
     - _NormalStrength: 0.3
     - _PaintIntensity: 0.1
-    - _PaintScale: 0.28
+    - _PaintScale: 0.58
     - _PencilThreshold1: 0
     - _PencilThreshold2: 0.27
     - _PencilThreshold3: 0
@@ -159,10 +159,10 @@ Material:
     m_Colors:
     - _CellTiling: {r: 1, g: 0.4, b: 0, a: 0}
     - _ColorA: {r: 0.83921576, g: 0.6627451, b: 0.21176472, a: 0}
-    - _ColorB: {r: 0.3212887, g: 0.33861563, b: 0.3584906, a: 0}
+    - _ColorB: {r: 0.225702, g: 0.79607844, b: 0.14509803, a: 0}
     - _ColorC: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
-    - _PaintColor: {r: 0.52201253, g: 0.52201253, b: 0.52201253, a: 1}
+    - _PaintColor: {r: 0, g: 0, b: 0, a: 1}
     - _ShadowColor: {r: 0.83921576, g: 0.6627451, b: 0.21176472, a: 0}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
