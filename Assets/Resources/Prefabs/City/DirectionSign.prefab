@@ -60,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 5643116276592014121, guid: 26852d5c76fb3e34f8efde1e5b04f192, type: 2}
+  - {fileID: 2100000, guid: 302b12bad0b8e6e4bbb6b00faa36a17c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -105,7 +105,7 @@ MonoBehaviour:
   m_text: H
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 26852d5c76fb3e34f8efde1e5b04f192, type: 2}
-  m_sharedMaterial: {fileID: 5643116276592014121, guid: 26852d5c76fb3e34f8efde1e5b04f192, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 302b12bad0b8e6e4bbb6b00faa36a17c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -236,7 +236,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -1808817182320614483, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
+  - {fileID: 2100000, guid: aea5bedc3d6ad80449f5987efe2fd3d7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -281,7 +281,7 @@ MonoBehaviour:
   m_text: Mondongo Street
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
-  m_sharedMaterial: {fileID: -1808817182320614483, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: aea5bedc3d6ad80449f5987efe2fd3d7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -498,7 +498,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -1808817182320614483, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
+  - {fileID: 2100000, guid: aea5bedc3d6ad80449f5987efe2fd3d7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -543,7 +543,7 @@ MonoBehaviour:
   m_text: Mondongo Street
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
-  m_sharedMaterial: {fileID: -1808817182320614483, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: aea5bedc3d6ad80449f5987efe2fd3d7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -674,7 +674,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 5643116276592014121, guid: 26852d5c76fb3e34f8efde1e5b04f192, type: 2}
+  - {fileID: 2100000, guid: 302b12bad0b8e6e4bbb6b00faa36a17c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -719,7 +719,7 @@ MonoBehaviour:
   m_text: H
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 26852d5c76fb3e34f8efde1e5b04f192, type: 2}
-  m_sharedMaterial: {fileID: 5643116276592014121, guid: 26852d5c76fb3e34f8efde1e5b04f192, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 302b12bad0b8e6e4bbb6b00faa36a17c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -850,7 +850,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 5643116276592014121, guid: 26852d5c76fb3e34f8efde1e5b04f192, type: 2}
+  - {fileID: 2100000, guid: 302b12bad0b8e6e4bbb6b00faa36a17c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -895,7 +895,7 @@ MonoBehaviour:
   m_text: H
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 26852d5c76fb3e34f8efde1e5b04f192, type: 2}
-  m_sharedMaterial: {fileID: 5643116276592014121, guid: 26852d5c76fb3e34f8efde1e5b04f192, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 302b12bad0b8e6e4bbb6b00faa36a17c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1261,7 +1261,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -1808817182320614483, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
+  - {fileID: 2100000, guid: aea5bedc3d6ad80449f5987efe2fd3d7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1306,7 +1306,7 @@ MonoBehaviour:
   m_text: Bacon Avenue
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
-  m_sharedMaterial: {fileID: -1808817182320614483, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: aea5bedc3d6ad80449f5987efe2fd3d7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
