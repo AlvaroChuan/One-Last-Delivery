@@ -10,6 +10,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerHealthComponent))]
 public class PlayerDeathComponent : PlayerComponent
 {
+    [SerializeField] private GameObject _bloodVFX;
     PlayerHealthComponent _playerHealthComponent;
     public Action onPlayerDeathEvent;
     public bool IsDead { get; private set; } = false;
@@ -46,6 +47,40 @@ public class PlayerDeathComponent : PlayerComponent
 
         DevLogger.Log("Player has died. Switching to spectator mode.");
         IsDead = true;
+
+        DisableStuff(); // Disable player components and switch to spectator mode
+
+        onPlayerDeathEvent?.Invoke();
+        CmdNotifyDeath(); // Notify the server about the player's death
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdNotifyDeath()
+    {
+        SpawnBloodVFX();
+        RpcHandleDeath(); // Notify all clients about the player's death
+        (NetworkManager.singleton as CustomNetworkManager).NotifyPlayerDeath();
+    }
+
+    [Server]
+    private void SpawnBloodVFX()
+    {
+        if (_bloodVFX != null)
+        {
+            GameObject vfx = Instantiate(_bloodVFX, transform.position, Quaternion.identity);
+            NetworkServer.Spawn(vfx);
+        }
+    }
+
+    [ClientRpc]
+    void RpcHandleDeath()
+    {
+        if (isLocalPlayer) return; // Local player already handled death in Die()
+        DisableStuff();
+    }
+
+    void DisableStuff()
+    {
         GetComponent<PlayerMovementComponent>().enabled = false;
         GetComponent<PlayerLookComponent>().SwitchCamera("SpectatorCamera");
         GetComponent<PlayerSpectateComponent>().enabled = true; // Enable spectate component for the local player
@@ -70,13 +105,5 @@ public class PlayerDeathComponent : PlayerComponent
         {
             skinnedRenderer.enabled = false; // Disable all child skinned mesh renderers
         }
-        onPlayerDeathEvent?.Invoke();
-        CmdNotifyDeath(); // Notify the server about the player's death
-    }
-
-    [Command(requiresAuthority = false)]
-    public void CmdNotifyDeath()
-    {
-        (NetworkManager.singleton as CustomNetworkManager).NotifyPlayerDeath();
     }
 }
