@@ -24,7 +24,13 @@ public class Speedometer : NetworkBehaviour
 
     private void OnSpeedChanged(TruckController.MovementInfo movementInfo)
     {
-        _currentSpeed = movementInfo.speed;
+        CmdUpdateSpeed(movementInfo.speed);
+    }
+
+    [Command(requiresAuthority = false)]
+    private void CmdUpdateSpeed(float speed)
+    {
+        _currentSpeed = speed;
     }
 
     private void OnSpeedoMeterUpdate(float oldSpeed, float newSpeed)

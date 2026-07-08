@@ -41,13 +41,13 @@ public class TruckDoor : Interactable
         {
             _currentTween = transform.DOLocalMove(_openPosition, _animationDuration);
             _currentTween = transform.DOLocalRotate(_openRotation, _animationDuration);
-            RpcPlayDoorOpenAudio();
+            RpcOpenDoor();
         }
         else
         {
             _currentTween = transform.DOLocalMove(_closedPosition, _animationDuration);
             _currentTween = transform.DOLocalRotate(_closedRotation, _animationDuration);
-            RpcPlayDoorCloseAudio();
+            RpcCloseDoor();
         }
     }
 
@@ -62,14 +62,28 @@ public class TruckDoor : Interactable
     }
 
     [ClientRpc]
-    void RpcPlayDoorOpenAudio()
+    void RpcOpenDoor()
     {
         _doorOpenAudioEvent.Play(gameObject);
+
+        if (isOwned && !isServer)
+        {
+            _currentTween?.Kill();
+            _currentTween = transform.DOLocalMove(_openPosition, _animationDuration);
+            _currentTween = transform.DOLocalRotate(_openRotation, _animationDuration);
+        }
     }
 
     [ClientRpc]
-    void RpcPlayDoorCloseAudio()
+    void RpcCloseDoor()
     {
         _doorCloseAudioEvent.Play(gameObject);
+
+        if (isOwned && !isServer)
+        {
+            _currentTween?.Kill();
+            _currentTween = transform.DOLocalMove(_closedPosition, _animationDuration);
+            _currentTween = transform.DOLocalRotate(_closedRotation, _animationDuration);
+        }
     }
 }
