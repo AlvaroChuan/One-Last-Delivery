@@ -10,6 +10,7 @@ TagManager:
   - SpectatorCamera
   - PlayerCamera
   - Building
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX

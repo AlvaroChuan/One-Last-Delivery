@@ -27,6 +27,7 @@ public class CustomNetworkManager : NetworkManager
     bool _packageDestroyed = false; // Track if a package has been destroyed
     private int _receivedTransitionCount = 0; // Track how many clients have received the transition message
     private string _currentDestinationScene = ""; // Track the current destination scene for transitions
+    GameObject[] _spawnPoints;
 
     public override void OnStartServer()
     {
@@ -52,6 +53,7 @@ public class CustomNetworkManager : NetworkManager
         // (Make sure this matches your actual Game scene name exactly)
         if (SceneManager.GetActiveScene().name == _gameScene)
         {
+            _spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
             DevLogger.Log("Player " + conn.connectionId + " has identity: " + (conn.identity != null) + " when joining active game scene.");
             // Only spawn if this connection doesn't already have an assigned character
             if (conn.identity == null)
@@ -111,7 +113,7 @@ public class CustomNetworkManager : NetworkManager
             GameObject prefab = _playerPrefabs[playerIndex];
 
             // Grab a spawn point if you use NetworkStartPosition components
-            Transform startPos = GetStartPosition();
+            Transform startPos = _spawnPoints[playerIndex].transform; // Use the player index to select a spawn point
             Vector3 spawnPos = startPos != null ? startPos.position : Vector3.zero;
             Quaternion spawnRot = startPos != null ? startPos.rotation : Quaternion.identity;
 

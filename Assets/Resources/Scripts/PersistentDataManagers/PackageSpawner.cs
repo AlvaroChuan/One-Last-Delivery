@@ -35,6 +35,7 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
     [SerializeField] PackageEntry[] _packageEntries;
     [SerializeField] Vector3Int _spawnBounds;
     [SerializeField] CoordinateOrder _coordinateOrder = CoordinateOrder.XZY;
+    [SerializeField] Vector3Int _spawnDirection = Vector3Int.one;
     [SerializeField] float _packageSize = 1f;
     [SerializeField] int _maxCorruptedPackages = 2; // Maximum number of packages that can be corrupted at once
     public static List<AddressInfo> UsedAddresses = new List<AddressInfo>();
@@ -104,7 +105,7 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
         {
             GameObject packagePrefab = GetRandomPackagePrefab();
 
-            Vector3 spawnPosition = transform.position + new Vector3(currentPosition.x * _packageSize, currentPosition.y * _packageSize, currentPosition.z * _packageSize);
+            Vector3 spawnPosition = transform.position + new Vector3(currentPosition.x * _packageSize * _spawnDirection.x, currentPosition.y * _packageSize * _spawnDirection.y, currentPosition.z * _packageSize * _spawnDirection.z);
             GameObject packageInstance = Instantiate(packagePrefab, spawnPosition, Quaternion.identity);
             NetworkServer.Spawn(packageInstance);
             _spawnedPackages.Add(packageInstance);
