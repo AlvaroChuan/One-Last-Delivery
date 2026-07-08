@@ -700,6 +700,14 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 165940529212037476, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.194
+      objectReference: {fileID: 0}
+    - target: {fileID: 1436066771266599310, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
+      propertyPath: m_Size.x
+      value: 1.2
+      objectReference: {fileID: 0}
     - target: {fileID: 1865245426965013292, guid: 3498469b5353ab34187a7a62e1f0dc17, type: 3}
       propertyPath: m_Name
       value: DoorA

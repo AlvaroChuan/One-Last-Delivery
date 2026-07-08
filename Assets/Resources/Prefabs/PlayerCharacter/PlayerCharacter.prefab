@@ -2691,7 +2691,7 @@ MonoBehaviour:
   - {fileID: 336781680920837428}
   - {fileID: 8328627430671376253}
   _bodyMeshRenderer: {fileID: 7189674633286747991}
-  _headlessMesh: {fileID: 1463568707859388572, guid: 8f4fe34a79f6e7642a42eea525ee6ba9, type: 3}
+  _headlessMesh: {fileID: 1463568707859388572, guid: c1d9cf2b6c6dcf545b438169b43156d1, type: 3}
   _model: {fileID: 7964369610913314439}
   _head: {fileID: 1338772596825510489}
   _eyes: {fileID: 3780214070391194180}

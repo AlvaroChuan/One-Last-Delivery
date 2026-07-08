@@ -1,5 +1,6 @@
 using UnityEngine;
 using Mirror;
+using UnityEngine.Rendering.Universal;
 
 [RequireComponent(typeof(DoorInteractionComponent))]
 [RequireComponent(typeof(EvilDoorInteractionComponent))]
@@ -7,6 +8,7 @@ public class DoorController : NetworkBehaviour
 {
     DoorInteractionComponent _doorInteractionComponent;
     EvilDoorInteractionComponent _evilDoorInteractionComponent;
+    [SerializeField] private DecalProjector _corruptionDecal;
 
     void Awake()
     {
@@ -26,6 +28,6 @@ public class DoorController : NetworkBehaviour
     [ClientRpc]
     public void RpcCorruptDoor()
     {
-        // Change the door's appearance to indicate it's corrupted (e.g., change material, play animation, etc.)
+        _corruptionDecal.enabled = true;
     }
 }
