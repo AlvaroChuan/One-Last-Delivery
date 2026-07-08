@@ -391,6 +391,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7880099944650433399}
   - component: {fileID: 3845251624603548522}
+  - component: {fileID: 2777513629359414200}
   m_Layer: 5
   m_Name: Controls
   m_TagString: Untagged
@@ -413,10 +414,10 @@ RectTransform:
   - {fileID: 8852902093849290627}
   m_Father: {fileID: 6852896898174683279}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.86500007, y: 0.21314815}
-  m_AnchorMax: {x: 0.9855209, y: 0.4158519}
-  m_AnchoredPosition: {x: 0.5, y: 0}
-  m_SizeDelta: {x: -0.5238037, y: 1.4806976}
+  m_AnchorMin: {x: 0.86547923, y: 0.17}
+  m_AnchorMax: {x: 0.9855209, y: 0.37500003}
+  m_AnchoredPosition: {x: -0.5, y: 0}
+  m_SizeDelta: {x: 0.4761963, y: -0.51930237}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3845251624603548522
 CanvasRenderer:
@@ -426,6 +427,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2049235288921998997}
   m_CullTransparentMesh: 1
+--- !u!114 &2777513629359414200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2049235288921998997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c59821cc48af10647ac1262afdb62bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _newTextOnDeath: 'LMB - Previous player
+
+    RMB - Next player'
+  _textComponent: {fileID: 7517150098099053657}
 --- !u!1 &3162245710531345703
 GameObject:
   m_ObjectHideFlags: 0
@@ -1562,7 +1579,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_HorizontalAlignment: 4
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 1024
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
