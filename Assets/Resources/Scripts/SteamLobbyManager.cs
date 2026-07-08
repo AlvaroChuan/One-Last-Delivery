@@ -146,6 +146,18 @@ public class SteamLobbyManager : MonoBehaviour
 
     private void OnLobbyChatUpdate(LobbyChatUpdate_t callback)
     {
+        if (_currentLobbyID == (CSteamID)callback.m_ulSteamIDLobby)
+        {
+            if ((callback.m_rgfChatMemberStateChange & (uint)(EChatMemberStateChange.k_EChatMemberStateChangeDisconnected | EChatMemberStateChange.k_EChatMemberStateChangeLeft)) != 0)
+            {
+                string hostAddress = SteamMatchmaking.GetLobbyData(_currentLobbyID, HOST_ADDRESS_KEY);
+                if (callback.m_ulSteamIDUserChanged.ToString() == hostAddress)
+                {
+                    ExitLobby();
+                    return;
+                }
+            }
+        }
         UpdatePlayerList();
     }
 
@@ -153,6 +165,12 @@ public class SteamLobbyManager : MonoBehaviour
     {
         if (_currentLobbyID == (CSteamID)callback.m_ulSteamIDLobby)
         {
+            if (SteamMatchmaking.GetLobbyData(_currentLobbyID, "gameID") == "CLOSED")
+            {
+                ExitLobby();
+                return;
+            }
+
             UpdatePlayerList();
         }
     }
@@ -180,6 +198,7 @@ public class SteamLobbyManager : MonoBehaviour
             NetworkManager.singleton.StopClient();
         }
         _uiManager.OnLobbyExit();
+        _uiManager.ClearLobbyList();
 
         if (_startGameCoroutine != null)
         {
