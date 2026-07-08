@@ -28396,7 +28396,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 250
+  m_text: 250th
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: df9097b1c10117c42a84a5fdce3074c3, type: 2}
@@ -28490,7 +28490,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 112
+  m_text: 112th
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: df9097b1c10117c42a84a5fdce3074c3, type: 2}
@@ -28584,7 +28584,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 280
+  m_text: 280th
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: df9097b1c10117c42a84a5fdce3074c3, type: 2}
@@ -40602,7 +40602,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Street Street
+  m_text: Street Label
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: df9097b1c10117c42a84a5fdce3074c3, type: 2}

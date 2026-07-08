@@ -15,6 +15,15 @@ public class QuotaIndicator : NetworkBehaviour
         BalanceManager.OnTransactionRegistered += OnTransaction;
         QuotaManager.OnDataChangedEvent += OnQuotaChanged;
         MoneyManager.OnDataChangedEvent += OnMoneyChanged;
+
+        _dailyQuota = QuotaManager.CurrentQuota;
+        _currentMoney = MoneyManager.CurrentMoney + BalanceManager.GetBalance();
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        _quoteQuantity.text = $"{_currentMoney:0.00}/{_dailyQuota:0.00}";
     }
 
     private void OnDestroy()
