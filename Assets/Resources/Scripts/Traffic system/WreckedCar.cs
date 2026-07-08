@@ -4,13 +4,23 @@ using UnityEngine;
 
 public class WreckedCar : NetworkBehaviour
 {
-    public Action onDestroyedEvent;
+    public static Action OnCarExploded;
     [SerializeField] float _explosionDelay = 5f;
-    float _explosionTimer = 0f;
+    private float _explosionTimer = 0f;
 
     public override void OnStartServer()
     {
         _explosionTimer = _explosionDelay;
+    }
+
+    private void OnEnable()
+    {
+        WreckedCarFader.OnFadeCompleted += OnFadeCompleted;
+    }
+
+    private void OnDisable()
+    {
+        WreckedCarFader.OnFadeCompleted -= OnFadeCompleted;
     }
 
     void Update()
@@ -18,14 +28,11 @@ public class WreckedCar : NetworkBehaviour
         if(!isServer) return;
 
         _explosionTimer -= Time.deltaTime;
-        if(_explosionTimer <= 0f)
-        {
-            NetworkServer.Destroy(gameObject);
-        }
+        if(_explosionTimer <= 0f) OnCarExploded?.Invoke();
     }
 
-    void OnDestroy()
+    private void OnFadeCompleted()
     {
-        onDestroyedEvent?.Invoke();
+        NetworkServer.Destroy(gameObject);
     }
 }
