@@ -11,4 +11,14 @@ public class Hitbox : MonoBehaviour
     {
         onHit?.Invoke(other.gameObject);
     }
+
+    public void EnableHitbox()
+    {
+        GetComponent<Collider>().enabled = true;
+    }
+
+    public void DisableHitbox()
+    {
+        GetComponent<Collider>().enabled = false;
+    }
 }

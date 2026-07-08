@@ -10,6 +10,7 @@ public class EnemyAttackComponent : MonoBehaviour
     [SerializeField] private float _playerDetectionInterval = 0.05f; // Interval for checking player detection
     [SerializeField] private float _attackCooldown = 1f; // Time between attacks
     [SerializeField] private float _attackRange = 2f; // Range within which the enemy can attack players
+    [SerializeField] private Hitbox _hitbox;
     private float _currentAttackCooldown = 0f;
     private Animator _animator;
     private RaycastHit[] _raycastHitBuffer = new RaycastHit[10]; // Preallocate array for raycast hits
@@ -23,6 +24,15 @@ public class EnemyAttackComponent : MonoBehaviour
         if (_animator == null)
         {
             Debug.LogError("Animator component is missing on AttackComponent.");
+        }
+
+        if (_hitbox == null)
+        {
+            _hitbox = GetComponentInChildren<Hitbox>();
+            if (_hitbox == null)
+            {
+                Debug.LogError("Hitbox component not found in children of AttackComponent.");
+            }
         }
     }
 
@@ -75,6 +85,31 @@ public class EnemyAttackComponent : MonoBehaviour
     public void OnAttackAnimationEnd()
     {
         _isAttacking = false;
+    }
+
+    public void EnableHitbox()
+    {
+        if (_hitbox != null)
+        {
+            _hitbox.EnableHitbox();
+        }
+    }
+
+    public void DisableHitbox()
+    {
+        if (_hitbox != null)
+        {
+            _hitbox.DisableHitbox();
+        }
+    }
+    public void CancelAttack()
+    {
+        if (!_isAttacking) return;
+        _isAttacking = false;
+        if (_hitbox != null)
+        {
+            _hitbox.DisableHitbox();
+        }
     }
 
 #if UNITY_EDITOR

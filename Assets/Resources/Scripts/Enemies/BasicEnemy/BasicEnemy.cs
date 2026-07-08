@@ -1,5 +1,6 @@
 using UnityEngine;
 using Mirror;
+using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshMovementComponent))]
 [RequireComponent(typeof(EnemyAttackComponent))]
@@ -8,12 +9,15 @@ using Mirror;
 [RequireComponent(typeof(PlayerChaseBehaviour))]
 public class BasicEnemy : NetworkBehaviour
 {
-    [SerializeField] private float _playerDetectionRadius = 10f; // Radius within which to detect players
+    [SerializeField] private float _playerDetectionRadius = 10f;
+    [SerializeField] private Animator _animator;
+
     private NavMeshMovementComponent _movementComponent;
     private EnemyAttackComponent _attackComponent;
     private EnemyStunComponent _enemyStunComponent;
     private WanderBehaviour _wanderBehaviour;
     private PlayerChaseBehaviour _playerChaseBehaviour;
+    private NavMeshAgent _navMeshAgent;
 
     void Awake()
     {
@@ -22,6 +26,7 @@ public class BasicEnemy : NetworkBehaviour
         _attackComponent = GetComponent<EnemyAttackComponent>();
         _enemyStunComponent = GetComponent<EnemyStunComponent>();
         _playerChaseBehaviour = GetComponent<PlayerChaseBehaviour>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
     public override void OnStartServer()
@@ -31,13 +36,11 @@ public class BasicEnemy : NetworkBehaviour
         _attackComponent.onAttackStartedEvent += OnAttackStarted;
         _enemyStunComponent.onStunChangedEvent += OnStunChanged;
 
-        _wanderBehaviour.StartWander(); // Start wandering when the enemy is spawned
+        _wanderBehaviour.StartWander();
     }
 
     void OnEnable()
     {
-        _attackComponent.onAttackStartedEvent += OnAttackStarted;
-        _enemyStunComponent.onStunChangedEvent += OnStunChanged;
     }
 
     void OnDisable()
@@ -49,6 +52,8 @@ public class BasicEnemy : NetworkBehaviour
     void Update()
     {
         if (!isServer) return;
+
+        UpdateAnimations();
 
         if (_attackComponent.IsAttacking) return;
 
@@ -66,11 +71,30 @@ public class BasicEnemy : NetworkBehaviour
         }
     }
 
+    private void UpdateAnimations()
+    {
+        if (_animator == null || _navMeshAgent == null) return;
+
+        bool isMoving = _navMeshAgent.velocity.sqrMagnitude > 0.01f;
+
+        if (_enemyStunComponent.IsStunned || _attackComponent.IsAttacking)
+        {
+            isMoving = false;
+        }
+
+        _animator.SetBool("IsWalking", isMoving);
+    }
+
     void OnAttackStarted()
     {
         if (!isServer) return;
 
-        _movementComponent.SetTarget(null); // Clear target when attack starts
+        _movementComponent.SetTarget(null);
+
+        if (_animator != null)
+        {
+            _animator.SetTrigger("Attack");
+        }
     }
 
     void OnStunChanged(EnemyStunComponent.StunChangeInfo stunInfo)
@@ -79,7 +103,24 @@ public class BasicEnemy : NetworkBehaviour
 
         if (stunInfo.isStunned)
         {
-            _movementComponent.SetTarget(null); // Clear target when stunned
+            _movementComponent.SetTarget(null);
+
+            if (_animator != null)
+            {
+                _animator.SetBool("IsStunned", true);
+            }
+        }
+        else
+        {
+            if (_animator != null)
+            {
+                _animator.SetBool("IsStunned", false);
+            }
+        }
+
+        if (_attackComponent.IsAttacking)
+        {
+            _attackComponent.CancelAttack();
         }
     }
 }

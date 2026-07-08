@@ -4,6 +4,7 @@ using Mirror;
 [RequireComponent(typeof(Animator))]
 public class PlayerAnimationComponent : MonoBehaviour
 {
+    [SerializeField] private Hitbox _weaponHitbox;
     private Animator _animator;
     private PlayerMovementComponent _movementComponent;
     private PlayerSprintComponent _sprintComponent;
@@ -106,6 +107,26 @@ public class PlayerAnimationComponent : MonoBehaviour
                 case ItemID.WalkieTalkie: _animator.SetInteger(_holdTypeHash, 1); break;
                 default: _animator.SetInteger(_holdTypeHash, 0); break;
             }
+        }
+    }
+
+    public void EnableHitbox()
+    {
+        if (_weaponHitbox != null)
+        {
+            _weaponHitbox.EnableHitbox();
+        }
+        else
+        {
+            Debug.LogWarning("PlayerAnimationComponent: no weapon Hitbox assigned.");
+        }
+    }
+
+    public void DisableHitbox()
+    {
+        if (_weaponHitbox != null)
+        {
+            _weaponHitbox.DisableHitbox();
         }
     }
 }

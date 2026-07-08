@@ -177,6 +177,11 @@ public class Specter : NetworkBehaviour
             _isCurrentlyStunned = false;
             if (_animator != null) _animator.SetBool("IsStunned", false);
         }
+
+        if (_enemyAttackComponent.IsAttacking)
+        {
+            _enemyAttackComponent.CancelAttack();
+        }
     }
 
     void OnAttackStarted()
@@ -275,6 +280,8 @@ public class Specter : NetworkBehaviour
             }
             elapsed += Time.deltaTime;
         }
+
+        _enemyAttackComponent.OnAttackAnimationEnd(); //resets attack state
 
         if (rb != null) rb.isKinematic = false;
 
