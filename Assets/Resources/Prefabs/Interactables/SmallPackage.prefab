@@ -217,7 +217,7 @@ PrefabInstance:
     - target: {fileID: 1384233891832045967, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: -1808817182320614483, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
+      objectReference: {fileID: 2100000, guid: df9097b1c10117c42a84a5fdce3074c3, type: 2}
     - target: {fileID: 1384233891832045967, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
       propertyPath: m_fontColor32.rgba
       value: 2751463424
@@ -229,7 +229,7 @@ PrefabInstance:
     - target: {fileID: 2612672492556821538, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: -1808817182320614483, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
+      objectReference: {fileID: 2100000, guid: df9097b1c10117c42a84a5fdce3074c3, type: 2}
     - target: {fileID: 2809556595590961072, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
       propertyPath: m_Size.x
       value: 0.8571472
@@ -449,7 +449,7 @@ PrefabInstance:
     - target: {fileID: 8616374103077212214, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: -1808817182320614483, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
+      objectReference: {fileID: 2100000, guid: df9097b1c10117c42a84a5fdce3074c3, type: 2}
     - target: {fileID: 8616374103077212214, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
       propertyPath: m_fontColor32.rgba
       value: 2751463424
@@ -465,7 +465,7 @@ PrefabInstance:
     - target: {fileID: 8952141066241373889, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: -1808817182320614483, guid: c23dd8dedcef99645ac9eddf6498ca70, type: 2}
+      objectReference: {fileID: 2100000, guid: df9097b1c10117c42a84a5fdce3074c3, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 8221240416261841595, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
