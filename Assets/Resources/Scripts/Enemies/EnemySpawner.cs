@@ -22,6 +22,7 @@ public class EnemySpawner : NetworkBehaviour
     [SerializeField] private SpawnPointInfo[] _spawnpoints = new SpawnPointInfo[0];
     [SerializeField] private float _spawnpointRadius = 100f;
     [SerializeField] private float _minDistanceFromPlayer = 20f;
+    private RaycastHit[] _hitBuffer = new RaycastHit[10];
     bool _isNightTime = false;
 
     private float _spawnTimer = 0f;
@@ -89,8 +90,18 @@ public class EnemySpawner : NetworkBehaviour
                         float randomZ = Random.Range(-spawnPointInfo.size.z / 2f, spawnPointInfo.size.z / 2f);
                         spawnPosition = spawnPointInfo.origin + new Vector3(randomX, 0f, randomZ);
                         isInNavMesh = NavMesh.SamplePosition(spawnPosition, out hit, 5f, NavMesh.AllAreas);
+                        isInsideBuilding = false;
+                        int hits = Physics.RaycastNonAlloc(hit.position + Vector3.up, Vector3.down, _hitBuffer, 20f);
+                        for (int j = 0; j < hits; j++)
+                        {
+                            if (_hitBuffer[j].collider.CompareTag("BuildingFloor"))
+                            {
+                                isInsideBuilding = true;
+                                break;
+                            }
+                        }
+
                         tooCloseToPlayer = false;
-                        isInsideBuilding = Physics.Raycast(spawnPosition + Vector3.up, Vector3.up, out _, 100f);
                         foreach (var player in PlayerRegistry.SpawnedPlayers)
                         {
                             if (Vector3.Distance(player.transform.position, hit.position) < _minDistanceFromPlayer)

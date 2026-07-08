@@ -11,6 +11,7 @@ TagManager:
   - PlayerCamera
   - Building
   - SpawnPoint
+  - BuildingFloor
   layers:
   - Default
   - TransparentFX
