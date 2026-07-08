@@ -26,6 +26,8 @@ public class Mimic : NetworkBehaviour
     [SerializeField] private ParticleSystem _transformationParticles;
     [SerializeField] private Collider _hitboxCollider;
     [SerializeField] private ModelEntry[] _modelEntries;
+    [SerializeField] private AudioEvent _transformationSound;
+    [SerializeField] private AudioEvent _lungeSound;
 
     [SyncVar(hook = nameof(OnIsTransformedChanged))]
     private bool _isTransformed = false;
@@ -39,6 +41,7 @@ public class Mimic : NetworkBehaviour
     private float _attackCooldownTimer = 0f;
     private float _playerCheckTimer = 0f;
     private Coroutine _resetTransformationCoroutine;
+    private Animator _animator;
 
     void Awake()
     {
@@ -51,13 +54,14 @@ public class Mimic : NetworkBehaviour
             if (i != randomIndex)
             {
                 _modelEntries[i].packageModel.SetActive(false);
-                _modelEntries[i].monsterModel.SetActive(false);
             }
+            _modelEntries[i].monsterModel.SetActive(false);
         }
 
         _playerDistanceDetector = GetComponent<PlayerDistanceDetector>();
         _rigidbody = GetComponent<Rigidbody>();
         _stunComponent = GetComponent<EnemyStunComponent>();
+        _animator = GetComponentInChildren<Animator>();
 
         _playerCheckTimer = Random.Range(0f, _playerCheckInterval); // Randomize the initial timer to avoid all Mimics checking for players at the same time
     }
@@ -105,6 +109,7 @@ public class Mimic : NetworkBehaviour
     public void TransformIntoMonster()
     {
         _isTransformed = true;
+        _transformationSound.Play(gameObject);
     }
 
     private void OnIsTransformedChanged(bool oldValue, bool newValue)
@@ -122,7 +127,8 @@ public class Mimic : NetworkBehaviour
         // Reset the hitbox collider to ensure it detects the player during the lunge
         _hitboxCollider.enabled = false;
         _hitboxCollider.enabled = true;
-
+        _lungeSound.Play(gameObject);
+        _animator.SetTrigger("Attack");
         Vector3 direction = _closestPlayer.transform.position - transform.position;
         direction.y = 0;
         direction.Normalize();

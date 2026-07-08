@@ -54,6 +54,7 @@ GameObject:
   - component: {fileID: 323288940460479977}
   - component: {fileID: 6029575805551709561}
   - component: {fileID: 1578272076641196640}
+  - component: {fileID: 7502669942783816658}
   m_Layer: 6
   m_Name: Specter
   m_TagString: Untagged
@@ -177,6 +178,7 @@ MonoBehaviour:
   _playerDetectionInterval: 0.05
   _attackCooldown: 1
   _attackRange: 1.5
+  _hitbox: {fileID: 0}
 --- !u!114 &9080684298942681700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,7 +259,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _obstructionMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 1025
   _padding: {x: 0.15, y: 0.3}
   _raycastOrigins:
   - {fileID: 5615441573680503634}
@@ -350,6 +352,25 @@ MonoBehaviour:
   syncInterval: 0
   clientAuthority: 0
   animator: {fileID: 8170160084995849539}
+--- !u!114 &7502669942783816658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2340398685216393081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bf2f8606a5a94b47bccc15ef1d50974, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _creepySound: {fileID: 11400000, guid: 655eba1daae5a4c4391b56f06b5bffaa, type: 2}
+  _detectionRange: 20
+  _detectionInterval: 0.5
+  _detectionRefreshTime: 30
 --- !u!1 &6329278485006440307
 GameObject:
   m_ObjectHideFlags: 0

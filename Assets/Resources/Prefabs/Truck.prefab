@@ -1319,7 +1319,12 @@ MonoBehaviour:
   _sidewalkFineAmount: 10
   _timeOnSidewalkThreshold: 1.5
   _sidewalkHeight: 0.1
-  _initialGracePeriod: 10
+  _gracePeriod: 10
+  _driverSeat: {fileID: 2695905769666103715}
+  _sidewalkLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  _sidewalkCheckRadius: 0.075
 --- !u!114 &5975315645466060098
 MonoBehaviour:
   m_ObjectHideFlags: 0

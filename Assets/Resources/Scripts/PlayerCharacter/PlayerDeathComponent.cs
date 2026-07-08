@@ -54,6 +54,7 @@ public class PlayerDeathComponent : PlayerComponent
         GetComponent<PlayerInventoryComponent>().enabled = false; // Disable inventory component for the local player
         GetComponent<PlayerInteractComponent>().enabled = false; // Disable interact component for the local player
         GetComponent<Collider>().enabled = false; // Disable the player's collider to prevent further interactions
+        GetComponent<Rigidbody>().isKinematic = true; // Make the player's rigidbody kinematic to prevent physics interactions
         Collider[] colliders = GetComponentsInChildren<Collider>();
         foreach (var col in colliders)
         {
@@ -63,6 +64,11 @@ public class PlayerDeathComponent : PlayerComponent
         foreach (var renderer in renderers)
         {
             renderer.enabled = false; // Disable all child mesh renderers
+        }
+        SkinnedMeshRenderer[] skinnedRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+        foreach (var skinnedRenderer in skinnedRenderers)
+        {
+            skinnedRenderer.enabled = false; // Disable all child skinned mesh renderers
         }
         onPlayerDeathEvent?.Invoke();
         CmdNotifyDeath(); // Notify the server about the player's death

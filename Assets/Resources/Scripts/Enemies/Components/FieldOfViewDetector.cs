@@ -8,13 +8,15 @@ public class FieldOfViewDetector : MonoBehaviour
     [SerializeField] Transform[] _raycastOrigins; // Points from which to cast rays for FOV detection
     private bool _cachedIsInFOV;
     private bool _isCached;
+    float _cachedDetectionRange = 0f;
 
     public bool IsInFOV(float maxDistance)
     {
-        if (!_isCached)
+        if (!_isCached || _cachedDetectionRange != maxDistance)
         {
             _cachedIsInFOV = CalculateIsInFOV(maxDistance);
             _isCached = true;
+            _cachedDetectionRange = maxDistance;
         }
         return _cachedIsInFOV;
     }
