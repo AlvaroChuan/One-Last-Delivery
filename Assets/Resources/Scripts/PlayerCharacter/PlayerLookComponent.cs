@@ -164,31 +164,29 @@ public class PlayerLookComponent : PlayerComponent
 
     private void HandleRotation()
     {
-        if (_inventoryComponent != null)
-        {
-            InventoryItemData heldData = _inventoryComponent.GetHeldItemData();
-
-            if (heldData.itemID == ItemID.None)
-            {
-                _targetModelOffset = _emptyHandOffset;
-            }
-            else
-            {
-                _targetModelOffset = _equippedItemOffset;
-            }
-        }
-
         Vector3 forward = Camera.main.transform.forward;
         Vector3 flatForward = new Vector3(forward.x, 0f, forward.z).normalized;
-        _currentModelOffset = Vector3.Lerp(_currentModelOffset, _targetModelOffset, Time.deltaTime * _offsetTransitionSpeed);
 
-        if (flatForward.sqrMagnitude > 0.001f)
+        TruckSeat seat = transform.parent?.GetComponentInParent<TruckSeat>();
+        bool isSitting = seat != null;
+
+        if (!isSitting)
         {
-            Quaternion baseModelRotation = Quaternion.LookRotation(flatForward);
-            Quaternion modelTargetRotation = baseModelRotation * Quaternion.Euler(_currentModelOffset);
+            _currentModelOffset = Vector3.Lerp(_currentModelOffset, _targetModelOffset, Time.deltaTime * _offsetTransitionSpeed);
 
-            _model.transform.rotation = Quaternion.Slerp(_model.transform.rotation, modelTargetRotation, _rotationSpeed * Time.deltaTime);
+            if (flatForward.sqrMagnitude > 0.001f)
+            {
+                Quaternion baseModelRotation = Quaternion.LookRotation(flatForward);
+                Quaternion modelTargetRotation = baseModelRotation * Quaternion.Euler(_currentModelOffset);
+
+                _model.transform.rotation = Quaternion.Slerp(_model.transform.rotation, modelTargetRotation, _rotationSpeed * Time.deltaTime);
+            }
         }
+        else
+        {
+            _model.transform.localRotation = Quaternion.Slerp(_model.transform.localRotation, Quaternion.identity, _rotationSpeed * Time.deltaTime);
+        }
+
         if (forward.sqrMagnitude > 0.001f)
         {
             Quaternion baseHeadRotation = Quaternion.LookRotation(forward);

@@ -1,6 +1,5 @@
 using System;
 using Mirror;
-using Telepathy;
 using UnityEngine;
 
 public class PlayerHealthComponent : PlayerComponent
@@ -13,8 +12,8 @@ public class PlayerHealthComponent : PlayerComponent
     }
 
     public Action<HealthChangeInfo> onHealthChanged;
-    [SerializeField]
-    float _maxHealth = 100f;
+    [SerializeField] float _maxHealth = 100f;
+    [SerializeField] private GameObject _bloodVFX;
     public float MaxHealth => _maxHealth;
     [SyncVar(hook = nameof(OnCurrentHealthChanged))] float _currentHealth;
     public float CurrentHealth => _currentHealth;
@@ -22,7 +21,7 @@ public class PlayerHealthComponent : PlayerComponent
     public override void OnStartClient()
     {
         base.OnStartClient();
-        _currentHealth = _maxHealth;
+        if (isServer) _currentHealth = _maxHealth;
     }
 
 #if UNITY_EDITOR
@@ -41,15 +40,25 @@ public class PlayerHealthComponent : PlayerComponent
     [Server]
     public void ServerTakeDamage(float damage)
     {
-        if (_currentHealth <= 0)
-            return;
+        if (_currentHealth <= 0) return;
         _currentHealth -= damage;
+        if (_currentHealth <= 0) HandleDeath();
     }
 
     [Command(requiresAuthority = false)]
     public void CmdTakeDamage(float damage)
     {
         ServerTakeDamage(damage);
+    }
+
+    [Server]
+    private void HandleDeath()
+    {
+        if (_bloodVFX != null)
+        {
+            GameObject vfx = Instantiate(_bloodVFX, transform.position, Quaternion.identity);
+            NetworkServer.Spawn(vfx);
+        }
     }
 
     void OnCurrentHealthChanged(float oldHealth, float newHealth)

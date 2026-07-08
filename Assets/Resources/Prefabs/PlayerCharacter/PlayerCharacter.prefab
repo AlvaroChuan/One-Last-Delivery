@@ -2593,6 +2593,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _maxHealth: 100
+  _bloodVFX: {fileID: 6656714497754828525, guid: a18a4730c2f0e604d853d62407890214, type: 3}
   _die: 0
 --- !u!114 &2867081699692367523
 MonoBehaviour:
