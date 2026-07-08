@@ -20,24 +20,33 @@ public class WalkieTalkieVoiceChannel : MonoBehaviour
 
     private Dictionary<int, StreamedAudioSourceOutput> _outputs = new Dictionary<int, StreamedAudioSourceOutput>();
     private Dictionary<int, ConcentusDecodeFilter> _decoders = new Dictionary<int, ConcentusDecodeFilter>();
+    PlayerInventoryComponent _localPlayerInventory;
 
     public bool IsLocalPlayerHoldingWalkieTalkie()
     {
-        PlayerInventoryComponent[] inventories = FindObjectsByType<PlayerInventoryComponent>(FindObjectsSortMode.None);
-        foreach (PlayerInventoryComponent inv in inventories)
+        if (_localPlayerInventory == null)
         {
-            if (inv.isLocalPlayer)
+            GameObject localPlayer = NetworkClient.localPlayer?.gameObject;
+            if (localPlayer != null)
             {
-                InventoryItemData heldData = inv.GetHeldItemData();
-                if (heldData.itemID == ItemID.WalkieTalkie)
-                    return true;
+                _localPlayerInventory = localPlayer.GetComponent<PlayerInventoryComponent>();
             }
+        }
+        if (_localPlayerInventory != null)
+        {
+            InventoryItemData heldData = _localPlayerInventory.GetHeldItemData();
+            return heldData.itemID == ItemID.WalkieTalkie && heldData.currentDurability > 0;
         }
         return false;
     }
 
     public void PlayAudio(int senderId, byte[] compressedSamples, int frequency, int channelCount)
     {
+        if (!IsLocalPlayerHoldingWalkieTalkie())
+        {
+            DevLogger.Log($"Local player is not holding a WalkieTalkie. Ignoring audio from sender {senderId}");
+            return;
+        }
         DevLogger.Log($"Received audio from sender {senderId}: Frequency={frequency}, Channels={channelCount}, CompressedSamples={compressedSamples.Length}");
         if (!_outputs.ContainsKey(senderId))
         {
