@@ -143,7 +143,7 @@ public class WalkieTalkie : InventoryItem
     [ClientRpc(channel = Channels.Unreliable)]
     void RpcReceiveAudio(int senderNetId, byte[] samples, int frequency, int channels)
     {
-        if (!isLocalPlayer) return;
+        if (isLocalPlayer) return;
 
         PlayerInventoryComponent playerInventory = GetComponentInParent<PlayerInventoryComponent>();
         InventoryItemData itemData = playerInventory.GetHeldItemData();
