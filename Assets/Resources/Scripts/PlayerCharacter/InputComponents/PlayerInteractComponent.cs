@@ -34,13 +34,19 @@ public class PlayerInteractComponent : InputComponent
         _interactInput.action.performed -= OnInteractInput;
     }
 
-    public void Update()
+    void Update()
     {
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         RaycastHit hitInfo;
         if (Physics.SphereCast(ray, _interactionSphereRadius, out hitInfo, _interactionRange, _interactionLayerMask))
         {
             Interactable[] interactables = hitInfo.collider.GetComponents<Interactable>();
+            interactables = interactables.Concat(hitInfo.collider.GetComponentsInParent<Interactable>()).Where(i => i != null).ToArray();
+            interactables = interactables.Distinct().ToArray();
+
+            string interactableNames = string.Join(", ", interactables.Select(i => i.name));
+            DevLogger.Log($"Interactables in range: {interactableNames}");
+
             if (interactables.Length > 0)
             {
                 _playerHUDInteractable.SetActive(true);
