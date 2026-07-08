@@ -25,6 +25,11 @@ public class InventoryHUD : MonoBehaviour
             {
                 DevLogger.Log("PlayerInventoryManager found and subscribed to onDataChangedEvent.");
                 _playerInventoryManager.onDataChangedEvent += OnInventoryDataChanged;
+                for(int i = 0; i < _inventorySlots.Length; i++)
+                {
+                    InventoryItemData itemData = _playerInventoryManager.GetInventorySlot(i);
+                    _inventorySlots[i].UpdateSlot(itemData, GetIconForItem(itemData.itemID));
+                }
             }
         }
         if (_playerInventoryComponent == null && NetworkClient.connection != null && NetworkClient.connection.identity != null)
