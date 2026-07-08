@@ -9,6 +9,7 @@ using System.Collections;
 [RequireComponent(typeof(NavMeshMovementComponent))]
 [RequireComponent(typeof(EnemyStunComponent))]
 [RequireComponent(typeof(WanderBehaviour))]
+[RequireComponent(typeof(NavMeshAgent))]
 public class Swiper : NetworkBehaviour
 {
     private enum SwiperState
@@ -17,22 +18,36 @@ public class Swiper : NetworkBehaviour
         ChasingPackage,
         RunningToHideout
     }
-    [SerializeField] private float _packageDetectionRadius = 10f; // Radius within which to detect packages
-    [SerializeField] private float _packageDetectionInterval = 1f; // Interval to check for packages
-    [SerializeField] private float _packageStealDistance = 1f; // Distance at which the Swiper can steal a package
-    [SerializeField] private string _packageCarryLayer = "Enemies"; // Layer to assign to the package when carried
-    [SerializeField] private Transform _packageCarryPoint; // Point where the package will be carried
+
+    [Header("Detection Settings")]
+    [SerializeField] private float _packageDetectionRadius = 10f;
+    [SerializeField] private float _packageDetectionInterval = 1f;
+    [SerializeField] private float _packageStealDistance = 1f;
+
+    [Header("Carrying Settings")]
+    [SerializeField] private string _packageCarryLayer = "Enemies";
+    [SerializeField] private Transform _packageCarryPoint;
+
+    [Header("Movement Settings")]
     [SerializeField] private float _stealSpeed = 10f;
     [SerializeField] private float _stealAcceleration = 50f;
+
+    [Header("Hideout Settings")]
     [SerializeField] private GameObject _hideoutPrefab;
-    [SerializeField] private float _hideoutRadius = 5f; // Radius around the hideout location to consider as "reached"
+    [SerializeField] private float _hideoutRadius = 5f;
+
+    [Header("Animation Settings")]
+    [SerializeField] private Animator _animator;
+
     private PackageDistanceDetector _packageDistanceDetector;
     private NavMeshMovementComponent _chaseBehaviour;
     private EnemyStunComponent _enemyStunComponent;
     private WanderBehaviour _wanderBehaviour;
+    private NavMeshAgent _navMeshAgent;
+
     private GameObject _targetPackage;
-    float _packageDetectionTimer = 0f;
-    HashSet<GameObject> _excludedPackages = new HashSet<GameObject>();
+    private float _packageDetectionTimer = 0f;
+    private HashSet<GameObject> _excludedPackages = new HashSet<GameObject>();
 
     private SwiperState _currentState = SwiperState.Wandering;
 
@@ -46,11 +61,12 @@ public class Swiper : NetworkBehaviour
         _chaseBehaviour = GetComponent<NavMeshMovementComponent>();
         _enemyStunComponent = GetComponent<EnemyStunComponent>();
         _wanderBehaviour = GetComponent<WanderBehaviour>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
 
         _packageStealDistanceSqr = _packageStealDistance * _packageStealDistance;
         _hideoutRadiusSqr = _hideoutRadius * _hideoutRadius;
 
-        _packageDetectionTimer = Random.Range(0f, _packageDetectionInterval); // Randomize the initial timer to avoid all Swipers checking for packages at the same time
+        _packageDetectionTimer = Random.Range(0f, _packageDetectionInterval);
     }
 
     public override void OnStartServer()
@@ -74,6 +90,7 @@ public class Swiper : NetworkBehaviour
     {
         _enemyStunComponent.onStunChangedEvent += OnStunStateChanged;
     }
+
     void OnDisable()
     {
         _enemyStunComponent.onStunChangedEvent -= OnStunStateChanged;
@@ -82,6 +99,8 @@ public class Swiper : NetworkBehaviour
     void Update()
     {
         if (!isServer) return;
+
+        UpdateAnimations();
 
         if (_enemyStunComponent.IsStunned) return;
 
@@ -121,8 +140,8 @@ public class Swiper : NetworkBehaviour
                 StartWander();
                 return;
             }
-            _targetPackage.transform.position = _packageCarryPoint.position; // Keep the package at the carry point
-            _targetPackage.transform.rotation = _packageCarryPoint.rotation; // Keep the package's rotation aligned with the carry point
+            _targetPackage.transform.position = _packageCarryPoint.position;
+            _targetPackage.transform.rotation = _packageCarryPoint.rotation;
             float distanceToHideoutSqr = (_hideout.transform.position - transform.position).sqrMagnitude;
             if (distanceToHideoutSqr <= _hideoutRadiusSqr * 0.5f)
             {
@@ -130,6 +149,38 @@ public class Swiper : NetworkBehaviour
                 StartWander();
             }
         }
+    }
+
+    private void UpdateAnimations()
+    {
+        if (_animator == null || _navMeshAgent == null) return;
+
+        bool isMoving = _navMeshAgent.velocity.sqrMagnitude > 0.01f;
+
+        bool isWalking = false;
+        bool isRunning = false;
+        bool hasPackage = false;
+
+        if (!_enemyStunComponent.IsStunned && isMoving)
+        {
+            switch (_currentState)
+            {
+                case SwiperState.Wandering:
+                    isWalking = true;
+                    break;
+                case SwiperState.ChasingPackage:
+                    isRunning = true;
+                    break;
+                case SwiperState.RunningToHideout:
+                    isRunning = true;
+                    hasPackage = true;
+                    break;
+            }
+        }
+
+        _animator.SetBool("IsWalking", isWalking);
+        _animator.SetBool("IsRunning", isRunning);
+        _animator.SetBool("HasPackage", hasPackage);
     }
 
 #if UNITY_EDITOR
@@ -149,11 +200,20 @@ public class Swiper : NetworkBehaviour
 
         if (stunInfo.isStunned)
         {
-            _chaseBehaviour.SetTarget(null); // Clear target when stunned
+            _chaseBehaviour.SetTarget(null);
             DropPackage();
+
+            if (_animator != null)
+            {
+                _animator.SetBool("IsStunned", true);
+            }
         }
         else
         {
+            if (_animator != null)
+            {
+                _animator.SetBool("IsStunned", false);
+            }
             StartWander();
         }
     }
@@ -168,15 +228,15 @@ public class Swiper : NetworkBehaviour
             {
                 Vector3 packagePosition = _targetPackage.transform.position;
                 Vector3 hideoutPosition = _hideout.transform.position;
-                packagePosition.y = 0f; // Ignore vertical distance
-                hideoutPosition.y = 0f; // Ignore vertical distance
+                packagePosition.y = 0f;
+                hideoutPosition.y = 0f;
                 if (Vector3.SqrMagnitude(packagePosition - hideoutPosition) <= _hideoutRadiusSqr)
                 {
                     _excludedPackages.Add(_targetPackage);
                 }
                 else
                 {
-                    return true; // Found a valid package to chase
+                    return true;
                 }
             }
         } while (_targetPackage != null);
@@ -185,7 +245,6 @@ public class Swiper : NetworkBehaviour
 
     void StartSteal()
     {
-        //DevLogger.Log($"Swiper is chasing package: {_targetPackage.name}");
         _chaseBehaviour.SetSpeed(_stealSpeed);
         _chaseBehaviour.SetAcceleration(_stealAcceleration);
         _chaseBehaviour.SetTarget(_targetPackage);
@@ -194,7 +253,6 @@ public class Swiper : NetworkBehaviour
 
     void StartRunToHideout()
     {
-        //DevLogger.Log("Swiper is running to hideout.");
         _chaseBehaviour.SetSpeed(_stealSpeed);
         _chaseBehaviour.SetTarget(_hideout);
         _currentState = SwiperState.RunningToHideout;
@@ -204,7 +262,6 @@ public class Swiper : NetworkBehaviour
     {
         if (_targetPackage == null)
         {
-            DevLogger.LogError("Attempted to drop a package, but _targetPackage is null.");
             return;
         }
 
@@ -219,20 +276,21 @@ public class Swiper : NetworkBehaviour
 
         _targetPackage.layer = LayerMask.NameToLayer(_targetPackage.GetComponent<PackageInteractionComponent>().DroppedLayer);
         Rigidbody packageRigidbody = _targetPackage.GetComponent<Rigidbody>();
-        packageRigidbody.isKinematic = false; // Make the package non-kinematic so it can be dropped
-        _targetPackage.GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = true; // Re-enable authority swapping when dropped
-        _targetPackage.GetComponent<NetRigidbodyController>().enableRigidbodyControl = true; // Re-enable Rigidbody control for the package when dropped
+        packageRigidbody.isKinematic = false;
+        _targetPackage.GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = true;
+        _targetPackage.GetComponent<NetRigidbodyController>().enableRigidbodyControl = true;
 
         Collider[] packageColliders = _targetPackage.GetComponentsInChildren<Collider>();
         foreach (var collider in packageColliders)
         {
-            collider.enabled = true; // Re-enable colliders for the package when dropped
+            collider.enabled = true;
         }
 
-        StartCoroutine(ReenablePackageDamage(_targetPackage.GetComponent<PackageHealthComponent>(), 0.5f)); // Re-enable package damage after a short delay
+        StartCoroutine(ReenablePackageDamage(_targetPackage.GetComponent<PackageHealthComponent>(), 0.5f));
 
-        DevLogger.Log($"Swiper dropped package: {_targetPackage.name}");
+        _targetPackage = null;
     }
+
     void PickupPackage()
     {
         if (_targetPackage == null)
@@ -251,18 +309,18 @@ public class Swiper : NetworkBehaviour
         packageNetIdentity.RemoveClientAuthority();
         packageNetIdentity.AssignClientAuthority(NetworkServer.localConnection);
         _targetPackage.layer = LayerMask.NameToLayer(_packageCarryLayer);
-        _targetPackage.GetComponent<NetRigidbodyController>().enableRigidbodyControl = false; // Disable Rigidbody control for the package while being carried
-        _targetPackage.GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = false; // Disable authority swapping for the package while being carried
-        _targetPackage.GetComponent<Rigidbody>().isKinematic = true; // Make the package kinematic so it can be carried
-        _targetPackage.transform.position = _packageCarryPoint.position; // Move the package to the carry point
+        _targetPackage.GetComponent<NetRigidbodyController>().enableRigidbodyControl = false;
+        _targetPackage.GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = false;
+        _targetPackage.GetComponent<Rigidbody>().isKinematic = true;
+        _targetPackage.transform.position = _packageCarryPoint.position;
 
         Collider[] packageColliders = _targetPackage.GetComponentsInChildren<Collider>();
         foreach (var collider in packageColliders)
         {
-            collider.enabled = false; // Disable colliders for the package while being carried
+            collider.enabled = false;
         }
 
-        _targetPackage.GetComponent<PackageHealthComponent>().CanTakeDamage = false; // Prevent the package from taking damage while being carried
+        _targetPackage.GetComponent<PackageHealthComponent>().CanTakeDamage = false;
     }
 
     void StartWander()
@@ -276,7 +334,7 @@ public class Swiper : NetworkBehaviour
         yield return new WaitForSeconds(delay);
         if (packageHealthComponent != null)
         {
-            packageHealthComponent.CanTakeDamage = true; // Re-enable package damage after the delay
+            packageHealthComponent.CanTakeDamage = true;
         }
     }
 }

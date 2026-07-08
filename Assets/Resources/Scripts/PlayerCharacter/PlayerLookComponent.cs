@@ -169,18 +169,20 @@ public class PlayerLookComponent : PlayerComponent
     void FixedUpdate()
     {
         if (!isLocalPlayer) return;
-        HandleHeadBob();
+        
     }
 
     void LateUpdate()
     {
         if (!isLocalPlayer) return;
+        HandleHeadBob();
         HandleRotation();
-
         Quaternion headRotation = _head.transform.rotation;
         Vector3 rotatedEyeOffset = headRotation * _eyeOffset;
 
         _eyes.position = _head.transform.position + rotatedEyeOffset;
+        
+        
     }
 
     private void HandleRotation()

@@ -9,7 +9,6 @@ public class LobbyPlayerItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _playerNameText;
     [SerializeField] private Image _playerAvatarImage;
     [SerializeField] private TextMeshProUGUI _pingText;
-    [SerializeField] private Button _muteButton;
     [SerializeField] private Image[] _status;
     [SerializeField] private Sprite[] _muteButtonSprites; // 0: Unmuted, 1: Muted
     private CSteamID _steamID;
@@ -51,20 +50,6 @@ public class LobbyPlayerItem : MonoBehaviour
         {
             _status[0].gameObject.SetActive(!_ready);
             _status[1].gameObject.SetActive(_ready);
-        }
-    }
-
-    public void MutePlayer()
-    {
-        _isMuted = !_isMuted;
-        _muteButton.image.sprite = _isMuted ? _muteButtonSprites[1] : _muteButtonSprites[0];
-        if (SteamFriends.GetFriendPersonaName(_steamID) == SteamFriends.GetPersonaName())
-        {
-            //TODO: Mute self
-        }
-        else
-        {
-            //TODO: Mute other player
         }
     }
 
