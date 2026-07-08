@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(MusicPlayer))]
 public class MusicController : MonoBehaviour
 {
     [SerializeField] private string _mainMenuSceneName = "GraphicsMainMenu";
