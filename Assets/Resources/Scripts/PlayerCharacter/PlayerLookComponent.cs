@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Cinemachine;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class PlayerLookComponent : PlayerComponent
 {
@@ -188,14 +189,14 @@ public class PlayerLookComponent : PlayerComponent
     void LateUpdate()
     {
         if (!isLocalPlayer) return;
-        
+
         HandleRotation();
         Quaternion headRotation = _head.transform.rotation;
         Vector3 rotatedEyeOffset = headRotation * _eyeOffset;
 
         _eyes.position = _head.transform.position + rotatedEyeOffset;
-        
-        
+
+
     }
 
     private void HandleRotation()
@@ -258,6 +259,8 @@ public class PlayerLookComponent : PlayerComponent
             _eyes.localPosition = Vector3.Lerp(_eyes.localPosition, _eyesInitialLocalPosition, Time.fixedDeltaTime * _bobReturnSpeed);
         }
         */
+        if (_movementComponent == null || _groundCheckComponent == null || _cameraNoise == null) return;
+
         if (_movementComponent.IsMoving && _groundCheckComponent.IsGrounded())
         {
             bool isSprinting = _sprintComponent != null && _sprintComponent.IsSprinting;

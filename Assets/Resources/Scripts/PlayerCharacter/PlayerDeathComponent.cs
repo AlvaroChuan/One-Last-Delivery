@@ -93,6 +93,8 @@ public class PlayerDeathComponent : PlayerComponent
             skinnedRenderer.enabled = false; // Disable all child skinned mesh renderers
         }
         GetComponent<StepPlayer>().enabled = false; // Disable the StepPlayer component to stop footstep sounds
+        GetComponentInChildren<NameTag>().gameObject.SetActive(false); // Disable the name tag for the dead player
+        IsDead = true; // Set the IsDead flag to true
 
         if (isLocalPlayer) return; // Local player already handled death in Die()
         DisableStuff();
