@@ -6,7 +6,7 @@ public class PackageDisappearComponent : MonoBehaviour
 {
     [SerializeField] ParticleSystem _disappearEffect;
 
-    void OnDestroy()
+    void OnDisable()
     {
         ParticleSystem effect = Instantiate(_disappearEffect, transform.position, Quaternion.identity);
         effect.Play();
