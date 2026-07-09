@@ -57,16 +57,15 @@ public class PackageTruckParentingHandler : NetworkBehaviour
     {
         if (newParent != null)
         {
-            GetComponent<NetworkTransformBase>().ResetState();
-            transform.parent = newParent.transform;
-            GetComponent<NetworkTransformBase>().ResetState();
+            transform.SetParent(newParent.transform, true);
             _isInTruck = true;
         }
         else
         {
-            transform.parent = null;
+            transform.SetParent(null, true);
             _isInTruck = false;
         }
+        GetComponentInParent<NetworkTransformBase>().ResetState();
     }
 
     void OnPackagePickup()
