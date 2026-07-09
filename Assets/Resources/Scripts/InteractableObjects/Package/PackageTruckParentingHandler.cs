@@ -19,6 +19,8 @@ public class PackageTruckParentingHandler : NetworkBehaviour
     int _supportingObjects = 0;
     bool _isBeingCarried = false;
     bool _isInTruck = false;
+    Vector3 _lastParentPosition;
+    Quaternion _lastParentRotation;
     [SyncVar(hook = nameof(OnParentChanged))] PackageParentingData _parent;
     [SyncVar(hook = nameof(OnWorldPositionChanged))] Vector3 _worldPosition;
 
@@ -73,22 +75,12 @@ public class PackageTruckParentingHandler : NetworkBehaviour
     {
         if (newParent.parent != null)
         {
-            transform.SetParent(newParent.parent.transform, true);
             GetComponent<NetworkTransformBase>().enabled = false;
         }
         else
         {
-            transform.SetParent(null, true);
             GetComponent<NetworkTransformBase>().enabled = true;
-            StartCoroutine(DelayedSetPosition(newParent.worldPosition));
         }
-        GetComponent<NetworkTransformBase>().ResetState();
-    }
-
-    IEnumerator DelayedSetPosition(Vector3 position)
-    {
-        yield return null; // Wait for one frame
-        transform.position = position;
         GetComponent<NetworkTransformBase>().ResetState();
     }
 
@@ -118,6 +110,18 @@ public class PackageTruckParentingHandler : NetworkBehaviour
     {
         transform.position = newPosition;
         GetComponent<NetworkTransformBase>().ResetState();
+    }
+
+    void Update()
+    {
+        if (!isOwned) return;
+        if (_parent.parent != null && (_lastParentPosition != _parent.worldPosition || _lastParentRotation != _parent.parent.transform.rotation))
+        {
+            transform.position += _parent.worldPosition - _lastParentPosition;
+            transform.rotation = _parent.parent.transform.rotation * Quaternion.Inverse(_lastParentRotation) * transform.rotation;
+            _lastParentPosition = _parent.worldPosition;
+            _lastParentRotation = _parent.parent.transform.rotation;
+        }
     }
 
     void FixedUpdate()
