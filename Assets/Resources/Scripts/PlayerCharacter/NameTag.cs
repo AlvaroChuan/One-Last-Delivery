@@ -9,9 +9,13 @@ public class NameTag : NetworkBehaviour
     [SyncVar(hook = nameof(OnNameChanged))]
     string _name = "";
 
-    public override void OnStartClient()
+    void Awake()
     {
         _nameText = GetComponent<TextMeshProUGUI>();
+    }
+
+    public override void OnStartClient()
+    {
         if (_name != null)
         {
             _nameText.text = _name;
@@ -30,6 +34,8 @@ public class NameTag : NetworkBehaviour
 
     void OnNameChanged(string oldName, string newName)
     {
+        if (newName == null || _nameText == null) return;
+
         _nameText.text = newName;
     }
 
