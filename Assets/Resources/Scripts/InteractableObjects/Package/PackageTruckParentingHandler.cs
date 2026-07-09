@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using Mirror;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PackageTruckParentingHandler : NetworkBehaviour
@@ -72,11 +74,21 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         if (newParent.parent != null)
         {
             transform.SetParent(newParent.parent.transform, true);
+            GetComponent<NetworkTransformBase>().enabled = false;
         }
         else
         {
             transform.SetParent(null, true);
+            GetComponent<NetworkTransformBase>().enabled = true;
+            StartCoroutine(DelayedSetPosition(newParent.worldPosition));
         }
+        GetComponent<NetworkTransformBase>().ResetState();
+    }
+
+    IEnumerator DelayedSetPosition(Vector3 position)
+    {
+        yield return null; // Wait for one frame
+        transform.position = position;
         GetComponent<NetworkTransformBase>().ResetState();
     }
 
