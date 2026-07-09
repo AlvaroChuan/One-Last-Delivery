@@ -192,22 +192,20 @@ public class SteamLobbyManager : MonoBehaviour
         {
             LeaveAndCloseLobby();
             NetworkManager.singleton.StopHost();
-
-            _uiManager.OnLobbyExit();
         }
         else if (NetworkClient.isConnected)
         {
             LeaveLobbyOnly();
             NetworkManager.singleton.StopClient();
         }
-        _uiManager.OnLobbyExit();
-        _uiManager.ClearLobbyList();
+        _uiManager?.OnLobbyExit();
+        _uiManager?.ClearLobbyList();
 
         if (_startGameCoroutine != null)
         {
             StopCoroutine(_startGameCoroutine);
             _startGameCoroutine = null;
-            _uiManager.UpdateCountdown();
+            _uiManager?.UpdateCountdown();
         }
     }
 
