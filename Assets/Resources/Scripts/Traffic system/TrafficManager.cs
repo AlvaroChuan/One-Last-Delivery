@@ -206,7 +206,7 @@ public class TrafficManager : NetworkBehaviour
             NetworkVehicleState[] batch = new NetworkVehicleState[count];
             activeVehicles.CopyTo(offset, batch, 0, count);
 
-            NetworkServer.SendToReady(new TrafficBatchMessage { vehicles = batch, lightStates = currentLightStates }, Channels.Unreliable);
+            NetworkServer.SendToReady(new TrafficBatchMessage { vehicles = batch, lightStates = currentLightStates });
         }
     }
 

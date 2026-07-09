@@ -1,40 +1,46 @@
 using System;
+using System.Reflection;
 using UnityEngine;
-using Mirror;
 
-public class HashCatcher : MonoBehaviour
+public class HashFinder : MonoBehaviour
 {
+    public ushort targetId = 45578;
+
     void Start()
     {
-        ushort targetId = 45578;
-        Debug.Log($"Hunting for Message ID: {targetId}...");
+        Debug.Log($"Searching all scripts for Mirror Message ID: {targetId}...");
 
-        // Look through every assembly loaded in the project
-        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
-            foreach (var type in assembly.GetTypes())
+            foreach (Type type in assembly.GetTypes())
             {
-                // Check if the type implements NetworkMessage
-                if (typeof(NetworkMessage).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
+                if (string.IsNullOrEmpty(type.FullName)) continue;
+
+                // Run the exact hash algorithm Mirror uses
+                ushort generatedId = GetMirrorHash(type.FullName);
+
+                if (generatedId == targetId)
                 {
-                    // Recreate Mirror's hashing logic
-                    int hash = 23;
-                    foreach (char c in type.FullName)
-                    {
-                        hash = hash * 31 + c;
-                    }
-
-                    // Convert to ushort just like Mirror does
-                    ushort msgId = (ushort)(hash & 0xFFFF);
-
-                    if (msgId == targetId)
-                    {
-                        Debug.LogError($"🎯 FOUND IT! ID {targetId} belongs to: {type.FullName}");
-                        return; // Stop looking once we find it
-                    }
+                    Debug.LogError($"🎯 FOUND IT! The missing message type is: {type.FullName}");
+                    return;
                 }
             }
         }
-        Debug.Log("Finished searching. If it wasn't found, it might be a generated RPC/Command wrapper.");
+
+        Debug.LogWarning("Search finished. If nothing was found, check if you have uncompiled script errors.");
+    }
+
+    // Mirror's exact internal algorithm for generating 16-bit message IDs
+    ushort GetMirrorHash(string name)
+    {
+        unchecked
+        {
+            int hash = 23;
+            foreach (char c in name)
+            {
+                hash = hash * 31 + c;
+            }
+            return (ushort)(hash & 0xFFFF);
+        }
     }
 }
