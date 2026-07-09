@@ -214,6 +214,10 @@ public class CustomNetworkManager : NetworkManager
 
     void OnSceneTransition(SceneTransitionMessage message)
     {
+        if (_sceneTransitionManager == null)
+        {
+            _sceneTransitionManager = GetComponentInChildren<SceneTransitionManager>();
+        }
         _sceneTransitionManager.PlayTransition();
     }
 
@@ -238,6 +242,11 @@ public class CustomNetworkManager : NetworkManager
 
     IEnumerator ClientChangeSceneCoroutine(string sceneName)
     {
+        if (_sceneTransitionManager == null)
+        {
+            _sceneTransitionManager = GetComponentInChildren<SceneTransitionManager>();
+        }
+
         _sceneTransitionManager.PlayTransition();
 
         yield return new WaitForSecondsRealtime(_sceneTransitionDuration);
