@@ -28,6 +28,7 @@ public class CustomNetworkManager : NetworkManager
     private int _receivedTransitionCount = 0; // Track how many clients have received the transition message
     private string _currentDestinationScene = ""; // Track the current destination scene for transitions
     GameObject[] _spawnPoints;
+    bool _registeredQuota = false;
 
     public override void OnStartServer()
     {
@@ -203,9 +204,14 @@ public class CustomNetworkManager : NetworkManager
 
     public void ServerChangeSceneWithTransition(string sceneName)
     {
-        if(SceneManager.GetActiveScene().name == _gameScene)
+        if(SceneManager.GetActiveScene().name == _gameScene && !_registeredQuota)
         {
             BalanceManager.RegisterTransaction("Daily quota", -QuotaManager.CurrentQuota);
+            _registeredQuota = true;
+        }
+        else if(sceneName == _gameScene)
+        {
+            _registeredQuota = false;
         }
         _currentDestinationScene = sceneName; // Store the destination scene for later use
         NetworkServer.SendToReady(new SceneTransitionMessage()); // Notify all clients to start the transition
