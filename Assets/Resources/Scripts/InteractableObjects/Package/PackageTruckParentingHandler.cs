@@ -18,6 +18,7 @@ public class PackageTruckParentingHandler : NetworkBehaviour
     bool _isBeingCarried = false;
     bool _isInTruck = false;
     [SyncVar(hook = nameof(OnParentChanged))] PackageParentingData _parent;
+    [SyncVar(hook = nameof(OnWorldPositionChanged))] Vector3 _worldPosition;
 
     void Awake()
     {
@@ -98,6 +99,27 @@ public class PackageTruckParentingHandler : NetworkBehaviour
     void SetPackageDropped()
     {
         _isBeingCarried = false;
+    }
+
+    void Update()
+    {
+        if(!isOwned) return;
+        if (!_isBeingCarried) return;
+        if (transform.parent != null)
+        {
+            CmdSetWorldPosition(transform.position);
+        }
+    }
+
+    [Command]
+    void CmdSetWorldPosition(Vector3 position)
+    {
+        _worldPosition = position;
+    }
+
+    void OnWorldPositionChanged(Vector3 oldPosition, Vector3 newPosition)
+    {
+        transform.position = newPosition;
     }
 
     void FixedUpdate()
