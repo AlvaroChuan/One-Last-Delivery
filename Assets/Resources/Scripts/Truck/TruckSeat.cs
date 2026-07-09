@@ -16,6 +16,7 @@ public class TruckSeat : Interactable
     static List<GameObject> PlayersInTruck = new List<GameObject>();
     private bool _canGetUp = true;
     public bool CanGetUp { get => _canGetUp; set => _canGetUp = value; }
+    public bool IsDriverSeat => _isDriverSeat;
 
     private void OnOccupantChanged(GameObject oldOccupant, GameObject newOccupant)
     {

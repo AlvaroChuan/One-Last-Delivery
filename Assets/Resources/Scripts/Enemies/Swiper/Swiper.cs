@@ -26,6 +26,7 @@ public class Swiper : NetworkBehaviour
 
     [Header("Carrying Settings")]
     [SerializeField] private string _packageCarryLayer = "Enemies";
+    [SerializeField] private string _packageDefaultLayer = "Interactables";
     [SerializeField] private Transform _packageCarryPoint;
 
     [Header("Movement Settings")]
@@ -274,7 +275,7 @@ public class Swiper : NetworkBehaviour
 
         _chaseBehaviour.SetTarget(null);
 
-        _targetPackage.GetComponent<PackageTruckParentingHandler>().CmdChangeLayer(LayerMask.NameToLayer(_targetPackage.GetComponent<PackageInteractionComponent>().CarriedLayer));
+        _targetPackage.GetComponent<PackageTruckParentingHandler>().CmdChangeLayer(LayerMask.NameToLayer(_packageDefaultLayer));
         Rigidbody packageRigidbody = _targetPackage.GetComponent<Rigidbody>();
         packageRigidbody.isKinematic = false;
         _targetPackage.GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = true;

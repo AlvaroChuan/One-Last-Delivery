@@ -50,11 +50,7 @@ public class PackageSpawner : NetPersistentDataManager<PackageSpawner, PackageSp
     protected override void Awake()
     {
         base.Awake();
-        _addressLibrary = Resources.Load<AddressLibrary>(AddressLibrary.GetResourcePath());
-        if (_addressLibrary == null)
-        {
-            DevLogger.LogError("Address library is missing. Please generate the address library before spawning packages.");
-        }
+        _addressLibrary = FindAnyObjectByType<AddressLibrary>();
     }
 
     void Update()

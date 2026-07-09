@@ -1,51 +1,67 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "AddressLibrary", menuName = "ScriptableObjects/AddressLibrary", order = 1)]
-public class AddressLibrary : ScriptableObject
+public class AddressLibrary : MonoBehaviour
 {
-    public int AddressCount => _addresses.Count;
-    [SerializeField] private List<AddressInfo> _addresses = new List<AddressInfo>();
-    Dictionary<AddressInfo, GameObject> _addressToDoorMap = new Dictionary<AddressInfo, GameObject>();
+    [Serializable]
+    public struct AddressDoorPair
+    {
+        public AddressInfo address;
+        public GameObject door;
+        public AddressDoorPair(AddressInfo address, GameObject door)
+        {
+            this.address = address;
+            this.door = door;
+        }
+    }
+    public int AddressCount => addressMap.Count;
+    public List<AddressDoorPair> addressMap = new List<AddressDoorPair>();
 
-    public static string GetPath()
+    [ContextMenu("print doors")]
+    private void PrintDoors()
     {
-        return "Assets/Resources/ScriptableObjects/AddressLibrary" + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name + ".asset";
+        DevLogger.Log($"Printing registered doors: {addressMap.Count}");
+        foreach (var pair in addressMap)
+        {
+            DevLogger.Log($"Address: {pair.address}, Door: {pair.door}");
+        }
     }
-    public static string GetResourcePath()
-    {
-        return "ScriptableObjects/AddressLibrary" + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-    }
+
     public AddressInfo GetRandomAddress()
     {
-        if (_addresses.Count == 0)
+        if (addressMap.Count == 0)
         {
             DevLogger.LogError("No addresses available in the library. Please generate addresses before attempting to retrieve one.");
             return new AddressInfo(); // Return an empty address info to avoid null reference exceptions
         }
-        return _addresses[Random.Range(0, _addresses.Count)];
+        return addressMap[UnityEngine.Random.Range(0, addressMap.Count)].address;
     }
-    public void AddAddress(AddressInfo newAddress)
+
+    public void AddAddress(AddressInfo newAddress, GameObject door)
     {
-        if (!_addresses.Contains(newAddress))
+        if (!addressMap.Exists(pair => pair.address == newAddress))
         {
-            _addresses.Add(newAddress);
+            addressMap.Add(new AddressDoorPair(newAddress, door));
+        }
+        else
+        {
+            DevLogger.LogWarning($"Address {newAddress} already exists in the library. Skipping addition.");
         }
     }
+
     public GameObject GetDoorForAddress(AddressInfo address)
     {
-        if (_addressToDoorMap.TryGetValue(address, out GameObject door))
+        var pair = addressMap.Find(p => p.address == address);
+        if (pair.door != null)
         {
-            return door;
+            return pair.door;
         }
         return null; // Return null if no door is associated with the address
     }
 
-    public void RegisterDoorForAddress(AddressInfo address, GameObject door)
+    public void ClearRegistry()
     {
-        if (!_addressToDoorMap.ContainsKey(address))
-        {
-            _addressToDoorMap[address] = door;
-        }
+        addressMap.Clear();
     }
 }

@@ -51,7 +51,7 @@ public class PlayerInteractComponent : InputComponent
             interactables = interactables.Distinct().ToArray();
 
             string interactableNames = string.Join(", ", interactables.Select(i => i.name));
-            DevLogger.Log($"Interactables in range: {interactableNames}");
+            //DevLogger.Log($"Interactables in range: {interactableNames}");
 
             if (interactables.Length > 0)
             {

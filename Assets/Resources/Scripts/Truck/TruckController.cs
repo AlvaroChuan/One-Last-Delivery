@@ -114,20 +114,14 @@ public class TruckController : NetworkBehaviour
     private void FixedUpdate()
     {
         bool hasAuthority = isOwned || (isServer && netIdentity.connectionToClient == null);
+        if (!isOwned)
+        {
+            _movementInput = Vector2.zero; // Reset movement input for non-owned instances to prevent unintended movement
+        }
         if (!hasAuthority) return;
 
-        if (hasAuthority)
-        {
-            float currentSpeed = Vector3.Dot(_vehicleRigidbody.transform.forward, _vehicleRigidbody.linearVelocity);
-            OnSpeedChanged?.Invoke(new MovementInfo { acceleration = _movementInput.y, speed = currentSpeed * _mpsToMph, maxSpeed = _carMaxSpeed * _mpsToMph });
-        }
-        else
-        {
-            float currentSpeed = Vector3.Dot(_vehicleRigidbody.transform.forward, _vehicleRigidbody.position - _lastPosition) / Time.fixedDeltaTime;
-            OnSpeedChanged?.Invoke(new MovementInfo { acceleration = Mathf.Sign(currentSpeed - _lastSpeed), speed = currentSpeed * _mpsToMph, maxSpeed = _carMaxSpeed * _mpsToMph });
-            _lastPosition = _vehicleRigidbody.position;
-            _lastSpeed = currentSpeed;
-        }
+        float currentSpeed = Vector3.Dot(_vehicleRigidbody.transform.forward, _vehicleRigidbody.linearVelocity);
+        OnSpeedChanged?.Invoke(new MovementInfo { acceleration = _movementInput.y, speed = currentSpeed * _mpsToMph, maxSpeed = _carMaxSpeed * _mpsToMph });
 
         foreach (var wheel in _wheels)
         {

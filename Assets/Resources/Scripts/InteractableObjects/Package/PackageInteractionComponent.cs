@@ -5,9 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PackageInteractionComponent : Interactable
 {
-    [SerializeField] private string _carriedLayer = "Default";
     [SerializeField] private string _droppedLayer = "Interactables";
-    public string CarriedLayer => _carriedLayer;
     public string DroppedLayer => _droppedLayer;
     PackageCarryComponent _carryComponent;
     CollisionAuthorityHandler _collisionAuthorityHandler;
@@ -35,8 +33,6 @@ public class PackageInteractionComponent : Interactable
     public override void ServerInteract(GameObject interactor)
     {
         NetworkIdentity interactorIdentity = interactor.GetComponent<NetworkIdentity>();
-
-        ServerSetLayer(_carriedLayer);
 
         netIdentity.RemoveClientAuthority();
         netIdentity.AssignClientAuthority(interactorIdentity.connectionToClient);
@@ -81,44 +77,9 @@ public class PackageInteractionComponent : Interactable
 
     public void DropFromPlayer(Vector3 throwForce)
     {
-        if (isServer)
-        {
-            ServerSetLayer(_droppedLayer);
-        }
-        else
-        {
-            CmdSetLayer(_droppedLayer);
-        }
-
         _isCarried = false;
 
         _carryComponent.StopCarrying();
         _rigidbody.AddForce(throwForce, ForceMode.Impulse);
-    }
-
-    [Server]
-    void ServerSetLayer(string layerName)
-    {
-        if (layerName == _droppedLayer)
-        {
-            if (gameObject.layer != LayerMask.NameToLayer(_carriedLayer))
-            {
-                return; // Prevent dropping logic from running if the package is not currently being carried
-            }
-            _collisionAuthorityHandler.enableAuthoritySwap = true; // Re-enable authority swapping when dropped
-        }
-        gameObject.layer = LayerMask.NameToLayer(layerName);
-        RpcSetLayer(layerName);
-    }
-    [Command(requiresAuthority = false)]
-    void CmdSetLayer(string layerName)
-    {
-        ServerSetLayer(layerName);
-        RpcSetLayer(layerName);
-    }
-    [ClientRpc]
-    void RpcSetLayer(string layerName)
-    {
-        gameObject.layer = LayerMask.NameToLayer(layerName);
     }
 }

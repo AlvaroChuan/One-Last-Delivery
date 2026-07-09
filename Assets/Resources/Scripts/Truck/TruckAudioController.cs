@@ -14,11 +14,27 @@ public class TruckAudioController : NetworkBehaviour
     {
         _engineAudioLoopMixer = GetComponent<AudioLoopMixer>();
         TruckController.OnSpeedChanged += HandleSpeedChanged;
+        TruckSeat[] _truckSeats = GetComponentsInChildren<TruckSeat>();
+        foreach (var seat in _truckSeats)
+        {
+            if (seat.IsDriverSeat)
+            {
+                seat.onOccupantChanged += OnDriverChanged;
+            }
+        }
     }
 
     void OnDestroy()
     {
         TruckController.OnSpeedChanged -= HandleSpeedChanged;
+    }
+
+    void OnDriverChanged(GameObject oldDriver, GameObject newDriver)
+    {
+        if (newDriver == null)
+        {
+            CmdUpdateSpeed(new TruckController.MovementInfo { acceleration = 0f, speed = 0f, maxSpeed = 10f });
+        }
     }
 
     private void HandleSpeedChanged(TruckController.MovementInfo info)
@@ -34,6 +50,8 @@ public class TruckAudioController : NetworkBehaviour
 
     private void OnTruckSpeedChanged(TruckController.MovementInfo oldInfo, TruckController.MovementInfo newInfo)
     {
+        DevLogger.Log($"Truck speed changed. Old speed: {oldInfo.speed}, New speed: {newInfo.speed}");
+        DevLogger.Log($"Truck acceleration changed. Old acceleration: {oldInfo.acceleration}, New acceleration: {newInfo.acceleration}");
         float newSpeed = Math.Abs(newInfo.speed) / newInfo.maxSpeed;
         _currentSpeed = Mathf.MoveTowards(_currentSpeed, newSpeed, Time.deltaTime * 0.9f);
         if (!Mathf.Approximately(newInfo.acceleration, 0f) && !_playingEngineLoop)
