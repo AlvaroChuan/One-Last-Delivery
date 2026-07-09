@@ -105,7 +105,7 @@ public class PackageTruckParentingHandler : NetworkBehaviour
     {
         if(!isOwned) return;
         if (!_isBeingCarried) return;
-        if (transform.parent != null)
+        if (_parent.parent != null)
         {
             CmdSetWorldPosition(transform.position);
         }
