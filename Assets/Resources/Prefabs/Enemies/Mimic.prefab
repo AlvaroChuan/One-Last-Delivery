@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 2761674424042340578}
   - component: {fileID: 6222511251791297622}
   - component: {fileID: 630939934634357880}
+  - component: {fileID: 5803821709359027994}
   m_Layer: 6
   m_Name: Mimic
   m_TagString: Untagged
@@ -228,6 +229,23 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+--- !u!114 &5803821709359027994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 120020557967890478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  clientAuthority: 0
+  animator: {fileID: 2863608326454219821}
 --- !u!1001 &2027325528613263247
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -706,6 +724,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: df2b3306200dfa1498661dbb14fdf218, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: df2b3306200dfa1498661dbb14fdf218, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1292344596316525705, guid: df2b3306200dfa1498661dbb14fdf218, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
