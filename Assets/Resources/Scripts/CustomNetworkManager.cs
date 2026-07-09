@@ -37,9 +37,9 @@ public class CustomNetworkManager : NetworkManager
         DevLogger.Log("CustomNetworkManager started on server.");
     }
 
-    public override void OnStartClient()
+    public override void Awake()
     {
-        base.OnStartClient();
+        base.Awake();
 
         NetworkClient.RegisterHandler<SceneTransitionMessage>(OnSceneTransition);
         DevLogger.Log("CustomNetworkManager started on client.");
@@ -80,6 +80,7 @@ public class CustomNetworkManager : NetworkManager
         NetworkServer.UnregisterHandler<SceneTransitionReceivedMessage>();
     }
 
+/*
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
     {
         base.OnServerDisconnect(conn);
@@ -88,7 +89,7 @@ public class CustomNetworkManager : NetworkManager
         {
             if (NetworkServer.active)
             {
-                StartCoroutine(DelayedShutdown());
+                //StartCoroutine(DelayedShutdown());
             }
         }
     }
@@ -107,7 +108,7 @@ public class CustomNetworkManager : NetworkManager
         base.OnClientDisconnect();
 
         NetworkClient.UnregisterHandler<SceneTransitionMessage>();
-        GetComponent<BaseVoiceChat>().StopVoiceChat();
+        GetComponent<BaseVoiceChat>()?.StopVoiceChat();
 
         // Changes the scene locally for a client if they lose connection or if the host leaves
         if (SceneManager.GetActiveScene().name != "GraphicsMainMenu")
@@ -115,7 +116,7 @@ public class CustomNetworkManager : NetworkManager
             ClientChangeSceneWithTransition("GraphicsMainMenu");
         }
     }
-
+*/
     private void SpawnPlayerForConnection(NetworkConnectionToClient conn)
     {
         int playerIndex = _numberOfPlayers; // Use the current number of players as the index

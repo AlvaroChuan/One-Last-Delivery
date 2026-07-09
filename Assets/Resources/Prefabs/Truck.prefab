@@ -1365,9 +1365,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1de9c01648b28428a7146dcd13b0c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
   _startUpAudioEvent: {fileID: 11400000, guid: 46dd815a7c66eb345ba75ebc1339743a, type: 2}
 --- !u!114 &377138898248274606
 MonoBehaviour:
@@ -2807,7 +2804,6 @@ GameObject:
   - component: {fileID: 6666108903493657439}
   - component: {fileID: 4470578554329880306}
   - component: {fileID: 922873218955250947}
-  - component: {fileID: 4749869864401788953}
   - component: {fileID: 9181564471172241934}
   m_Layer: 12
   m_Name: Gas pedal
@@ -2884,40 +2880,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4749869864401788953
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6826752804323255202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 1
-  syncMode: 0
-  syncInterval: 0
-  target: {fileID: 6666108903493657439}
-  syncPosition: 0
-  syncRotation: 1
-  syncScale: 0
-  onlySyncOnChange: 1
-  compressRotation: 1
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  timelineOffset: 1
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  onlySyncOnChangeCorrectionMultiplier: 2
-  useFixedUpdate: 0
-  rotationSensitivity: 0.01
-  positionPrecision: 0.01
-  scalePrecision: 0.01
 --- !u!114 &9181564471172241934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3713,7 +3675,6 @@ GameObject:
   - component: {fileID: 3385055033207966726}
   - component: {fileID: 5259492904192422024}
   - component: {fileID: 2930517770480693157}
-  - component: {fileID: 3700003666574289531}
   - component: {fileID: 7466965349214277440}
   m_Layer: 12
   m_Name: Brake Pedal
@@ -3790,40 +3751,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3700003666574289531
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7859459482962458373}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 1
-  syncMode: 0
-  syncInterval: 0
-  target: {fileID: 3385055033207966726}
-  syncPosition: 0
-  syncRotation: 1
-  syncScale: 0
-  onlySyncOnChange: 1
-  compressRotation: 1
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  timelineOffset: 1
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  onlySyncOnChangeCorrectionMultiplier: 2
-  useFixedUpdate: 0
-  rotationSensitivity: 0.01
-  positionPrecision: 0.01
-  scalePrecision: 0.01
 --- !u!114 &7466965349214277440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4389,9 +4316,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcfa2c4e15ae71b41a4c36cad3aef430, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0.1
 --- !u!1 &9119182257764601673
 GameObject:
   m_ObjectHideFlags: 0
@@ -4569,7 +4493,6 @@ GameObject:
   - component: {fileID: 4787802401640370181}
   - component: {fileID: 6725008046407949789}
   - component: {fileID: 3775022720038613762}
-  - component: {fileID: 3913514654395621911}
   - component: {fileID: 264448953451658628}
   m_Layer: 12
   m_Name: Gear Stick
@@ -4646,40 +4569,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3913514654395621911
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9193133479089208817}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 1
-  syncMode: 0
-  syncInterval: 0
-  target: {fileID: 4787802401640370181}
-  syncPosition: 0
-  syncRotation: 1
-  syncScale: 0
-  onlySyncOnChange: 1
-  compressRotation: 1
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  timelineOffset: 1
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  onlySyncOnChangeCorrectionMultiplier: 2
-  useFixedUpdate: 0
-  rotationSensitivity: 0.01
-  positionPrecision: 0.01
-  scalePrecision: 0.01
 --- !u!114 &264448953451658628
 MonoBehaviour:
   m_ObjectHideFlags: 0

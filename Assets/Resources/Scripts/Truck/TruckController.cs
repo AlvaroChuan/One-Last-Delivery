@@ -76,6 +76,8 @@ public class TruckController : NetworkBehaviour
 
     public static Action<float> OnSteeringAngleChanged;
     public static Action<MovementInfo> OnSpeedChanged;
+    Vector3 _lastPosition;
+    float _lastSpeed;
 
     void Awake()
     {
@@ -118,6 +120,13 @@ public class TruckController : NetworkBehaviour
         {
             float currentSpeed = Vector3.Dot(_vehicleRigidbody.transform.forward, _vehicleRigidbody.linearVelocity);
             OnSpeedChanged?.Invoke(new MovementInfo { acceleration = _movementInput.y, speed = currentSpeed * _mpsToMph, maxSpeed = _carMaxSpeed * _mpsToMph });
+        }
+        else
+        {
+            float currentSpeed = Vector3.Dot(_vehicleRigidbody.transform.forward, _vehicleRigidbody.position - _lastPosition) / Time.fixedDeltaTime;
+            OnSpeedChanged?.Invoke(new MovementInfo { acceleration = Mathf.Sign(currentSpeed - _lastSpeed), speed = currentSpeed * _mpsToMph, maxSpeed = _carMaxSpeed * _mpsToMph });
+            _lastPosition = _vehicleRigidbody.position;
+            _lastSpeed = currentSpeed;
         }
 
         foreach (var wheel in _wheels)

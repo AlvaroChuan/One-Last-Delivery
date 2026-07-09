@@ -1,10 +1,8 @@
 using System;
-using Mirror;
 using UnityEngine;
 
-public class TruckAudioController : NetworkBehaviour
+public class TruckAudioController : MonoBehaviour
 {
-    [SyncVar (hook = nameof(OnTruckSpeedChanged))] private TruckController.MovementInfo _currentSpeedInfo;
     [SerializeField] private AudioEvent _startUpAudioEvent;
     AudioLoopMixer _engineAudioLoopMixer;
     bool _playingEngineLoop = false;
@@ -23,27 +21,16 @@ public class TruckAudioController : NetworkBehaviour
 
     private void HandleSpeedChanged(TruckController.MovementInfo info)
     {
-        CmdUpdateSpeed(info);
-    }
-
-    [Command(requiresAuthority = false)]
-    void CmdUpdateSpeed(TruckController.MovementInfo info)
-    {
-        _currentSpeedInfo = info;
-    }
-
-    private void OnTruckSpeedChanged(TruckController.MovementInfo oldInfo, TruckController.MovementInfo newInfo)
-    {
-        float newSpeed = Math.Abs(newInfo.speed) / newInfo.maxSpeed;
+        float newSpeed = Math.Abs(info.speed) / info.maxSpeed;
         _currentSpeed = Mathf.MoveTowards(_currentSpeed, newSpeed, Time.deltaTime * 0.9f);
-        if (!Mathf.Approximately(newInfo.acceleration, 0f) && !_playingEngineLoop)
+        if (!Mathf.Approximately(info.acceleration, 0f) && !_playingEngineLoop)
         {
             DevLogger.Log("Starting engine audio loop");
             _engineAudioLoopMixer.StartPlayback();
             _startUpAudioEvent.Play(gameObject);
             _playingEngineLoop = true;
         }
-        else if (_currentSpeed < 0.01f && _playingEngineLoop && Mathf.Approximately(newInfo.acceleration, 0f))
+        else if (_currentSpeed < 0.01f && _playingEngineLoop && Mathf.Approximately(info.acceleration, 0f))
         {
             DevLogger.Log("Stopping engine audio loop");
             _engineAudioLoopMixer.StopPlayback();
