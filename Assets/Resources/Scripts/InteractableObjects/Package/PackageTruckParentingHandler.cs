@@ -1,16 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using Mirror;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PackageTruckParentingHandler : NetworkBehaviour
 {
-    struct PackageParentingData
-    {
-        public NetworkIdentity parent;
-        public Vector3 worldPosition;
-    }
     float _timeToWaitAfterDrop = 0.5f;
     Rigidbody _rigidbody;
     PackageCarryComponent _packageCarryComponent;
@@ -19,10 +12,7 @@ public class PackageTruckParentingHandler : NetworkBehaviour
     int _supportingObjects = 0;
     bool _isBeingCarried = false;
     bool _isInTruck = false;
-    Vector3 _lastParentPosition;
-    Quaternion _lastParentRotation;
-    [SyncVar(hook = nameof(OnParentChanged))] PackageParentingData _parent;
-    [SyncVar(hook = nameof(OnWorldPositionChanged))] Vector3 _worldPosition;
+    [SyncVar (hook = nameof(OnParentChanged))] NetworkIdentity _parentIdentity;
 
     void Awake()
     {
@@ -43,49 +33,52 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         _packageCarryComponent.onStartCarrying += OnPackagePickup;
         _packageCarryComponent.onStopCarrying += OnPackageDrop;
     }
+
+    [Command]
+    void CmdSetParent(NetworkIdentity parentIdentity)
+    {
+        _parentIdentity = parentIdentity;
+    }
+
     void OnTriggerEnter(Collider other)
     {
-        _isInTruck = true;
-        if (!isServer) return;
+        if (!isOwned) return;
+
         if (other.CompareTag("TruckInterior"))
         {
-            _parent = new PackageParentingData
-            {
-                parent = other.GetComponentInParent<NetworkIdentity>(),
-                worldPosition = transform.position
-            };
+            CmdSetParent(other.GetComponentInParent<NetworkIdentity>());
+            _isInTruck = true;
         }
     }
 
     void OnTriggerExit(Collider other)
     {
-        _isInTruck = false;
-        if (!isServer) return;
+        if (!isOwned) return;
+
         if (other.CompareTag("TruckInterior"))
         {
-            _parent = new PackageParentingData
-            {
-                parent = null,
-                worldPosition = transform.position
-            };
+            CmdSetParent(null);
+            _isInTruck = false;
         }
     }
 
-    void OnParentChanged(PackageParentingData oldParent, PackageParentingData newParent)
+    void OnParentChanged(NetworkIdentity oldParent, NetworkIdentity newParent)
     {
-        if (newParent.parent != null)
+        if (newParent != null)
         {
-            GetComponent<NetworkTransformBase>().enabled = false;
+            transform.SetParent(newParent.transform);
+            transform.localPosition = transform.localPosition + Vector3.up * 0.1f; // Slightly adjust the position to avoid clipping
         }
         else
         {
-            GetComponent<NetworkTransformBase>().enabled = true;
+            transform.SetParent(null);
         }
-        GetComponent<NetworkTransformBase>().ResetState();
     }
 
     void OnPackagePickup()
     {
+        if (!isOwned) return;
+
         _isBeingCarried = true;
         _rigidbody.isKinematic = false;
     }
@@ -100,34 +93,10 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         _isBeingCarried = false;
     }
 
-    [Command]
-    void CmdSetWorldPosition(Vector3 position)
-    {
-        _worldPosition = position;
-    }
-
-    void OnWorldPositionChanged(Vector3 oldPosition, Vector3 newPosition)
-    {
-        transform.position = newPosition;
-        GetComponent<NetworkTransformBase>().ResetState();
-    }
-
-    void Update()
-    {
-        if (!isOwned) return;
-        if (_parent.parent != null && (_lastParentPosition != _parent.worldPosition || _lastParentRotation != _parent.parent.transform.rotation))
-        {
-            transform.position += _parent.worldPosition - _lastParentPosition;
-            transform.rotation = _parent.parent.transform.rotation * Quaternion.Inverse(_lastParentRotation) * transform.rotation;
-            _lastParentPosition = _parent.worldPosition;
-            _lastParentRotation = _parent.parent.transform.rotation;
-        }
-    }
-
     void FixedUpdate()
     {
-        if (!isOwned)
-            return;
+        if(!isOwned) return;
+
         if (!_rigidbody.isKinematic && _isInTruck && !_isBeingCarried && _rigidbody.linearVelocity.sqrMagnitude < 0.01f && _rigidbody.angularVelocity.sqrMagnitude < 0.01f)
         {
             Vector3 size = _collider.size;
@@ -136,9 +105,8 @@ public class PackageTruckParentingHandler : NetworkBehaviour
             _supportingObjects = Physics.BoxCastNonAlloc(center, size / 2f, Vector3.down, _hitBuffer, transform.rotation, 0.1f, ~0, queryTriggerInteraction: QueryTriggerInteraction.Ignore);
 
             _rigidbody.isKinematic = true;
-            CmdSetWorldPosition(transform.position);
         }
-        if (isOwned && _rigidbody.isKinematic)
+        if (_rigidbody.isKinematic)
         {
             CheckIfSupportRemoved();
         }
