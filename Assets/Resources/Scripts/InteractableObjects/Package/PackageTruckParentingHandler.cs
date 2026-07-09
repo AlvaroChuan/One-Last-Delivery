@@ -98,6 +98,7 @@ public class PackageTruckParentingHandler : NetworkBehaviour
     void SetPackageDropped()
     {
         _isBeingCarried = false;
+        CmdChangeLayer(LayerMask.NameToLayer(_defaultLayer));
     }
 
     void FixedUpdate()
