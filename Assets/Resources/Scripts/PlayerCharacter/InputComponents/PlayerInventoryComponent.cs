@@ -121,6 +121,12 @@ public class PlayerInventoryComponent : InputComponent
         SetInventorySelection(_selectedInventoryIndex);
     }
 
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        DropPackage(Vector3.zero); // Drop the package if the player is disabled (e.g., when leaving the game or dying)
+    }
+
     void SetInventorySelection(int index)
     {
         DropPackage(Vector3.zero);

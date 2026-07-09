@@ -125,12 +125,6 @@ public class PlayerMenuManager : MonoBehaviour
         {
             PlayerItemUseComponent itemUseComponent = player.GetComponent<PlayerItemUseComponent>();
             if (itemUseComponent != null) itemUseComponent.enabled = !open;
-            PlayerMovementComponent movementComponent = player.GetComponent<PlayerMovementComponent>();
-            if (movementComponent != null) movementComponent.enabled = !open;
-            PlayerSprintComponent sprintComponent = player.GetComponent<PlayerSprintComponent>();
-            if (sprintComponent != null) sprintComponent.enabled = !open;
-            PlayerJumpComponent jumpComponent = player.GetComponent<PlayerJumpComponent>();
-            if (jumpComponent != null) jumpComponent.enabled = !open;
             PlayerInventoryComponent inventoryComponent = player.GetComponent<PlayerInventoryComponent>();
             if (inventoryComponent != null) inventoryComponent.enabled = !open;
             PlayerInteractComponent interactionComponent = player.GetComponent<PlayerInteractComponent>();
