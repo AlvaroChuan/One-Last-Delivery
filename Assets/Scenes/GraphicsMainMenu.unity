@@ -3648,7 +3648,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2667278424106543237, guid: b32178010a3726a4282df3b1c56a8c75, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2819591818172843174, guid: b32178010a3726a4282df3b1c56a8c75, type: 3}
       propertyPath: m_Enabled
@@ -3985,6 +3985,10 @@ PrefabInstance:
     - target: {fileID: 7463284719400066244, guid: b32178010a3726a4282df3b1c56a8c75, type: 3}
       propertyPath: m_hasFontAssetChanged
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7634845649589398430, guid: b32178010a3726a4282df3b1c56a8c75, type: 3}
+      propertyPath: m_ShowMaskGraphic
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7766880366126706728, guid: b32178010a3726a4282df3b1c56a8c75, type: 3}
       propertyPath: m_Layer
