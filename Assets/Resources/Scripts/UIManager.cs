@@ -25,7 +25,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _optionsButton;
     [SerializeField] private Button _quitButton;
-    [SerializeField] private Animator _transitionAnimator;
 
     [Header("Clipboard Panels")]
     [SerializeField] private GameObject _lobbyListPanel;
@@ -188,6 +187,7 @@ public class UIManager : MonoBehaviour
 
     public void AddLobbyToList(CSteamID lobbyID, string lobbyName, string password, int currentPlayers, int maxPlayers, string hostName, int ping)
     {
+        if(_steamLobbyManager == null) _steamLobbyManager = FindAnyObjectByType<SteamLobbyManager>();
         GameObject item = Instantiate(_lobbyListItemPrefab, _lobbyListContent);
         LobbyListItem itemScript = item.GetComponent<LobbyListItem>();
         itemScript.Initialize(lobbyID, _steamLobbyManager, this, lobbyName, password, currentPlayers, maxPlayers, hostName, ping);
