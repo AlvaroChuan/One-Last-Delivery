@@ -87,6 +87,7 @@ public class BasicEnemy : NetworkBehaviour
         if (!isServer) return;
 
         _movementComponent.SetTarget(null);
+        transform.LookAt(_playerChaseBehaviour.CurrentTarget.transform.position - transform.position);
 
         if (_animator != null)
         {
