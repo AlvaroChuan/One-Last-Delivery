@@ -71,11 +71,13 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         if (newParent != null)
         {
             transform.SetParent(newParent.transform);
+            GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = false; // Disable authority swapping while inside the truck
             //transform.localPosition = transform.localPosition + Vector3.up * 0.1f; // Slightly adjust the position to avoid clipping
         }
         else
         {
             transform.SetParent(null);
+            GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = true; // Re-enable authority swapping when leaving the truck
         }
     }
 
