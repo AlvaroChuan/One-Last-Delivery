@@ -116,7 +116,7 @@ public class TruckController : NetworkBehaviour
         bool hasAuthority = isOwned || (isServer && netIdentity.connectionToClient == null);
         if (!hasAuthority) return;
 
-        if (isOwned || (isServer && netIdentity.connectionToClient == null))
+        if (hasAuthority)
         {
             float currentSpeed = Vector3.Dot(_vehicleRigidbody.transform.forward, _vehicleRigidbody.linearVelocity);
             OnSpeedChanged?.Invoke(new MovementInfo { acceleration = _movementInput.y, speed = currentSpeed * _mpsToMph, maxSpeed = _carMaxSpeed * _mpsToMph });

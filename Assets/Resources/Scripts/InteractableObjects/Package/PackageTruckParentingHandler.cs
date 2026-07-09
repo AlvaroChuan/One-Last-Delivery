@@ -148,10 +148,12 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         if (newValue == LayerMask.NameToLayer(_insideTruckLayer))
         {
             _rigidbody.Sleep();
+            GetComponent<ObjectImpactSound>().enabled = false; // Disable impact sounds when inside the truck
         }
         else
         {
             _rigidbody.WakeUp();
+            GetComponent<ObjectImpactSound>().enabled = true; // Enable impact sounds when outside the truck
         }
     }
 
