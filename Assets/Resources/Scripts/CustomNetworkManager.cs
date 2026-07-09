@@ -88,7 +88,7 @@ public class CustomNetworkManager : NetworkManager
         {
             if (NetworkServer.active)
             {
-                //StartCoroutine(DelayedShutdown());
+                StartCoroutine(DelayedShutdown());
             }
         }
     }
