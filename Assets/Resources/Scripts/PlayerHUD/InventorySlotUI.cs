@@ -11,6 +11,7 @@ public class InventorySlotUI : MonoBehaviour
     [SerializeField] private float _animationDuration = 0.2f; // Duration of the animation
     [SerializeField] private Ease _animationEase = Ease.OutQuad; // Easing function for the animation
     float _originalYPosition; // Store the original Y position of the slot
+    Tween _currentTween; // Store the current tween for the animation
 
     void Awake()
     {
@@ -41,7 +42,11 @@ public class InventorySlotUI : MonoBehaviour
     }
     public void SetSelected(bool isSelected)
     {
+        if (_currentTween != null)
+        {
+            _currentTween.Kill(true); // Stop the current tween if it's active
+        }
         float targetYPosition = isSelected ? _originalYPosition + _selectedHeightOffset : _originalYPosition;
-        transform.DOLocalMoveY(targetYPosition, _animationDuration).SetEase(_animationEase);
+        _currentTween = transform.DOLocalMoveY(targetYPosition, _animationDuration).SetEase(_animationEase);
     }
 }
