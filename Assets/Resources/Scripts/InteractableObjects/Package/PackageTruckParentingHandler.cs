@@ -144,6 +144,15 @@ public class PackageTruckParentingHandler : NetworkBehaviour
     void OnCurrentLayerChanged(int oldValue, int newValue)
     {
         gameObject.layer = newValue;
+
+        if (newValue == LayerMask.NameToLayer(_insideTruckLayer))
+        {
+            _rigidbody.Sleep();
+        }
+        else
+        {
+            _rigidbody.WakeUp();
+        }
     }
 
     void OnDrawGizmos()
