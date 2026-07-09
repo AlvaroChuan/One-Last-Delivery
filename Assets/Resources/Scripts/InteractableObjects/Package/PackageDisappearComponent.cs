@@ -2,23 +2,13 @@ using UnityEngine;
 using Mirror;
 using System.Collections;
 
-public class PackageDisappearComponent : NetworkBehaviour
+public class PackageDisappearComponent : MonoBehaviour
 {
     [SerializeField] ParticleSystem _disappearEffect;
 
-#if UNITY_EDITOR
-    [ContextMenu("Disappear Package")]
-    void ContextMenuDisappear()
+    void OnDestroy()
     {
-        StartDisappear();
-    }
-#endif
-
-    [Server]
-    public void StartDisappear()
-    {
-        GameObject effect = Instantiate(_disappearEffect, transform.position, Quaternion.identity).gameObject;
-        NetworkServer.Destroy(gameObject);
-        NetworkServer.Spawn(effect);
+        ParticleSystem effect = Instantiate(_disappearEffect, transform.position, Quaternion.identity);
+        effect.Play();
     }
 }

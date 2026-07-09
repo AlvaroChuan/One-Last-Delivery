@@ -35,7 +35,7 @@ public class EvilDoorInteractionComponent : Interactable
 
         if (packageAddressComponent.MatchesAddress(_localAddressComponent.Address))
         {
-            package.GetComponent<PackageDisappearComponent>().StartDisappear();
+            NetworkServer.Destroy(package);
             PlayerHealthComponent playerHealth = interactor.GetComponent<PlayerHealthComponent>();
             if (playerHealth != null)
             {
