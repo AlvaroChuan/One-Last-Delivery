@@ -84,7 +84,6 @@ public class PackageTruckParentingHandler : NetworkBehaviour
 
         _isBeingCarried = true;
         _rigidbody.isKinematic = false;
-        _rigidbody.mass = 1f;
         gameObject.layer = LayerMask.NameToLayer(_defaultCarryLayer);
     }
 
@@ -110,7 +109,6 @@ public class PackageTruckParentingHandler : NetworkBehaviour
             _supportingObjects = Physics.BoxCastNonAlloc(center, size / 2f, Vector3.down, _hitBuffer, transform.rotation, 0.1f, ~0, queryTriggerInteraction: QueryTriggerInteraction.Ignore);
 
             _rigidbody.isKinematic = true;
-            _rigidbody.mass = 0f;
             gameObject.layer = LayerMask.NameToLayer(_insideTruckLayer);
         }
         if (_rigidbody.isKinematic)
@@ -129,7 +127,6 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         if (currentSupportingObjects < _supportingObjects)
         {
             _rigidbody.isKinematic = false;
-            _rigidbody.mass = 1f;
             gameObject.layer = LayerMask.NameToLayer(_defaultLayer);
             _supportingObjects = 0;
         }
