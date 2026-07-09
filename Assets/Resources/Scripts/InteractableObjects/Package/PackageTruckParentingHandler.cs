@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PackageTruckParentingHandler : NetworkBehaviour
 {
+    [SerializeField] string _insideTruckLayer = "PackagesInTruck";
+    [SerializeField] string _defaultLayer = "Interactables";
+    [SerializeField] string _defaultCarryLayer = "CarriedPackage";
     float _timeToWaitAfterDrop = 0.5f;
     Rigidbody _rigidbody;
     PackageCarryComponent _packageCarryComponent;
@@ -82,7 +85,7 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         _isBeingCarried = true;
         _rigidbody.isKinematic = false;
         _rigidbody.mass = 1f;
-        _collider.isTrigger = false;
+        gameObject.layer = LayerMask.NameToLayer(_defaultCarryLayer);
     }
 
     void OnPackageDrop()
@@ -108,7 +111,7 @@ public class PackageTruckParentingHandler : NetworkBehaviour
 
             _rigidbody.isKinematic = true;
             _rigidbody.mass = 0f;
-            _collider.isTrigger = true;
+            gameObject.layer = LayerMask.NameToLayer(_insideTruckLayer);
         }
         if (_rigidbody.isKinematic)
         {
@@ -127,7 +130,7 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         {
             _rigidbody.isKinematic = false;
             _rigidbody.mass = 1f;
-            _collider.isTrigger = false;
+            gameObject.layer = LayerMask.NameToLayer(_defaultLayer);
             _supportingObjects = 0;
         }
     }
