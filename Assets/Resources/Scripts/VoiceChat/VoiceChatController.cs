@@ -27,10 +27,20 @@ public class VoiceChatController : NetworkBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
 
         SceneManager.activeSceneChanged -= OnSceneChanged;
         SceneManager.activeSceneChanged += OnSceneChanged;
+
+        VoiceChat.onStopVoiceChat -= OnStopVoiceChat;
+        VoiceChat.onStopVoiceChat += OnStopVoiceChat;
+    }
+
+    void OnStopVoiceChat()
+    {
+        _peerIdToTransformMap.Clear();
+        ResetSpectatorState();
     }
 
     void OnSceneChanged(Scene oldScene, Scene newScene)
@@ -119,6 +129,10 @@ public class VoiceChatController : NetworkBehaviour
     void OnDestroy()
     {
         SceneManager.activeSceneChanged -= OnSceneChanged;
+        if (VoiceChat != null)
+        {
+            VoiceChat.onStopVoiceChat -= OnStopVoiceChat;
+        }
     }
 
     public void SetSpectatorState(int peerId, bool isSpectator)

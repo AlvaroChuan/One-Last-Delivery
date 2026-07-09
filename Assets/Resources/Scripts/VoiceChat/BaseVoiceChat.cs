@@ -12,6 +12,7 @@ using System.Collections.Generic;
 public class BaseVoiceChat : MonoBehaviour
 {
     public static event Action OnLocalPeerJoined;
+    public Action onStopVoiceChat;
     public static int LocalPeerId { get; private set; } = -1;
     #region Constants
 
@@ -192,6 +193,8 @@ public class BaseVoiceChat : MonoBehaviour
         _localPeerId = -1;
         LocalPeerId = -1;
         _peerIds.Clear();
+
+        onStopVoiceChat?.Invoke();
 
         Debug.unityLogger.Log(LogType.Log, TAG, "UniVoice stopped.");
     }
