@@ -86,6 +86,8 @@ public class PackageTruckParentingHandler : NetworkBehaviour
 
     void FixedUpdate()
     {
+        if (!isOwned)
+            return;
         if (!_rigidbody.isKinematic && _isInTruck && !_isBeingCarried && _rigidbody.linearVelocity.sqrMagnitude < 0.01f && _rigidbody.angularVelocity.sqrMagnitude < 0.01f)
         {
             Vector3 size = _collider.size;
