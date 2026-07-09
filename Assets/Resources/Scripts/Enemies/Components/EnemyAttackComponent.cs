@@ -50,10 +50,7 @@ public class EnemyAttackComponent : MonoBehaviour
 
         _playerDetectionTimer = _playerDetectionInterval; // Reset the detection timer
 
-        Vector3 directionToPlayer = target.transform.position - transform.position;
-        directionToPlayer.y = 0; // Ignore vertical difference for the raycast
-        directionToPlayer.Normalize();
-        int hitCount = Physics.RaycastNonAlloc(transform.position, directionToPlayer, _raycastHitBuffer, _attackRange);
+        int hitCount = Physics.RaycastNonAlloc(transform.position, transform.forward, _raycastHitBuffer, _attackRange);
 
         for (int i = 0; i < hitCount; i++)
         {

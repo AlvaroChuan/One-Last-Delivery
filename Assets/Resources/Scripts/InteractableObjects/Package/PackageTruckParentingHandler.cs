@@ -71,13 +71,13 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         if (newParent != null)
         {
             transform.SetParent(newParent.transform);
-            GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = false; // Disable authority swapping while inside the truck
+            //GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = false; // Disable authority swapping while inside the truck
             //transform.localPosition = transform.localPosition + Vector3.up * 0.1f; // Slightly adjust the position to avoid clipping
         }
         else
         {
             transform.SetParent(null);
-            GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = true; // Re-enable authority swapping when leaving the truck
+            //GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = true; // Re-enable authority swapping when leaving the truck
         }
     }
 
@@ -136,7 +136,7 @@ public class PackageTruckParentingHandler : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    void CmdChangeLayer(int layer)
+    public void CmdChangeLayer(int layer)
     {
         _currentLayer = layer;
     }
@@ -154,6 +154,10 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         {
             _rigidbody.WakeUp();
             GetComponent<ObjectImpactSound>().enabled = true; // Enable impact sounds when outside the truck
+        }
+        if (newValue == LayerMask.NameToLayer(_defaultCarryLayer))
+        {
+            _isBeingCarried = true;
         }
     }
 

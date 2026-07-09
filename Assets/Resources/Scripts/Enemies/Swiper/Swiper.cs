@@ -274,7 +274,7 @@ public class Swiper : NetworkBehaviour
 
         _chaseBehaviour.SetTarget(null);
 
-        _targetPackage.layer = LayerMask.NameToLayer(_targetPackage.GetComponent<PackageInteractionComponent>().DroppedLayer);
+        _targetPackage.GetComponent<PackageTruckParentingHandler>().CmdChangeLayer(LayerMask.NameToLayer(_targetPackage.GetComponent<PackageInteractionComponent>().CarriedLayer));
         Rigidbody packageRigidbody = _targetPackage.GetComponent<Rigidbody>();
         packageRigidbody.isKinematic = false;
         _targetPackage.GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = true;
@@ -308,7 +308,7 @@ public class Swiper : NetworkBehaviour
 
         packageNetIdentity.RemoveClientAuthority();
         packageNetIdentity.AssignClientAuthority(NetworkServer.localConnection);
-        _targetPackage.layer = LayerMask.NameToLayer(_packageCarryLayer);
+        _targetPackage.GetComponent<PackageTruckParentingHandler>().CmdChangeLayer(LayerMask.NameToLayer(_packageCarryLayer));
         _targetPackage.GetComponent<NetRigidbodyController>().enableRigidbodyControl = false;
         _targetPackage.GetComponent<CollisionAuthorityHandler>().enableAuthoritySwap = false;
         _targetPackage.GetComponent<Rigidbody>().isKinematic = true;

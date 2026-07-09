@@ -260,7 +260,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2924977971945211490, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
       propertyPath: _maxHealth
-      value: 500
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 2924977971945211490, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
       propertyPath: _damageCooldown
@@ -268,11 +268,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2924977971945211490, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
       propertyPath: _minForceForDamage
-      value: 25
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2924977971945211490, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
       propertyPath: _damagePerUnitForce
-      value: 0.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3370239276120578303, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
       propertyPath: _damping
@@ -404,11 +404,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7707933276367622041, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
       propertyPath: _maxValue
-      value: 600
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7707933276367622041, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
       propertyPath: _minValue
-      value: 300
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8616374103077212214, guid: 5a3bc97f95994dd4fbf1fbe7d40ffc9f, type: 3}
       propertyPath: m_text

@@ -551,6 +551,10 @@ PrefabInstance:
       propertyPath: InitialModule.startSpeed.scalar
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 7637363938448107355, guid: ba036d7aa49283b44a8cc93d4de6305f, type: 3}
+      propertyPath: _assetId
+      value: 996322771
+      objectReference: {fileID: 0}
     - target: {fileID: 8354219453752641167, guid: ba036d7aa49283b44a8cc93d4de6305f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -591,7 +595,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7637363938448107355, guid: ba036d7aa49283b44a8cc93d4de6305f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
