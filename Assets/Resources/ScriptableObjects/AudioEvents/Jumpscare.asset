@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8baab117d5c6ecc43a8428a4a05e1332, type: 3}
-  m_Name: MimicLunge
+  m_Name: Jumpscare
   m_EditorClassIdentifier: 
   _clips:
   - {fileID: 8300000, guid: 1156be2f47f8a8a409b0517bf536b5ce, type: 3}

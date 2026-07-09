@@ -245,6 +245,7 @@ MonoBehaviour:
   _specterFace: {fileID: 8168687828310374867}
   _jumpscareDuration: 2.5
   _jumpscareLethalDamage: 999
+  _jumpscareSound: {fileID: 11400000, guid: f0f0fd49ead6ec4448d93e39956ad2ed, type: 2}
 --- !u!114 &3791176424422493989
 MonoBehaviour:
   m_ObjectHideFlags: 0

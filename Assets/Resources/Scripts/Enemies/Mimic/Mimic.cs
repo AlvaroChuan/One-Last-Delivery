@@ -127,7 +127,7 @@ public class Mimic : NetworkBehaviour
         // Reset the hitbox collider to ensure it detects the player during the lunge
         _hitboxCollider.enabled = false;
         _hitboxCollider.enabled = true;
-        _lungeSound.Play(gameObject);
+        RpcPlayAniimationSound();
         _networkAnimator.SetTrigger("Attack");
         Vector3 direction = _closestPlayer.transform.position - transform.position;
         direction.y = 0;
@@ -141,6 +141,12 @@ public class Mimic : NetworkBehaviour
             StopCoroutine(_resetTransformationCoroutine);
         }
         _resetTransformationCoroutine = StartCoroutine(ResetTransformation());
+    }
+
+    [ClientRpc]
+    void RpcPlayAniimationSound()
+    {
+        _lungeSound.Play(gameObject);
     }
 
     [Server]

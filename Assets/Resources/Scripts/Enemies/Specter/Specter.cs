@@ -20,6 +20,7 @@ public class Specter : NetworkBehaviour
     [SerializeField] private Transform _specterFace;
     [SerializeField] private float _jumpscareDuration = 2.5f;
     [SerializeField] private float _jumpscareLethalDamage = 999f;
+    [SerializeField] private AudioEvent _jumpscareSound;
 
     private NetworkAnimator _networkAnimator;
     private FieldOfViewDetector _fieldOfViewDetector;
@@ -201,6 +202,7 @@ public class Specter : NetworkBehaviour
             NetworkIdentity targetIdentity = targetPlayer.GetComponent<NetworkIdentity>();
             if (targetIdentity != null)
             {
+                RpcPlayJumpscareSound();
                 TargetExecuteJumpscare(targetIdentity.connectionToClient, targetPlayer);
                 StartCoroutine(ServerKillRoutine(targetPlayer));
             }
@@ -209,6 +211,12 @@ public class Specter : NetworkBehaviour
         {
             _isExecutingJumpscare = false;
         }
+    }
+
+    [ClientRpc]
+    void RpcPlayJumpscareSound()
+    {
+        _jumpscareSound.Play(gameObject);
     }
 
     [Server]
