@@ -37,9 +37,9 @@ public class CustomNetworkManager : NetworkManager
         DevLogger.Log("CustomNetworkManager started on server.");
     }
 
-    public override void Awake()
+    public override void OnStartClient()
     {
-        base.Awake();
+        base.OnStartClient();
 
         NetworkClient.RegisterHandler<SceneTransitionMessage>(OnSceneTransition);
         DevLogger.Log("CustomNetworkManager started on client.");
