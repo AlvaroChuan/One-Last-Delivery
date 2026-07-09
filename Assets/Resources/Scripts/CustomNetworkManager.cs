@@ -209,7 +209,7 @@ public class CustomNetworkManager : NetworkManager
             BalanceManager.RegisterTransaction("Daily quota", -QuotaManager.CurrentQuota);
         }
         _currentDestinationScene = sceneName; // Store the destination scene for later use
-        NetworkServer.SendToAll(new SceneTransitionMessage()); // Notify all clients to start the transition
+        NetworkServer.SendToReady(new SceneTransitionMessage()); // Notify all clients to start the transition
     }
 
     void OnSceneTransition(SceneTransitionMessage message)
