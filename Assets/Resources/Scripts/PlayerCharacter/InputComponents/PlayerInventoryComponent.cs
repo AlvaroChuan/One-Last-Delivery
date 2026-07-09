@@ -118,12 +118,12 @@ public class PlayerInventoryComponent : InputComponent
         {
             _selectedInventoryIndex = index;
         }
-        DropPackage(Vector3.zero); // Drop the package if the player selects a different inventory slot
         SetInventorySelection(_selectedInventoryIndex);
     }
 
     void SetInventorySelection(int index)
     {
+        DropPackage(Vector3.zero);
         int oldIndex = _selectedInventoryIndex;
         InventoryItemData oldItemData = _inventoryManager.GetInventorySlot(oldIndex);
         InventoryItem oldHeldItem = GetItem(oldIndex);
