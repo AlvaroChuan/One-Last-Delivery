@@ -13,6 +13,7 @@ public class PlayerDeathComponent : PlayerComponent
     [SerializeField] private GameObject _bloodVFX;
     PlayerHealthComponent _playerHealthComponent;
     public Action onPlayerDeathEvent;
+    public Action onPlayerDeathServerEvent;
     public bool IsDead { get; private set; } = false;
 
     void Awake()
@@ -60,6 +61,7 @@ public class PlayerDeathComponent : PlayerComponent
         SpawnBloodVFX();
         RpcHandleDeath(); // Notify all clients about the player's death
         (NetworkManager.singleton as CustomNetworkManager).NotifyPlayerDeath();
+        onPlayerDeathServerEvent?.Invoke();
     }
 
     [Server]

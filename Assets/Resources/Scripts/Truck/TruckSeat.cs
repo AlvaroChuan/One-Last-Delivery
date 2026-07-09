@@ -54,6 +54,11 @@ public class TruckSeat : Interactable
             oldOccupant.GetComponent<StepPlayer>().enabled = true;
             oldOccupant.transform.parent = null;
             oldOccupant.transform.rotation = Quaternion.identity;
+
+            if (isServer)
+            {
+                oldOccupant.GetComponent<PlayerDeathComponent>().onPlayerDeathServerEvent -= PlayerDied;
+            }
         }
 
         if (newOccupant != null)
@@ -70,9 +75,22 @@ public class TruckSeat : Interactable
             newOccupant.transform.parent = _occupantPosition;
             newOccupant.transform.localPosition = Vector3.zero;
             newOccupant.transform.localRotation = Quaternion.identity;
+
+            if (isServer)
+            {
+                newOccupant.GetComponent<PlayerDeathComponent>().onPlayerDeathServerEvent += PlayerDied;
+            }
         }
 
         onOccupantChanged?.Invoke(oldOccupant, newOccupant);
+    }
+
+    void PlayerDied()
+    {
+        if (_occupant != null)
+        {
+            _occupant = null;
+        }
     }
 
     public override void ServerInteract(GameObject interactor)
