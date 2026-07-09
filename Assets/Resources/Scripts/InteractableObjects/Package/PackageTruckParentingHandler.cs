@@ -72,18 +72,12 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         if (newParent.parent != null)
         {
             transform.SetParent(newParent.parent.transform, true);
-            _isInTruck = true;
-            GetComponentInParent<NetworkTransformBase>().enabled = false; // Disable the NetworkTransformBase component on the parent to prevent conflicts
-            transform.position = newParent.worldPosition; // Maintain the world position when changing parent
         }
         else
         {
             transform.SetParent(null, true);
-            _isInTruck = false;
-            GetComponentInParent<NetworkTransformBase>().enabled = true; // Re-enable the NetworkTransformBase component on the parent
-            transform.position = newParent.worldPosition; // Maintain the world position when changing parent
         }
-        GetComponentInParent<NetworkTransformBase>().ResetState(); // Reset the state of the NetworkTransformBase component to ensure proper synchronization
+        GetComponent<NetworkTransformBase>().ResetState();
     }
 
     void OnPackagePickup()
@@ -102,16 +96,6 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         _isBeingCarried = false;
     }
 
-    void Update()
-    {
-        if(!isOwned) return;
-        if (!_isBeingCarried) return;
-        if (_parent.parent != null)
-        {
-            CmdSetWorldPosition(transform.position);
-        }
-    }
-
     [Command]
     void CmdSetWorldPosition(Vector3 position)
     {
@@ -121,6 +105,7 @@ public class PackageTruckParentingHandler : NetworkBehaviour
     void OnWorldPositionChanged(Vector3 oldPosition, Vector3 newPosition)
     {
         transform.position = newPosition;
+        GetComponent<NetworkTransformBase>().ResetState();
     }
 
     void FixedUpdate()
@@ -135,6 +120,7 @@ public class PackageTruckParentingHandler : NetworkBehaviour
             _supportingObjects = Physics.BoxCastNonAlloc(center, size / 2f, Vector3.down, _hitBuffer, transform.rotation, 0.1f, ~0, queryTriggerInteraction: QueryTriggerInteraction.Ignore);
 
             _rigidbody.isKinematic = true;
+            CmdSetWorldPosition(transform.position);
         }
         if (isOwned && _rigidbody.isKinematic)
         {
