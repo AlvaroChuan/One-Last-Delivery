@@ -83,6 +83,7 @@ public class PackageTruckParentingHandler : NetworkBehaviour
             GetComponentInParent<NetworkTransformBase>().enabled = true; // Re-enable the NetworkTransformBase component on the parent
             transform.position = newParent.worldPosition; // Maintain the world position when changing parent
         }
+        GetComponentInParent<NetworkTransformBase>().ResetState(); // Reset the state of the NetworkTransformBase component to ensure proper synchronization
     }
 
     void OnPackagePickup()
