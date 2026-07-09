@@ -10,6 +10,7 @@ public class TruckSeat : Interactable
     [SerializeField] Transform _occupantPosition;
     [SerializeField] Transform _exitPosition;
     [SerializeField] bool _isDriverSeat = true;
+    public bool IsDriverSeat { get => _isDriverSeat; }
     [SerializeField] InputActionReference _getUpInputActionReference;
     [SyncVar(hook = nameof(OnOccupantChanged))]
     GameObject _occupant;

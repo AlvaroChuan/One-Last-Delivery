@@ -15,7 +15,9 @@ public class PackageTruckParentingHandler : NetworkBehaviour
     int _supportingObjects = 0;
     bool _isBeingCarried = false;
     bool _isInTruck = false;
+    TruckSeat _driverSeat;
     [SyncVar (hook = nameof(OnParentChanged))] NetworkIdentity _parentIdentity;
+    [SyncVar (hook = nameof(OnCurrentLayerChanged))] int _currentLayer;
 
     void Awake()
     {
@@ -35,6 +37,15 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         _packageCarryComponent = GetComponent<PackageCarryComponent>();
         _packageCarryComponent.onStartCarrying += OnPackagePickup;
         _packageCarryComponent.onStopCarrying += OnPackageDrop;
+        TruckSeat[] truckSeats = FindObjectsByType<TruckSeat>(FindObjectsSortMode.None);
+        foreach (TruckSeat seat in truckSeats)
+        {
+            if (seat.IsDriverSeat)
+            {
+                _driverSeat = seat;
+                break;
+            }
+        }
     }
 
     [Command]
@@ -132,16 +143,31 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         }
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     void CmdChangeLayer(int layer)
     {
-        RpcChangeLayer(layer);
+        if (layer == LayerMask.NameToLayer(_insideTruckLayer))
+        {
+            netIdentity.RemoveClientAuthority();
+            netIdentity.AssignClientAuthority(_driverSeat.GetComponentInParent<NetworkIdentity>() .connectionToClient);
+            _driverSeat.onOccupantChanged += OnDriverSeatOccupantChanged;
+        }
+        else _driverSeat.onOccupantChanged -= OnDriverSeatOccupantChanged;
+        _currentLayer = layer;
     }
 
-    [ClientRpc]
-    void RpcChangeLayer(int layer)
+    void OnDriverSeatOccupantChanged(GameObject oldOccupant, GameObject newOccupant)
     {
-        gameObject.layer = layer;
+        if (newOccupant != null)
+        {
+            netIdentity.RemoveClientAuthority();
+            netIdentity.AssignClientAuthority(_driverSeat.GetComponentInParent<NetworkIdentity>() .connectionToClient);
+        }
+    }
+
+    void OnCurrentLayerChanged(int oldValue, int newValue)
+    {
+        gameObject.layer = newValue;
     }
 
     void OnDrawGizmos()
@@ -154,5 +180,18 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         Gizmos.matrix = transform.localToWorldMatrix;
 
         Gizmos.DrawWireCube(center, size);
+    }
+
+    void OnDestroy()
+    {
+        if (_packageCarryComponent != null)
+        {
+            _packageCarryComponent.onStartCarrying -= OnPackagePickup;
+            _packageCarryComponent.onStopCarrying -= OnPackageDrop;
+        }
+        if (_driverSeat != null)
+        {
+            _driverSeat.onOccupantChanged -= OnDriverSeatOccupantChanged;
+        }
     }
 }
