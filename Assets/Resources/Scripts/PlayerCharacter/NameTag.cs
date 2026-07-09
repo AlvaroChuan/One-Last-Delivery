@@ -16,14 +16,17 @@ public class NameTag : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        if (_name != null)
+        if (_nameText != null && _name != null)
         {
             _nameText.text = _name;
         }
         if (!isLocalPlayer) return;
 
         CmdSetName(SteamFriends.GetPersonaName());
-        _nameText.enabled = false; // Disable the name tag for the local player
+        if (_nameText != null)
+        {
+            _nameText.enabled = false; // Disable the name tag for the local player
+        }
     }
 
     [Command]
@@ -41,12 +44,21 @@ public class NameTag : NetworkBehaviour
 
     void Update()
     {
+        if (_nameText == null || _name == null) return;
+        if (_nameText.text != _name)
+        {
+            _nameText.text = _name;
+        }
         Camera mainCamera = Camera.main;
         if (mainCamera != null)
         {
             // Make the name tag face the camera
             transform.LookAt(mainCamera.transform);
             transform.Rotate(0, 180, 0); // Rotate 180 degrees to face the camera correctly
+        }
+        if (isLocalPlayer && _nameText != null && _nameText.enabled)
+        {
+            _nameText.enabled = false; // Disable the name tag for the local player
         }
     }
 }
