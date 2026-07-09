@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1843950592470188965}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: ExitPosition
   m_TagString: Truck
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 931643496269912606}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: ExitPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -275,7 +275,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5576181194153230310}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: OccupantPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -311,7 +311,7 @@ GameObject:
   - component: {fileID: 5597893678297956621}
   - component: {fileID: 6595797302585749937}
   - component: {fileID: 1387675727909198895}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: Back Left Door
   m_TagString: Truck
   m_Icon: {fileID: 0}
@@ -560,7 +560,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3764938476644224254}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: OccupantPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -767,7 +767,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5016970606103445301}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: ExitPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -835,7 +835,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5395635593812469187}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: OccupantPosition
   m_TagString: Truck
   m_Icon: {fileID: 0}
@@ -1006,7 +1006,7 @@ GameObject:
   - component: {fileID: 1189076842998555211}
   - component: {fileID: 8152478260272311198}
   - component: {fileID: 2894687366137467745}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: Right Window
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1562,7 +1562,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5551780921231827074}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: ExitPosition
   m_TagString: Truck
   m_Icon: {fileID: 0}
@@ -1595,7 +1595,7 @@ GameObject:
   - component: {fileID: 2093269247836310882}
   - component: {fileID: 7449925326745761648}
   - component: {fileID: 7698896251129739207}
-  m_Layer: 13
+  m_Layer: 12
   m_Name: TruckInterior
   m_TagString: TruckInterior
   m_Icon: {fileID: 0}
@@ -1749,7 +1749,7 @@ GameObject:
   - component: {fileID: 3023959836820890879}
   - component: {fileID: 2695905769666103715}
   - component: {fileID: 2815649483366873891}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: DriverSeat
   m_TagString: Truck
   m_Icon: {fileID: 0}
@@ -1823,7 +1823,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1771475164657761297}
   - component: {fileID: 3095376009161903184}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Horn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1927,7 +1927,7 @@ GameObject:
   - component: {fileID: 4748089536644617923}
   - component: {fileID: 7341858599918015980}
   - component: {fileID: 5288268590929398431}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: BackSeat2
   m_TagString: Truck
   m_Icon: {fileID: 0}
@@ -2592,7 +2592,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4830009542217555906}
   - component: {fileID: 2687325726972643125}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Decal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2732,7 +2732,7 @@ GameObject:
   - component: {fileID: 1778503048501048726}
   - component: {fileID: 1890931589405435656}
   - component: {fileID: 2915091703876874569}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: PassengerSeat
   m_TagString: Truck
   m_Icon: {fileID: 0}
@@ -2914,7 +2914,7 @@ GameObject:
   - component: {fileID: 7221847162951890828}
   - component: {fileID: 5013868013697827800}
   - component: {fileID: 3480991243224367323}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: Front Right Door
   m_TagString: Truck
   m_Icon: {fileID: 0}
@@ -3449,7 +3449,7 @@ GameObject:
   - component: {fileID: 7211163314163210522}
   - component: {fileID: 3616647053876637496}
   - component: {fileID: 5751317459225293259}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: Left Window
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3535,7 +3535,7 @@ GameObject:
   - component: {fileID: 3707794429825208745}
   - component: {fileID: 8850027338439180497}
   - component: {fileID: 539056819549503421}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: BackSeat1
   m_TagString: Truck
   m_Icon: {fileID: 0}
@@ -3820,7 +3820,7 @@ GameObject:
   - component: {fileID: 198463425828175461}
   - component: {fileID: 2818381707878348863}
   - component: {fileID: 8742179113632861135}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: Front Left Door
   m_TagString: Truck
   m_Icon: {fileID: 0}
@@ -4003,7 +4003,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3575285449459332032}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: OccupantPosition
   m_TagString: Truck
   m_Icon: {fileID: 0}
@@ -4035,7 +4035,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6074792020327801551}
   - component: {fileID: 3920295683325413768}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Decal_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4336,7 +4336,7 @@ GameObject:
   - component: {fileID: 4049336028170103340}
   - component: {fileID: 8265091676485278811}
   - component: {fileID: 734456808170830798}
-  m_Layer: 3
+  m_Layer: 12
   m_Name: Back Right Door
   m_TagString: Truck
   m_Icon: {fileID: 0}
