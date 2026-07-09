@@ -80,7 +80,6 @@ public class CustomNetworkManager : NetworkManager
         NetworkServer.UnregisterHandler<SceneTransitionReceivedMessage>();
     }
 
-/*
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
     {
         base.OnServerDisconnect(conn);
@@ -116,7 +115,7 @@ public class CustomNetworkManager : NetworkManager
             ClientChangeSceneWithTransition("GraphicsMainMenu");
         }
     }
-*/
+
     private void SpawnPlayerForConnection(NetworkConnectionToClient conn)
     {
         int playerIndex = _numberOfPlayers; // Use the current number of players as the index
