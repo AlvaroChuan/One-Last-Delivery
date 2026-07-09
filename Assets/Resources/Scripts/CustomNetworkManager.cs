@@ -86,7 +86,19 @@ public class CustomNetworkManager : NetworkManager
         string currentSceneName = SceneManager.GetActiveScene().name;
         if(currentSceneName == _gameScene || currentSceneName == _balanceScene)
         {
-            NetworkServer.Shutdown();
+            if (NetworkServer.active)
+            {
+                StartCoroutine(DelayedShutdown());
+            }
+        }
+    }
+
+    private IEnumerator DelayedShutdown()
+    {
+        yield return null;
+        if (NetworkServer.active)
+        {
+            StopHost();
         }
     }
 

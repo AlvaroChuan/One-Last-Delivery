@@ -95,7 +95,10 @@ public class SteamLobbyManager : MonoBehaviour
             activePlayers[i] = SteamMatchmaking.GetLobbyMemberByIndex(_currentLobbyID, i);
         }
 
-        _uiManager.SyncLobbyData(activePlayers, _currentLobbyID, maxPlayers);
+        if (_uiManager != null)
+        {
+            _uiManager.SyncLobbyData(activePlayers, _currentLobbyID, maxPlayers);
+        }
 
         bool allReady = true;
         foreach (CSteamID steamID in activePlayers)
@@ -123,7 +126,7 @@ public class SteamLobbyManager : MonoBehaviour
             {
                 DevLogger.Log("Not all players are ready. Stopping game start countdown.");
                 StopCoroutine(_startGameCoroutine);
-                _uiManager.UpdateCountdown();
+                if (_uiManager != null) _uiManager.UpdateCountdown();
             }
         }
     }
@@ -133,7 +136,7 @@ public class SteamLobbyManager : MonoBehaviour
         int countdown = 5;
         while (countdown >= 0)
         {
-            _uiManager.UpdateCountdown(Mathf.CeilToInt(countdown));
+            if (_uiManager != null) _uiManager.UpdateCountdown(Mathf.CeilToInt(countdown));
             yield return new WaitForSeconds(1f);
             countdown -= 1;
         }
