@@ -7,12 +7,15 @@ public class NameTag : NetworkBehaviour
 {
     TextMeshProUGUI _nameText;
     [SyncVar(hook = nameof(OnNameChanged))]
-    string _name;
+    string _name = "";
 
     public override void OnStartClient()
     {
         _nameText = GetComponent<TextMeshProUGUI>();
-        _nameText.text = _name;
+        if (_name != null)
+        {
+            _nameText.text = _name;
+        }
         if (!isLocalPlayer) return;
 
         CmdSetName(SteamFriends.GetPersonaName());
