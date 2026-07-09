@@ -70,7 +70,7 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         if (newParent != null)
         {
             transform.SetParent(newParent.transform);
-            transform.localPosition = transform.localPosition + Vector3.up * 0.1f; // Slightly adjust the position to avoid clipping
+            //transform.localPosition = transform.localPosition + Vector3.up * 0.1f; // Slightly adjust the position to avoid clipping
         }
         else
         {
