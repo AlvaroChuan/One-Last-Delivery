@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
@@ -65,7 +66,17 @@ public class PackageTruckParentingHandler : NetworkBehaviour
             transform.SetParent(null, true);
             _isInTruck = false;
         }
-        GetComponentInParent<NetworkTransformBase>().ResetState();
+        StartCoroutine(DeferredReset());
+    }
+
+    private IEnumerator DeferredReset()
+    {
+        yield return new WaitForEndOfFrame();
+
+        if (TryGetComponent<NetworkTransformBase>(out var nt))
+        {
+            nt.ResetState();
+        }
     }
 
     void OnPackagePickup()
