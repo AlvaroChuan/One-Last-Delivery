@@ -81,6 +81,8 @@ public class PackageTruckParentingHandler : NetworkBehaviour
 
         _isBeingCarried = true;
         _rigidbody.isKinematic = false;
+        _rigidbody.mass = 1f;
+        _collider.isTrigger = false;
     }
 
     void OnPackageDrop()
@@ -106,6 +108,7 @@ public class PackageTruckParentingHandler : NetworkBehaviour
 
             _rigidbody.isKinematic = true;
             _rigidbody.mass = 0f;
+            _collider.isTrigger = true;
         }
         if (_rigidbody.isKinematic)
         {
@@ -124,6 +127,7 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         {
             _rigidbody.isKinematic = false;
             _rigidbody.mass = 1f;
+            _collider.isTrigger = false;
             _supportingObjects = 0;
         }
     }
