@@ -10,6 +10,10 @@ public class PackageTruckParentingHandler : NetworkBehaviour
     BoxCollider _collider;
     RaycastHit[] _hitBuffer = new RaycastHit[10];
     int _supportingObjects = 0;
+    bool _isBeingCarried = false;
+    bool _isInTruck = false;
+    [SyncVar(hook = nameof(OnParentChanged))] NetworkIdentity _parent;
+
     void Awake()
     {
         BoxCollider[] colliders = GetComponents<BoxCollider>();
@@ -29,22 +33,36 @@ public class PackageTruckParentingHandler : NetworkBehaviour
         _packageCarryComponent.onStartCarrying += OnPackagePickup;
         _packageCarryComponent.onStopCarrying += OnPackageDrop;
     }
-    bool _isInTruck = false;
-    bool _isBeingCarried = false;
     void OnTriggerEnter(Collider other)
     {
+        if (!isServer) return;
         if (other.CompareTag("TruckInterior"))
         {
-            transform.SetParent(other.transform);
+            _parent = other.GetComponentInParent<NetworkIdentity>();
             _isInTruck = true;
         }
     }
 
     void OnTriggerExit(Collider other)
     {
+        if (!isServer) return;
         if (other.CompareTag("TruckInterior"))
         {
-            transform.SetParent(null);
+            _parent = null;
+            _isInTruck = false;
+        }
+    }
+
+    void OnParentChanged(NetworkIdentity oldParent, NetworkIdentity newParent)
+    {
+        if (newParent != null)
+        {
+            transform.parent = newParent.transform;
+            _isInTruck = true;
+        }
+        else
+        {
+            transform.parent = null;
             _isInTruck = false;
         }
     }

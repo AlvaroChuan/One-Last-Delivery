@@ -17,8 +17,8 @@ public class PackageDisappearComponent : NetworkBehaviour
     [Server]
     public void StartDisappear()
     {
-        Instantiate(_disappearEffect, transform.position, Quaternion.identity);
+        GameObject effect = Instantiate(_disappearEffect, transform.position, Quaternion.identity).gameObject;
         NetworkServer.Destroy(gameObject);
-        NetworkServer.Spawn(_disappearEffect.gameObject);
+        NetworkServer.Spawn(effect);
     }
 }
