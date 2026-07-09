@@ -1,10 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
 public class PackageTruckParentingHandler : NetworkBehaviour
 {
+    struct PackageParentingData
+    {
+        public NetworkIdentity parent;
+        public Vector3 worldPosition;
+    }
     float _timeToWaitAfterDrop = 0.5f;
     Rigidbody _rigidbody;
     PackageCarryComponent _packageCarryComponent;
@@ -13,7 +17,7 @@ public class PackageTruckParentingHandler : NetworkBehaviour
     int _supportingObjects = 0;
     bool _isBeingCarried = false;
     bool _isInTruck = false;
-    [SyncVar(hook = nameof(OnParentChanged))] NetworkIdentity _parent;
+    [SyncVar(hook = nameof(OnParentChanged))] PackageParentingData _parent;
 
     void Awake()
     {
@@ -36,46 +40,47 @@ public class PackageTruckParentingHandler : NetworkBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
+        _isInTruck = true;
         if (!isServer) return;
         if (other.CompareTag("TruckInterior"))
         {
-            _parent = other.GetComponentInParent<NetworkIdentity>();
-            _isInTruck = true;
+            _parent = new PackageParentingData
+            {
+                parent = other.GetComponentInParent<NetworkIdentity>(),
+                worldPosition = transform.position
+            };
         }
     }
 
     void OnTriggerExit(Collider other)
     {
+        _isInTruck = false;
         if (!isServer) return;
         if (other.CompareTag("TruckInterior"))
         {
-            _parent = null;
-            _isInTruck = false;
+            _parent = new PackageParentingData
+            {
+                parent = null,
+                worldPosition = transform.position
+            };
         }
     }
 
-    void OnParentChanged(NetworkIdentity oldParent, NetworkIdentity newParent)
+    void OnParentChanged(PackageParentingData oldParent, PackageParentingData newParent)
     {
-        if (newParent != null)
+        if (newParent.parent != null)
         {
-            transform.SetParent(newParent.transform, true);
+            transform.SetParent(newParent.parent.transform, true);
             _isInTruck = true;
+            GetComponentInParent<NetworkTransformBase>().enabled = false; // Disable the NetworkTransformBase component on the parent to prevent conflicts
+            transform.position = newParent.worldPosition; // Maintain the world position when changing parent
         }
         else
         {
             transform.SetParent(null, true);
             _isInTruck = false;
-        }
-        StartCoroutine(DeferredReset());
-    }
-
-    private IEnumerator DeferredReset()
-    {
-        yield return new WaitForEndOfFrame();
-
-        if (TryGetComponent<NetworkTransformBase>(out var nt))
-        {
-            nt.ResetState();
+            GetComponentInParent<NetworkTransformBase>().enabled = true; // Re-enable the NetworkTransformBase component on the parent
+            transform.position = newParent.worldPosition; // Maintain the world position when changing parent
         }
     }
 
