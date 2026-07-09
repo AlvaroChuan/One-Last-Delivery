@@ -540,6 +540,14 @@ PrefabInstance:
       value: SmokeCloud
       objectReference: {fileID: 0}
     - target: {fileID: 6609562690561066128, guid: ba036d7aa49283b44a8cc93d4de6305f, type: 3}
+      propertyPath: stopAction
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6609562690561066128, guid: ba036d7aa49283b44a8cc93d4de6305f, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6609562690561066128, guid: ba036d7aa49283b44a8cc93d4de6305f, type: 3}
       propertyPath: NoiseModule.strength.scalar
       value: 1
       objectReference: {fileID: 0}

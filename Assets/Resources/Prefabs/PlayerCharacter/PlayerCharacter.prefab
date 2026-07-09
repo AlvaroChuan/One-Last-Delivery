@@ -2995,7 +2995,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _groundCheckRadius: 0.5
+  _groundCheckRadius: 0.4
   _groundCheckDistance: 0.6
   _maxGroundAngle: 45
   _groundLayer:
