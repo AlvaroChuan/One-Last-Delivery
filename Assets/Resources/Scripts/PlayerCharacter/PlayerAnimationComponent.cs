@@ -6,6 +6,7 @@ using Mirror.Examples.Basic;
 public class PlayerAnimationComponent : PlayerComponent
 {
     [SerializeField] private Hitbox _weaponHitbox;
+    [SerializeField] private AimIKTarget _aimIKTarget;
     private Animator _animator;
     private NetworkAnimator _networkAnimator;
     private PlayerMovementComponent _movementComponent;
@@ -23,6 +24,8 @@ public class PlayerAnimationComponent : PlayerComponent
     private readonly int _holdTypeHash = Animator.StringToHash("HoldType");
     private readonly int _sittingTypeHash = Animator.StringToHash("SittingType");
 
+    private float _targetLayer1Weight = 0f;
+
     void Awake()
     {
         _animator = GetComponent<Animator>();
@@ -37,7 +40,12 @@ public class PlayerAnimationComponent : PlayerComponent
 
     void Start()
     {
-        if (_animator.layerCount > 1) _animator.SetLayerWeight(1, 1f);
+        if (_animator.layerCount > 1)
+        {
+            int currentHoldType = _animator.GetInteger(_holdTypeHash);
+            _targetLayer1Weight = currentHoldType != 0 ? 1f : 0f;
+            _animator.SetLayerWeight(1, _targetLayer1Weight);
+        }
     }
 
     void OnEnable()
@@ -58,6 +66,7 @@ public class PlayerAnimationComponent : PlayerComponent
     {
         UpdateLocomotion();
         UpdateGroundedState();
+        UpdateLayerWeights();
     }
 
     private void UpdateLocomotion()
@@ -71,6 +80,15 @@ public class PlayerAnimationComponent : PlayerComponent
     private void UpdateGroundedState()
     {
         if (_groundCheckComponent != null) _animator.SetBool(_isGroundedHash, _groundCheckComponent.IsGrounded());
+    }
+
+    private void UpdateLayerWeights()
+    {
+        if (_animator.layerCount > 1)
+        {
+            float currentWeight = _animator.GetLayerWeight(1);
+            _animator.SetLayerWeight(1, Mathf.MoveTowards(currentWeight, _targetLayer1Weight, Time.deltaTime * 10f));
+        }
     }
 
     public void SetSittingState(bool isDriving)
@@ -95,21 +113,36 @@ public class PlayerAnimationComponent : PlayerComponent
 
     private void HandleInventoryChange(PlayerInventoryComponent.SlotChangeInfo info)
     {
-        if (info.newSlotIndex == -1 || info.newItemData.itemID == ItemID.None)
+        bool isHoldingItem = info.newSlotIndex != -1 && info.newItemData.itemID != ItemID.None;
+
+        if (!isHoldingItem)
         {
             _animator.SetInteger(_holdTypeHash, 0);
+            _aimIKTarget.DisableIK();
+            _targetLayer1Weight = 0f;
+            return;
         }
-        else
+
+        switch (info.newItemData.itemID)
         {
-            switch (info.newItemData.itemID)
-            {
-                case ItemID.Map: _animator.SetInteger(_holdTypeHash, 2); break;
-                case ItemID.BaseballBat:
-                case ItemID.Taser:
-                case ItemID.Torch:
-                case ItemID.WalkieTalkie: _animator.SetInteger(_holdTypeHash, 1); break;
-                default: _animator.SetInteger(_holdTypeHash, 0); break;
-            }
+            case ItemID.Map:
+                _animator.SetInteger(_holdTypeHash, 2);
+                _aimIKTarget.DisableIK();
+                _targetLayer1Weight = 1f;
+                break;
+            case ItemID.BaseballBat:
+            case ItemID.Taser:
+            case ItemID.Torch:
+            case ItemID.WalkieTalkie:
+                _animator.SetInteger(_holdTypeHash, 1);
+                _aimIKTarget.EnableIK();
+                _targetLayer1Weight = 1f;
+                break;
+            default:
+                _animator.SetInteger(_holdTypeHash, 0);
+                _aimIKTarget.DisableIK();
+                _targetLayer1Weight = 0f;
+                break;
         }
     }
 
