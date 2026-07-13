@@ -67,13 +67,13 @@ public class PackageCarryComponent : MonoBehaviour
         _rigidbody.AddForce(_carryForce * (1 + forceDirection.magnitude * _distanceForceScaling) * forceDirection, ForceMode.Acceleration);
 
         //Remove all velocity away from the player if package is too far
-        Vector3 vectorToPlayer = transform.position - Camera.main.transform.position;
-        if(vectorToPlayer.magnitude > _offsetFromPlayer.magnitude && Vector3.Dot(vectorToPlayer.normalized, _rigidbody.linearVelocity.normalized) < 0)
+        Vector3 vectorFromPlayer = transform.position - Camera.main.transform.position;
+        if(vectorFromPlayer.magnitude < _offsetFromPlayer.magnitude * 0.8f && Vector3.Dot(vectorFromPlayer.normalized, _rigidbody.linearVelocity.normalized) < -0.1f)
         {
-            Vector3 velocityAwayFromPlayer = Vector3.Project(_rigidbody.linearVelocity, vectorToPlayer);
+            Vector3 velocityAwayFromPlayer = Vector3.Project(_rigidbody.linearVelocity, vectorFromPlayer);
             _rigidbody.AddForce(-velocityAwayFromPlayer, ForceMode.VelocityChange);
 
-            Vector3 projectedPosition = Camera.main.transform.position + vectorToPlayer.normalized * _offsetFromPlayer.magnitude;
+            Vector3 projectedPosition = Camera.main.transform.position + vectorFromPlayer.normalized * _offsetFromPlayer.magnitude;
             _rigidbody.MovePosition(Vector3.Lerp(transform.position, projectedPosition, Time.fixedDeltaTime * _damping));
         }
     }
