@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 
 public class AddressLibraryGenerator
 {
@@ -15,15 +16,16 @@ public class AddressLibraryGenerator
         {
             addressLibrary.addressMap.Clear();
         }
-        LocalAddressComponent[] validAddresses = Object.FindObjectsByType<LocalAddressComponent>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        LocalAddressComponent[] validAddresses = Object.FindObjectsByType<LocalAddressComponent>(FindObjectsSortMode.None);
 
         foreach (var addressComponent in validAddresses)
         {
             addressLibrary.AddAddress(addressComponent.Address, addressComponent.gameObject);
         }
 
-        EditorUtility.SetDirty(addressLibrary);
-        AssetDatabase.SaveAssets();
-        DevLogger.Log($"Address library generated with {addressLibrary.AddressCount} addresses.");
+        if (!EditorApplication.isPlaying)
+        {
+            EditorSceneManager.MarkSceneDirty(addressLibrary.gameObject.scene);
+        }
     }
 }
