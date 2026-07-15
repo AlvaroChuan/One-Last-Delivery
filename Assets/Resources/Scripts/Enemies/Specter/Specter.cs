@@ -291,8 +291,6 @@ public class Specter : NetworkBehaviour
             elapsed += Time.deltaTime;
         }
 
-        _enemyAttackComponent.OnAttackAnimationEnd(); //resets attack state
-
         if (rb != null) rb.isKinematic = false;
 
         if (Camera.main != null)
@@ -301,5 +299,14 @@ public class Specter : NetworkBehaviour
         }
 
         if (cineBrain != null) cineBrain.enabled = true;
+
+        CmdOnJumpscareComplete();
+    }
+
+    [Command(requiresAuthority = false)]
+    void CmdOnJumpscareComplete()
+    {
+        _isExecutingJumpscare = false;
+        _enemyAttackComponent.OnAttackAnimationEnd();
     }
 }

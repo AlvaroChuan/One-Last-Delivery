@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.XR;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(PlayerStaminaComponent))]
@@ -103,7 +102,8 @@ public class PlayerMovementComponent : InputComponent
 
         float accelerationToUse = Vector3.Dot(currentVelocity, targetVelocity) <= 0f ? _deceleration : _acceleration;
 
-        Vector3 newVelocity = Vector3.MoveTowards(currentVelocity, targetVelocity, accelerationToUse * Time.fixedDeltaTime);
+        Vector3 currentHorizontalVelocity = new Vector3(currentVelocity.x, 0f, currentVelocity.z);
+        Vector3 newVelocity = Vector3.MoveTowards(currentHorizontalVelocity, targetVelocity, accelerationToUse * Time.fixedDeltaTime);
         newVelocity.y = currentVelocity.y; // Preserve vertical velocity (gravity/falling)
 
         _rigidbody.linearVelocity = newVelocity;
@@ -123,7 +123,7 @@ public class PlayerMovementComponent : InputComponent
         Vector3 feetPos = transform.position - new Vector3(0f, _centerToFeetOffset, 0f);
         Vector3 lowerRayOrigin = feetPos + Vector3.up * 0.05f;
 
-        // 3 ray 
+        // 3 ray
         Vector3[] rayOffsets = new Vector3[]
         {
             Vector3.zero,

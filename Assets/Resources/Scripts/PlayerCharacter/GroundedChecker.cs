@@ -6,7 +6,7 @@ public class PlayerGroundCheckComponent : PlayerComponent
     [SerializeField] private float _groundCheckDistance = 0.6f;
     [SerializeField] private float _maxGroundAngle = 45f;
     [SerializeField] private LayerMask _groundLayer = ~0; // Default to everything
-
+    RaycastHit[] _hitBuffer = new RaycastHit[10];
     float _minGroundDotProduct;
     private bool _cachedIsGrounded;
     private bool _useCache;
@@ -42,9 +42,10 @@ public class PlayerGroundCheckComponent : PlayerComponent
         Vector3 origin = transform.position;
         Vector3 direction = Vector3.down;
 
-        RaycastHit[] hits = Physics.SphereCastAll(origin, _groundCheckRadius, direction, _groundCheckDistance, _groundLayer, QueryTriggerInteraction.Ignore);
-        foreach (var hit in hits)
+        int hits = Physics.SphereCastNonAlloc(origin, _groundCheckRadius, direction, _hitBuffer, _groundCheckDistance, _groundLayer, QueryTriggerInteraction.Ignore);
+        for (int i = 0; i < hits; i++)
         {
+            RaycastHit hit = _hitBuffer[i];
             if (hit.collider != null)
             {
                 if (hit.collider.gameObject != gameObject)

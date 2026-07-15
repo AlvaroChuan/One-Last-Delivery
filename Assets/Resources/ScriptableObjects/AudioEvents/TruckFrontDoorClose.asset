@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: TruckFrontDoorClose
   m_EditorClassIdentifier: 
   _clips:
-  - {fileID: 8300000, guid: d7b8a08d9f753404f81c522454ff858c, type: 3}
-  - {fileID: 8300000, guid: 15f65f6de194195449f3e5eecd769bb4, type: 3}
-  - {fileID: 8300000, guid: a84784718c5cced498dca4ef915ca896, type: 3}
+  - {fileID: 8300000, guid: 0cdd1d6e007db3d468588c994dc9f14d, type: 3}
+  - {fileID: 8300000, guid: b82d93a3b6bafcb42970baf8e082e30b, type: 3}
   _mixerGroup: {fileID: 243703940283072516, guid: 89ef2123a31ebe547959c299198012c1, type: 2}
   _volume: 1
   _minPitch: 0.85

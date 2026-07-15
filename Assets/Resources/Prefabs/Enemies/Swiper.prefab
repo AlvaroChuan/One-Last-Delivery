@@ -128,8 +128,9 @@ MonoBehaviour:
   _packageDetectionInterval: 1
   _packageStealDistance: 2
   _packageCarryLayer: Enemies
+  _packageDefaultLayer: Interactables
   _packageCarryPoint: {fileID: 5386364049622429258}
-  _stealSpeed: 10
+  _stealSpeed: 5
   _stealAcceleration: 50
   _hideoutPrefab: {fileID: 184020480669936351, guid: 2355eb6e53a0e5045835a9d3d3c01dcc, type: 3}
   _hideoutRadius: 5
