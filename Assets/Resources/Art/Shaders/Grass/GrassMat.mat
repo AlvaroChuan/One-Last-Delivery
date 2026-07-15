@@ -89,11 +89,11 @@ Material:
     - _GrassPatchIntensity: 2.53
     - _GrassPatchStep: 0.15
     - _GrassPatchsNoise: 3000
-    - _HeightOffset: 3.92
+    - _HeightOffset: 2.58
     - _HeightmapIntensity: 0.25
     - _HeightmapPower: 3
     - _InteractionHeight: -0.3
-    - _LightColorIntensity: 0
+    - _LightColorIntensity: 0.05
     - _MainNoiseMultiplier: 0.07
     - _MainNoiseScale: 130
     - _MaxGrass: 0.12

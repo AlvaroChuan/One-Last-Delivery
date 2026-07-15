@@ -147,7 +147,7 @@ Material:
     - _HeightMapIntensity: 1
     - _HeightOffset: 3.7
     - _LIGHT_COOKIES: 1
-    - _LightFactor: 0.15
+    - _LightFactor: 0.07
     - _MAIN_LIGHT_SHADOWS: 1
     - _MAIN_LIGHT_SHADOWS_CASCADE: 1
     - _MainTexBlend: 0
